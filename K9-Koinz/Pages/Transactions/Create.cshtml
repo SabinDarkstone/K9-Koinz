@@ -1,0 +1,93 @@
+﻿@page
+@addTagHelper*, Microsoft.AspnetCore.Mvc.TagHelpers
+@model K9_Koinz.Pages.Transactions.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Transaction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Transaction.AccountId" class="control-label"></label>
+                <select asp-for="Transaction.AccountId" class ="form-control" asp-items="ViewBag.AccountId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.Date" class="control-label"></label>
+                <input asp-for="Transaction.Date" class="form-control" />
+                <span asp-validation-for="Transaction.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.MerchantId" class="control-label"></label>
+                <input id="txtMerchant" class="form-control" />
+                <input asp-for="Transaction.MerchantId" type="hidden" id="hfMerchant" />
+                <span asp-validation-for="Transaction.MerchantId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.CategoryId" class="control-label"></label>
+                <select asp-for="Transaction.CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.Amount" class="control-label"></label>
+                <input asp-for="Transaction.Amount" class="form-control" />
+                <span asp-validation-for="Transaction.Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.Notes" class="control-label"></label>
+                <input asp-for="Transaction.Notes" class="form-control" />
+                <span asp-validation-for="Transaction.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+          rel="Stylesheet" type="text/css" />
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(function () {
+            $("#txtMerchant").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Transactions/Create?handler=AutoComplete",
+                        data: { text: request.term },
+                        type: "GET",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(JSON.stringify(response));
+                        },
+                        failure: function (response) {
+                            alert(JSON.stringify(response));
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#hfMerchant").val(i.item.val);
+                },
+                minLength: 1
+            });
+        });
+    </script>
+}

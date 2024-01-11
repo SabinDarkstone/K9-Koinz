@@ -1,0 +1,84 @@
+﻿@page
+@using Models
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Budgets.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Budget</h4>
+<hr />
+<div class="row mb-3">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Budget.Id" />
+            <div class="form-group">
+                <label asp-for="Budget.Name" class="control-label"></label>
+                <input asp-for="Budget.Name" class="form-control" />
+                <span asp-validation-for="Budget.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Budget.Timespan" class="control-label"></label>
+                <select asp-for="Budget.Timespan" class="form-control" asp-items="@Html.GetEnumSelectList<BudgetTimeSpan>()">
+                    <option disabled selected>Select one...</option>
+                </select>
+                <span asp-validation-for="Budget.Timespan" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Budget.Description" class="control-label"></label>
+                <input asp-for="Budget.Description" class="form-control" />
+                <span asp-validation-for="Budget.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<h4>Budget Lines</h4>
+
+<div class="col-sm-5">
+    <table class="table mt-2">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Budgeted Amount</th>
+                <th>
+                    <a class="btn btn-outline-primary" asp-page="/BudgetLines/Create" asp-route-budgetId="@Model.Budget.Id">Add Line</a>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var budgetLine in Model.Budget.BudgetLines) {
+                <tr>
+                    <td>
+                        @budgetLine.BudgetCategory.Name
+                    </td>
+                    <td>
+                        <div class="col-sm-3">
+                            @budgetLine.BudgetedAmount.FormatCurrency()
+                        </div>
+                    </td>
+                    <td>
+                        <a asp-page="/BudgetLines/Edit" asp-route-id="@budgetLine.Id">Edit</a> |
+                        <a asp-page="/BudgetLines/Delete" asp-route-id="@budgetLine.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

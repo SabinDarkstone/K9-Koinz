@@ -1,0 +1,139 @@
+﻿@page
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Budgets.IndexModel
+
+@{
+    ViewData["Title"] = "Budgets";
+}
+
+<style>
+    .marker-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+        .marker-list .marker {
+            position: absolute;
+            width: 1px;
+            height: 20px;
+            background-color: black;
+        }
+</style>
+
+<h1>Budgets</h1>
+
+@if (!Model.Budgets.Any()) {
+    <div>
+        <p>You do not have any budgets created yet.  Click the button below to make one!</p>
+        <a asp-page="./Create" class="btn btn-primary">New Budget</a>
+    </div>
+} else {
+    <p>
+        <a asp-page="Create">New Budget</a>
+    </p>
+
+    <ul class="nav nav-pills nav-fill mb-5">
+        @foreach (var budget in Model.Budgets) {
+            var navClassList = "nav-link";
+            if (budget.Id == Model.SelectedBudget.Id) {
+                navClassList += " active";
+            }
+
+            <li class="nav-item">
+                <a asp-page="./Index" asp-route-selectedBudget="@budget.Id" class="@navClassList">@budget.Name</a>
+            </li>
+        }
+    </ul>
+}
+
+@if (Model.SelectedBudget == null) {
+    if (Model.Budgets.Any()) {
+        <p>There has been an error displaying your selected budget.</p>
+    }
+} else {
+    <h2>
+        <a asp-page="./Details" asp-route-id="@Model.SelectedBudget.Id">@Model.SelectedBudget.Name</a>
+    </h2>
+
+    <p>@Model.SelectedBudget.Description</p>
+
+    <hr />
+
+    <h4>Income</h4>
+    <ul class="list-group mb-4">
+        @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
+            var width = "width: " + budgetLine.SpentPercent + "%;";
+            var todayLine = "left: " + budgetLine.TimePerent + "%;";
+
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-sm">
+                        <p>@budgetLine.BudgetCategory.Name</p>
+                    </div>
+                    <div class="col-sm">
+                        <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
+                    </div>
+                </div>
+
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="@width">
+                        <ul class="marker-list">
+                            <li class="marker" style="@todayLine"></li>
+                        </ul>
+                    </div>
+
+                </div>
+                <span class="text-secondary">
+                    @budgetLine.SpentAmount.FormatCurrency() of @budgetLine.BudgetedAmount.FormatCurrency()
+                </span>
+            </li>
+        }
+    </ul>
+
+    <h4>Expenses</h4>
+    <ul class="list-group">
+        @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
+            var width = "width: " + budgetLine.SpentPercent + "%;";
+            var todayLine = "left: " + budgetLine.TimePerent + "%;";
+            var progressBarClassList = "progress-bar";
+            var startDate = budgetLine.Budget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
+            var endDate = budgetLine.Budget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+            if (budgetLine.SpentPercent >= 80) {
+                progressBarClassList += " bg-warning";
+            } else if (budgetLine.SpentPercent >= 100) {
+                progressBarClassList += " bg-danger";
+            } else {
+                progressBarClassList += " bg-success";
+            }
+
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-sm">
+                        <p>
+                            <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
+                                <a class="no-underline" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.Name</a>
+                            </button>
+                        </p>
+                    </div>
+                    <div class="col-sm">
+                        <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
+                    </div>
+                </div>
+                <div class="progress" style="height: 20px;">
+                    <div class="@progressBarClassList" role="progressbar" style="@width">
+                        <ul class="marker-list">
+                            <li class="marker" style="@todayLine"></li>
+                        </ul>
+                    </div>
+
+                </div>
+                <span class="text-secondary">
+                    @budgetLine.SpentAmount.FormatCurrency() of @budgetLine.BudgetedAmount.FormatCurrency()
+                </span>
+            </li>
+        }
+    </ul>
+}

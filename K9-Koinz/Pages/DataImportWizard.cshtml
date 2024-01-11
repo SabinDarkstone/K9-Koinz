@@ -1,0 +1,47 @@
+﻿@page
+@model K9_Koinz.Pages.DataImportWizardModel
+
+<form method="post" enctype="multipart/form-data">
+	<label asp-for="UploadedFile"></label>
+	<input asp-for="UploadedFile" type="file" />
+	<input type="submit" asp-page-handler="Upload" />
+</form>
+
+@Model.Message
+
+@section Scripts {
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+          rel="Stylesheet" type="text/css" />
+
+    <script>
+		$("#fileUpload").on('change', function () {
+			var files = $('#fileUpload').prop("files");
+			var url = "/DataImportWizard";
+			formData = new FormData();
+			formData.append("file", files[0]);
+
+			jQuery.ajax({
+				type: 'POST',
+				url: url,
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (repo) {
+					if (repo.status == "success") {
+						alert("File : " + repo.filename + " is uploaded successfully");
+					}
+				},
+				error: function (error) {
+					alert(JSON.stringify(error));
+				}
+			});
+		});
+	</script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

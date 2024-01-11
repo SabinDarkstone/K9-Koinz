@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - K9 Koinz</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/K9_Koinz.styles.css" asp-append-version="true" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+
+    <!-- jQuery -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+          rel="Stylesheet" type="text/css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">K9 Koinz</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Index"><i class="fa-solid fa-home"></i> Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Accounts/Index"><i class="fa-solid fa-landmark"></i> Accounts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Transactions/Index"><i class="fa-solid fa-scale-balanced"></i> Transactions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Budgets/Index"><i class="fa-solid fa-file-invoice"></i> Budgets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Merchants/Index"><i class="fa-solid fa-cash-register"></i> Merchants</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Settings/Index"><i class="fa-solid fa-gear"></i> Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/DataImportWizard"><i class="fa-solid fa-file-import"></i> Import</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - K9 Koinz - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

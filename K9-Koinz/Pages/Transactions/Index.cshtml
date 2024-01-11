@@ -1,0 +1,142 @@
+﻿@page
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Transactions.IndexModel
+
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<h1>Your Transactions</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<div class="row">
+    <div class="col-lg-2">
+        <form asp-page="./Index" method="get">
+            <div class="form-actions no-color">
+                <div class="form-group mb-3">
+                    <label for="dteStart">Start Date</label>
+                    <input id="dteStart" type="date" name="minDate" value="@Model.MinDateString" class="form-control" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="dteEnd">End Date</label>
+                    <input id="dteEnd" type="date" name="maxDate" value="@Model.MaxDateString" class="form-control" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="lbxCategories">Category Filter</label>
+                    <select id="lbxCategories" name="catFilter" asp-for="CategoryFilters" asp-items="Model.CategoryOptions" size="15" class="form-control"></select>
+                </div>
+
+                <input type="submit" value="Go" class="btn btn-primary" /> | <a asp-page="./Index">Back to full list</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-10">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transactions[0].Account)
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                           asp-route-catFilter="@Model.SelectedCategory"
+                           asp-route-minDate="@Model.MinDateString"
+                           asp-route-maxDate="@Model.MaxDateString"
+                           asp-route-pageIndex="@Model.Transactions.PageIndex">
+                            @Html.DisplayNameFor(model => model.Transactions[0].Date)
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.MerchantSort"
+                           asp-route-catFilter="@Model.SelectedCategory"
+                           asp-route-minDate="@Model.MinDateString"
+                           asp-route-maxDate="@Model.MaxDateString"
+                           asp-route-pageIndex="@Model.Transactions.PageIndex">
+                            @Html.DisplayNameFor(model => model.Transactions[0].MerchantId)
+                        </a>
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transactions[0].Category)
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.AmountSort"
+                           asp-route-catFilter="@Model.SelectedCategory"
+                           asp-route-minDate="@Model.MinDateString"
+                           asp-route-maxDate="@Model.MaxDateString"
+                           asp-route-pageIndex="@Model.Transactions.PageIndex">
+                            @Html.DisplayNameFor(model => model.Transactions[0].Amount)
+                        </a>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Transactions) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Account.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Merchant.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Name)
+                        </td>
+                        <td>
+                            @if (item.TransactionType == Models.TransactionType.PLUS) {
+                                <span class="text-success">
+                                    @decimal.Abs(item.Amount).FormatCurrency()
+                                </span>
+                            } else {
+                                <span class="text-danger">
+                                    @decimal.Abs(item.Amount).FormatCurrency()
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Notes)
+                        </td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                            <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                            <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @{
+            var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-catFilter="@Model.SelectedCategory"
+           asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
+           asp-route-minDate="@Model.MinDateString"
+           asp-route-maxDate="@Model.MaxDateString"
+           class="btn btn-primary @prevDisabled">
+            Previous
+        </a>
+
+        <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-catFilter="@Model.SelectedCategory"
+           asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
+           asp-route-minDate="@Model.MinDateString"
+           asp-route-maxDate="@Model.MaxDateString"
+           class="btn btn-primary @nextDisabled">
+            Next
+        </a>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,212 @@
+﻿@page
+@using Models
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Accounts.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<h4>Checking & Savings</h4>
+@if (Model.Accounts.Any(acct => acct.Type == AccountType.CHECKING || acct.Type == AccountType.SAVINGS)) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-4">
+                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
+                </th>
+                <th class="col-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.CHECKING || acct.Type == AccountType.SAVINGS)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @item.CurrentBalance.FormatCurrency()
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else {
+    <div class="align-content-center">
+        <p>You do not have any Checking or Savings accounts set up.</p>
+    </div>
+}
+
+<hr />
+
+<h4>Credit Cards</h4>
+@if (Model.Accounts.Any(acct => acct.Type == AccountType.CREDIT_CARD)) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-4">
+                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
+                </th>
+                <th class="col-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.CREDIT_CARD)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @item.CurrentBalance.FormatCurrency()
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else {
+    <div class="align-content-center">
+        <p>You do not have any Credit Card accounts set up.</p>
+    </div>
+}
+
+<hr />
+
+<h4>Loans</h4>
+@if (Model.Accounts.Any(acct => acct.Type == AccountType.LOAN)) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-4">
+                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
+                </th>
+                <th class="col-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.LOAN)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @item.CurrentBalance.FormatCurrency()
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else {
+    <div class="align-content-center">
+        <p>You do not have any Loan accounts set up.</p>
+    </div>
+}
+
+<hr />
+
+<h4>Property</h4>
+@if (Model.Accounts.Any(acct => acct.Type == AccountType.PROPERTY)) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-4">
+                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
+                </th>
+                <th class="col-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.PROPERTY)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @item.CurrentBalance.FormatCurrency()
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else {
+    <div class="align-content-center">
+        <p>You do not have any Property accounts set up.</p>
+    </div>
+}
+
+<hr />
+
+<h4>Investments</h4>
+@if (Model.Accounts.Any(acct => acct.Type == AccountType.INVESTMENT)) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-4">
+                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
+                </th>
+                <th class="col-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.INVESTMENT)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @item.CurrentBalance.FormatCurrency()
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else {
+    <div class="align-content-center">
+        <p>You do not have any Investment accounts set up.</p>
+    </div>
+}
