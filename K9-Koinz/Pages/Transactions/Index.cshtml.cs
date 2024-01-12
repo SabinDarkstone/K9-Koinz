@@ -10,7 +10,6 @@ using K9_Koinz.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
-using Microsoft.IdentityModel.Tokens;
 
 namespace K9_Koinz.Pages.Transactions
 {

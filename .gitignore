@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/K9-Koinz/K9-Koinz.db
+/K9-Koinz/K9-Koinz.db-shm
+/K9-Koinz/K9-Koinz.db-wal

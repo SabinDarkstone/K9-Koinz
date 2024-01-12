@@ -36,6 +36,13 @@ namespace K9_Koinz.Data {
                 .IsUnique();
             modelBuilder.Entity<Category>().HasIndex(x => x.Name)
                 .IsUnique();
+
+            // Converters
+            modelBuilder.Entity<Transaction>().Property(x => x.Amount).HasConversion<double>();
+            modelBuilder.Entity<BudgetLine>().Property(x => x.SpentAmount).HasConversion<double>();
+            modelBuilder.Entity<BudgetLine>().Property(x => x.BudgetedAmount).HasConversion<double>();
+            modelBuilder.Entity<Account>().Property(x => x.CurrentBalance).HasConversion<double>();
+            modelBuilder.Entity<Account>().Property(x => x.InitialBalance).HasConversion<double>();
         }
     }
 }

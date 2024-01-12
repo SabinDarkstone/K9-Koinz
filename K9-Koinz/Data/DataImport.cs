@@ -28,6 +28,8 @@ namespace K9_Koinz.Data {
             CreateCategoryMap();
 
             foreach (var line in rowsOfCsv.Skip(1)) {
+                _logger.LogDebug("csv line >>> " + line);
+
                 var splitRow = line.Split(',');
                 var account = ParseAccount(splitRow);
                 var merchant = ParseMerchant(splitRow);
@@ -46,10 +48,14 @@ namespace K9_Koinz.Data {
 
             _context.Accounts.AddRange(accounts);
             _context.Merchants.AddRange(merchants);
+            _logger.LogInformation("Inserting accounts and merchants...");
             _context.SaveChanges();
+            _logger.LogInformation("Complete");
 
             _context.Transactions.AddRange(transactions);
+            _logger.LogInformation("Inserting transactions...");
             _context.SaveChanges();
+            _logger.LogInformation("Complete");
 
             foreach (var x in _context.Accounts) {
                 _logger.LogInformation(x.Id + " >>> " + x.Name);
@@ -75,6 +81,14 @@ namespace K9_Koinz.Data {
         }
 
         private void CreateCategoryMap() {
+            var hasCategoriesAlready = _context.Categories.Any();
+            if (hasCategoriesAlready) {
+                CategoryMap.AddRange(
+                    _context.Categories.Select(cat => new KeyValuePair<string, Guid>(cat.Name, cat.Id))
+                );
+                return;
+            }
+
             var categories = CategoriesCreator.MakeTopLevelCategories();
             _context.Categories.AddRange(categories);
             _context.SaveChanges();
@@ -119,6 +133,9 @@ namespace K9_Koinz.Data {
                         parsedAccount.Type = AccountType.SAVINGS;
                         break;
                 }
+                parsedAccount.InitialBalance = new decimal(0);
+                parsedAccount.InitialBalanceDate = DateTime.Now;
+
                 AccountMap.Add(parsedAccount.Name, parsedAccount.Id);
             }
 
@@ -138,14 +155,17 @@ namespace K9_Koinz.Data {
         }
 
         private Transaction ParseTransaction(string[] row, Account account, Merchant merchant) {
+            var dateSplit = row[0].Split('/').Select(x => int.Parse(x)).ToList();
             var parsedTransaction = new Transaction {
                 Id = Guid.NewGuid(),
                 AccountId = account.Id,
                 MerchantId = merchant.Id,
                 Amount = decimal.Parse(row[2]),
-                Date = DateTime.Parse(row[0]),
+                Date = new DateTime(month: dateSplit[0], day: dateSplit[1], year: dateSplit[2]),
                 CategoryId = CategoryMap[row[4]]
             };
+
+            _logger.LogDebug(parsedTransaction.Date.ToString());
 
             var transactionType = row[3];
             if (transactionType == "debit") {
