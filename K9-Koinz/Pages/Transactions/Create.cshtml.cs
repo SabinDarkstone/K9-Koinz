@@ -21,14 +21,11 @@ namespace K9_Koinz.Pages.Transactions {
 
         public IActionResult OnGet() {
             ViewData["AccountId"] = new SelectList(_context.Accounts.OrderBy(acct => acct.Name), nameof(Account.Id), nameof(Account.Name));
-            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(cat => cat.Name), nameof(Category.Id), nameof(Category.Name));
-            ViewData["MerchantId"] = new SelectList(_context.Merchants.OrderBy(merch => merch.Name), nameof(Merchant.Id), nameof(Merchant.Name));
             return Page();
         }
 
         [BindProperty]
         public Transaction Transaction { get; set; } = default!;
-        public List<Merchant> Merchants { get; set; }
 
         public async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
@@ -36,18 +33,34 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             _context.Transactions.Add(Transaction);
-            _logger.LogInformation(Transaction.MerchantId.ToString());
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }
 
-        public IActionResult OnGetAutoComplete(string text) {
-            var merchants = _context.Merchants.Where(merch => merch.Name.StartsWith(text)).Select(merch => new {
-                label = merch.Name,
-                val = merch.Id
-            }).ToList();
+        public IActionResult OnGetMerchantAutoComplete(string text) {
+            var merchants = _context.Merchants
+                .AsNoTracking()
+                .AsEnumerable()
+                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
+                .Select(merch => new {
+                    label = merch.Name,
+                    val = merch.Id
+                }).ToList();
             return new JsonResult(merchants);
+        }
+
+        public IActionResult OnGetCategoryAutoComplete(string text) {
+            var categories = _context.Categories
+                .Include(cat => cat.ParentCategory)
+                .AsNoTracking()
+                .AsEnumerable()
+                .Where(cat => cat.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase) || (cat.ParentCategoryId.HasValue && cat.ParentCategory.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase)))
+                .Select(cat => new {
+                    label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
+                    val = cat.Id
+                }).ToList();
+            return new JsonResult(categories);
         }
     }
 }

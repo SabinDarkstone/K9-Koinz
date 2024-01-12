@@ -31,7 +31,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Transaction.CategoryId" class="control-label"></label>
-                <select asp-for="Transaction.CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <input id="txtCategory" class="form-control" />
+                <input asp-for="Transaction.CategoryId" type="hidden" id="hfCategory" />
+                <span asp-validation-for="Transaction.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Transaction.Amount" class="control-label"></label>
@@ -67,7 +69,7 @@
             $("#txtMerchant").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "/Transactions/Create?handler=AutoComplete",
+                        url: "/Transactions/Create?handler=MerchantAutoComplete",
                         data: { text: request.term },
                         type: "GET",
                         success: function (data) {
@@ -85,6 +87,31 @@
                 },
                 select: function (e, i) {
                     $("#hfMerchant").val(i.item.val);
+                },
+                minLength: 1
+            });
+
+            $("#txtCategory").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Transactions/Create?handler=CategoryAutoComplete",
+                        data: { text: request.term },
+                        type: "GET",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(JSON.stringify(response));
+                        },
+                        failure: function (response) {
+                            alert(JSON.stringify(response));
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#hfCategory").val(i.item.val);
                 },
                 minLength: 1
             });
