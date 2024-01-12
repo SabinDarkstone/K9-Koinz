@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using K9_Koinz.Utils;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,13 +19,14 @@ namespace K9_Koinz.Models {
         PROPERTY
     }
 
-    public class Account {
+    public class Account : INameable {
         public static Account EmptyAccount() {
             return new Account();
         }
 
         public Guid Id { get; set; }
         [Required]
+        [Unique<Account>]
         [DisplayName("Account Name")]
         public string Name { get; set; }
         public string Description { get; set; }

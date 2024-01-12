@@ -23,6 +23,10 @@ namespace K9_Koinz.Pages.Merchants {
                 return Page();
             }
 
+            if (_context.Merchants.Any(merch => merch.Name == Merchant.Name)) {
+
+            }
+
             _context.Merchants.Add(Merchant);
             await _context.SaveChangesAsync();
 

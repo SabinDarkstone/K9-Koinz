@@ -7,7 +7,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Merchants</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -35,9 +35,13 @@
                     @item.Transactions.Count()
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
+                    @if (!item.Transactions.Any()) {
+                        <text>
+                            | <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        </text>
+                    }
                 </td>
             </tr>
         }
