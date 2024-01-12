@@ -32,7 +32,7 @@ namespace K9_Koinz {
                 var services = scope.ServiceProvider;
 
                 var context = services.GetRequiredService<KoinzContext>();
-                context.Database.EnsureCreated();
+                context.Database.Migrate();
                 DbInitializer.Initialize(context);
             }
 
