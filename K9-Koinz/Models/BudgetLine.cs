@@ -9,7 +9,9 @@ namespace K9_Koinz.Models
         [Display(Name = "Income")]
         INCOME,
         [Display(Name = "Expense")]
-        EXPENSE
+        EXPENSE,
+        [Display(Name = "Other Spending")]
+        UNALLOCATED
     }
 
     public class BudgetLine {
@@ -31,10 +33,13 @@ namespace K9_Koinz.Models
                 return BudgetCategory.ParentCategoryId == null;
             }
         }
+
         [NotMapped]
         public decimal SpentAmount { get; set; }
+
         [NotMapped]
         public List<Transaction> Transactions { get; set; }
+
         [NotMapped]
         public double TimePerent {
             get {
@@ -51,6 +56,7 @@ namespace K9_Koinz.Models
                 }
             }
         }
+
         [NotMapped]
         public double SpentPercent {
             get {

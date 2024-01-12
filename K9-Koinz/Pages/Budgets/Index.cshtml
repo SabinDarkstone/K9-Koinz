@@ -62,7 +62,16 @@
 
     <hr />
 
-    <h4>Income</h4>
+    <div class="row">
+        <div class="col-sm">
+            <h4>Income</h4>
+        </div>
+        <div class="col-sm">
+            <h4 style="text-align: right;">
+                @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+            </h4>
+        </div>
+    </div>
     <ul class="list-group mb-4">
         @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
             var width = "width: " + budgetLine.SpentPercent + "%;";
@@ -86,15 +95,29 @@
                     </div>
 
                 </div>
-                <span class="text-secondary">
-                    @budgetLine.SpentAmount.FormatCurrency() of @budgetLine.BudgetedAmount.FormatCurrency()
-                </span>
+                <div class="text-secondary">
+                    @budgetLine.SpentAmount.FormatCurrency(0)
+                    <span style="font-weight:lighter;">
+                        of
+                    </span>
+                    @budgetLine.BudgetedAmount.FormatCurrency(0)
+                </div>
             </li>
         }
     </ul>
 
-    <h4>Expenses</h4>
-    <ul class="list-group">
+    <div class="row">
+        <div class="col-sm">
+            <h4>Expenses</h4>
+        </div>
+        <div class="col-sm">
+            <h4 style="text-align: right;">
+                @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+            </h4>
+        </div>
+    </div>
+    
+    <ul class="list-group mb-4">
         @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
             var width = "width: " + budgetLine.SpentPercent + "%;";
             var todayLine = "left: " + budgetLine.TimePerent + "%;";
@@ -122,17 +145,52 @@
                         <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
                     </div>
                 </div>
-                <div class="progress" style="height: 20px;">
-                    <div class="@progressBarClassList" role="progressbar" style="@width">
-                        <ul class="marker-list">
-                            <li class="marker" style="@todayLine"></li>
-                        </ul>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="progress" style="height: 20px;">
+                            <div class="@progressBarClassList" role="progressbar" style="@width">
+                                <ul class="marker-list">
+                                    <li class="marker" style="@todayLine"></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-                <span class="text-secondary">
-                    @budgetLine.SpentAmount.FormatCurrency() of @budgetLine.BudgetedAmount.FormatCurrency()
-                </span>
+                <div class="row text-secondary">
+                    <div class="col-sm">
+                        @budgetLine.SpentAmount.FormatCurrency(0)
+                        <span style="font-weight:lighter;">
+                            of
+                        </span>
+                        @budgetLine.BudgetedAmount.FormatCurrency(0)
+                    </div>
+                    <div class="col-sm" style="text-align: right; font-weight: lighter">
+                        @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <div class="row">
+        <div class="col-sm">
+            <h4>Other Spending</h4>
+        </div>
+        <div class="col-sm">
+            <h4 style="text-align: right;">
+                @((Model.SelectedBudget.UnallocatedLines.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+            </h4>
+        </div>
+    </div>
+    <ul>
+        @foreach (var budgetLine in Model.SelectedBudget.UnallocatedLines) {
+            <li>
+                @if (budgetLine.BudgetCategory.ParentCategoryId.HasValue) {
+                    <text>
+                    @budgetLine.BudgetCategory.ParentCategory.Name:
+                    </text>
+                }
+                @budgetLine.BudgetCategory.Name @budgetLine.SpentAmount.FormatCurrency();
             </li>
         }
     </ul>

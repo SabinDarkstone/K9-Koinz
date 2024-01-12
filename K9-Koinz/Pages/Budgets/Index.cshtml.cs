@@ -50,9 +50,12 @@ namespace K9_Koinz.Pages.Budgets
 
             foreach (var category in SelectedBudget.BudgetLines) {
                 var transactions = category.GetTransactions();
-                foreach (var transaction in transactions) {
-                    _logger.LogInformation(transaction.Category.Name + " " + transaction.Merchant.Name + " " + transaction.Amount);
-                }
+            }
+
+            var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context);
+            SelectedBudget.UnallocatedLines = newBudgetLines;
+            foreach (var line in newBudgetLines) {
+                _logger.LogInformation(line.BudgetCategoryId.ToString() + " " + line.SpentAmount);
             }
 
             return Page();
