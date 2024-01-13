@@ -13,9 +13,9 @@ namespace K9_Koinz.Data {
         public DbSet<Merchant> Merchants { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Budget> Budgets { get; set; }
-        public DbSet<BudgetLine> BudgetLines {  get; set; }
+        public DbSet<BudgetLine> BudgetLines { get; set; }
 
-        public KoinzContext (DbContextOptions<KoinzContext> options)
+        public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
         }
 
@@ -61,6 +61,25 @@ namespace K9_Koinz.Data {
             }
 
             return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is DateTrackedEntity && (
+                    e.State == EntityState.Added ||
+                    e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries) {
+                var dateTracked = (DateTrackedEntity)entityEntry.Entity;
+                dateTracked.LastModifiedDate = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added) {
+                    dateTracked.CreatedDate = DateTime.Now;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

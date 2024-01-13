@@ -34,6 +34,10 @@ namespace K9_Koinz.Pages.Accounts {
                 return NotFound();
             } else {
                 Account = account;
+                var newBalance = Transactions
+                    .Where(trans => (trans.Date > Account.InitialBalanceDate || (trans.Date.Date == Account.InitialBalanceDate.Date && trans.DoNotSkip)) && trans.AccountId == Account.Id)
+                    .Sum(trans => trans.Amount);
+                Account.CurrentBalance = Account.InitialBalance + newBalance;
             }
             return Page();
         }
