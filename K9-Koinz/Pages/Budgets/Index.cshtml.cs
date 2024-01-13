@@ -8,9 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
-namespace K9_Koinz.Pages.Budgets
-{
+namespace K9_Koinz.Pages.Budgets {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<IndexModel> _logger;
@@ -23,7 +24,23 @@ namespace K9_Koinz.Pages.Budgets
         public IList<Budget> Budgets { get; set; } = default!;
         public Budget SelectedBudget { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string selectedBudget) {
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime BudgetPeriod { get; set; } = DateTime.Now;
+
+        public string BudgetDateString {
+            get {
+                return BudgetPeriod.FormatForUrl();
+            }
+        }
+
+        public async Task<IActionResult> OnGetAsync(string selectedBudget, DateTime? budgetPeriod) {
+            if (budgetPeriod == null) {
+                BudgetPeriod = DateTime.Now;
+            } else {
+                BudgetPeriod = budgetPeriod.Value;
+            }
+
             Budgets = await _context.Budgets
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.BudgetCategory)
@@ -49,10 +66,10 @@ namespace K9_Koinz.Pages.Budgets
             }
 
             foreach (var category in SelectedBudget.BudgetLines) {
-                var transactions = category.GetTransactions();
+                var transactions = category.GetTransactions(BudgetPeriod);
             }
 
-            var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context);
+            var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
             SelectedBudget.UnallocatedLines = newBudgetLines;
             foreach (var line in newBudgetLines) {
                 _logger.LogInformation(line.BudgetCategoryId.ToString() + " " + line.SpentAmount);

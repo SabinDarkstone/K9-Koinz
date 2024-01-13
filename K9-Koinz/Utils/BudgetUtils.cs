@@ -3,11 +3,11 @@ using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
     public static class BudgetUtils {
-        public static List<Transaction> GetTransactions(this BudgetLine line) {
-            var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate();
+        public static List<Transaction> GetTransactions(this BudgetLine line, DateTime period) {
+            var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate(period);
             var transactions = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate).ToList();
             var childCategoryTransactions = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).ToList();
-            transactions = transactions.Concat(childCategoryTransactions).ToList();
+            transactions = [.. transactions, .. childCategoryTransactions];
             line.SpentAmount = transactions.Sum(trans => trans.Amount);
             if (line.LineType == BudgetLineType.EXPENSE) {
                 line.SpentAmount *= -1;
@@ -16,7 +16,7 @@ namespace K9_Koinz.Utils {
             return transactions;
         }
 
-        public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context) {
+        public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context, DateTime period) {
             var categoryData = context.Categories.ToDictionary(cat => cat.Id);
 
             // Get all budget categories from income and expense lines
@@ -33,7 +33,7 @@ namespace K9_Koinz.Utils {
             // Concat those two lists of Category GUIDs together
             var allUnallocatedCategories = allocatedCategories.Concat(allocatedChildCategories);
 
-            var (startDate, endDate) = budget.Timespan.GetStartAndEndDate();
+            var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(period);
             var transactions = context.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allUnallocatedCategories.Contains(trans.CategoryId) &&
                     trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY)

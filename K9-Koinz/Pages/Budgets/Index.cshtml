@@ -1,4 +1,5 @@
 ﻿@page
+@using Models
 @using K9_Koinz.Utils
 @model K9_Koinz.Pages.Budgets.IndexModel
 
@@ -35,18 +36,34 @@
         <a asp-page="Create">New Budget</a>
     </p>
 
-    <ul class="nav nav-pills nav-fill mb-5">
-        @foreach (var budget in Model.Budgets) {
-            var navClassList = "nav-link";
-            if (budget.Id == Model.SelectedBudget.Id) {
-                navClassList += " active";
-            }
+    <div class="mb-3 col-4">
+        <form action="get" asp-for="./Index">
+            <label for="budgetPeriod">Reference Date</label>
+            <div class="row">
+                <div class="col-10">
+                    <input id="budgetPeriod" type="date" name="budgetPeriod" value="@Model.BudgetDateString" class="form-control" />
+                </div>
+                <div class="col-2">
+                    <input type="submit" class="btn btn-outline-primary" value="Go" />
+                </div>
+            </div>
+        </form>
+    </div>
 
-            <li class="nav-item">
-                <a asp-page="./Index" asp-route-selectedBudget="@budget.Id" class="@navClassList">@budget.Name</a>
-            </li>
-        }
-    </ul>
+    <div>
+        <ul class="nav nav-pills mb-5 row">
+            @foreach (var budget in Model.Budgets) {
+                var navClassList = "nav-link";
+                if (budget.Id == Model.SelectedBudget.Id) {
+                    navClassList += " active";
+                }
+
+                <li class="nav-item col-md">
+                    <a style="text-align:center;" asp-page="./Index" asp-route-selectedBudget="@budget.Id" class="@navClassList">@budget.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
 }
 
 @if (Model.SelectedBudget == null) {
@@ -111,15 +128,14 @@
             <div class="col">
                 <h4>Other Income</h4>
             </div>
-            <div class="col-sm">
+            <div class="col">
                 <h4 style="text-align: right;">
                     @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
                 </h4>
             </div>
         </div>
         <ul>
-            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes)
-            {
+            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
                 var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
                 var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
 
@@ -134,13 +150,13 @@
         <div class="col">
             <h4>Expenses</h4>
         </div>
-        <div class="col-sm">
+        <div class="col">
             <h4 style="text-align: right;">
                 @Math.Clamp(Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount), 0, 100).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
             </h4>
         </div>
     </div>
-    
+
     <ul class="list-group mb-4">
         @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
             var width = "width: " + budgetLine.SpentPercent + "%;";
@@ -215,15 +231,20 @@
             </div>
         </div>
         <ul>
-            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses)
-            {
+            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
                 var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
                 var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
 
                 <li>
-                    <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId" >@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                    <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
                 </li>
             }
         </ul>
+    }
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
