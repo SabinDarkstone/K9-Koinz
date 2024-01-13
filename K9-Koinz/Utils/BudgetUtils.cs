@@ -18,11 +18,21 @@ namespace K9_Koinz.Utils {
 
         public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context) {
             var categoryData = context.Categories.ToDictionary(cat => cat.Id);
+
+            // Get all budget categories from income and expense lines
             var allocatedCategories = budget.ExpenseLines
                 .Select(line => line.BudgetCategoryId)
                 .Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId));
-            var unallocatedChildCategories = budget.ExpenseLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList().Concat(budget.IncomeLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList());
-            var allUnallocatedCategories = allocatedCategories.Concat(unallocatedChildCategories);
+
+            var transferCategoryIds = categoryData.Values.Where(cat => cat.Name == "Transfer" || (cat.ParentCategoryId.HasValue && cat.ParentCategory.Name == "Transfer")).Select(cat => cat.Id);
+            allocatedCategories = allocatedCategories.Concat(transferCategoryIds).ToList();
+
+            // Get child categories for those allocated categories, too
+            var allocatedChildCategories = budget.ExpenseLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList().Concat(budget.IncomeLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList());
+            
+            // Concat those two lists of Category GUIDs together
+            var allUnallocatedCategories = allocatedCategories.Concat(allocatedChildCategories);
+
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate();
             var transactions = context.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allUnallocatedCategories.Contains(trans.CategoryId) &&
