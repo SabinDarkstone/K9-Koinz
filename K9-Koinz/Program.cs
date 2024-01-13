@@ -6,7 +6,10 @@ namespace K9_Koinz {
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContext<KoinzContext>(options => options.UseSqlite("Data Source=K9-Koinz.db"));
+            builder.Services.AddDbContext<KoinzContext>(options => {
+                options.UseSqlite("Data Source=K9-Koinz.db");
+                options.EnableSensitiveDataLogging(true);
+            });
 
             // Add services to the container.
             builder.Services.AddRazorPages();
