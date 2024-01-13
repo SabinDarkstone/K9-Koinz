@@ -18,10 +18,14 @@ namespace K9_Koinz.Utils {
 
         public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context) {
             var categoryData = context.Categories.ToDictionary(cat => cat.Id);
-            var allocatedCategories = budget.ExpenseLines.Select(line => line.BudgetCategoryId).Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId)).ToList();
+            var allocatedCategories = budget.ExpenseLines
+                .Select(line => line.BudgetCategoryId)
+                .Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId));
+            var unallocatedChildCategories = budget.ExpenseLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList().Concat(budget.IncomeLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList());
+            var allUnallocatedCategories = allocatedCategories.Concat(unallocatedChildCategories);
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate();
             var transactions = context.Transactions
-                .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allocatedCategories.Contains(trans.CategoryId) &&
+                .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allUnallocatedCategories.Contains(trans.CategoryId) &&
                     trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY)
                 .ToList();
 

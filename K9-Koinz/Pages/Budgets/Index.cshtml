@@ -63,10 +63,10 @@
     <hr />
 
     <div class="row">
-        <div class="col-sm">
+        <div class="col">
             <h4>Income</h4>
         </div>
-        <div class="col-sm">
+        <div class="col">
             <h4 style="text-align: right;">
                 @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
             </h4>
@@ -79,10 +79,10 @@
 
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col-sm">
+                    <div class="col">
                         <p>@budgetLine.BudgetCategory.Name</p>
                     </div>
-                    <div class="col-sm">
+                    <div class="col">
                         <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
 
     @if (Model.SelectedBudget.UnallocatedLines.Any()) {
         <div class="row">
-            <div class="col-sm">
+            <div class="col">
                 <h4>Other Income</h4>
             </div>
             <div class="col-sm">
@@ -128,7 +128,7 @@
     }
 
     <div class="row">
-        <div class="col-sm">
+        <div class="col">
             <h4>Expenses</h4>
         </div>
         <div class="col-sm">
@@ -155,19 +155,19 @@
 
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col-sm">
+                    <div class="col">
                         <p>
                             <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
                                 <a class="no-underline" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.Name</a>
                             </button>
                         </p>
                     </div>
-                    <div class="col-sm">
+                    <div class="col">
                         <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm">
+                    <div class="col">
                         <div class="progress" style="height: 20px;">
                             <div class="@progressBarClassList" role="progressbar" style="@width">
                                 <ul class="marker-list">
@@ -178,14 +178,14 @@
                     </div>
                 </div>
                 <div class="row text-secondary">
-                    <div class="col-sm">
+                    <div class="col">
                         @budgetLine.SpentAmount.FormatCurrency(0)
                         <span style="font-weight:lighter;">
                             of
                         </span>
                         @budgetLine.BudgetedAmount.FormatCurrency(0)
                     </div>
-                    <div class="col-sm" style="text-align: right; font-weight: lighter">
+                    <div class="col" style="text-align: right; font-weight: lighter">
                         @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
                     </div>
                 </div>
@@ -195,10 +195,10 @@
 
     @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
         <div class="row">
-            <div class="col-sm">
+            <div class="col">
                 <h4>Other Spending</h4>
             </div>
-            <div class="col-sm">
+            <div class="col">
                 <h4 style="text-align: right;">
                     @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
                 </h4>
