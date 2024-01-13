@@ -65,6 +65,7 @@ namespace K9_Koinz.Pages.Transactions {
             return _context.Transactions.Any(e => e.Id == id);
         }
         public IActionResult OnGetMerchantAutoComplete(string text) {
+            text = text.Trim();
             var merchants = _context.Merchants
                 .AsNoTracking()
                 .AsEnumerable()
@@ -77,6 +78,7 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public IActionResult OnGetCategoryAutoComplete(string text) {
+            text = text.Trim();
             var categories = _context.Categories
                 .Include(cat => cat.ParentCategory)
                 .AsNoTracking()

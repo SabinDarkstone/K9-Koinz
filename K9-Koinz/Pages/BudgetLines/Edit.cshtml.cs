@@ -63,6 +63,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         public IActionResult OnGetCategoryAutoComplete(string text) {
+            text = text.Trim();
             var categories = _context.Categories
                 .Include(cat => cat.ParentCategory)
                 .AsNoTracking()
