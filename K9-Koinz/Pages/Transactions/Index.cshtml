@@ -101,9 +101,6 @@
                             }
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Notes)
-                        </td>
-                        <td>
                             <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a>
                             <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
                             <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
