@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using Humanizer;
 
 namespace K9_Koinz.Pages.Accounts {
     public class CreateModel : PageModel {
@@ -27,6 +28,8 @@ namespace K9_Koinz.Pages.Accounts {
             if (!ModelState.IsValid) {
                 return Page();
             }
+
+            Account.InitialBalanceDate = Account.InitialBalanceDate.AtMidnight();
 
             _context.Accounts.Add(Account);
             await _context.SaveChangesAsync();

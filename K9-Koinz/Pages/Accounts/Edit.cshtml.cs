@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using Humanizer;
 
 namespace K9_Koinz.Pages.Accounts {
     public class EditModel : PageModel {
@@ -37,6 +38,8 @@ namespace K9_Koinz.Pages.Accounts {
             if (!ModelState.IsValid) {
                 return Page();
             }
+
+            Account.InitialBalanceDate = Account.InitialBalanceDate.AtMidnight();
 
             _context.Attach(Account).State = EntityState.Modified;
 

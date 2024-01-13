@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using Humanizer;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : PageModel {
@@ -42,6 +43,8 @@ namespace K9_Koinz.Pages.Transactions {
             if (!ModelState.IsValid) {
                 return Page();
             }
+
+            Transaction.Date = Transaction.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
             _context.Attach(Transaction).State = EntityState.Modified;
 
