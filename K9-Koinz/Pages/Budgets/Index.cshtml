@@ -121,7 +121,7 @@
             @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes)
             {
                 <li>
-                    @budgetLine.BudgetCategory.FullyQualifiedName @budgetLine.SpentAmount.FormatCurrency();
+                    @budgetLine.BudgetCategory.FullyQualifiedName @budgetLine.SpentAmount.FormatCurrency()
                 </li>
             }
         </ul>
@@ -133,7 +133,7 @@
         </div>
         <div class="col-sm">
             <h4 style="text-align: right;">
-                @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                @Math.Clamp(Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount), 0, 100).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
             </h4>
         </div>
     </div>
@@ -145,12 +145,13 @@
             var progressBarClassList = "progress-bar";
             var startDate = budgetLine.Budget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
             var endDate = budgetLine.Budget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+            progressBarClassList += " bg-success";
+
             if (budgetLine.SpentPercent >= 80) {
                 progressBarClassList += " bg-warning";
-            } else if (budgetLine.SpentPercent >= 100) {
+            }
+            if (budgetLine.SpentPercent >= 100) {
                 progressBarClassList += " bg-danger";
-            } else {
-                progressBarClassList += " bg-success";
             }
 
             <li class="list-group-item">
@@ -185,9 +186,15 @@
                         </span>
                         @budgetLine.BudgetedAmount.FormatCurrency(0)
                     </div>
-                    <div class="col" style="text-align: right; font-weight: lighter">
-                        @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
-                    </div>
+                    @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
+                        <div class="col" style="text-align: right; font-weight: lighter">
+                            @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
+                        </div>
+                    } else {
+                        <div class="col" style="text-align: right; font-weight: lighter">
+                            @((budgetLine.SpentAmount - @budgetLine.BudgetedAmount).FormatCurrency(0)) Over
+                        </div>
+                    }
                 </div>
             </li>
         }
@@ -208,7 +215,7 @@
             @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses)
             {
                 <li>
-                    @budgetLine.BudgetCategory.FullyQualifiedName @budgetLine.SpentAmount.FormatCurrency();
+                    @budgetLine.BudgetCategory.FullyQualifiedName @budgetLine.SpentAmount.FormatCurrency()
                 </li>
             }
         </ul>

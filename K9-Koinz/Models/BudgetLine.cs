@@ -60,7 +60,7 @@ namespace K9_Koinz.Models
         public double SpentPercent {
             get {
                 if (BudgetedAmount == 0) return 0;
-                return Math.Floor((double)(SpentAmount / BudgetedAmount) * 100);
+                return Math.Clamp(Math.Floor((double)(SpentAmount / BudgetedAmount) * 100), 0, 100);
             }
         }
 

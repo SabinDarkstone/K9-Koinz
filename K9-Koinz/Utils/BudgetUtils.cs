@@ -55,7 +55,7 @@ namespace K9_Koinz.Utils {
                 line.SpentAmount = line.Transactions.Sum(trans => trans.Amount);
             }
 
-            return unallocatedBudgetLines.Values.ToList();
+            return unallocatedBudgetLines.Values.Where(line => line.Transactions.Sum(trans => trans.Amount) != 0).ToList();
         }
 
         public static List<BudgetLine> SortCategories(this List<BudgetLine> lines) {
