@@ -33,7 +33,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Account Type")]
         public AccountType Type { get; set; }
         [DisplayName("Initial Balance")]
-        public decimal InitialBalance { get; set; }
+        public double InitialBalance { get; set; }
         [DisplayName("Initial Balance Date")]
         public DateTime InitialBalanceDate {  get; set; }
 
@@ -41,7 +41,7 @@ namespace K9_Koinz.Models {
 
         [NotMapped]
         [DisplayName("Current Balance")]
-        public decimal CurrentBalance { get; set; }
+        public double CurrentBalance { get; set; }
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();

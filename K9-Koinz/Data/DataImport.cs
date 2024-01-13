@@ -133,7 +133,7 @@ namespace K9_Koinz.Data {
                         parsedAccount.Type = AccountType.SAVINGS;
                         break;
                 }
-                parsedAccount.InitialBalance = new decimal(0);
+                parsedAccount.InitialBalance = 0d;
                 parsedAccount.InitialBalanceDate = DateTime.Now;
 
                 AccountMap.Add(parsedAccount.Name, parsedAccount.Id);
@@ -160,7 +160,7 @@ namespace K9_Koinz.Data {
                 Id = Guid.NewGuid(),
                 AccountId = account.Id,
                 MerchantId = merchant.Id,
-                Amount = decimal.Parse(row[2]),
+                Amount = double.Parse(row[2]),
                 Date = new DateTime(month: dateSplit[0], day: dateSplit[1], year: dateSplit[2]),
                 CategoryId = CategoryMap[row[4]]
             };

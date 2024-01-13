@@ -27,8 +27,10 @@ namespace K9_Koinz.Models {
         [DisplayName("Category")]
         public Guid CategoryId { get; set; } = Guid.Empty;
         public Category Category { get; set; }
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
         public string Notes { get; set; }
+        [DisplayName("Does this transaction occur AFTER the initial balance was set?")]
+        public bool DoNotSkip { get; set; }
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();

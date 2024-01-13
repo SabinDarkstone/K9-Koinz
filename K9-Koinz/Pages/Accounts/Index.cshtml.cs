@@ -25,7 +25,7 @@ namespace K9_Koinz.Pages.Accounts {
 
             foreach (Account acct in Accounts) {
                 var newBalance = _context.Transactions
-                    .Where(trans => trans.Date > acct.InitialBalanceDate && trans.AccountId == acct.Id)
+                    .Where(trans => (trans.Date > acct.InitialBalanceDate || (trans.Date.Date == acct.InitialBalanceDate.Date && trans.DoNotSkip)) && trans.AccountId == acct.Id)
                     .Sum(trans => trans.Amount);
                 acct.CurrentBalance = acct.InitialBalance + newBalance;
             }

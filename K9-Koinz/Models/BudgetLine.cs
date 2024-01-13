@@ -23,7 +23,7 @@ namespace K9_Koinz.Models
         public Budget Budget {  get; set; }
         public BudgetLineType LineType {  get; set; }
         [DisplayName("Budgeted Amount")]
-        public decimal BudgetedAmount { get; set; }
+        public double BudgetedAmount { get; set; }
 
         [NotMapped]
         public bool IsTopLevelCategory {
@@ -34,7 +34,7 @@ namespace K9_Koinz.Models
         }
 
         [NotMapped]
-        public decimal SpentAmount { get; set; }
+        public double SpentAmount { get; set; }
 
         [NotMapped]
         public List<Transaction> Transactions { get; set; }

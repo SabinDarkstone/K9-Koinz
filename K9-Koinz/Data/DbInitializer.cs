@@ -156,11 +156,11 @@ namespace K9_Koinz.Data {
         private static List<Account> CreateAccounts() {
 
             return [
-                new Account { Id = CHECKING, Name = "Chase Checking", Description = "My primary checking account", Type = AccountType.CHECKING, InitialBalance = new decimal(4476.66), InitialBalanceDate = DateTime.Parse("1/9/2024") },
-                new Account { Id = SAVINGS, Name = "Chase Savings", Description = "I don't really use this account", Type = AccountType.SAVINGS, InitialBalance = new decimal(50), InitialBalanceDate = DateTime.Parse("1/9/2024") },
-                new Account { Id = SAVINGS_2, Name = "Axos Savings", Description = "A high yield savings account", Type = AccountType.SAVINGS, InitialBalance = new decimal(29458.51), InitialBalanceDate = DateTime.Parse("1/9/2024") },
-                new Account { Id = CREDIT_CART, Name = "Amazon Credit Card", Description = "My Amazon Prime credit card", Type = AccountType.CREDIT_CARD, InitialBalance = new decimal(-816.98), InitialBalanceDate = DateTime.Parse("1/9/2024") },
-                new Account { Id = HOME_MORTGAGE, Name = "Home Mortgage", Description = "Mortgage loan with Mr. Cooper", Type = AccountType.LOAN, InitialBalance = new decimal(-180122.54), InitialBalanceDate = DateTime.Parse("1/9/2024") }
+                new Account { Id = CHECKING, Name = "Chase Checking", Description = "My primary checking account", Type = AccountType.CHECKING, InitialBalance = 4476.66d, InitialBalanceDate = DateTime.Parse("1/9/2024") },
+                new Account { Id = SAVINGS, Name = "Chase Savings", Description = "I don't really use this account", Type = AccountType.SAVINGS, InitialBalance = 50d, InitialBalanceDate = DateTime.Parse("1/9/2024") },
+                new Account { Id = SAVINGS_2, Name = "Axos Savings", Description = "A high yield savings account", Type = AccountType.SAVINGS, InitialBalance = 29458.51d, InitialBalanceDate = DateTime.Parse("1/9/2024") },
+                new Account { Id = CREDIT_CART, Name = "Amazon Credit Card", Description = "My Amazon Prime credit card", Type = AccountType.CREDIT_CARD, InitialBalance = -816.98d, InitialBalanceDate = DateTime.Parse("1/9/2024") },
+                new Account { Id = HOME_MORTGAGE, Name = "Home Mortgage", Description = "Mortgage loan with Mr. Cooper", Type = AccountType.LOAN, InitialBalance = -180122.54d, InitialBalanceDate = DateTime.Parse("1/9/2024") }
             ];
         }
 
@@ -295,35 +295,35 @@ namespace K9_Koinz.Data {
 
         private static List<Transaction> CreateTransactions() {
             return [
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/7/2024"), AccountId = CREDIT_CART, MerchantId = PUBLIX, CategoryId = GROCERIES, Amount = new decimal(-27.27) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/6/2024"), AccountId = CREDIT_CART, MerchantId = SPOTIFY, CategoryId = MUSIC, Amount = new decimal(-16.04) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CHECKING, MerchantId = DOMINION_ENERGY, CategoryId = UTILITIES, Amount = new decimal(-118) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CHECKING, MerchantId = ACORNS, CategoryId = INVESTMENTS, Amount = new decimal(-6.8) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = WALMART, CategoryId = GROCERIES, Amount = new decimal(-44.14) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = FOOD_LION, CategoryId = GROCERIES, Amount = new decimal(-2.19) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = AMAZON, CategoryId = SHOPPING, Amount = new decimal(-16.16) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = OLD_CHICAGO, CategoryId = RESTAURANTS, Amount = new decimal(-36.27) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = SYD_STYLIST, CategoryId = HAIR, Amount = new decimal(-37.5) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = MICHAELS_STORE, CategoryId = SHOPPING, Amount = new decimal(-18.35) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = UPS_STORE, CategoryId = SHOPPING, Amount = new decimal(-39.56) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = MCDONALDS, CategoryId = RESTAURANTS, Amount = new decimal(-11.84) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CREDIT_CART, MerchantId = STEAM_GAMES, CategoryId = GAMING, Amount = new decimal(-9.99) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CHECKING, MerchantId = ACORNS, CategoryId = INVESTMENTS, Amount = new decimal(-5.56) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CHECKING, MerchantId = HIQUEST_PAYROLL, CategoryId = PAYCHECK, Amount = new decimal(51.94) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CREDIT_CART, MerchantId = ZORBAS, CategoryId = RESTAURANTS, Amount = new decimal(-18.45) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CHECKING, MerchantId = MR_COOPER, CategoryId = MORTGAGE_AND_RENT, Amount = new decimal(-1669.01) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CHECKING, MerchantId = ACORNS, CategoryId = INVESTMENTS, Amount = new decimal(-5) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CREDIT_CART, MerchantId = DOLLAR_GENERAL, CategoryId = SHOPPING, Amount = new decimal(-8.8) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CREDIT_CART, MerchantId = GSS_ASSOC, CategoryId = MENTAL_HEALTH, Amount = new decimal(-90) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = CHECKING, MerchantId = PROGRESSIVE, CategoryId = AUTO_INSURANCE, Amount = new decimal(-121.17) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = CHECKING, MerchantId = SPECTRUM, CategoryId = INTERNET, Amount = new decimal(-111.72) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = CREDIT_CART, MerchantId = AMAZON, CategoryId = SHOPPING, Amount = new decimal(-16.16) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = HOME_MORTGAGE, MerchantId = MR_COOPER, CategoryId = ADDITIONAL_PRINCIPAL, Amount = new decimal(200) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = HOME_MORTGAGE, MerchantId = MR_COOPER, CategoryId = MONTHLY_PAYMENT, Amount = new decimal(1469.01) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/1/2024"), AccountId = CREDIT_CART, MerchantId = CVS, CategoryId = PHARMACY, Amount = new decimal(-12) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("12/31/2023"), AccountId = CREDIT_CART, MerchantId = CHICK_FIL_A, CategoryId = RESTAURANTS, Amount = new decimal(-22.98) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("12/31/2023"), AccountId = CREDIT_CART, MerchantId = WALMART, CategoryId = GROCERIES, Amount = new decimal(-90.71) },
-                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("12/29/2023"), AccountId = CHECKING, MerchantId = CAPGEMINI_SALARY, CategoryId = PAYCHECK, Amount = new decimal(2837.29) }
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/7/2024"), AccountId = CREDIT_CART, MerchantId = PUBLIX, CategoryId = GROCERIES, Amount = -27.27d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/6/2024"), AccountId = CREDIT_CART, MerchantId = SPOTIFY, CategoryId = MUSIC, Amount = -16.04d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CHECKING, MerchantId = DOMINION_ENERGY, CategoryId = UTILITIES, Amount = -118d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CHECKING, MerchantId = ACORNS, CategoryId = INVESTMENTS, Amount = -6.8d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = WALMART, CategoryId = GROCERIES, Amount = -44.14d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = FOOD_LION, CategoryId = GROCERIES, Amount = -2.19d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = AMAZON, CategoryId = SHOPPING, Amount = -16.16d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = OLD_CHICAGO, CategoryId = RESTAURANTS, Amount = -36.27d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = SYD_STYLIST, CategoryId = HAIR, Amount = -37.5d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = MICHAELS_STORE, CategoryId = SHOPPING, Amount = -18.35d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = UPS_STORE, CategoryId = SHOPPING, Amount = -39.56d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/5/2024"), AccountId = CREDIT_CART, MerchantId = MCDONALDS, CategoryId = RESTAURANTS, Amount = -11.84d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CREDIT_CART, MerchantId = STEAM_GAMES, CategoryId = GAMING, Amount = -9.99d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CHECKING, MerchantId = ACORNS, CategoryId = INVESTMENTS, Amount = -5.56d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CHECKING, MerchantId = HIQUEST_PAYROLL, CategoryId = PAYCHECK, Amount = 51.94d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/4/2024"), AccountId = CREDIT_CART, MerchantId = ZORBAS, CategoryId = RESTAURANTS, Amount = -18.45d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CHECKING, MerchantId = MR_COOPER, CategoryId = MORTGAGE_AND_RENT, Amount = -1669.01d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CHECKING, MerchantId = ACORNS, CategoryId = INVESTMENTS, Amount = -5d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CREDIT_CART, MerchantId = DOLLAR_GENERAL, CategoryId = SHOPPING, Amount = -8.8d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/3/2024"), AccountId = CREDIT_CART, MerchantId = GSS_ASSOC, CategoryId = MENTAL_HEALTH, Amount = -90d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = CHECKING, MerchantId = PROGRESSIVE, CategoryId = AUTO_INSURANCE, Amount = -121.17d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = CHECKING, MerchantId = SPECTRUM, CategoryId = INTERNET, Amount = -111.72d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = CREDIT_CART, MerchantId = AMAZON, CategoryId = SHOPPING, Amount = -16.16d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = HOME_MORTGAGE, MerchantId = MR_COOPER, CategoryId = ADDITIONAL_PRINCIPAL, Amount = 200d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/2/2024"), AccountId = HOME_MORTGAGE, MerchantId = MR_COOPER, CategoryId = MONTHLY_PAYMENT, Amount = 1469.01d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/1/2024"), AccountId = CREDIT_CART, MerchantId = CVS, CategoryId = PHARMACY, Amount = -12d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("12/31/2023"), AccountId = CREDIT_CART, MerchantId = CHICK_FIL_A, CategoryId = RESTAURANTS, Amount = -22.98d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("12/31/2023"), AccountId = CREDIT_CART, MerchantId = WALMART, CategoryId = GROCERIES, Amount = -90.71d },
+                new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("12/29/2023"), AccountId = CHECKING, MerchantId = CAPGEMINI_SALARY, CategoryId = PAYCHECK, Amount = 2837.29d }
             ];
         }
 

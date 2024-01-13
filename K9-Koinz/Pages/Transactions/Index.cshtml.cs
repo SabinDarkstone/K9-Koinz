@@ -100,10 +100,10 @@ namespace K9_Koinz.Pages.Transactions
                     transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.Merchant.Name);
                     break;
                 case "Amount":
-                    transactionsIQ = transactionsIQ.OrderBy(trans => decimal.Abs(trans.Amount));
+                    transactionsIQ = transactionsIQ.OrderBy(trans => Math.Abs(trans.Amount));
                     break;
                 case "amount_desc":
-                    transactionsIQ = transactionsIQ.OrderByDescending(trans => decimal.Abs(trans.Amount));
+                    transactionsIQ = transactionsIQ.OrderByDescending(trans => Math.Abs(trans.Amount));
                     break;
                 case "Date":
                     transactionsIQ = transactionsIQ.OrderBy(trans => trans.Date);

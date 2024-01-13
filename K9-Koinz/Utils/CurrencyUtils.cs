@@ -2,7 +2,7 @@
 
 namespace K9_Koinz.Utils {
     public static class CurrencyUtils {
-        public static string FormatCurrency(this decimal value, int decimalPlaces = 2) {
+        public static string FormatCurrency(this double value, int decimalPlaces = 2) {
             var culture = CultureInfo.CreateSpecificCulture("en-US");
             culture.NumberFormat.CurrencyDecimalDigits = decimalPlaces;
             culture.NumberFormat.NumberDecimalSeparator = ",";
