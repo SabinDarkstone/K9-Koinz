@@ -62,6 +62,19 @@ namespace K9_Koinz.Pages.BudgetLines {
             return RedirectToPage("/Budgets/Edit", new { id = BudgetLine.BudgetId });
         }
 
+        public IActionResult OnGetCategoryAutoComplete(string text) {
+            var categories = _context.Categories
+                .Include(cat => cat.ParentCategory)
+                .AsNoTracking()
+                .AsEnumerable()
+                .Where(cat => cat.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase) || (cat.ParentCategoryId.HasValue && cat.ParentCategory.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase)))
+                .Select(cat => new {
+                    label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
+                    val = cat.Id
+                }).ToList();
+            return new JsonResult(categories);
+        }
+
         private bool BudgetLineExists(Guid id) {
             return _context.BudgetLines.Any(e => e.Id == id);
         }

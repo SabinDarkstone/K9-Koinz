@@ -3,6 +3,7 @@ using K9_Koinz.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.BudgetLines {
     public class CreateModel : PageModel {
@@ -34,6 +35,19 @@ namespace K9_Koinz.Pages.BudgetLines {
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Budgets/Edit", new { id = BudgetLine.BudgetId });
+        }
+
+        public IActionResult OnGetCategoryAutoComplete(string text) {
+            var categories = _context.Categories
+                .Include(cat => cat.ParentCategory)
+                .AsNoTracking()
+                .AsEnumerable()
+                .Where(cat => cat.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase) || (cat.ParentCategoryId.HasValue && cat.ParentCategory.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase)))
+                .Select(cat => new {
+                    label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
+                    val = cat.Id
+                }).ToList();
+            return new JsonResult(categories);
         }
     }
 }
