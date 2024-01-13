@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace K9_Koinz.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +21,9 @@ namespace K9_Koinz.Migrations
                     Type = table.Column<int>(type: "INTEGER", nullable: false),
                     InitialBalance = table.Column<double>(type: "REAL", nullable: false),
                     InitialBalanceDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CurrentBalance = table.Column<double>(type: "REAL", nullable: false)
+                    CurrentBalance = table.Column<double>(type: "REAL", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,7 +38,9 @@ namespace K9_Koinz.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     SortOrder = table.Column<int>(type: "INTEGER", nullable: false),
-                    Timespan = table.Column<int>(type: "INTEGER", nullable: false)
+                    Timespan = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,7 +53,9 @@ namespace K9_Koinz.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    ParentCategoryId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    ParentCategoryId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +72,9 @@ namespace K9_Koinz.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,7 +90,9 @@ namespace K9_Koinz.Migrations
                     BudgetId = table.Column<Guid>(type: "TEXT", nullable: false),
                     LineType = table.Column<int>(type: "INTEGER", nullable: false),
                     BudgetedAmount = table.Column<double>(type: "REAL", nullable: false),
-                    SpentAmount = table.Column<double>(type: "REAL", nullable: false)
+                    SpentAmount = table.Column<double>(type: "REAL", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,7 +121,9 @@ namespace K9_Koinz.Migrations
                     MerchantId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Amount = table.Column<double>(type: "REAL", nullable: false),
-                    Notes = table.Column<string>(type: "TEXT", nullable: true)
+                    Notes = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

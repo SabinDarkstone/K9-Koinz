@@ -19,12 +19,11 @@ namespace K9_Koinz.Models {
         PROPERTY
     }
 
-    public class Account : INameable {
+    public class Account : DateTrackedEntity, INameable {
         public static Account EmptyAccount() {
             return new Account();
         }
 
-        public Guid Id { get; set; }
         [Required]
         [Unique<Account>]
         [DisplayName("Account Name")]

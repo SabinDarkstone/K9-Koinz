@@ -33,7 +33,7 @@ namespace K9_Koinz {
 
                 var context = services.GetRequiredService<KoinzContext>();
                 context.Database.Migrate();
-                DbInitializer.Initialize(context);
+                //DbInitializer.Initialize(context);
             }
 
             app.UseHttpsRedirection();

@@ -14,8 +14,7 @@ namespace K9_Koinz.Models
         UNALLOCATED
     }
 
-    public class BudgetLine {
-        public Guid Id { get; set; }
+    public class BudgetLine : DateTrackedEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
         public Category BudgetCategory { get; set; }

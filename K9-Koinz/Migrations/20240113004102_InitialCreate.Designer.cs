@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K9_Koinz.Migrations
 {
     [DbContext(typeof(KoinzContext))]
-    [Migration("20240112224233_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240113004102_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,9 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("CurrentBalance")
                         .HasColumnType("REAL");
 
@@ -36,6 +39,9 @@ namespace K9_Koinz.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<DateTime>("InitialBalanceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -56,7 +62,13 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -88,6 +100,12 @@ namespace K9_Koinz.Migrations
                     b.Property<double>("BudgetedAmount")
                         .HasColumnType("REAL");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("LineType")
                         .HasColumnType("INTEGER");
 
@@ -107,6 +125,12 @@ namespace K9_Koinz.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -129,6 +153,12 @@ namespace K9_Koinz.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -157,7 +187,13 @@ namespace K9_Koinz.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("MerchantId")

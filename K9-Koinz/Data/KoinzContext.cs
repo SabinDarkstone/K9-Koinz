@@ -44,5 +44,23 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<Account>().Property(x => x.CurrentBalance).HasConversion<double>();
             modelBuilder.Entity<Account>().Property(x => x.InitialBalance).HasConversion<double>();
         }
+
+        public override int SaveChanges() {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is DateTrackedEntity && (
+                    e.State == EntityState.Added ||
+                    e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries) {
+                ((DateTrackedEntity)entityEntry.Entity).LastModifiedDate = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added) {
+                    ((DateTrackedEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
+                }
+            }
+
+            return base.SaveChanges();
+        }
     }
 }

@@ -11,8 +11,7 @@ namespace K9_Koinz.Models {
         PLUS
     }
 
-    public class Transaction {
-        public Guid Id { get; set; }
+    public class Transaction : DateTrackedEntity {
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;

@@ -13,8 +13,7 @@ namespace K9_Koinz.Models
         YEARLY
     }
 
-    public class Budget : INameable {
-        public Guid Id { get; set; }
+    public class Budget : DateTrackedEntity, INameable {
         [Unique<Budget>]
         public string Name { get; set; } = "New Budget";
         public string Description { get; set; }
@@ -41,6 +40,20 @@ namespace K9_Koinz.Models
         public ICollection<BudgetLine> ExpenseLines {
             get {
                 return BudgetLines.Where(line => line.LineType == BudgetLineType.EXPENSE).ToList();
+            }
+        }
+
+        [NotMapped]
+        public ICollection<BudgetLine> UnallocatedIncomes {
+            get {
+                return UnallocatedLines.Where(line => line.BudgetCategory.Type == CategoryType.INCOME).ToList();
+            }
+        }
+
+        [NotMapped]
+        public ICollection<BudgetLine> UnallocatedExpenses {
+            get {
+                return UnallocatedLines.Where(line => line.BudgetCategory.Type == CategoryType.EXPENSE).ToList();
             }
         }
 

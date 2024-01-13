@@ -106,6 +106,27 @@
         }
     </ul>
 
+    @if (Model.SelectedBudget.UnallocatedLines.Any()) {
+        <div class="row">
+            <div class="col-sm">
+                <h4>Other Income</h4>
+            </div>
+            <div class="col-sm">
+                <h4 style="text-align: right;">
+                    @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
+                </h4>
+            </div>
+        </div>
+        <ul>
+            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes)
+            {
+                <li>
+                    @budgetLine.BudgetCategory.FullyQualifiedName @budgetLine.SpentAmount.FormatCurrency();
+                </li>
+            }
+        </ul>
+    }
+
     <div class="row">
         <div class="col-sm">
             <h4>Expenses</h4>
@@ -172,26 +193,24 @@
         }
     </ul>
 
-    <div class="row">
-        <div class="col-sm">
-            <h4>Other Spending</h4>
+    @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
+        <div class="row">
+            <div class="col-sm">
+                <h4>Other Spending</h4>
+            </div>
+            <div class="col-sm">
+                <h4 style="text-align: right;">
+                    @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+                </h4>
+            </div>
         </div>
-        <div class="col-sm">
-            <h4 style="text-align: right;">
-                @((Model.SelectedBudget.UnallocatedLines.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
-            </h4>
-        </div>
-    </div>
-    <ul>
-        @foreach (var budgetLine in Model.SelectedBudget.UnallocatedLines) {
-            <li>
-                @if (budgetLine.BudgetCategory.ParentCategoryId.HasValue) {
-                    <text>
-                    @budgetLine.BudgetCategory.ParentCategory.Name:
-                    </text>
-                }
-                @budgetLine.BudgetCategory.Name @budgetLine.SpentAmount.FormatCurrency();
-            </li>
-        }
-    </ul>
+        <ul>
+            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses)
+            {
+                <li>
+                    @budgetLine.BudgetCategory.FullyQualifiedName @budgetLine.SpentAmount.FormatCurrency();
+                </li>
+            }
+        </ul>
+    }
 }

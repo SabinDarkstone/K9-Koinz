@@ -1,8 +1,7 @@
 ﻿using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-    public class Merchant : INameable {
-        public Guid Id { get; set; }
+    public class Merchant : DateTrackedEntity, INameable {
         [Unique<Merchant>]
         public string Name { get; set; }
 
