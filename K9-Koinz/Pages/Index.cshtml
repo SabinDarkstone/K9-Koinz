@@ -1,5 +1,5 @@
 ﻿@page
-
+@model K9_Koinz.Pages.IndexModel
 @{
     ViewData["Title"] = "K9 Koinz";
 }
@@ -12,4 +12,55 @@
     <p class="lead">
         <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
     </p>
+
+    <div id="chartContainer" style="height: 370px; width: 50%;"></div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+    <script type="text/javascript">
+        window.onload = () => {
+
+            var thisMonth = @Html.Raw(Model.ThisMonthSpendingJson);
+            var lastMonth = @Html.Raw(Model.LastMonthSpendingJson);
+            console.log(thisMonth);
+            console.log(lastMonth);
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: false,
+                title: {
+                    text: "Monthly Spending"
+                },
+                axisX: {
+                    text: "Day"
+                },
+                axisY: {
+                    title: "Dollars",
+                    prefix: "$"
+                },
+                data: [
+                    {
+                        type: "spline",
+                        name: "This Month",
+                        dataPoints: thisMonth,
+                        markerType : "none",
+                        lineThickness: 5,
+                        showInLegend: true,
+                        yValueFormatString: "$##,###"
+                    },
+                    {
+                        type: "spline",
+                        name: "Last Month",
+                        dataPoints: lastMonth,
+                        markerType: "none",
+                        lineThickness: 5,
+                        showInLegend: true,
+                        yValueFormatString: "$##,###"
+                    }
+                ]
+            });
+            chart.render();
+        };
+    </script>
+}
