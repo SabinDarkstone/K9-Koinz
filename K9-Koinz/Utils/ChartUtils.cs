@@ -17,10 +17,10 @@ namespace K9_Koinz.Utils {
             if (doFullMonth) {
                 max = DateTime.DaysInMonth(date.Year, date.Month);
             }
-            var index = 0;
             for (var i = 1; i < max + 1; i++) {
+                var index = i - 1;
                 if (points.Any(p => p.X == i)) {
-                    newList.Add(points.Single(p => p.X == i));
+                    newList.Add(points.First(p => p.X == i));
                 } else {
                     if (i == 1) {
                         newList.Add(new Point(1, 0));
@@ -28,7 +28,6 @@ namespace K9_Koinz.Utils {
                         newList.Add(new Point(i, newList[index - 1].Y));
                     }
                 }
-                index += 1;
             }
 
             return newList;

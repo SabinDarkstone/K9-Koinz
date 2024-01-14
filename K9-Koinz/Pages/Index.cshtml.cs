@@ -35,8 +35,8 @@ namespace K9_Koinz.Pages {
 
         public IList<Budget> Budget { get; set; } = default!;
 
-        public string ThisMonthSpendingJson;
-        public string LastMonthSpendingJson;
+        public string ThisMonthSpendingJson { get; set; }
+        public string LastMonthSpendingJson { get; set; }
 
         public async Task OnGetAsync() {
             var startOfThisMonth = DateTime.Now.StartOfMonth();
@@ -66,7 +66,7 @@ namespace K9_Koinz.Pages {
                 .ToListAsync();
 
             ThisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
-               StringEscapeHandling = StringEscapeHandling.EscapeNonAscii 
+                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
             });
 
             LastMonthSpendingJson = JsonConvert.SerializeObject(lastMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {

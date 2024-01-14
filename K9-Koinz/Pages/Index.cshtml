@@ -3,17 +3,27 @@
 @{
     ViewData["Title"] = "K9 Koinz";
 }
+<div>
+    <div class="jumbotron">
+        <h1 class="display-4">K9 Koinz App</h1>
+        <p class="lead">Welcome to K9 Koinz, a simple and customized budgeting app!</p>
+        <hr class="my-4" />
+        <p>You can explore the different sections of the app with the navigation bar at the top of the page.  From there, you have access to your accounts, transactions, budgets, and more.</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        </p>
+    </div>
+</div>
 
-<div class="jumbotron">
-    <h1 class="display-4">K9 Koinz App</h1>
-    <p class="lead">Welcome to K9 Koinz, a simple and customized budgeting app!</p>
-    <hr class="my-4" />
-    <p>You can explore the different sections of the app with the navigation bar at the top of the page.  From there, you have access to your accounts, transactions, budgets, and more.</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-    </p>
-
-    <div id="chartContainer" style="height: 370px; width: 50%;"></div>
+<div class="mt-6">
+    <div class="row">
+        <div class="col-lg-6">
+            <div id="spendingChartContainer" style="height: 400px width:100%"></div>
+        </div>
+        <div class="col-lg-6">
+            <div id="spendingChartContainer2" style="height: 400px"></div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -21,13 +31,10 @@
 
     <script type="text/javascript">
         window.onload = () => {
-
             var thisMonth = @Html.Raw(Model.ThisMonthSpendingJson);
             var lastMonth = @Html.Raw(Model.LastMonthSpendingJson);
-            console.log(thisMonth);
-            console.log(lastMonth);
 
-            var chart = new CanvasJS.Chart("chartContainer", {
+            var chart = new CanvasJS.Chart("spendingChartContainer", {
                 animationEnabled: false,
                 title: {
                     text: "Monthly Spending"
@@ -44,7 +51,7 @@
                         type: "spline",
                         name: "This Month",
                         dataPoints: thisMonth,
-                        markerType : "none",
+                        markerType: "none",
                         lineThickness: 5,
                         showInLegend: true,
                         yValueFormatString: "$##,###"
@@ -61,6 +68,41 @@
                 ]
             });
             chart.render();
+
+            // var chart2 = new CanvasJS.Chart("spendingChartContainer2", {
+            //     animationEnabled: false,
+            //     title: {
+            //         text: "Monthly Spending"
+            //     },
+            //     axisX: {
+            //         text: "Day"
+            //     },
+            //     axisY: {
+            //         title: "Dollars",
+            //         prefix: "$"
+            //     },
+            //     data: [
+            //         {
+            //             type: "spline",
+            //             name: "This Month",
+            //             dataPoints: thisMonth,
+            //             markerType: "none",
+            //             lineThickness: 5,
+            //             showInLegend: true,
+            //             yValueFormatString: "$##,###"
+            //         },
+            //         {
+            //             type: "spline",
+            //             name: "Last Month",
+            //             dataPoints: lastMonth,
+            //             markerType: "none",
+            //             lineThickness: 5,
+            //             showInLegend: true,
+            //             yValueFormatString: "$##,###"
+            //         }
+            //     ]
+            // });
+            // chart2.render();
         };
     </script>
 }
