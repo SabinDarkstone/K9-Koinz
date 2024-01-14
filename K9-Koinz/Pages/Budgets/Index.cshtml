@@ -37,12 +37,13 @@
     </p>
 
     <div class="mb-3 col-4">
-        <form action="get" asp-for="./Index">
+        <form method="get" asp-page="./Index">
             <label for="budgetPeriod">Reference Date</label>
             <div class="row">
                 <div class="col-10">
                     <input id="budgetPeriod" type="date" name="budgetPeriod" value="@Model.BudgetDateString" class="form-control" />
                 </div>
+                <input type="hidden" value="@Model.SelectedBudget.Id" name="selectedBudget" />
                 <div class="col-2">
                     <input type="submit" class="btn btn-outline-primary" value="Go" />
                 </div>
