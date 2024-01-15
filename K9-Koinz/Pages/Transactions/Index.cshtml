@@ -6,10 +6,21 @@
     ViewData["Title"] = "Transactions";
 }
 
+<style>
+    .link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+        color: inherit;
+        text-decoration: inherit;
+    }
+
+    .list-group-item:nth-child(odd) {
+        background-color: #eee;
+    }
+</style>
+
 <h1>Your Transactions</h1>
 
 <p>
-    <a asp-page="./Create">Create New</a> | 
+    <a asp-page="./Create">Create New</a> |
     <a asp-page="./Print">Print View</a>
 </p>
 
@@ -31,110 +42,218 @@
                     <select id="lbxCategories" name="catFilter" asp-for="CategoryFilters" asp-items="Model.CategoryOptions" size="15" class="form-control"></select>
                 </div>
 
+                <div class="form-group mb-3">
+                    <label for="txtMerchant" class="control-label">Merchant Filter</label>
+                    <input id="txtMerchant" class="form-control" />
+                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value="" />
+                </div>
+
+                <div class="form-group mb-3 d-block d-lg-none">
+                    <label for="cbxSort">Sort By</label>
+                    <select id="cbxSort" name="sortOrder" asp-for="CurrentSort" class="form-control">
+                        <option value="" selected disabled>Select one...</option>
+                        <option value="Date">Date (Oldest First)</option>
+                        <option value="date_desc">Date (Newest First)</option>
+                        <option value="Merchant">Merchant (A-Z)</option>
+                        <option value="merchant_desc">Merchant (Z-A)</option>
+                        <option value="Amount">Amount (Smallest First)</option>
+                        <option value="amount_desc">Amount (Largest First)</option>
+                    </select>
+                </div>
+
                 <input type="submit" value="Go" class="btn btn-primary" /> | <a asp-page="./Index">Back to full list</a>
             </div>
         </form>
     </div>
+
     <div class="col-lg-10">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th class="d-none d-md-block">
-                        @Html.DisplayNameFor(model => model.Transactions[0].Account)
-                    </th>
-                    <th>
-                        <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
-                           asp-route-catFilter="@Model.SelectedCategory"
-                           asp-route-minDate="@Model.MinDateString"
-                           asp-route-maxDate="@Model.MaxDateString"
-                           asp-route-pageIndex="@Model.Transactions.PageIndex">
-                            @Html.DisplayNameFor(model => model.Transactions[0].Date)
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-page="./Index" asp-route-sortOrder="@Model.MerchantSort"
-                           asp-route-catFilter="@Model.SelectedCategory"
-                           asp-route-minDate="@Model.MinDateString"
-                           asp-route-maxDate="@Model.MaxDateString"
-                           asp-route-pageIndex="@Model.Transactions.PageIndex">
-                            @Html.DisplayNameFor(model => model.Transactions[0].MerchantId)
-                        </a>
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Transactions[0].Category)
-                    </th>
-                    <th>
-                        <a asp-page="./Index" asp-route-sortOrder="@Model.AmountSort"
-                           asp-route-catFilter="@Model.SelectedCategory"
-                           asp-route-minDate="@Model.MinDateString"
-                           asp-route-maxDate="@Model.MaxDateString"
-                           asp-route-pageIndex="@Model.Transactions.PageIndex">
-                            @Html.DisplayNameFor(model => model.Transactions[0].Amount)
-                        </a>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Transactions) {
+        <div class="d-none d-lg-block">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td class="d-none d-md-block">
-                            @Html.DisplayFor(modelItem => item.Account.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Date)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Merchant.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Category.Name)
-                        </td>
-                        <td>
-                            @if (item.TransactionType == Models.TransactionType.PLUS) {
-                                <span class="text-success">
-                                    @Math.Abs(item.Amount).FormatCurrency()
-                                </span>
-                            } else {
-                                <span class="text-danger">
-                                    @Math.Abs(item.Amount).FormatCurrency()
-                                </span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a>
-                            <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
-                            <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                        </td>
+                        <th class="d-none d-xl-block">
+                            @Html.DisplayNameFor(model => model.Transactions[0].Account)
+                        </th>
+                        <th>
+                            <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                               asp-route-catFilter="@Model.SelectedCategory"
+                               asp-route-minDate="@Model.MinDateString"
+                               asp-route-maxDate="@Model.MaxDateString"
+                               asp-route-merchFilter="@Model.SelectedMerchant"
+                               asp-route-pageIndex="@Model.Transactions.PageIndex">
+                                @Html.DisplayNameFor(model => model.Transactions[0].Date)
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./Index" asp-route-sortOrder="@Model.MerchantSort"
+                               asp-route-catFilter="@Model.SelectedCategory"
+                               asp-route-minDate="@Model.MinDateString"
+                               asp-route-maxDate="@Model.MaxDateString"
+                               asp-route-merchFilter="@Model.SelectedMerchant"
+                               asp-route-pageIndex="@Model.Transactions.PageIndex">
+                                @Html.DisplayNameFor(model => model.Transactions[0].MerchantId)
+                            </a>
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions[0].Category)
+                        </th>
+                        <th>
+                            <a asp-page="./Index" asp-route-sortOrder="@Model.AmountSort"
+                               asp-route-catFilter="@Model.SelectedCategory"
+                               asp-route-minDate="@Model.MinDateString"
+                               asp-route-maxDate="@Model.MaxDateString"
+                               asp-route-merchFilter="@Model.SelectedMerchant"
+                               asp-route-pageIndex="@Model.Transactions.PageIndex">
+                                @Html.DisplayNameFor(model => model.Transactions[0].Amount)
+                            </a>
+                        </th>
+                        <th></th>
                     </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Transactions) {
+                        <tr>
+                            <td class="d-none d-xl-block">
+                                @Html.DisplayFor(modelItem => item.Account.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Merchant.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Category.Name)
+                            </td>
+                            <td>
+                                @if (item.TransactionType == Models.TransactionType.PLUS) {
+                                    <span class="text-success">
+                                        @Math.Abs(item.Amount).FormatCurrency()
+                                    </span>
+                                } else {
+                                    <span class="text-danger">
+                                        @Math.Abs(item.Amount).FormatCurrency()
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a>
+                                <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card mt-4 d-block d-lg-none">
+            <ul class="list-group list-group-flush">
+                @foreach (var transaction in Model.Transactions) {
+                    <li class="list-group-item">
+                        <div>
+                            <div class="row">
+                                <div class="col-7 text-truncate transaction-item" data-id="@transaction.Id">@transaction.Merchant.Name</div>
+                                <div class="col-4 text-end transaction-item" data-id="@transaction.Id">
+                                    @if (transaction.TransactionType == Models.TransactionType.PLUS) {
+                                        <span class="text-success">
+                                            @Math.Abs(transaction.Amount).FormatCurrency()
+                                        </span>
+                                    } else {
+                                        <span class="text-danger">
+                                            @Math.Abs(transaction.Amount).FormatCurrency()
+                                        </span>
+                                    }
+                                </div>
+                                <div class="col-1">
+                                    <a asp-page="./Edit" asp-route-id="@transaction.Id"><i class="fa-solid fa-pencil text-primary"></i></a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-7 text-secondary transaction-item" data-id="@transaction.Id">@transaction.Category.Name</div>
+                                <div class="col-4 text-secondary text-end transaction-item" data-id="@transaction.Id">@transaction.Date.ToShortDateString()</div>
+                                <div class="col-1">
+                                    <a asp-page="./Delete" asp-route-id="@transaction.Id"><i class="fa-solid fa-trash text-danger"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 }
-            </tbody>
-        </table>
+            </ul>
+        </div>
 
-        @{
-            var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
-        }
+        <div class="mt-4">
+            <p>
+                Page @Model.Transactions.PageIndex of @Model.Transactions.TotalPages
+            </p>
+            @{
+                var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
+            }
 
-        <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
-           asp-route-catFilter="@Model.SelectedCategory"
-           asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
-           asp-route-minDate="@Model.MinDateString"
-           asp-route-maxDate="@Model.MaxDateString"
-           class="btn btn-primary @prevDisabled">
-            Previous
-        </a>
+            <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-catFilter="@Model.SelectedCategory"
+               asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
+               asp-route-minDate="@Model.MinDateString"
+               asp-route-maxDate="@Model.MaxDateString"
+               asp-route-merchFilter="@Model.SelectedMerchant"
+               class="btn btn-primary @prevDisabled">
+                Previous
+            </a>
 
-        <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
-           asp-route-catFilter="@Model.SelectedCategory"
-           asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
-           asp-route-minDate="@Model.MinDateString"
-           asp-route-maxDate="@Model.MaxDateString"
-           class="btn btn-primary @nextDisabled">
-            Next
-        </a>
+            <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-catFilter="@Model.SelectedCategory"
+               asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
+               asp-route-minDate="@Model.MinDateString"
+               asp-route-maxDate="@Model.MaxDateString"
+               asp-route-merchFilter="@Model.SelectedMerchant"
+               class="btn btn-primary @nextDisabled">
+                Next
+            </a>
+        </div>
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+          rel="Stylesheet" type="text/css" />
 
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
+    <script>
+        $(function() {
+            $(".transaction-item").click(function() {
+                window.location = "/Transactions/Details?id=" + $(this).data("id");
+                return false;
+            });
+
+            $("#txtMerchant").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Transactions/Index?handler=MerchantAutoComplete",
+                        data: { text: request.term },
+                        type: "GET",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(JSON.stringify(response));
+                        },
+                        failure: function (response) {
+                            alert(JSON.stringify(response));
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#hfMerchant").val(i.item.val);
+                },
+                minLength: 1
+            });
+        });
+    </script>
+}

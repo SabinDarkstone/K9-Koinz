@@ -26,6 +26,8 @@ namespace K9_Koinz.Pages.Transactions
 
         public string SearchString { get; set; }
         public List<Guid> CategoryFilters { get; set; }
+        public Guid MerchantFilter { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MinDateFilter { get; set; }
@@ -38,6 +40,7 @@ namespace K9_Koinz.Pages.Transactions
         public string AmountSort { get; set; }
         public string CurrentSort { get; set; }
         public string SelectedCategory { get; set; }
+        public string SelectedMerchant { get; set; }
         public string MinDateString {
             get {
                 if (MinDateFilter.HasValue) {
@@ -60,7 +63,7 @@ namespace K9_Koinz.Pages.Transactions
         public PaginatedList<Transaction> Transactions { get; set; }
         public SelectList CategoryOptions;
 
-        public async Task OnGetAsync(string sortOrder, string catFilter, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
+        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
 
             DateSort = string.IsNullOrEmpty(sortOrder) || sortOrder == "Date" ? "date_desc" : "Date";
@@ -68,6 +71,7 @@ namespace K9_Koinz.Pages.Transactions
             AmountSort = sortOrder == "Amount" ? "amount_desc" : "Amount";
             CurrentSort = sortOrder;
             SelectedCategory = catFilter;
+            SelectedMerchant = merchFilter;
             MinDateFilter = minDate;
             MaxDateFilter = maxDate;
 
@@ -79,6 +83,11 @@ namespace K9_Koinz.Pages.Transactions
                 var childCategories = _context.Categories.Where(cat => cat.ParentCategoryId == Guid.Parse(SelectedCategory)).Include(cat => cat.ChildCategories).Select(cat => cat.Id).ToList();
                 CategoryFilters.AddRange(childCategories);
                 transactionsIQ = transactionsIQ.Where(trans => CategoryFilters.Contains(trans.CategoryId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(merchFilter)) {
+                MerchantFilter = Guid.Parse(SelectedMerchant);
+                transactionsIQ = transactionsIQ.Where(trans => trans.MerchantId == MerchantFilter);
             }
 
             if (MinDateFilter.HasValue) {
@@ -120,6 +129,19 @@ namespace K9_Koinz.Pages.Transactions
 
             var pageSize = _configuration.GetValue("PageSize", 10);
             Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
+        }
+
+        public IActionResult OnGetMerchantAutoComplete(string text) {
+            text = text.Trim();
+            var merchants = _context.Merchants
+                .AsNoTracking()
+                .AsEnumerable()
+                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
+                .Select(merch => new {
+                    label = merch.Name,
+                    val = merch.Id
+                }).ToList();
+            return new JsonResult(merchants);
         }
     }
 }
