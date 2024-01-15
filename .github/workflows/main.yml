@@ -33,7 +33,7 @@ jobs:
       - name: Stop the app
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl --user start sample-app.service
+          systemctl --user stop k9-koinz.service
 
       # We will output publish files to the folder we previously created
       - name: Publish
@@ -42,6 +42,6 @@ jobs:
       - name: Restart the app
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl --user start sample-app.service
+          systemctl --user start k9-koinz.service
 
 
