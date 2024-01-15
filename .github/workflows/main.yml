@@ -30,11 +30,14 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
+      - name: End the app process
+        run: sudo killall -s SIGKILL K9-Koinz
+
       # We will output publish files to the folder we previously created
       - name: Publish
         run: dotnet publish -c Release -o /home/sabin/k9-koinz
 
-      - name: Restart the app
+      - name: Start the app
         run: |
           sudo reboot
 
