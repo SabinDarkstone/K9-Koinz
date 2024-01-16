@@ -34,7 +34,7 @@ namespace K9_Koinz.Pages.Budgets {
             }
         }
 
-        public async Task<IActionResult> OnGetAsync(string selectedBudget, DateTime? budgetPeriod) {
+        public async Task OnGetAsync(string selectedBudget, DateTime? budgetPeriod) {
             if (budgetPeriod == null) {
                 BudgetPeriod = DateTime.Now;
             } else {
@@ -42,40 +42,45 @@ namespace K9_Koinz.Pages.Budgets {
             }
 
             Budgets = await _context.Budgets
+                .OrderBy(bud => bud.SortOrder)
+                .ToListAsync();
+
+            SelectedBudget = await GetBudgetDetails(selectedBudget);
+
+            if (SelectedBudget == null) {
+                return;
+            }
+
+            RetrieveAndHandleTransactions();
+        }
+
+        private async Task<Budget> GetBudgetDetails(string selectedBudget) {
+            var budgetQuery = _context.Budgets
                 .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.BudgetCategory)
-                        .ThenInclude(cat => cat.Transactions)
-                            .ThenInclude(trans => trans.Merchant)
+                .ThenInclude(line => line.BudgetCategory)
+                    .ThenInclude(cat => cat.Transactions)
+                        .ThenInclude(trans => trans.Merchant)
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.BudgetCategory)
                         .ThenInclude(cat => cat.ChildCategories)
                             .ThenInclude(cCat => cCat.Transactions)
                                 .ThenInclude(trans => trans.Merchant)
-                .OrderBy(bud => bud.SortOrder)
-                .AsNoTracking()
-                .ToListAsync();
+                .AsNoTracking();
 
-            if (string.IsNullOrWhiteSpace(selectedBudget)) {
-                SelectedBudget = Budgets.FirstOrDefault();
+            if (string.IsNullOrEmpty(selectedBudget)) {
+                return await budgetQuery.FirstOrDefaultAsync(bud => bud.Id == Guid.Parse(selectedBudget));
             } else {
-                SelectedBudget = Budgets.FirstOrDefault(bud => bud.Id == Guid.Parse(selectedBudget), null);
+                return await budgetQuery.FirstOrDefaultAsync();
             }
+        }
 
-            if (SelectedBudget == null) {
-                return Page();
-            }
-
+        private void RetrieveAndHandleTransactions() {
             foreach (var category in SelectedBudget.BudgetLines) {
-                var transactions = category.GetTransactions(BudgetPeriod);
+                category.GetTransactions(BudgetPeriod);
             }
 
             var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
             SelectedBudget.UnallocatedLines = newBudgetLines;
-            foreach (var line in newBudgetLines) {
-                _logger.LogInformation(line.BudgetCategoryId.ToString() + " " + line.SpentAmount);
-            }
-
-            return Page();
         }
     }
 }
