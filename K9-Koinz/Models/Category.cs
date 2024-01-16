@@ -1,30 +1,36 @@
 ﻿using K9_Koinz.Utils;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9_Koinz.Models {
     public enum CategoryType {
+        [Display(Name = "Income")]
         INCOME,
-        EXPENSE
+        [Display(Name = "Expense")]
+        EXPENSE,
+        [Display(Name = "Transfer")]
+        TRANSFER
     }
 
     public class Category : DateTrackedEntity, INameable {
         [Unique<Category>]
         public string Name { get; set; }
+        [DisplayName("Parent Category")]
         public Guid? ParentCategoryId {  get; set; }
         public Category ParentCategory { get; set; }
+        [DisplayName("Category Tyoe")]
+        public CategoryType? CategoryType { get; set; }
         
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BudgetLine> BudgetLines { get; set; }
+        [DisplayName("Child Categories")]
         public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
 
         [NotMapped]
-        public CategoryType Type {
+        public bool IsChildCategory {
             get {
-                if (Name.Contains("Income", StringComparison.CurrentCultureIgnoreCase) || (ParentCategoryId.HasValue && ParentCategory.Type == CategoryType.INCOME)) {
-                    return CategoryType.INCOME;
-                } else {
-                    return CategoryType.EXPENSE;
-                }
+                return ParentCategoryId.HasValue;
             }
         }
 
