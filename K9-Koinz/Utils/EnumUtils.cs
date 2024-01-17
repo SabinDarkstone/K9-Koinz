@@ -5,6 +5,10 @@ using System.Reflection;
 namespace K9_Koinz.Utils {
     public static class EnumUtils {
         public static TAttribute GetAttribute<TAttribute>(this Enum enumValue) where TAttribute : Attribute {
+            if (enumValue == null) {
+                return null;
+            }
+
             return enumValue.GetType()
                 .GetMember(enumValue.ToString())
                 .First()
