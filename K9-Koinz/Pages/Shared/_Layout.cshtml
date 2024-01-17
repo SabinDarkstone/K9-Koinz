@@ -38,7 +38,7 @@
                             <a class="nav-link text-dark nav-link-hover" asp-page="/Merchants/Index"><i class="fa-solid fa-cash-register"></i> Merchants</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/Categories/Index"><i class="fa-solid fa-gear"></i> Categories</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="/Categories/Index"><i class="fa-solid fa-layer-group"></i> Categories</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark nav-link-hover" asp-page="/DataImportWizard"><i class="fa-solid fa-file-import"></i> Import</a>
@@ -60,10 +60,19 @@
         </div>
     </footer>
 
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+          rel="Stylesheet" type="text/css" />
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(".dropdown-toggle").dropdown();
+    </script>
 </body>
 </html>
