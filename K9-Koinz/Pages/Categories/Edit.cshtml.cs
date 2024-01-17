@@ -42,6 +42,14 @@ namespace K9_Koinz.Pages.Categories {
                 return Page();
             }
 
+            var childCategories = await _context.Categories
+                .Where(cat => cat.ParentCategoryId == Category.Id)
+                .ToListAsync();
+            foreach (var childCat in childCategories) {
+                childCat.CategoryType = Category.CategoryType;
+                _context.Attach(childCat).State = EntityState.Modified;
+            }
+
             _context.Attach(Category).State = EntityState.Modified;
 
             try {
