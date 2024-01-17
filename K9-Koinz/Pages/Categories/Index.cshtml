@@ -30,14 +30,14 @@
     </thead>
     <tbody>
         @foreach (var item in Model.Categories) {
-            <tr>
-                <td>
+            <tr style="background-color: #eee;">
+                <td style="font-weight: bold;">
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
+                <td style="font-weight: bold;">
                     @Html.DisplayFor(modelItem => item.CategoryType)
                 </td>
-                <td>
+                <td style="font-weight: bold;">
                     @Html.DisplayFor(modelItem => item.Transactions.Count) 
                     @if (!item.IsChildCategory) {
                         <text>
@@ -47,10 +47,10 @@
                 </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
+                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
                     @if (!item.Transactions.Any()) {
                         <text>
-                            | <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            | <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash text-danger"></i></a>
                         </text>
                     }
                 </td>
@@ -63,16 +63,18 @@
                                 @Html.DisplayFor(modelItem => childCat.Name)
                             </span>
                         </td>
-                        <td></td>
+                        <td>
+                            @Html.DisplayFor(modelItem => childCat.CategoryType)
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => childCat.Transactions.Count)
                         </td>
                         <td>
                             <a asp-page="./Edit" asp-route-id="@childCat.Id"><i class="fa-solid fa-pencil"></i></a> |
-                            <a asp-page="./Details" asp-route-id="@childCat.Id"><i class="fa-solid fa-circle-info"></i></a>
+                            <a asp-page="./Details" asp-route-id="@childCat.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
                             @if (!childCat.Transactions.Any()) {
                                 <text>
-                                    | <a asp-page="./Delete" asp-route-id="@childCat.Id"><i class="fa-solid fa-trash"></i></a>
+                                    | <a asp-page="./Delete" asp-route-id="@childCat.Id"><i class="fa-solid fa-trash text-danger"></i></a>
                                 </text>
                             }
                         </td>

@@ -27,6 +27,7 @@ namespace K9_Koinz.Pages.Categories {
             }
 
             var category = await _context.Categories
+                .Include(cat => cat.ParentCategory)
                 .Include(cat => cat.ChildCategories)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null) {

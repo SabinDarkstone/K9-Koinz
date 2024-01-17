@@ -24,7 +24,7 @@ namespace K9_Koinz.Utils {
                 .Select(line => line.BudgetCategoryId)
                 .Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId));
 
-            var transferCategoryIds = categoryData.Values.Where(cat => cat.CategoryType == CategoryType.TRANSFER || (cat.ParentCategoryId.HasValue && cat.ParentCategory.CategoryType == CategoryType.TRANSFER)).Select(cat => cat.Id);
+            var transferCategoryIds = categoryData.Values.Where(cat => cat.CategoryType == CategoryType.TRANSFER).Select(cat => cat.Id);
             allocatedCategories = allocatedCategories.Concat(transferCategoryIds).ToList();
 
             // Get child categories for those allocated categories, too

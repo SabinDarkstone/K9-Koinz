@@ -49,7 +49,7 @@ namespace K9_Koinz.Pages {
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startOfThisMonth && trans.Date <= endOfThisMonth)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
-                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE || (trans.Category.ParentCategoryId.HasValue && trans.Category.ParentCategory.CategoryType == CategoryType.EXPENSE))
+                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
                 .GroupBy(trans => trans.Date)
                 .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();
@@ -58,7 +58,7 @@ namespace K9_Koinz.Pages {
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startOfLastMonth && trans.Date <= endOfLastMonth)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
-                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE || (trans.Category.ParentCategoryId.HasValue && trans.Category.ParentCategory.CategoryType == CategoryType.EXPENSE))
+                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
                 .GroupBy(trans => trans.Date)
                 .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();

@@ -40,7 +40,7 @@ namespace K9_Koinz.Models {
         public string FullyQualifiedName {
             get {
                 var longName = string.Empty;
-                if (ParentCategoryId.HasValue) {
+                if (ParentCategory != null) {
                     longName += ParentCategory.Name + ": ";
                 }
                 longName += Name;

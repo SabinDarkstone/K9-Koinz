@@ -43,7 +43,7 @@ namespace K9_Koinz.Pages.BudgetLines {
                 .Include(cat => cat.ParentCategory)
                 .AsNoTracking()
                 .AsEnumerable()
-                .Where(cat => cat.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase) || (cat.ParentCategoryId.HasValue && cat.ParentCategory.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase)))
+                .Where(cat => cat.FullyQualifiedName.Contains(text, StringComparison.CurrentCultureIgnoreCase))
                 .Select(cat => new {
                     label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
                     val = cat.Id
