@@ -183,7 +183,7 @@
 
         <div class="mt-4">
             <p>
-                Page @Model.Transactions.PageIndex of @Model.Transactions.TotalPages
+                @Model.Transactions.TotalCount <text>Items - </text> Page @Model.Transactions.PageIndex of @Model.Transactions.TotalPages
             </p>
             @{
                 var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";

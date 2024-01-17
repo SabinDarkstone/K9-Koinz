@@ -13,8 +13,6 @@ namespace K9_Koinz.Data {
         private Dictionary<string, Guid> MerchantMap = new();
         private Dictionary<string, Guid> CategoryMap = new();
 
-        private Category dummyCategory;
-
         public DataImport(KoinzContext context, ILogger<DataImportWizardModel> logger) {
             _context = context;
             _logger = logger;

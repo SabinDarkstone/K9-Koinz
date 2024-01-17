@@ -113,8 +113,6 @@ namespace K9_Koinz.Data {
         public static readonly Guid CCFF_BUDGET = Guid.Parse("93d0c1e2-c42f-42aa-9d98-fc99745963c3");
 
         public static void Initialize(KoinzContext context) {
-            return;
-
             if (context.Accounts.Any()) {
                 return;
             }

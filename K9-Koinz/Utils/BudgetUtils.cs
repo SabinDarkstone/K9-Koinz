@@ -9,7 +9,7 @@ namespace K9_Koinz.Utils {
             var childCategoryTransactions = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).ToList();
             transactions = [.. transactions, .. childCategoryTransactions];
             line.SpentAmount = transactions.Sum(trans => trans.Amount);
-            if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE) {
+            if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE && line.SpentAmount > 0.0) {
                 line.SpentAmount *= -1;
             }
             line.Transactions = transactions;
