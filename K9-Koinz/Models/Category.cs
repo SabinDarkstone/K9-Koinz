@@ -10,7 +10,9 @@ namespace K9_Koinz.Models {
         [Display(Name = "Expense")]
         EXPENSE,
         [Display(Name = "Transfer")]
-        TRANSFER
+        TRANSFER,
+        [Display(Name = "Other")]
+        OTHER
     }
 
     public class Category : DateTrackedEntity, INameable {
@@ -19,7 +21,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Parent Category")]
         public Guid? ParentCategoryId {  get; set; }
         public Category ParentCategory { get; set; }
-        [DisplayName("Category Tyoe")]
+        [DisplayName("Category Type")]
         public CategoryType? CategoryType { get; set; }
         
         public ICollection<Transaction> Transactions { get; set; }
@@ -44,6 +46,13 @@ namespace K9_Koinz.Models {
                 longName += Name;
 
                 return longName;
+            }
+        }
+
+        [NotMapped]
+        public string CategoryTypeName {
+            get {
+                return CategoryType.GetAttribute<DisplayAttribute>()?.Name ?? string.Empty;
             }
         }
 
