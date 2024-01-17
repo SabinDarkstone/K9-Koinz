@@ -35,9 +35,6 @@ namespace K9_Koinz.Pages.BudgetLines {
                 return NotFound();
             }
 
-            ViewData["BudgetId"] = new SelectList(_context.Budgets, nameof(Budget.Id), nameof(Budget.Name));
-            ViewData["CategoryId"] = new SelectList(_context.Categories, nameof(Category.Id), nameof(Category.Name));
-
             BudgetLine = budgetLine;
             return Page();
         }
@@ -46,7 +43,7 @@ namespace K9_Koinz.Pages.BudgetLines {
             if (!ModelState.IsValid) {
                 return Page();
             }
-            _logger.LogInformation(BudgetLine.BudgetId.ToString());
+
             _context.Attach(BudgetLine).State = EntityState.Modified;
 
             try {

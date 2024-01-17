@@ -17,17 +17,18 @@
             <input type="hidden" asp-for="BudgetLine.Id" />
             <div class="form-group">
                 <label asp-for="BudgetLine.BudgetId" class="control-label"></label>
-                <input type="text" value="@Model.BudgetLine.Budget.Name" class="form-control" disabled />
-                <input type="hidden" asp-for="BudgetLine.BudgetId" />
+                <input type="text" value="@Model.BudgetLine.Budget.Name" class="form-control" readonly />
+                <input type="hidden" asp-for="BudgetLine.BudgetId"/>
             </div>
             <div class="form-group">
-                <label asp-for="BudgetLine.BudgetedAmount" class="control-label"></label>
-                <input asp-for="BudgetLine.BudgetedAmount" class="form-control" />
-                <span asp-validation-for="BudgetLine.BudgetedAmount" class="text-danger"></span>
+                <label asp-for="BudgetLine.BudgetCategoryId" class="control-label"></label>
+                <input type="text" value="@Model.BudgetLine.BudgetCategory.Name" class="form-control" readonly />
+                <input type="hidden" asp-for="BudgetLine.BudgetCategoryId" />
             </div>
             <div class="form-group">
                 <label asp-for="BudgetLine.BudgetedAmount" class="control-label"></label>
                 <input type="number" asp-for="BudgetLine.BudgetedAmount" class="form-control" min="1" />
+                <span asp-validation-for="BudgetLine.BudgetedAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <a asp-page="/Budgets/Edit" asp-route-id="@Model.BudgetLine.BudgetId" class="btn btn-secondary">Cancel</a>
