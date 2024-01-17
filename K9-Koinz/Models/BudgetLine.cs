@@ -3,17 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Utils;
 
-namespace K9_Koinz.Models
-{
-    public enum BudgetLineType {
-        [Display(Name = "Income")]
-        INCOME,
-        [Display(Name = "Expense")]
-        EXPENSE,
-        [Display(Name = "Other Spending")]
-        UNALLOCATED
-    }
-
+namespace K9_Koinz.Models {
     public class BudgetLine : DateTrackedEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
@@ -21,7 +11,6 @@ namespace K9_Koinz.Models
         [DisplayName("Budget Name")]
         public Guid BudgetId { get; set; }
         public Budget Budget {  get; set; }
-        public BudgetLineType LineType {  get; set; }
         [DisplayName("Budgeted Amount")]
         public double BudgetedAmount { get; set; }
 

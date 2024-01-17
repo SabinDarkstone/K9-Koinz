@@ -9,7 +9,7 @@ namespace K9_Koinz.Utils {
             var childCategoryTransactions = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).ToList();
             transactions = [.. transactions, .. childCategoryTransactions];
             line.SpentAmount = transactions.Sum(trans => trans.Amount);
-            if (line.LineType == BudgetLineType.EXPENSE) {
+            if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE) {
                 line.SpentAmount *= -1;
             }
             line.Transactions = transactions;
@@ -24,7 +24,7 @@ namespace K9_Koinz.Utils {
                 .Select(line => line.BudgetCategoryId)
                 .Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId));
 
-            var transferCategoryIds = categoryData.Values.Where(cat => cat.Name == "Transfer" || (cat.ParentCategoryId.HasValue && cat.ParentCategory.Name == "Transfer")).Select(cat => cat.Id);
+            var transferCategoryIds = categoryData.Values.Where(cat => cat.CategoryType == CategoryType.TRANSFER || (cat.ParentCategoryId.HasValue && cat.ParentCategory.CategoryType == CategoryType.TRANSFER)).Select(cat => cat.Id);
             allocatedCategories = allocatedCategories.Concat(transferCategoryIds).ToList();
 
             // Get child categories for those allocated categories, too
@@ -53,7 +53,6 @@ namespace K9_Koinz.Utils {
                         BudgetCategoryId = trans.CategoryId,
                         BudgetCategory = categoryData[trans.CategoryId],
                         BudgetId = budget.Id,
-                        LineType = BudgetLineType.UNALLOCATED,
                         Transactions = new List<Transaction>()
                     };
                     newBudgetLine.Transactions.Add(trans);

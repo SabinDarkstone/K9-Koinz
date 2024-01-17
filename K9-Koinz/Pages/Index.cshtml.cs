@@ -45,13 +45,11 @@ namespace K9_Koinz.Pages {
             var startOfLastMonth = DateTime.Now.AddMonths(-1).StartOfMonth();
             var endOfLastMonth = DateTime.Now.AddMonths(-1).EndOfMonth();
 
-            var blockedCategoryIds = _context.Categories.Where(cat => cat.Name == "Transfer" || cat.Name == "Income" || (cat.ParentCategoryId.HasValue && (cat.ParentCategory.Name == "Transfer" || cat.ParentCategory.Name == "Income"))).Select(cat => cat.Id).ToList();
-
             var thisMonthTransactions = await _context.Transactions
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startOfThisMonth && trans.Date <= endOfThisMonth)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
-                .Where(trans => blockedCategoryIds.Contains(trans.Category.Id) == false)
+                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE || (trans.Category.ParentCategoryId.HasValue && trans.Category.ParentCategory.CategoryType == CategoryType.EXPENSE))
                 .GroupBy(trans => trans.Date)
                 .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();
@@ -60,7 +58,7 @@ namespace K9_Koinz.Pages {
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startOfLastMonth && trans.Date <= endOfLastMonth)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
-                .Where(trans => blockedCategoryIds.Contains(trans.Category.Id) == false)
+                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE || (trans.Category.ParentCategoryId.HasValue && trans.Category.ParentCategory.CategoryType == CategoryType.EXPENSE))
                 .GroupBy(trans => trans.Date)
                 .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();
