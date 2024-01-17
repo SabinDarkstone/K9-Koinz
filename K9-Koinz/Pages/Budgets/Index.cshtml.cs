@@ -67,7 +67,7 @@ namespace K9_Koinz.Pages.Budgets {
                                 .ThenInclude(trans => trans.Merchant)
                 .AsNoTracking();
 
-            if (string.IsNullOrEmpty(selectedBudget)) {
+            if (!string.IsNullOrEmpty(selectedBudget)) {
                 return await budgetQuery.FirstOrDefaultAsync(bud => bud.Id == Guid.Parse(selectedBudget));
             } else {
                 return await budgetQuery.FirstOrDefaultAsync();
