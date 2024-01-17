@@ -15,8 +15,13 @@ namespace K9_Koinz.Pages.Categories {
 
         [BindProperty]
         public Category Category { get; set; } = default!;
+        public Category ParentCategory { get; set; }
 
-        public IActionResult OnGet() {
+        public async Task<IActionResult> OnGet(Guid? parentCategoryId) {
+            if (parentCategoryId.HasValue) {
+                ParentCategory = await _context.Categories.FindAsync(parentCategoryId);
+            }
+
             return Page();
         }
 

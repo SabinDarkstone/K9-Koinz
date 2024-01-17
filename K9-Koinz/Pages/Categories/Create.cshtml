@@ -8,34 +8,47 @@
 
 <h1>Create</h1>
 
-<h4>Category</h4>
+@if (Model.ParentCategory == null) {
+    <h4>Category</h4>
+} else {
+    <h4>Child Category</h4>
+}
 <hr />
 
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.ParentCategory != null) {
+                <div class="form-group">
+                    <label asp-for="Category.ParentCategoryId" class="control-label"></label>
+                    <input type="text" value="@Model.ParentCategory.Name" class="form-control" readonly />
+                    <input type="hidden" asp-for="Category.ParentCategoryId" value="@Model.ParentCategory.Id" readonly />
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="Category.Name" class="control-label"></label>
                 <input asp-for="Category.Name" class="form-control" />
                 <span asp-validation-for="Category.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Category.Name" class="control-label"></label>
-                <input asp-for="Category.Name" class="form-control" />
-                <span asp-validation-for="Category.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category.ParentCategoryId" class="control-label"></label>
-                <input id="txtParentCategory" class="form-control" />
-                <input asp-for="Category.ParentCategoryId" type="hidden" id="hfCategory" />
-                <span asp-validation-for="Category.ParentCategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category.CategoryType" class="control-label"></label>
-                <select asp-for="Category.CategoryType" class="form-control" asp-items="@Html.GetEnumSelectList<CategoryType>()"></select>
-                <span asp-validation-for="Category.CategoryType" class="text-danger"></span>
-            </div>
+            @if (Model.ParentCategory == null) {
+                <div class="form-group">
+                    <label asp-for="Category.ParentCategoryId" class="control-label"></label>
+                    <input id="txtParentCategory" class="form-control" />
+                    <input asp-for="Category.ParentCategoryId" type="hidden" id="hfCategory" />
+                    <span asp-validation-for="Category.ParentCategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category.CategoryType" class="control-label"></label>
+                    <select asp-for="Category.CategoryType" class="form-control" asp-items="@Html.GetEnumSelectList<CategoryType>()"></select>
+                    <span asp-validation-for="Category.CategoryType" class="text-danger"></span>
+                </div>
+            } else {
+                <div class="form-group">
+                    <label asp-for="Category.CategoryType" class="control-label"></label>
+                    <input type="text" asp-for="Category.CategoryType" value="@Model.ParentCategory.CategoryTypeName" class="form-control" readonly />
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
