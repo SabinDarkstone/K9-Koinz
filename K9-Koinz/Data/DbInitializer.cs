@@ -202,19 +202,19 @@ namespace K9_Koinz.Data {
 
         private static List<Category> CreateCategories() {
             return [
-                new Category { Id = AUTO_AND_TRANSPORT, Name = "Auto & Transport", ParentCategoryId = null },
-                new Category { Id = BILLS_AND_UTILITIES, Name = "Bills & Utilities", ParentCategoryId = null },
-                new Category { Id = ENTERTAINMENT, Name = "Entertainment", ParentCategoryId = null },
-                new Category { Id = FOOD_AND_DINING, Name = "Food & Dining", ParentCategoryId = null },
-                new Category { Id = HEALTH_AND_FITNESS, Name = "Health & Fitness", ParentCategoryId = null },
-                new Category { Id = HOME, Name = "Home", ParentCategoryId = null },
-                new Category { Id = INCOME, Name = "Income", ParentCategoryId = null },
-                new Category { Id = INVESTMENTS, Name = "Investments", ParentCategoryId = null },
-                new Category { Id = LOANS, Name = "Loans", ParentCategoryId = null },
-                new Category { Id = PERSONAL_CARE, Name = "Personal Care", ParentCategoryId = null },
-                new Category { Id = PETS, Name = "Pets", ParentCategoryId = null },
-                new Category { Id = SHOPPING, Name = "Shopping", ParentCategoryId = null },
-                new Category { Id = TRAVEL, Name = "Travel", ParentCategoryId = null }
+                new Category { Id = AUTO_AND_TRANSPORT, Name = "Auto & Transport", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = BILLS_AND_UTILITIES, Name = "Bills & Utilities", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = ENTERTAINMENT, Name = "Entertainment", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = FOOD_AND_DINING, Name = "Food & Dining", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = HEALTH_AND_FITNESS, Name = "Health & Fitness", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = HOME, Name = "Home", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = INCOME, Name = "Income", CategoryType = CategoryType.INCOME, ParentCategoryId = null },
+                new Category { Id = INVESTMENTS, Name = "Investments", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = LOANS, Name = "Loans", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = PERSONAL_CARE, Name = "Personal Care", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = PETS, Name = "Pets", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = SHOPPING, Name = "Shopping", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
+                new Category { Id = TRAVEL, Name = "Travel", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null }
             ];
         }
 
@@ -338,37 +338,37 @@ namespace K9_Koinz.Data {
         private static List<BudgetLine> CreateBudgetLines() {
             return [
                 // Main budget
-                BudgetLineFactory.NewIncomeLine(MAIN_BUDGET, INCOME, 5674),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, AUTO_INSURANCE, 124),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, AUTO_PAYMENT, 246),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, GAS_AND_FUEL, 150),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, SERVICE_AND_PARTS, 45),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, BILLS_AND_UTILITIES, 625),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, ELECTRIC_AND_GAS, 118),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, MOBILE_PHONE, 117),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, TELEVISION, 48),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, WATER_AND_SEWER, 76),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, ENTERTAINMENT, 40),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, FOOD_DELIVERY, 40),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, GROCERIES, 500),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, RESTAURANTS, 150),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, MENTAL_HEALTH, 200),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, PHARMACY, 30),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, MORTGAGE_AND_RENT, 1669),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, PET_FOOD_AND_SUPPLIES, 100),
-                BudgetLineFactory.NewExpenseLine(MAIN_BUDGET, SHOPPING, 450),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, INCOME, 5674),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, AUTO_INSURANCE, 124),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, AUTO_PAYMENT, 246),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, GAS_AND_FUEL, 150),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, SERVICE_AND_PARTS, 45),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, BILLS_AND_UTILITIES, 625),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, ELECTRIC_AND_GAS, 118),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, MOBILE_PHONE, 117),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, TELEVISION, 48),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, WATER_AND_SEWER, 76),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, ENTERTAINMENT, 40),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, FOOD_DELIVERY, 40),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, GROCERIES, 500),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, RESTAURANTS, 150),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, MENTAL_HEALTH, 200),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, PHARMACY, 30),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, MORTGAGE_AND_RENT, 1669),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, PET_FOOD_AND_SUPPLIES, 100),
+                BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, SHOPPING, 450),
 
                 // Weekly shopping budget
-                BudgetLineFactory.NewIncomeLine(WEEKLY_SHOPPING_BUDGET, INCOME, (5674 * 12) / 52),
-                BudgetLineFactory.NewExpenseLine(WEEKLY_SHOPPING_BUDGET, GROCERIES, (500 * 12) / 52),
-                BudgetLineFactory.NewExpenseLine(WEEKLY_SHOPPING_BUDGET, SHOPPING, (450 * 12) / 52),
-                BudgetLineFactory.NewExpenseLine(WEEKLY_SHOPPING_BUDGET, RESTAURANTS, (150 * 12) / 52),
+                BudgetLineFactory.NewBudgetLine(WEEKLY_SHOPPING_BUDGET, INCOME, (5674 * 12) / 52),
+                BudgetLineFactory.NewBudgetLine(WEEKLY_SHOPPING_BUDGET, GROCERIES, (500 * 12) / 52),
+                BudgetLineFactory.NewBudgetLine(WEEKLY_SHOPPING_BUDGET, SHOPPING, (450 * 12) / 52),
+                BudgetLineFactory.NewBudgetLine(WEEKLY_SHOPPING_BUDGET, RESTAURANTS, (150 * 12) / 52),
 
                 // CCFF budget
-                BudgetLineFactory.NewIncomeLine(CCFF_BUDGET, INCOME, 5674),
-                BudgetLineFactory.NewIncomeLine(CCFF_BUDGET, GIFT_MONEY, 100),
-                BudgetLineFactory.NewExpenseLine(CCFF_BUDGET, GROCERIES, 500),
-                BudgetLineFactory.NewExpenseLine(CCFF_BUDGET, LODGING, 1200)
+                BudgetLineFactory.NewBudgetLine(CCFF_BUDGET, INCOME, 5674),
+                BudgetLineFactory.NewBudgetLine(CCFF_BUDGET, GIFT_MONEY, 100),
+                BudgetLineFactory.NewBudgetLine(CCFF_BUDGET, GROCERIES, 500),
+                BudgetLineFactory.NewBudgetLine(CCFF_BUDGET, LODGING, 1200)
             ];
         }
     }
