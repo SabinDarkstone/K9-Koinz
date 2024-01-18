@@ -16,12 +16,12 @@
         width: 100%;
     }
 
-        .marker-list .marker {
-            position: absolute;
-            width: 1px;
-            height: 20px;
-            background-color: black;
-        }
+    .marker-list .marker {
+        position: absolute;
+        width: 1px;
+        height: 20px;
+        background-color: black;
+    }
 </style>
 
 <h1>Budgets</h1>
@@ -36,23 +36,8 @@
         <a asp-page="Create">New Budget</a>
     </p>
 
-    <div class="mb-3 col-4">
-        <form method="get" asp-page="./Index">
-            <label for="budgetPeriod">Reference Date</label>
-            <div class="row">
-                <div class="col-10">
-                    <input id="budgetPeriod" type="date" name="budgetPeriod" value="@Model.BudgetDateString" class="form-control" />
-                </div>
-                <input type="hidden" value="@Model.SelectedBudget.Id" name="selectedBudget" />
-                <div class="col-2">
-                    <input type="submit" class="btn btn-outline-primary" value="Go" />
-                </div>
-            </div>
-        </form>
-    </div>
-
     <div>
-        <ul class="nav nav-pills mb-5 row">
+        <ul class="nav nav-pills mb-2 row">
             @foreach (var budget in Model.Budgets) {
                 var navClassList = "nav-link";
                 if (budget.Id == Model.SelectedBudget.Id) {
@@ -64,6 +49,24 @@
                 </li>
             }
         </ul>
+    </div>
+
+    <div class="row mb-4">
+        @foreach (var period in Model.PeriodOptions) {
+            var classList = "btn";
+            if (period.IsSelected) {
+                classList += " btn-secondary";
+            } else {
+                classList += " btn-outline-secondary";
+            }
+
+            if (period.IsDisabled) {
+                classList += " disabled";
+            }
+            <div class="col-sm" style="text-align:center">
+                <a class="@classList" asp-page="./Index" asp-route-budgetPeriod="@period.ValueString" asp-route-selectedBudget="@Model.SelectedBudget.Id">@period.Text</a>
+            </div>
+        }
     </div>
 }
 

@@ -12,6 +12,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Pages.Budgets {
+
+    public class BudgetPeriodOption {
+        public DateTime Value { get; set; }
+        public string ValueString {
+            get {
+                return Value.FormatForUrl();
+            }
+        }
+        public string Text { get; set; }
+        public bool IsSelected { get; set; }
+        public bool IsDisabled { get; set; }
+    }
+
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<IndexModel> _logger;
@@ -25,20 +38,16 @@ namespace K9_Koinz.Pages.Budgets {
         public Budget SelectedBudget { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime BudgetPeriod { get; set; } = DateTime.Now;
+        [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime BudgetPeriod = DateTime.Now;
 
-        public string BudgetDateString {
-            get {
-                return BudgetPeriod.FormatForUrl();
-            }
-        }
+        public List<BudgetPeriodOption> PeriodOptions { get; set; } = new();
 
         public async Task OnGetAsync(string selectedBudget, DateTime? budgetPeriod) {
-            if (budgetPeriod == null) {
-                BudgetPeriod = DateTime.Now;
-            } else {
+            if (budgetPeriod.HasValue) {
                 BudgetPeriod = budgetPeriod.Value;
+            } else {
+                BudgetPeriod = DateTime.Now;
             }
 
             Budgets = await _context.Budgets
@@ -51,6 +60,7 @@ namespace K9_Koinz.Pages.Budgets {
                 return;
             }
 
+            GenerateBudgetPeriodOptions();
             RetrieveAndHandleTransactions();
         }
 
@@ -72,6 +82,42 @@ namespace K9_Koinz.Pages.Budgets {
             } else {
                 return await budgetQuery.FirstOrDefaultAsync();
             }
+        }
+
+        private void GenerateBudgetPeriodOptions() {
+            if (SelectedBudget.Timespan == BudgetTimeSpan.MONTHLY) {
+                for (var i = 0; i < 12; i++) {
+                    var optionDate = DateTime.Now.AddMonths(i * -1);
+                    PeriodOptions.Add(new BudgetPeriodOption {
+                        Value = optionDate,
+                        Text = optionDate.FormatShortMonthAndYear(),
+                        IsSelected = optionDate.Date == BudgetPeriod.Date,
+                        IsDisabled = !_context.Transactions.Any(trans => trans.Date >= optionDate.StartOfMonth() && trans.Date <= optionDate.EndOfMonth())
+                });
+                }
+            } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
+                for (var i = 0; i < 7; i++) {
+                    var optionDate = DateTime.Now.AddDays(i * -7);
+                    PeriodOptions.Add(new BudgetPeriodOption {
+                        Value = optionDate,
+                        Text = i == 0 ? "This Week" : i == 1 ? "1 Week Ago" : i + " Weeks Ago",
+                        IsSelected = optionDate.Date == BudgetPeriod.Date,
+                        IsDisabled = !_context.Transactions.Any(trans => trans.Date >= optionDate.StartOfWeek() && trans.Date <= optionDate.EndOfWeek())
+                    });
+                }
+            } else if (SelectedBudget.Timespan == BudgetTimeSpan.YEARLY) {
+                for (var i = 0; i < 4; i++) {
+                    var optionDate = DateTime.Now.AddYears(i * -1);
+                    PeriodOptions.Add(new BudgetPeriodOption {
+                        Value = optionDate,
+                        Text = i == 0 ? "This Year" : optionDate.Year.ToString(),
+                        IsSelected = optionDate.Date == BudgetPeriod.Date,
+                        IsDisabled = !_context.Transactions.Any(trans => trans.Date >= optionDate.StartOfYear() && trans.Date <= optionDate.EndOfYear())
+                    });
+                }
+            }
+
+            PeriodOptions.Reverse();
         }
 
         private void RetrieveAndHandleTransactions() {
