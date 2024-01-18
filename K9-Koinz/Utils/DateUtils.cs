@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
     public static class DateUtils {
@@ -39,6 +40,32 @@ namespace K9_Koinz.Utils {
 
         public static DateTime EndOfYear(this DateTime dt) {
             return new DateTime(dt.Year + 1, 1, 1).AddDays(-1).AtMidnight();
+        }
+
+        public static DateTime GetPreviousPeriod(this DateTime dt, BudgetTimeSpan timespan) {
+            if (timespan == BudgetTimeSpan.WEEKLY) {
+                return dt.AddDays(-7);
+            }
+            if (timespan == BudgetTimeSpan.MONTHLY) {
+                return dt.AddMonths(-1);
+            }
+            if (timespan == BudgetTimeSpan.YEARLY) {
+                return dt.AddYears(-1);
+            }
+            return dt;
+        }
+
+        public static DateTime GetNextPeriod(this DateTime dt, BudgetTimeSpan timespan) {
+            if (timespan == BudgetTimeSpan.WEEKLY) {
+                return dt.AddDays(7);
+            }
+            if (timespan == BudgetTimeSpan.MONTHLY) {
+                return dt.AddMonths(1);
+            }
+            if (timespan == BudgetTimeSpan.YEARLY) {
+                return dt.AddYears(1);
+            }
+            return dt;
         }
 
         public static double GetPercentThroughWeek(this DateTime dt) {
