@@ -32,11 +32,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="BudgetLine.DoRollover" class="control-label"></label>
-                @if (Model.BudgetLine.DoRollover) {
-                    <input type="checkbox" asp-for="BudgetLine.DoRollover" class="form-control" readonly />
-                } else {
-                    <input type="checkbox" asp-for="BudgetLine.DoRollover" class="form-control" />
-                }
+                <input type="checkbox" asp-for="BudgetLine.DoRollover" class="form-control" />
             </div>
             <div class="form-group">
                 <a asp-page="/Budgets/Edit" asp-route-id="@Model.BudgetLine.BudgetId" class="btn btn-secondary">Cancel</a>
