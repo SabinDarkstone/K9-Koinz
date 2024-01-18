@@ -14,6 +14,7 @@ namespace K9_Koinz.Data {
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<BudgetLine> BudgetLines { get; set; }
+        public DbSet<BudgetLinePeriod> BudgetLinePeriods { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -27,6 +28,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<Budget>().ToTable("Budget").HasKey(x => x.Id);
             modelBuilder.Entity<BudgetLine>().ToTable("BudgetLineItem").HasKey(x => x.Id);
             modelBuilder.Entity<Merchant>().ToTable("Merchant").HasKey(x => x.Id);
+            modelBuilder.Entity<BudgetLinePeriod>().ToTable("BudgetPeriod").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>().HasMany(x => x.ChildCategories).WithOne(x => x.ParentCategory).HasForeignKey(x => x.ParentCategoryId).OnDelete(DeleteBehavior.NoAction);
@@ -36,13 +38,6 @@ namespace K9_Koinz.Data {
                 .IsUnique();
             modelBuilder.Entity<Category>().HasIndex(x => x.Name)
                 .IsUnique();
-
-            // Converters
-            modelBuilder.Entity<Transaction>().Property(x => x.Amount).HasConversion<double>();
-            modelBuilder.Entity<BudgetLine>().Property(x => x.SpentAmount).HasConversion<double>();
-            modelBuilder.Entity<BudgetLine>().Property(x => x.BudgetedAmount).HasConversion<double>();
-            modelBuilder.Entity<Account>().Property(x => x.CurrentBalance).HasConversion<double>();
-            modelBuilder.Entity<Account>().Property(x => x.InitialBalance).HasConversion<double>();
         }
 
         public override int SaveChanges() {
