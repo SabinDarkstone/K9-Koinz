@@ -15,7 +15,13 @@
     <header class="d-print-none">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">K9 Koinz</a>
+                <environment names="Development">
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">K9 Koinz Dev</a>
+                </environment>
+                <environment names="Production">
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">K9 Koinz</a>
+                </environment>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -72,7 +78,9 @@
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
-        $(".dropdown-toggle").dropdown();
+        document.querySelectorAll(".watermarked").forEach((el) => {
+            el.dataset.watermark = (el.dataset.watermark + " ").repeat(500);
+        });
     </script>
 </body>
 </html>
