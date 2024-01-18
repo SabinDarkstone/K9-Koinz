@@ -83,71 +83,74 @@
 
     <hr />
 
-    <div class="row">
-        <div class="col">
-            <h4>Income</h4>
-        </div>
-        <div class="col">
-            <h4 style="text-align: right;">
-                @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
-            </h4>
-        </div>
-    </div>
-    <ul class="list-group mb-4">
-        @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
-            var width = "width: " + budgetLine.SpentPercent + "%;";
-            var todayLine = "left: " + budgetLine.TimePerent + "%;";
-
-            <li class="list-group-item">
-                <div class="row">
-                    <div class="col">
-                        <p>@budgetLine.BudgetCategory.Name</p>
-                    </div>
-                    <div class="col">
-                        <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
-                    </div>
-                </div>
-
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="@width">
-                        <ul class="marker-list">
-                            <li class="marker" style="@todayLine"></li>
-                        </ul>
-                    </div>
-
-                </div>
-                <div class="text-secondary">
-                    @budgetLine.SpentAmount.FormatCurrency(0)
-                    <span style="font-weight:lighter;">
-                        of
-                    </span>
-                    @budgetLine.BudgetedAmount.FormatCurrency(0)
-                </div>
-            </li>
-        }
-    </ul>
-
-    @if (Model.SelectedBudget.UnallocatedLines.Any()) {
+    @if (Model.SelectedBudget.IncomeLines.Any()) {
         <div class="row">
             <div class="col">
-                <h4>Other Income</h4>
+                <h4>Income</h4>
             </div>
             <div class="col">
                 <h4 style="text-align: right;">
-                    @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
+                    @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
                 </h4>
             </div>
         </div>
-        <ul>
-            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
-                var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
-                var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+        <ul class="list-group mb-4">
+            @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
+                var width = "width: " + budgetLine.SpentPercent + "%;";
+                var todayLine = "left: " + budgetLine.TimePerent + "%;";
 
-                <li>
-                    <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>@budgetLine.BudgetCategory.Name</p>
+                        </div>
+                        <div class="col">
+                            <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
+                        </div>
+                    </div>
+
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="@width">
+                            <ul class="marker-list">
+                                <li class="marker" style="@todayLine"></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="text-secondary">
+                        @budgetLine.SpentAmount.FormatCurrency(0)
+                        <span style="font-weight:lighter;">
+                            of
+                        </span>
+                        @budgetLine.BudgetedAmount.FormatCurrency(0)
+                    </div>
                 </li>
             }
         </ul>
+
+        @if (Model.SelectedBudget.UnallocatedLines.Any()) {
+            <div class="row">
+                <div class="col">
+                    <h4>Other Income</h4>
+                </div>
+                <div class="col">
+                    <h4 style="text-align: right;">
+                        @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
+                    </h4>
+                </div>
+            </div>
+            <ul>
+                @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
+                    var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
+                    var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+
+                    <li>
+                        <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                    </li>
+                }
+            </ul>
+        }
+
     }
 
     <div class="row">
