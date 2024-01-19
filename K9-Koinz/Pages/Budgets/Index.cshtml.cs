@@ -28,10 +28,12 @@ namespace K9_Koinz.Pages.Budgets {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<IndexModel> _logger;
+        private readonly BudgetPeriodUtils _budgetPeriodUtils;
 
         public IndexModel(KoinzContext context, ILogger<IndexModel> logger) {
             _context = context;
             _logger = logger;
+            _budgetPeriodUtils = new BudgetPeriodUtils(context);
         }
 
         public IList<Budget> Budgets { get; set; } = default!;
@@ -52,9 +54,10 @@ namespace K9_Koinz.Pages.Budgets {
 
             Budgets = await _context.Budgets
                 .OrderBy(bud => bud.SortOrder)
+                .AsNoTracking()
                 .ToListAsync();
 
-            SelectedBudget = await GetBudgetDetails(selectedBudget);
+            SelectedBudget = GetBudgetDetails(selectedBudget);
 
             if (SelectedBudget == null) {
                 return;
@@ -62,25 +65,31 @@ namespace K9_Koinz.Pages.Budgets {
 
             GenerateBudgetPeriodOptions();
             RetrieveAndHandleTransactions();
+            foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
+                budgetLine.GetPeriods(BudgetPeriod);
+            }
+            UpdatePreviousPeriods();
+            UpdateCurrentPeriods();
+            _context.SaveChanges();
         }
 
-        private async Task<Budget> GetBudgetDetails(string selectedBudget) {
+        private Budget GetBudgetDetails(string selectedBudget) {
             var budgetQuery = _context.Budgets
                 .Include(bud => bud.BudgetLines)
-                .ThenInclude(line => line.BudgetCategory)
-                    .ThenInclude(cat => cat.Transactions)
-                        .ThenInclude(trans => trans.Merchant)
+                    .ThenInclude(line => line.BudgetCategory)
+                        .ThenInclude(cat => cat.Transactions)
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.BudgetCategory)
                         .ThenInclude(cat => cat.ChildCategories)
                             .ThenInclude(cCat => cCat.Transactions)
-                                .ThenInclude(trans => trans.Merchant)
+                .Include(bud => bud.BudgetLines)
+                    .ThenInclude(line => line.Periods)
                 .AsNoTracking();
 
             if (!string.IsNullOrEmpty(selectedBudget)) {
-                return await budgetQuery.FirstOrDefaultAsync(bud => bud.Id == Guid.Parse(selectedBudget));
+                return budgetQuery.FirstOrDefault(bud => bud.Id == Guid.Parse(selectedBudget));
             } else {
-                return await budgetQuery.FirstOrDefaultAsync();
+                return budgetQuery.FirstOrDefault();
             }
         }
 
@@ -92,8 +101,8 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = optionDate.FormatShortMonthAndYear(),
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_context.Transactions.Any(trans => trans.Date >= optionDate.StartOfMonth() && trans.Date <= optionDate.EndOfMonth())
-                });
+                        IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfMonth() && trans.Date <= optionDate.EndOfMonth())
+                    });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
                 for (var i = 0; i < 7; i++) {
@@ -102,7 +111,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = i == 0 ? "This Week" : i == 1 ? "1 Week Ago" : i + " Weeks Ago",
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_context.Transactions.Any(trans => trans.Date >= optionDate.StartOfWeek() && trans.Date <= optionDate.EndOfWeek())
+                        IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfWeek() && trans.Date <= optionDate.EndOfWeek())
                     });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.YEARLY) {
@@ -112,7 +121,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = i == 0 ? "This Year" : optionDate.Year.ToString(),
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_context.Transactions.Any(trans => trans.Date >= optionDate.StartOfYear() && trans.Date <= optionDate.EndOfYear())
+                        IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfYear() && trans.Date <= optionDate.EndOfYear())
                     });
                 }
             }
@@ -127,6 +136,44 @@ namespace K9_Koinz.Pages.Budgets {
 
             var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
             SelectedBudget.UnallocatedLines = newBudgetLines;
+        }
+
+        private void UpdateCurrentPeriods() {
+            var periodsToUpdate = new List<BudgetLinePeriod>();
+            foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
+                if (budgetLine.CurrentPeriod == null) {
+                    continue;
+                }
+                budgetLine.CurrentPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
+                periodsToUpdate.Add(budgetLine.CurrentPeriod);
+                if (budgetLine.PreviousPeriod != null) {
+                    budgetLine.CurrentPeriod.StartingAmount = budgetLine.BudgetedAmount - budgetLine.PreviousPeriod.SpentAmount;
+                    periodsToUpdate.Add(budgetLine.PreviousPeriod);
+                }
+            }
+
+            periodsToUpdate.ForEach(per => {
+                per.BudgetLine = null;
+            });
+
+            _context.BudgetLinePeriods.UpdateRange(periodsToUpdate);
+        }
+
+        private void UpdatePreviousPeriods() {
+            var periodsToUpdate = new List<BudgetLinePeriod>();
+            foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
+                if (budgetLine.PreviousPeriod != null) {
+                    budgetLine.PreviousPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForPreviousLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
+                    budgetLine.PreviousPeriod.BudgetLine = null;
+                    periodsToUpdate.Add(budgetLine.PreviousPeriod);
+                }
+            }
+
+            periodsToUpdate.ForEach(per => {
+                per.BudgetLine = null;
+            });
+
+            _context.BudgetLinePeriods.UpdateRange(periodsToUpdate);
         }
     }
 }

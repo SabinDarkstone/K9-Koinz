@@ -14,10 +14,12 @@ namespace K9_Koinz.Pages.BudgetLines {
     public class EditModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<EditModel> _logger;
+        private readonly BudgetPeriodUtils _budgetPeriodUtils;
 
         public EditModel(KoinzContext context, ILogger<EditModel> logger) {
             _context = context;
             _logger = logger;
+            _budgetPeriodUtils = new BudgetPeriodUtils(context);
         }
 
         [BindProperty]
@@ -45,11 +47,15 @@ namespace K9_Koinz.Pages.BudgetLines {
                 return Page();
             }
 
-            var oldBudgetLine = _context.BudgetLines.Find(BudgetLine.Id);
+            var oldRecord = _context.BudgetLines.AsNoTracking().First(line => line.Id == BudgetLine.Id);
 
-            if (BudgetLine.DoRollover && !oldBudgetLine.DoRollover) {
-                //var historialPeriods = CheckAndHandleHistoricalRollover();
-                //_context.BudgetLinePeriods.AddRange(historialPeriods);
+            if (!oldRecord.DoRollover && BudgetLine.DoRollover) {
+                _budgetPeriodUtils.DeleteOldBudgetLinePeriods(BudgetLine);
+                CreateFirstBudgetLinePeriod();
+            }
+
+            if (oldRecord.DoRollover && !BudgetLine.DoRollover) {
+                _budgetPeriodUtils.DeleteOldBudgetLinePeriods(BudgetLine);
             }
 
             _context.Attach(BudgetLine).State = EntityState.Modified;
@@ -85,61 +91,20 @@ namespace K9_Koinz.Pages.BudgetLines {
             return _context.BudgetLines.Any(e => e.Id == id);
         }
 
-        private List<BudgetLinePeriod> CheckAndHandleHistoricalRollover() {
-            var timespan = BudgetLine.Budget.Timespan;
+        private void CreateFirstBudgetLinePeriod() {
+            var parentBudget = _context.Budgets.Find(BudgetLine.BudgetId);
+            var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
+            var totalSpentSoFar = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(BudgetLine, DateTime.Now).Sum(trans => trans.Amount);
 
-            // Get first transaction for budget category
-            Transaction firstTransaction = _context.Transactions
-                .Where(trans => trans.CategoryId == BudgetLine.BudgetCategoryId)
-                .OrderBy(trans => trans.Date)
-                .FirstOrDefault();
-
-            if (firstTransaction == null) {
-                return new List<BudgetLinePeriod>();
-            }
-
-            // Find the budget period for this transaction
-            var foundPeriod = false;
-            var currentDateToCheck = DateTime.Now;
-            var periodsChecked = 0;
-            while (!foundPeriod) {
-                var (periodStartDate, periodEndDate) = timespan.GetStartAndEndDate(currentDateToCheck);
-                if (firstTransaction.Date >= periodStartDate && firstTransaction.Date <= periodEndDate) {
-                    foundPeriod = true;
-                } else {
-                    periodsChecked++;
-                    currentDateToCheck = currentDateToCheck.GetPreviousPeriod(timespan);
-                }
-            }
-
-            List<BudgetLinePeriod> periodsCreated = new();
-            BudgetLinePeriod previousPeriod = null;
-            for (var i = 0; i <= periodsChecked; i++) {
-                var (startDate, endDate) = BudgetLine.Budget.Timespan.GetStartAndEndDate(currentDateToCheck);
-                BudgetLinePeriod period = CreateHistoricalBudgetLinePeriod(startDate, endDate, previousPeriod);
-                previousPeriod = period;
-                periodsCreated.Add(period);
-                currentDateToCheck = currentDateToCheck.GetNextPeriod(timespan);
-            }
-
-            return periodsCreated;
-        }
-
-        private BudgetLinePeriod CreateHistoricalBudgetLinePeriod(DateTime startDate, DateTime endDate, BudgetLinePeriod previous) {
-            var moneySpentInPeriod = _context.Transactions
-                .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                .Where(trans => trans.CategoryId == BudgetLine.BudgetCategoryId)
-                .Sum(trans => trans.Amount) * -1;
-
-            var budgetLinePeriod = new BudgetLinePeriod {
+            var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = BudgetLine.Id,
+                StartingAmount = 0,
                 StartDate = startDate,
                 EndDate = endDate,
-                SpentAmount = moneySpentInPeriod,
-                StartingAmount = previous == null ? 0d : (BudgetLine.BudgetedAmount - previous.SpentAmount) * -1
+                SpentAmount = totalSpentSoFar
             };
 
-            return budgetLinePeriod;
+            _context.BudgetLinePeriods.Add(firstPeriod);
         }
     }
 }

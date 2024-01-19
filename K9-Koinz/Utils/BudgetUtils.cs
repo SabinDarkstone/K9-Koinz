@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Utils {
     public static class BudgetUtils {
@@ -17,7 +18,7 @@ namespace K9_Koinz.Utils {
         }
 
         public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context, DateTime period) {
-            var categoryData = context.Categories.ToDictionary(cat => cat.Id);
+            var categoryData = context.Categories.AsNoTracking().ToDictionary(cat => cat.Id);
 
             // Get all budget categories from income and expense lines
             var allocatedCategories = budget.ExpenseLines
@@ -34,7 +35,7 @@ namespace K9_Koinz.Utils {
             var allUnallocatedCategories = allocatedCategories.Concat(allocatedChildCategories);
 
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(period);
-            var transactions = context.Transactions
+            var transactions = context.Transactions.AsNoTracking()
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allUnallocatedCategories.Contains(trans.CategoryId) &&
                     trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY)
                 .ToList();

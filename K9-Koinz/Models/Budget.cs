@@ -58,6 +58,13 @@ namespace K9_Koinz.Models
         }
 
         [NotMapped]
+        public ICollection<BudgetLine> RolloverExpenses {
+            get {
+                return BudgetLines.Where(line => line.DoRollover).ToList();
+            }
+        }
+
+        [NotMapped]
         public string TimespanString {
             get {
                 return Timespan.GetAttribute<DisplayAttribute>().Name;

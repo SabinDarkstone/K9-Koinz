@@ -28,6 +28,25 @@ namespace K9_Koinz.Models {
         }
 
         [NotMapped]
+        public BudgetLinePeriod CurrentPeriod { get; private set; }
+        [NotMapped]
+        public BudgetLinePeriod PreviousPeriod { get; private set; }
+
+        public void GetPeriods(DateTime refDate) {
+            if (Periods == null) {
+                throw new Exception("Attempt to query budget line periods without retrieving them from the database.  Please make sure to Include BudgetLinePeriods in your query.");
+            }
+            if (Budget == null) {
+                throw new Exception("Attempt to query budget without retrieving it from the database.  Please make sure to Include Budget in your query.");
+            }
+
+            var prevRefDate = refDate.GetPreviousPeriod(Budget.Timespan);
+
+            CurrentPeriod = Periods.FirstOrDefault(per => per.StartDate <= refDate && per.EndDate >= refDate);
+            PreviousPeriod = Periods.FirstOrDefault(per => per.StartDate <= prevRefDate && per.EndDate >= prevRefDate);
+        }
+
+        [NotMapped]
         public double SpentAmount { get; set; }
 
         [NotMapped]
@@ -55,6 +74,32 @@ namespace K9_Koinz.Models {
             get {
                 if (BudgetedAmount == 0) return 0;
                 return Math.Clamp(Math.Floor((double)(SpentAmount / BudgetedAmount) * 100), 0, 100);
+            }
+        }
+
+        [NotMapped]
+        public double SpentPercentWithRollover {
+            get {
+                if (BudgetedAmount == 0 || !DoRollover || CurrentPeriod == null) return 0;
+                return Math.Clamp(Math.Floor((double)(SpentAmount / (BudgetedAmount + RolloverAmount)) * 100), 0, 100);
+            }
+        }
+
+        [NotMapped]
+        public double SpentPercentRolloverDelta {
+            get {
+                if (BudgetedAmount == 0 || !DoRollover || CurrentPeriod == null) return 0;
+                return SpentPercent - SpentPercentWithRollover;
+            }
+        }
+
+        [NotMapped]
+        public double? RolloverAmount {
+            get {
+                if (DoRollover && CurrentPeriod != null) {
+                    return CurrentPeriod.StartingAmount;
+                }
+                return null;
             }
         }
 
