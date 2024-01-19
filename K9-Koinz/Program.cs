@@ -14,6 +14,9 @@ namespace K9_Koinz {
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddLogging(options => {
+                options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+            });
 
             var app = builder.Build();
 
