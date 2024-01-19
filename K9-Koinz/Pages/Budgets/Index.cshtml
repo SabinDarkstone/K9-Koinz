@@ -16,12 +16,12 @@
         width: 100%;
     }
 
-    .marker-list .marker {
-        position: absolute;
-        width: 1px;
-        height: 20px;
-        background-color: black;
-    }
+        .marker-list .marker {
+            position: absolute;
+            width: 1px;
+            height: 20px;
+            background-color: black;
+        }
 </style>
 
 <h1>Budgets</h1>
@@ -96,7 +96,9 @@
         </div>
         <ul class="list-group mb-4">
             @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
-                var width = "width: " + budgetLine.SpentPercent + "%;";
+                var spentOverBudgetedPercent = Math.Clamp((budgetLine.SpentAmount / budgetLine.BudgetedAmount) * 100, 0, 100);
+
+                var width = "width: " + spentOverBudgetedPercent + "%;";
                 var todayLine = "left: " + budgetLine.TimePerent + "%;";
 
                 <li class="list-group-item">
@@ -123,13 +125,6 @@
                             of
                         </span>
                         @budgetLine.BudgetedAmount.FormatCurrency(0)
-                        @if (budgetLine.DoRollover && budgetLine.CurrentPeriod != null) {
-                            <span style="font-weight:lighter;">
-                                <text>
-                                    (@budgetLine.RolloverAmount)
-                                </text>
-                            </span>
-                        }
                     </div>
                 </li>
             }
@@ -174,30 +169,46 @@
     <ul class="list-group mb-4">
         @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
             var todayLine = "left: " + budgetLine.TimePerent + "%;";
-
-            var progressBarClassList = "progress-bar";
             var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
             var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
-            if (budgetLine.SpentPercent >= 100) {
-                progressBarClassList += " bg-danger";
-            } else if (budgetLine.SpentPercent >= 80) {
-                progressBarClassList += " bg-warning";
+            var solidWidthString = "";
+            var stripedWidthString = "";
+
+            var totalBarPercent = 0d;
+
+            var solidProgressBarClassList = "progress-bar";
+            var stripedProgressBarClassList = "progress-bar progress-bar-striped";
+
+            var spentOverBudgetedPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / budgetLine.BudgetedAmount) * 100, 0, 100);
+
+            if (budgetLine.RolloverStatus == RolloverStatus.NONE) {
+                solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
+                totalBarPercent = spentOverBudgetedPercent;
+            } else if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+                var spentOverBudgetedPlusRolloverPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / (budgetLine.BudgetedAmount + budgetLine.RolloverAmount.Value)) * 100, 0, 100);
+                var remainingPercent = spentOverBudgetedPercent - spentOverBudgetedPlusRolloverPercent;
+
+                solidWidthString = "width: " + remainingPercent + "%;";
+                stripedWidthString = "width: " + spentOverBudgetedPlusRolloverPercent + "%;";
+                totalBarPercent = spentOverBudgetedPercent;
             } else {
-                progressBarClassList += " bg-success";
+                var overagePercent = Math.Clamp(Math.Abs(budgetLine.RolloverAmount.Value) / budgetLine.BudgetedAmount * 100, 0, 100);
+
+                solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
+                stripedWidthString = "width: " + overagePercent + "%;";
+                totalBarPercent = overagePercent + spentOverBudgetedPercent;
             }
 
-            var noRolloverValue = "width: " + budgetLine.SpentPercent + "%;";
-            var rolloverValue = "width: " + budgetLine.SpentPercentWithRollover + "%;";
-            var rolloverDelta = "width: " + budgetLine.SpentPercentRolloverDelta + "%;";
-            var rolloverProgressBarClassList = "progress-bar progress-bar-striped";
-
-            if (budgetLine.SpentPercent >= 100) {
-                rolloverProgressBarClassList += " bg-danger";
-            } else if (budgetLine.SpentPercent >= 80) {
-                rolloverProgressBarClassList += " bg-warning";
+            if (totalBarPercent >= 99.5) {
+                solidProgressBarClassList += " bg-danger";
+                stripedProgressBarClassList += " bg-danger";
+            } else if (totalBarPercent >= 80) {
+                solidProgressBarClassList += " bg-warning";
+                stripedProgressBarClassList += " bg-warning";
             } else {
-                rolloverProgressBarClassList += " bg-success";
+                solidProgressBarClassList += " bg-success";
+                stripedProgressBarClassList += " bg-success";
             }
 
             <li class="list-group-item">
@@ -213,11 +224,11 @@
                         <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
                     </div>
                 </div>
-                @if (budgetLine.PreviousPeriod == null) {
+                @if (!budgetLine.DoRollover) {
                     <div class="row">
                         <div class="col">
                             <div class="progress" style="height: 20px;">
-                                <div class="@progressBarClassList" role="progressbar" style="@noRolloverValue">
+                                <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
                                     <ul class="marker-list">
                                         <li class="marker" style="@todayLine"></li>
                                     </ul>
@@ -229,13 +240,23 @@
                     <div class="row">
                         <div class="col">
                             <div class="progress" style="height: 20px;">
-                                <div class="@rolloverProgressBarClassList" role="progressbar" style="@rolloverValue">
-                                    <ul class="marker-list">
-                                        <li class="marker" style="@todayLine"></li>
-                                    </ul>
-                                </div>
-                                <div class="@progressBarClassList" role="progressbar" style="@rolloverDelta">
-                                </div>
+                                @if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+                                    <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
+                                    </div>
+                                    <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
+                                        <ul class="marker-list">
+                                            <li class="marker" style="@todayLine"></li>
+                                        </ul>
+                                    </div>
+                                } else if (budgetLine.RolloverStatus == RolloverStatus.NEGATIVE) {
+                                    <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
+                                        <ul class="marker-list">
+                                            <li class="marker" style="@todayLine"></li>
+                                        </ul>
+                                    </div>
+                                    <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -247,9 +268,17 @@
                             of
                         </span>
                         @budgetLine.BudgetedAmount.FormatCurrency(0)
-                        @if (budgetLine.DoRollover && budgetLine.PreviousPeriod != null) {
-                            <span class="px-2" style="font-weight:lighter;">
-                                (@((budgetLine.CurrentPeriod.StartingAmount).FormatCurrency(0)) Rollover)
+                        @if (budgetLine.DoRollover && budgetLine.CurrentPeriod != null) {
+                            <span style="font-weight:lighter;">
+                                @if (budgetLine.RolloverStatus == RolloverStatus.NEGATIVE) {
+                                    <text>
+                                        (@Math.Abs(budgetLine.RolloverAmount.Value).FormatCurrency(0) Over)
+                                    </text>
+                                } else if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+                                    <text>
+                                        (@budgetLine.RolloverAmount.Value.FormatCurrency(0) Extra)
+                                    </text>
+                                }
                             </span>
                         }
                     </div>

@@ -132,6 +132,7 @@ namespace K9_Koinz.Pages.Budgets {
         private void RetrieveAndHandleTransactions() {
             foreach (var category in SelectedBudget.BudgetLines) {
                 category.GetTransactions(BudgetPeriod);
+
             }
 
             var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);

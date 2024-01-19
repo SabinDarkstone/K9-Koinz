@@ -4,6 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
+
+    public enum RolloverStatus {
+        NONE,
+        POSITIVE,
+        NEGATIVE
+    }
+
     public class BudgetLine : DateTrackedEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
@@ -50,6 +57,24 @@ namespace K9_Koinz.Models {
         public double SpentAmount { get; set; }
 
         [NotMapped]
+        public double SpentAndNegRolloverAmount { get; set; }
+
+        [NotMapped]
+        public RolloverStatus RolloverStatus {
+            get {
+                if (!DoRollover || CurrentPeriod == null) {
+                    return RolloverStatus.NONE;
+                }
+
+                if (CurrentPeriod.StartingAmount < 0) {
+                    return RolloverStatus.NEGATIVE;
+                } else {
+                    return RolloverStatus.POSITIVE;
+                }
+            }
+        }
+
+        [NotMapped]
         public List<Transaction> Transactions { get; set; }
 
         [NotMapped]
@@ -66,30 +91,6 @@ namespace K9_Koinz.Models {
                 } else {
                     return 0;
                 }
-            }
-        }
-
-        [NotMapped]
-        public double SpentPercent {
-            get {
-                if (BudgetedAmount == 0) return 0;
-                return Math.Clamp(Math.Floor((double)(SpentAmount / BudgetedAmount) * 100), 0, 100);
-            }
-        }
-
-        [NotMapped]
-        public double SpentPercentWithRollover {
-            get {
-                if (BudgetedAmount == 0 || !DoRollover || CurrentPeriod == null) return 0;
-                return Math.Clamp(Math.Floor((double)(SpentAmount / (BudgetedAmount + RolloverAmount)) * 100), 0, 100);
-            }
-        }
-
-        [NotMapped]
-        public double SpentPercentRolloverDelta {
-            get {
-                if (BudgetedAmount == 0 || !DoRollover || CurrentPeriod == null) return 0;
-                return SpentPercent - SpentPercentWithRollover;
             }
         }
 
