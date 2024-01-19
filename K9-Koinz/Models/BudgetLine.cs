@@ -63,7 +63,7 @@ namespace K9_Koinz.Models {
         [NotMapped]
         public RolloverStatus RolloverStatus {
             get {
-                if (!DoRollover) {
+                if (!DoRollover || CurrentPeriod == null) {
                     return RolloverStatus.NONE;
                 }
 
