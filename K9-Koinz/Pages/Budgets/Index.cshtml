@@ -176,8 +176,8 @@
             var todayLine = "left: " + budgetLine.TimePerent + "%;";
 
             var progressBarClassList = "progress-bar";
-            var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
-            var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+            var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
+            var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
             if (budgetLine.SpentPercent >= 100) {
                 progressBarClassList += " bg-danger";
@@ -280,8 +280,8 @@
         </div>
         <ul>
             @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
-                var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
-                var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+                var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
+                var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
                 <li>
                     <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
