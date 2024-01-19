@@ -63,7 +63,7 @@
             if (period.IsDisabled) {
                 classList += " disabled";
             }
-            <div class="col-sm" style="text-align:center">
+            <div class="col mb-2" style="text-align:center">
                 <a class="@classList" asp-page="./Index" asp-route-budgetPeriod="@period.ValueString" asp-route-selectedBudget="@Model.SelectedBudget.Id">@period.Text</a>
             </div>
         }
