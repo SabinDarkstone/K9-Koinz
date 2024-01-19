@@ -36,6 +36,7 @@ namespace K9_Koinz.Pages.Budgets
             var unsortedLines = await _context.BudgetLines
                 .Where(line => line.BudgetId == Budget.Id)
                 .Include(line => line.BudgetCategory)
+                .Include(line => line.Periods)
                 .ToListAsync();
             BudgetLines = unsortedLines.SortCategories();
 

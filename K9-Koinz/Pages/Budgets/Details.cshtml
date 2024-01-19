@@ -56,6 +56,8 @@
             <tr>
                 <th>Category Name</th>
                 <th>Budgeted Amount</th>
+                <th>Rollover?</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -66,7 +68,19 @@
                         @budgetLine.BudgetCategory.Name
                     </td>
                     <td>
-                        @budgetLine.BudgetedAmount.FormatCurrency()
+                        @budgetLine.BudgetedAmount.FormatCurrency(0)
+                    </td>
+                    <td>
+                        @if (budgetLine.Periods.Count == 0) {
+                            <span>No</span>
+                        } else if (budgetLine.Periods.Count == 1) {
+                            <span>Yes - Not Ready</span>
+                        } else {
+                            <span>Active</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="/BudgetLines/Edit" asp-route-id="@budgetLine.Id" class="btn btn-sm btn-outline-primary">Edit</a>
                     </td>
                 </tr>
             }

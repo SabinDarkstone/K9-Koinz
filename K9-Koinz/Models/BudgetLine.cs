@@ -8,7 +8,8 @@ namespace K9_Koinz.Models {
     public enum RolloverStatus {
         NONE,
         POSITIVE,
-        NEGATIVE
+        NEGATIVE,
+        NOT_READY
     }
 
     public class BudgetLine : DateTrackedEntity {
@@ -62,8 +63,12 @@ namespace K9_Koinz.Models {
         [NotMapped]
         public RolloverStatus RolloverStatus {
             get {
-                if (!DoRollover || CurrentPeriod == null) {
+                if (!DoRollover) {
                     return RolloverStatus.NONE;
+                }
+
+                if (PreviousPeriod == null && CurrentPeriod != null) {
+                    return RolloverStatus.NOT_READY;
                 }
 
                 if (CurrentPeriod.StartingAmount < 0) {

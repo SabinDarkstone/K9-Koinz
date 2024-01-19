@@ -224,7 +224,7 @@
                         <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
                     </div>
                 </div>
-                @if (!budgetLine.DoRollover) {
+                @if (budgetLine.RolloverStatus == RolloverStatus.NONE || budgetLine.RolloverStatus == RolloverStatus.NOT_READY) {
                     <div class="row">
                         <div class="col">
                             <div class="progress" style="height: 20px;">
