@@ -15,18 +15,18 @@ namespace K9_Koinz.Models {
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
-        public Account Account { get; set; }
+        public virtual Account Account { get; set; }
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         [Required]
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
-        public Merchant Merchant { get; set; }
+        public virtual Merchant Merchant { get; set; }
         [Required]
         [DisplayName("Category")]
         public Guid CategoryId { get; set; } = Guid.Empty;
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
         public double Amount { get; set; }
         public string Notes { get; set; }
         [DisplayName("Does this transaction occur AFTER the initial balance was set?")]

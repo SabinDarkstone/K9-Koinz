@@ -15,16 +15,16 @@ namespace K9_Koinz.Models {
     public class BudgetLine : DateTrackedEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
-        public Category BudgetCategory { get; set; }
+        public virtual Category BudgetCategory { get; set; }
         [DisplayName("Budget Name")]
         public Guid BudgetId { get; set; }
-        public Budget Budget { get; set; }
+        public virtual Budget Budget { get; set; }
         [DisplayName("Budgeted Amount")]
         public double BudgetedAmount { get; set; }
         [DisplayName("Rollover Unspent Money")]
         public bool DoRollover { get; set; }
 
-        public List<BudgetLinePeriod> Periods { get; set; } = new();
+        public virtual List<BudgetLinePeriod> Periods { get; set; } = new();
 
 
         [NotMapped]

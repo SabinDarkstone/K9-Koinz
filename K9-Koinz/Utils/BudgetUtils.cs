@@ -6,15 +6,15 @@ namespace K9_Koinz.Utils {
     public static class BudgetUtils {
         public static List<Transaction> GetTransactions(this BudgetLine line, DateTime period) {
             var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate(period);
-            var transactions = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate).ToList();
-            var childCategoryTransactions = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).ToList();
+            var transactions = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate).AsEnumerable();
+            var childCategoryTransactions = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).AsEnumerable();
             transactions = [.. transactions, .. childCategoryTransactions];
             line.SpentAmount = transactions.Sum(trans => trans.Amount);
             if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE && line.SpentAmount != 0.0) {
                 line.SpentAmount *= -1;
             }
-            line.Transactions = transactions;
-            return transactions;
+            line.Transactions = transactions.ToList();
+            return transactions.ToList();
         }
 
         public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context, DateTime period) {
@@ -26,10 +26,10 @@ namespace K9_Koinz.Utils {
                 .Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId));
 
             var transferCategoryIds = categoryData.Values.Where(cat => cat.CategoryType == CategoryType.TRANSFER).Select(cat => cat.Id);
-            allocatedCategories = allocatedCategories.Concat(transferCategoryIds).ToList();
+            allocatedCategories = allocatedCategories.Concat(transferCategoryIds).AsEnumerable();
 
             // Get child categories for those allocated categories, too
-            var allocatedChildCategories = budget.ExpenseLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList().Concat(budget.IncomeLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList());
+            var allocatedChildCategories = budget.ExpenseLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).AsEnumerable().Concat(budget.IncomeLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList());
             
             // Concat those two lists of Category GUIDs together
             var allUnallocatedCategories = allocatedCategories.Concat(allocatedChildCategories);

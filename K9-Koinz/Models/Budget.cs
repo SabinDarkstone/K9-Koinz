@@ -20,10 +20,10 @@ namespace K9_Koinz.Models
         public int SortOrder { get; set; }
         public BudgetTimeSpan Timespan { get; set; }
 
-        public ICollection<BudgetLine> BudgetLines { get; set; } = new List<BudgetLine>();
+        public virtual ICollection<BudgetLine> BudgetLines { get; set; } = new List<BudgetLine>();
 
         [NotMapped]
-        public ICollection<BudgetLine> UnallocatedLines { get; set; } = new List<BudgetLine>();
+        public virtual ICollection<BudgetLine> UnallocatedLines { get; set; } = new List<BudgetLine>();
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();
