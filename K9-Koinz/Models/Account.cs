@@ -37,7 +37,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Initial Balance Date")]
         public DateTime InitialBalanceDate {  get; set; }
 
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
 
         [NotMapped]
         [DisplayName("Current Balance")]

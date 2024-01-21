@@ -15,6 +15,7 @@ namespace K9_Koinz.Data {
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<BudgetLine> BudgetLines { get; set; }
         public DbSet<BudgetLinePeriod> BudgetLinePeriods { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -29,6 +30,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<BudgetLine>().ToTable("BudgetLineItem").HasKey(x => x.Id);
             modelBuilder.Entity<Merchant>().ToTable("Merchant").HasKey(x => x.Id);
             modelBuilder.Entity<BudgetLinePeriod>().ToTable("BudgetPeriod").HasKey(x => x.Id);
+            modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>().HasMany(x => x.ChildCategories).WithOne(x => x.ParentCategory).HasForeignKey(x => x.ParentCategoryId).OnDelete(DeleteBehavior.NoAction);

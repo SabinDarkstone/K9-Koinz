@@ -15,22 +15,27 @@ namespace K9_Koinz.Models {
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
-        public virtual Account Account { get; set; }
+        public Account Account { get; set; }
+        public string AccountName { get; set; }
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         [Required]
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
-        public virtual Merchant Merchant { get; set; }
+        public Merchant Merchant { get; set; }
+        public string MerchantName { get; set; }
         [Required]
         [DisplayName("Category")]
         public Guid CategoryId { get; set; } = Guid.Empty;
-        public virtual Category Category { get; set; }
+        public Category Category { get; set; }
+        public string CategoryName { get; set; }
         public double Amount { get; set; }
         public string Notes { get; set; }
         [DisplayName("Does this transaction occur AFTER the initial balance was set?")]
         public bool DoNotSkip { get; set; }
+        public List<TransactionTag> Tags { get; set; }
+        public List<string> TagNames { get; set; }
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();

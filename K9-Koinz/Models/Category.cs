@@ -20,14 +20,15 @@ namespace K9_Koinz.Models {
         public string Name { get; set; }
         [DisplayName("Parent Category")]
         public Guid? ParentCategoryId {  get; set; }
-        public virtual Category ParentCategory { get; set; }
+        public Category ParentCategory { get; set; }
+        public string ParentCategoryName { get; set; }
         [DisplayName("Category Type")]
         public CategoryType? CategoryType { get; set; }
         
-        public virtual ICollection<Transaction> Transactions { get; set; }
-        public virtual ICollection<BudgetLine> BudgetLines { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<BudgetLine> BudgetLines { get; set; }
         [DisplayName("Child Categories")]
-        public virtual ICollection<Category> ChildCategories { get; set; } = new List<Category>();
+        public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
 
         [NotMapped]
         public bool IsChildCategory {
@@ -41,7 +42,7 @@ namespace K9_Koinz.Models {
             get {
                 var longName = string.Empty;
                 if (ParentCategory != null) {
-                    longName += ParentCategory.Name + ": ";
+                    longName += ParentCategoryName + ": ";
                 }
                 longName += Name;
 

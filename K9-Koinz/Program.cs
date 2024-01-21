@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using K9_Koinz.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 namespace K9_Koinz {
@@ -7,7 +6,6 @@ namespace K9_Koinz {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<KoinzContext>(options => {
-                options.UseLazyLoadingProxies();
                 options.UseSqlite("Data Source=K9-Koinz.db");
                 options.EnableSensitiveDataLogging(true);
             });
