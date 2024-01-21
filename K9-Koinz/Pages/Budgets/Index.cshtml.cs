@@ -142,9 +142,14 @@ namespace K9_Koinz.Pages.Budgets {
         private void UpdateCurrentPeriods() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
-                if (budgetLine.CurrentPeriod == null) {
-                    continue;
+                if (budgetLine.PreviousPeriod != null && budgetLine.CurrentPeriod == null) {
+                    budgetLine.CurrentPeriod = CreateNewCurrentPeriod(budgetLine);
                 }
+
+                //if (budgetLine.CurrentPeriod == null) {
+                //    continue;
+                //}
+
                 budgetLine.CurrentPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
                 if (budgetLine.PreviousPeriod != null) {
@@ -158,6 +163,21 @@ namespace K9_Koinz.Pages.Budgets {
             });
 
             _context.BudgetLinePeriods.UpdateRange(periodsToUpdate);
+        }
+
+        private BudgetLinePeriod CreateNewCurrentPeriod(BudgetLine budgetLine) {
+            var (startDate, endDate) = SelectedBudget.Timespan.GetStartAndEndDate();
+            var newPeriod = new BudgetLinePeriod {
+                BudgetLineId = budgetLine.Id,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            _context.BudgetLinePeriods.Add(newPeriod);
+            _context.SaveChanges();
+            _context.ChangeTracker.Clear();
+
+            return newPeriod;
         }
 
         private void UpdatePreviousPeriods() {

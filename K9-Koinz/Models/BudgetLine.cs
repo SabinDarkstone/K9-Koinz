@@ -36,7 +36,7 @@ namespace K9_Koinz.Models {
         }
 
         [NotMapped]
-        public BudgetLinePeriod CurrentPeriod { get; private set; }
+        public BudgetLinePeriod CurrentPeriod { get; set; }
         [NotMapped]
         public BudgetLinePeriod PreviousPeriod { get; private set; }
 
