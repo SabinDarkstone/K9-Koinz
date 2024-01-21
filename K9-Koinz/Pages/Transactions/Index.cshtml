@@ -7,9 +7,14 @@
 }
 
 <style>
-    .link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+    .link-unstyled, .link-unstyled:link {
         color: inherit;
         text-decoration: inherit;
+    }
+
+    .link-unstyled:hover {
+        color: inherit;
+        text-decoration: underline;
     }
 
     .list-group-item:nth-child(odd) {
@@ -130,10 +135,14 @@
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Merchant.Name)
+                                <a asp-page="/Merchants/Details" asp-route-id="@item.Merchant.Id" class="link-unstyled">
+                                    @Html.DisplayFor(modelItem => item.Merchant.Name)
+                                </a>
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Category.Name)
+                                <a asp-page="/Categories/Details" asp-route-id="@item.Category.Id" class="link-unstyled">
+                                    @Html.DisplayFor(modelItem => item.Category.Name)
+                                </a>
                             </td>
                             <td>
                                 @if (item.TransactionType == Models.TransactionType.PLUS) {
