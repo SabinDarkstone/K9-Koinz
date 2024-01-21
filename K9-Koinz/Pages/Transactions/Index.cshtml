@@ -38,6 +38,13 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="cbxAccounts">Account Filter</label>
+                    <select id="cbxAccounts" name="accountFilter" asp-for="AccountFilter" asp-items="Model.AccountOptions" class="form-control">
+                        <option value="" selected disabled>Select an Account...</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
                     <label for="lbxCategories">Category Filter</label>
                     <select id="lbxCategories" name="catFilter" asp-for="CategoryFilters" asp-items="Model.CategoryOptions" size="15" class="form-control"></select>
                 </div>
@@ -51,7 +58,7 @@
                 <div class="form-group mb-3 d-block d-lg-none">
                     <label for="cbxSort">Sort By</label>
                     <select id="cbxSort" name="sortOrder" asp-for="CurrentSort" class="form-control">
-                        <option value="" selected disabled>Select one...</option>
+                        <option value="" selected disabled>Select a Sort Option...</option>
                         <option value="Date">Date (Oldest First)</option>
                         <option value="date_desc">Date (Newest First)</option>
                         <option value="Merchant">Merchant (A-Z)</option>
@@ -77,6 +84,7 @@
                         <th>
                             <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
                                asp-route-catFilter="@Model.SelectedCategory"
+                               asp-route-accountFilter="@Model.SelectedAccount"
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
@@ -87,6 +95,7 @@
                         <th>
                             <a asp-page="./Index" asp-route-sortOrder="@Model.MerchantSort"
                                asp-route-catFilter="@Model.SelectedCategory"
+                               asp-route-accountFilter="@Model.SelectedAccount"
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
@@ -100,6 +109,7 @@
                         <th>
                             <a asp-page="./Index" asp-route-sortOrder="@Model.AmountSort"
                                asp-route-catFilter="@Model.SelectedCategory"
+                               asp-route-accountFilter="@Model.SelectedAccount"
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
@@ -192,6 +202,7 @@
 
             <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
+               asp-route-accountFilter="@Model.SelectedAccount"
                asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
@@ -202,6 +213,7 @@
 
             <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
+               asp-route-accountFilter="@Model.SelectedAccount"
                asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
