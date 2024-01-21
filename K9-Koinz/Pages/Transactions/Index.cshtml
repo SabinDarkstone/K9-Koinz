@@ -45,7 +45,7 @@
                 <div class="form-group mb-3">
                     <label for="cbxAccounts">Account Filter</label>
                     <select id="cbxAccounts" name="accountFilter" asp-for="AccountFilter" asp-items="Model.AccountOptions" class="form-control">
-                        <option value="" selected disabled>Select an Account...</option>
+                        <option value=" " selected>Select an Account...</option>
                     </select>
                 </div>
 
@@ -56,8 +56,8 @@
 
                 <div class="form-group mb-3">
                     <label for="txtMerchant" class="control-label">Merchant Filter</label>
-                    <input id="txtMerchant" class="form-control" />
-                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value="" />
+                    <input id="txtMerchant" class="form-control" placeholder="Enter a Merchant" />
+                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value=""/>
                 </div>
 
                 <div class="form-group mb-3 d-block d-lg-none">
