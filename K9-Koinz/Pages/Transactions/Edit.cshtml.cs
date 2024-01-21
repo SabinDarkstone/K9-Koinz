@@ -27,9 +27,6 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             var transaction = await _context.Transactions
-                .Include(trans => trans.Merchant)
-                .Include(trans => trans.Account)
-                .Include(trans => trans.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (transaction == null) {
                 return NotFound();
@@ -45,6 +42,13 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             Transaction.Date = Transaction.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
+
+            var category = await _context.Categories.FindAsync(Transaction.CategoryId);
+            var merchant = await _context.Merchants.FindAsync(Transaction.MerchantId);
+            var account = await _context.Accounts.FindAsync(Transaction.AccountId);
+            Transaction.CategoryName = category.Name;
+            Transaction.MerchantName = merchant.Name;
+            Transaction.AccountName = account.Name;
 
             _context.Attach(Transaction).State = EntityState.Modified;
 

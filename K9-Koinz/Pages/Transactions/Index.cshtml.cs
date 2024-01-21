@@ -109,15 +109,13 @@ namespace K9_Koinz.Pages.Transactions
                 transactionsIQ = transactionsIQ.Where(trans => trans.Date <= MaxDateFilter.Value);
             }
 
-            transactionsIQ = transactionsIQ.Include(trans => trans.Merchant).Include(trans => trans.Account).Include(trans => trans.Category);
-
             switch (sortOrder) {
 
                 case "Merchant":
-                    transactionsIQ = transactionsIQ.OrderBy(trans => trans.Merchant.Name);
+                    transactionsIQ = transactionsIQ.OrderBy(trans => trans.MerchantName);
                     break;
                 case "merchant_desc":
-                    transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.Merchant.Name);
+                    transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.MerchantName);
                     break;
                 case "Amount":
                     transactionsIQ = transactionsIQ.OrderBy(trans => Math.Abs(trans.Amount));

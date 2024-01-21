@@ -27,13 +27,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Transaction.MerchantId" class="control-label"></label>
-                <input id="txtMerchant" class="form-control" value="@Model.Transaction.Merchant.Name">
+                <input id="txtMerchant" class="form-control" value="@Model.Transaction.MerchantName">
                 <input asp-for="Transaction.MerchantId" type="hidden" id="hfMerchant" />
                 <span asp-validation-for="Transaction.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Transaction.CategoryId" class="control-label"></label>
-                <input id="txtCategory" class="form-control" value="@Model.Transaction.Category.Name"/>
+                <input id="txtCategory" class="form-control" value="@Model.Transaction.CategoryName"/>
                 <input asp-for="Transaction.CategoryId" type="hidden" id="hfCategory" />
                 <span asp-validation-for="Transaction.CategoryId" class="text-danger"></span>
             </div>

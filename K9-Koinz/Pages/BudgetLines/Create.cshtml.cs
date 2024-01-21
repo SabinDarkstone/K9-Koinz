@@ -32,15 +32,18 @@ namespace K9_Koinz.Pages.BudgetLines {
             return Page();
         }
 
-        public  IActionResult OnPost() {
+        public async Task<IActionResult> OnPost() {
             if (!ModelState.IsValid) {
                 return Page();
             }
 
+            var category = await _context.Categories.SingleAsync(cat => cat.Id == BudgetLine.BudgetCategoryId);
+            var budget = await _context.Budgets.SingleAsync(bud => bud.Id == BudgetLine.BudgetId);
+            BudgetLine.BudgetCategoryName = category.Name;
+            BudgetLine.BudgetName = budget.Name;
+
             _context.BudgetLines.Add(BudgetLine);
             _context.SaveChanges();
-
-            _logger.LogInformation(BudgetLine.Id.ToString());
 
             if (BudgetLine.DoRollover) {
                 CreateFirstBudgetLinePeriod();

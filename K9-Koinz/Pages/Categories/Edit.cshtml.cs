@@ -27,7 +27,6 @@ namespace K9_Koinz.Pages.Categories {
             }
 
             var category = await _context.Categories
-                .Include(cat => cat.ParentCategory)
                 .Include(cat => cat.ChildCategories)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null) {
@@ -49,6 +48,11 @@ namespace K9_Koinz.Pages.Categories {
             foreach (var childCat in childCategories) {
                 childCat.CategoryType = Category.CategoryType;
                 _context.Attach(childCat).State = EntityState.Modified;
+            }
+
+            if (Category.ParentCategoryId.HasValue) {
+                var parentCategory = await _context.Categories.FindAsync(Category.ParentCategoryId);
+                Category.ParentCategoryName = parentCategory.Name;
             }
 
             _context.Attach(Category).State = EntityState.Modified;

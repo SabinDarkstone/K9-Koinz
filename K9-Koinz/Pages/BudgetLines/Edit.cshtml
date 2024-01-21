@@ -17,12 +17,12 @@
             <input type="hidden" asp-for="BudgetLine.Id" />
             <div class="form-group">
                 <label asp-for="BudgetLine.BudgetId" class="control-label"></label>
-                <input type="text" value="@Model.BudgetLine.Budget.Name" class="form-control" readonly />
+                <input type="text" value="@Model.BudgetLine.BudgetName" class="form-control" readonly />
                 <input type="hidden" asp-for="BudgetLine.BudgetId"/>
             </div>
             <div class="form-group">
                 <label asp-for="BudgetLine.BudgetCategoryId" class="control-label"></label>
-                <input type="text" value="@Model.BudgetLine.BudgetCategory.Name" class="form-control" readonly />
+                <input type="text" value="@Model.BudgetLine.BudgetCategoryName" class="form-control" readonly />
                 <input type="hidden" asp-for="BudgetLine.BudgetCategoryId" />
             </div>
             <div class="form-group">

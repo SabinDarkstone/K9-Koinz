@@ -33,8 +33,7 @@ namespace K9_Koinz.Pages.Merchants {
             } else {
                 Merchant = merchant;
                 Transactions = await _context.Transactions
-                    .Include(trans => trans.Category)
-                    .Include(trans => trans.Account)
+                    .Where(trans => trans.MerchantId == Merchant.Id)
                     .OrderByDescending(trans => trans.Date)
                     .ToListAsync();
             }

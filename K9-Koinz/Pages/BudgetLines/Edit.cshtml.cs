@@ -31,8 +31,6 @@ namespace K9_Koinz.Pages.BudgetLines {
             }
 
             var budgetLine = await _context.BudgetLines
-                .Include(line => line.BudgetCategory)
-                .Include(line => line.Budget)
                 .FirstAsync(line => line.Id == id);
             if (budgetLine == null) {
                 return NotFound();

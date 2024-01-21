@@ -39,6 +39,8 @@ namespace K9_Koinz.Pages {
         public string LastMonthSpendingJson { get; set; }
 
         public async Task OnGetAsync() {
+            NamingUtils.AssignNames(_context);
+
             var startOfThisMonth = DateTime.Now.StartOfMonth();
             var endOfThisMonth = DateTime.Now.EndOfMonth();
 

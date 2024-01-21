@@ -30,6 +30,11 @@ namespace K9_Koinz.Pages.Categories {
                 return Page();
             }
 
+            if (Category.ParentCategoryId.HasValue) {
+                var parentCategory = await _context.Categories.FindAsync(Category.ParentCategoryId);
+                Category.ParentCategoryName = parentCategory.Name;
+            }
+
             _context.Categories.Add(Category);
             await _context.SaveChangesAsync();
 

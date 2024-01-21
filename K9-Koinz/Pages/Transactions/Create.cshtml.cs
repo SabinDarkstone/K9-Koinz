@@ -37,6 +37,13 @@ namespace K9_Koinz.Pages.Transactions {
 
             Transaction.Date = Transaction.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
+            var category = await _context.Categories.FindAsync(Transaction.CategoryId);
+            var merchant = await _context.Merchants.FindAsync(Transaction.MerchantId);
+            var account = await _context.Accounts.FindAsync(Transaction.AccountId);
+            Transaction.CategoryName = category.Name;
+            Transaction.MerchantName = merchant.Name;
+            Transaction.AccountName = account.Name;
+
             _context.Transactions.Add(Transaction);
             await _context.SaveChangesAsync();
 

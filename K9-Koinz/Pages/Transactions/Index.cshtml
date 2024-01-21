@@ -129,19 +129,19 @@
                     @foreach (var item in Model.Transactions) {
                         <tr>
                             <td class="d-none d-xl-block">
-                                @Html.DisplayFor(modelItem => item.Account.Name)
+                                @Html.DisplayFor(modelItem => item.AccountName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
                             <td>
-                                <a asp-page="/Merchants/Details" asp-route-id="@item.Merchant.Id" class="link-unstyled">
-                                    @Html.DisplayFor(modelItem => item.Merchant.Name)
+                                <a asp-page="/Merchants/Details" asp-route-id="@item.MerchantId" class="link-unstyled">
+                                    @Html.DisplayFor(modelItem => item.MerchantName)
                                 </a>
                             </td>
                             <td>
-                                <a asp-page="/Categories/Details" asp-route-id="@item.Category.Id" class="link-unstyled">
-                                    @Html.DisplayFor(modelItem => item.Category.Name)
+                                <a asp-page="/Categories/Details" asp-route-id="@item.CategoryId" class="link-unstyled">
+                                    @Html.DisplayFor(modelItem => item.CategoryName)
                                 </a>
                             </td>
                             <td>
@@ -171,7 +171,7 @@
                     <li class="list-group-item">
                         <div>
                             <div class="row">
-                                <div class="col-7 text-truncate transaction-item" data-id="@transaction.Id">@transaction.Merchant.Name</div>
+                                <div class="col-7 text-truncate transaction-item" data-id="@transaction.Id">@transaction.MerchantName</div>
                                 <div class="col-4 text-end transaction-item" data-id="@transaction.Id">
                                     @if (transaction.TransactionType == Models.TransactionType.PLUS) {
                                         <span class="text-success">
@@ -188,7 +188,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-7 text-secondary transaction-item" data-id="@transaction.Id">@transaction.Category.Name</div>
+                                <div class="col-7 text-secondary transaction-item" data-id="@transaction.Id">@transaction.CategoryName</div>
                                 <div class="col-4 text-secondary text-end transaction-item" data-id="@transaction.Id">@transaction.Date.FormatShortString()</div>
                                 <div class="col-1">
                                     <a asp-page="./Delete" asp-route-id="@transaction.Id"><i class="fa-solid fa-trash text-danger"></i></a>

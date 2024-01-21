@@ -65,7 +65,7 @@
             @foreach (var budgetLine in Model.BudgetLines) {
                 <tr>
                     <td>
-                        @budgetLine.BudgetCategory.Name
+                        @budgetLine.BudgetCategoryName
                     </td>
                     <td>
                         @budgetLine.BudgetedAmount.FormatCurrency(0)

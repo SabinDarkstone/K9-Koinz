@@ -45,16 +45,16 @@
                     <th>Category</th>
                     <th>Amount</th>
                 </tr>
-                @foreach (var item in Model.Merchant.Transactions) {
+                @foreach (var item in Model.Transactions) {
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Date)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Account.Name)
+                            @Html.DisplayFor(modelItem => item.AccountName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Category.Name)
+                            @Html.DisplayFor(modelItem => item.CategoryName)
                         </td>
                         <td>
                             @item.Amount.FormatCurrency(2)
