@@ -24,6 +24,10 @@ namespace K9_Koinz.Pages.Merchants {
             }
 
             var merchant = await _context.Merchants
+                .Include(merch => merch.Transactions)
+                    .ThenInclude(trans => trans.Category)
+                .Include(merch => merch.Transactions)
+                    .ThenInclude(trans => trans.Account)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(merch => merch.Id == id);
 
