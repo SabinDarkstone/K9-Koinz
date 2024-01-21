@@ -53,6 +53,7 @@ namespace K9_Koinz.Pages.Budgets {
             }
 
             Budgets = await _context.Budgets
+                .Include(bud => bud.BudgetTag)
                 .OrderBy(bud => bud.SortOrder)
                 .AsNoTracking()
                 .ToListAsync();
@@ -84,6 +85,7 @@ namespace K9_Koinz.Pages.Budgets {
                             .ThenInclude(cCat => cCat.Transactions)
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.Periods)
+                .Include(bud => bud.BudgetTag)
                 .AsNoTracking();
 
             if (!string.IsNullOrEmpty(selectedBudget)) {

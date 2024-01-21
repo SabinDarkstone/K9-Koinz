@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Humanizer;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : PageModel {
@@ -20,11 +21,14 @@ namespace K9_Koinz.Pages.Transactions {
 
         [BindProperty]
         public Transaction Transaction { get; set; } = default!;
+        public SelectList TagOptions;
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
                 return NotFound();
             }
+
+            TagOptions = TagUtils.GetTagList(_context);
 
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -49,6 +53,10 @@ namespace K9_Koinz.Pages.Transactions {
             Transaction.CategoryName = category.Name;
             Transaction.MerchantName = merchant.Name;
             Transaction.AccountName = account.Name;
+
+            if (Transaction.TagId == Guid.Empty) {
+                Transaction.TagId = null;
+            }
 
             _context.Attach(Transaction).State = EntityState.Modified;
 

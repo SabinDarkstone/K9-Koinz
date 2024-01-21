@@ -24,7 +24,9 @@ namespace K9_Koinz.Pages.Transactions {
                 return NotFound();
             }
 
-            var transaction = await _context.Transactions.FindAsync(id);
+            var transaction = await _context.Transactions
+                .Include(trans => trans.Tag)
+                .FirstOrDefaultAsync(trans => trans.Id == id);
 
             if (transaction == null) {
                 return NotFound();

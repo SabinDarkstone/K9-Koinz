@@ -132,6 +132,8 @@ namespace K9_Koinz.Pages.Transactions
                     break;
             }
 
+            transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
+
             if (!string.IsNullOrWhiteSpace(searchText)) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.Notes.Contains(searchText) || trans.Account.Name.Contains(searchText) || trans.Category.Name.Contains(searchText) || trans.Amount.ToString().Contains(searchText));
             }

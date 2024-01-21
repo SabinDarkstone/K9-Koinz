@@ -37,6 +37,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Transaction.CategoryName)
         </dd>
+        @if (Model.Transaction.TagId.HasValue) {
+            var style = "background-color: " + Model.Transaction.Tag.HexColor + "; text-decoration: none";
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Transaction.TagId)
+            </dt>
+            <dd class="col-sm-10">
+                <span class="badge badge-primary" style="@style">@Model.Transaction.Tag.ShortForm</span>
+            </dd>
+        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Transaction.Amount)
         </dt>

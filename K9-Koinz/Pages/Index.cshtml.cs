@@ -40,6 +40,7 @@ namespace K9_Koinz.Pages {
 
         public async Task OnGetAsync() {
             NamingUtils.AssignNames(_context);
+            TagUtils.CreateTagsIfNeeded(_context);
 
             var startOfThisMonth = DateTime.Now.StartOfMonth();
             var endOfThisMonth = DateTime.Now.EndOfMonth();

@@ -30,6 +30,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Budget.Description)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Budget.BudgetTagId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Budget.BudgetTagName)
+        </dd>
         @if (Model.Budget.CreatedDate != DateTime.MinValue) {
             <dt class="col-sm-2 mt-4">
                 @Html.DisplayNameFor(model => model.Budget.CreatedDate)

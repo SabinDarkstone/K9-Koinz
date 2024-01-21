@@ -58,7 +58,13 @@
                 }
 
                 <li class="nav-item col-md">
-                    <a style="text-align:center;" asp-page="./Index" asp-route-selectedBudget="@budget.Id" class="@navClassList">@budget.Name</a>
+                    <a style="text-align:center;" asp-page="./Index" asp-route-selectedBudget="@budget.Id" class="@navClassList">
+                        @if (budget.BudgetTagId.HasValue) {
+                            var style = "background-color: " + budget.BudgetTag.HexColor + "; text-decoration: none";
+                            <span class="badge badge-primary" style="@style">@budget.BudgetTag.ShortForm</span>
+                        }
+                        @budget.Name
+                    </a>
                 </li>
             }
         </ul>

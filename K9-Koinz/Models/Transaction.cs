@@ -34,8 +34,9 @@ namespace K9_Koinz.Models {
         public string Notes { get; set; }
         [DisplayName("Does this transaction occur AFTER the initial balance was set?")]
         public bool DoNotSkip { get; set; }
-        public List<TransactionTag> Tags { get; set; }
-        public List<string> TagNames { get; set; }
+        [DisplayName("Tag")]
+        public Guid? TagId { get; set; }
+        public Tag Tag { get; set; }
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();

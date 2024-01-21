@@ -136,6 +136,10 @@
                             </td>
                             <td>
                                 <a asp-page="/Merchants/Details" asp-route-id="@item.MerchantId" class="link-unstyled">
+                                    @if (item.TagId.HasValue) {
+                                        var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
+                                        <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
+                                    }
                                     @Html.DisplayFor(modelItem => item.MerchantName)
                                 </a>
                             </td>

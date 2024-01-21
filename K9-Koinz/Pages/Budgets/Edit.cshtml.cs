@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Budgets {
     public class EditModel : PageModel {
@@ -21,11 +22,14 @@ namespace K9_Koinz.Pages.Budgets {
 
         [BindProperty]
         public Budget Budget { get; set; } = default!;
+        public SelectList TagOptions;
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
                 return NotFound();
             }
+
+            TagOptions = TagUtils.GetTagList(_context);
 
             var budget = await _context.Budgets
                 .Include(bud => bud.BudgetLines)
@@ -41,6 +45,13 @@ namespace K9_Koinz.Pages.Budgets {
         public async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
                 return Page();
+            }
+
+            if (Budget.BudgetTagId == Guid.Empty) {
+                Budget.BudgetTagId = null;
+            } else {
+                var tag = await _context.Tags.FindAsync(Budget.BudgetTagId);
+                Budget.BudgetTagName = tag.Name;
             }
 
             _context.Attach(Budget).State = EntityState.Modified;

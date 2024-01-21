@@ -1,13 +1,22 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace K9_Koinz.Utils {
     public static class BudgetUtils {
         public static List<Transaction> GetTransactions(this BudgetLine line, DateTime period) {
             var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate(period);
-            var transactions = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate).AsEnumerable();
-            var childCategoryTransactions = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).AsEnumerable();
+            var transactionsIQ = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate);
+            if (line.Budget.BudgetTagId.HasValue) {
+                transactionsIQ = transactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId.Value);
+            }
+            var transactions = transactionsIQ.AsEnumerable();
+            var childCategoryTransactionsIQ = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).AsEnumerable();
+            if (line.Budget.BudgetTagId.HasValue) {
+                childCategoryTransactionsIQ = childCategoryTransactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId);
+            }
+            var childCategoryTransactions = childCategoryTransactionsIQ.AsEnumerable();
             transactions = [.. transactions, .. childCategoryTransactions];
             line.SpentAmount = transactions.Sum(trans => trans.Amount);
             if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE && line.SpentAmount != 0.0) {
@@ -35,10 +44,13 @@ namespace K9_Koinz.Utils {
             var allUnallocatedCategories = allocatedCategories.Concat(allocatedChildCategories);
 
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(period);
-            var transactions = context.Transactions.AsNoTracking()
+            var transactionsIQ = context.Transactions.AsNoTracking()
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allUnallocatedCategories.Contains(trans.CategoryId) &&
-                    trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY)
-                .ToList();
+                    trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY);
+            if (budget.BudgetTagId.HasValue) {
+                transactionsIQ = transactionsIQ.Where(trans => trans.TagId ==  budget.BudgetTagId.Value);
+            }
+            var transactions = transactionsIQ.ToList();
 
             var unallocatedBudgetLines = new Dictionary<Guid, BudgetLine>();
             foreach (var trans in transactions) {

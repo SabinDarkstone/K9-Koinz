@@ -22,9 +22,11 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public List<SelectListItem> AccountOptions;
+        public SelectList TagOptions;
 
         public void OnGet() {
             AccountOptions = AccountUtils.GetAccountList(_context, true);
+            TagOptions = TagUtils.GetTagList(_context);
         }
 
         [BindProperty]
@@ -43,6 +45,10 @@ namespace K9_Koinz.Pages.Transactions {
             Transaction.CategoryName = category.Name;
             Transaction.MerchantName = merchant.Name;
             Transaction.AccountName = account.Name;
+
+            if (Transaction.TagId == Guid.Empty) {
+                Transaction.TagId = null;
+            }
 
             _context.Transactions.Add(Transaction);
             await _context.SaveChangesAsync();

@@ -1,14 +1,13 @@
-﻿namespace K9_Koinz.Models {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace K9_Koinz.Models {
     public class Tag : BaseEntity, INameable {
+        [Required]
         public string Name { get; set; }
-    }
 
-    public class TransactionTag : BaseEntity {
-
-        public Guid TransactionId { get; set; }
-        public Transaction Transaction { get; set; }
-
-        public Guid TagId { get; set; }
-        public Tag Tag { get; set; }
+        [Required]
+        [StringLength(1)]
+        public string ShortForm { get; set; }
+        public string HexColor { get; set; }
     }
 }
