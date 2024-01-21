@@ -65,11 +65,11 @@ namespace K9_Koinz.Pages.Transactions
 
         public PaginatedList<Transaction> Transactions { get; set; }
         public SelectList CategoryOptions;
-        public SelectList AccountOptions;
+        public List<SelectListItem> AccountOptions;
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
-            AccountOptions = new SelectList(_context.Accounts.OrderBy(cat => cat.Name).ToList(), nameof(Account.Id), nameof(Account.Name));
+            AccountOptions = AccountUtils.GetAccountList(_context, true);
 
             DateSort = string.IsNullOrEmpty(sortOrder) || sortOrder == "Date" ? "date_desc" : "Date";
             MerchantSort = sortOrder == "Merchant" ? "merchant_desc" : "Merchant";

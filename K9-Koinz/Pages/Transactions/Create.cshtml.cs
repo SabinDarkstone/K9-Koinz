@@ -9,6 +9,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Microsoft.EntityFrameworkCore;
 using Humanizer;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : PageModel {
@@ -20,9 +21,10 @@ namespace K9_Koinz.Pages.Transactions {
             _logger = logger;
         }
 
-        public IActionResult OnGet() {
-            ViewData["AccountId"] = new SelectList(_context.Accounts.OrderBy(acct => acct.Name), nameof(Account.Id), nameof(Account.Name));
-            return Page();
+        public List<SelectListItem> AccountOptions;
+
+        public void OnGet() {
+            AccountOptions = AccountUtils.GetAccountList(_context, true);
         }
 
         [BindProperty]
