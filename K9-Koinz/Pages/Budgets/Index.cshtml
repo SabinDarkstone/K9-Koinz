@@ -229,9 +229,11 @@
                         <div class="col">
                             <div class="progress" style="height: 20px;">
                                 <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
-                                    <ul class="marker-list">
-                                        <li class="marker" style="@todayLine"></li>
-                                    </ul>
+                                    @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                        <ul class="marker-list">
+                                            <li class="marker" style="@todayLine"></li>
+                                        </ul>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -242,17 +244,21 @@
                             <div class="progress" style="height: 20px;">
                                 @if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
                                     <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
+                                        @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                            <ul class="marker-list">
+                                                <li class="marker" style="@todayLine"></li>
+                                            </ul>
+                                        }
                                     </div>
                                     <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
-                                        <ul class="marker-list">
-                                            <li class="marker" style="@todayLine"></li>
-                                        </ul>
                                     </div>
                                 } else if (budgetLine.RolloverStatus == RolloverStatus.NEGATIVE) {
                                     <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
-                                        <ul class="marker-list">
-                                            <li class="marker" style="@todayLine"></li>
-                                        </ul>
+                                        @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                            <ul class="marker-list">
+                                                <li class="marker" style="@todayLine"></li>
+                                            </ul>
+                                        }
                                     </div>
                                     <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
                                     </div>
