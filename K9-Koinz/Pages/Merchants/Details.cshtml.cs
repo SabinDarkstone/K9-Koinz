@@ -17,6 +17,7 @@ namespace K9_Koinz.Pages.Merchants {
         }
 
         public Merchant Merchant { get; set; } = default!;
+        public List<Transaction> Transactions { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
@@ -24,10 +25,6 @@ namespace K9_Koinz.Pages.Merchants {
             }
 
             var merchant = await _context.Merchants
-                .Include(merch => merch.Transactions)
-                    .ThenInclude(trans => trans.Category)
-                .Include(merch => merch.Transactions)
-                    .ThenInclude(trans => trans.Account)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(merch => merch.Id == id);
 
@@ -35,6 +32,11 @@ namespace K9_Koinz.Pages.Merchants {
                 return NotFound();
             } else {
                 Merchant = merchant;
+                Transactions = await _context.Transactions
+                    .Include(trans => trans.Category)
+                    .Include(trans => trans.Account)
+                    .OrderByDescending(trans => trans.Date)
+                    .ToListAsync();
             }
             return Page();
         }

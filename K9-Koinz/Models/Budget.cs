@@ -32,28 +32,44 @@ namespace K9_Koinz.Models
 		[NotMapped]
         public ICollection<BudgetLine> IncomeLines {
             get {
-                return BudgetLines.Where(line => line.BudgetCategory.CategoryType == CategoryType.INCOME).ToList();
+                return BudgetLines
+                    .Where(line => line.BudgetCategory.CategoryType == CategoryType.INCOME)
+                    .OrderBy(line => line.BudgetCategory.ParentCategory?.Name ?? "")
+                        .ThenBy(line => line.BudgetCategory.Name)
+                    .ToList();
             }
         }
 
         [NotMapped]
         public ICollection<BudgetLine> ExpenseLines {
             get {
-                return BudgetLines.Where(line => line.BudgetCategory.CategoryType == CategoryType.EXPENSE).ToList();
+                return BudgetLines
+                    .Where(line => line.BudgetCategory.CategoryType == CategoryType.EXPENSE)
+                    .OrderBy(line => line.BudgetCategory.ParentCategory?.Name ?? "")
+                        .ThenBy(line => line.BudgetCategory.Name)
+                    .ToList();
             }
         }
 
         [NotMapped]
         public ICollection<BudgetLine> UnallocatedIncomes {
             get {
-                return UnallocatedLines.Where(line => line.BudgetCategory.CategoryType == CategoryType.INCOME).ToList();
+                return UnallocatedLines
+                    .Where(line => line.BudgetCategory.CategoryType == CategoryType.INCOME)
+                    .OrderBy(line => line.BudgetCategory.ParentCategory?.Name ?? "")
+                        .ThenBy(line => line.BudgetCategory.Name)
+                    .ToList();
             }
         }
 
         [NotMapped]
         public ICollection<BudgetLine> UnallocatedExpenses {
             get {
-                return UnallocatedLines.Where(line => line.BudgetCategory.CategoryType == CategoryType.EXPENSE).ToList();
+                return UnallocatedLines
+                    .Where(line => line.BudgetCategory.CategoryType == CategoryType.EXPENSE)
+                    .OrderBy(line => line.BudgetCategory.ParentCategory?.Name ?? line.BudgetCategory.Name)
+                        .ThenBy(line => line.BudgetCategory.Name)
+                    .ToList();
             }
         }
 

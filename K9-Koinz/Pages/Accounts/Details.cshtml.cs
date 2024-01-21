@@ -17,7 +17,9 @@ namespace K9_Koinz.Pages.Accounts {
         }
 
         public Account Account { get; set; } = default!;
-        public List<Transaction> Transactions => Account?.Transactions.ToList() ?? new List<Transaction>();
+        public List<Transaction> Transactions => Account?.Transactions
+            .OrderByDescending(trans => trans.Date)
+            .ToList() ?? new List<Transaction>();
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
@@ -26,7 +28,9 @@ namespace K9_Koinz.Pages.Accounts {
 
             var account = await _context.Accounts
                 .Include(acct => acct.Transactions)
-                .ThenInclude(trans => trans.Category)
+                    .ThenInclude(trans => trans.Category)
+                .Include(acct => acct.Transactions)
+                    .ThenInclude(trans => trans.Merchant)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(acct => acct.Id == id);
 
