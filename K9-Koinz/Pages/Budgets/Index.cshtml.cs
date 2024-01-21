@@ -144,11 +144,9 @@ namespace K9_Koinz.Pages.Budgets {
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
                 if (budgetLine.PreviousPeriod != null && budgetLine.CurrentPeriod == null) {
                     budgetLine.CurrentPeriod = CreateNewCurrentPeriod(budgetLine);
+                } else if (budgetLine.PreviousPeriod == null && budgetLine.CurrentPeriod == null) {
+                    continue;
                 }
-
-                //if (budgetLine.CurrentPeriod == null) {
-                //    continue;
-                //}
 
                 budgetLine.CurrentPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
