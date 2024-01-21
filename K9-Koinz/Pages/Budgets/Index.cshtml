@@ -16,12 +16,25 @@
         width: 100%;
     }
 
-        .marker-list .marker {
-            position: absolute;
-            width: 1px;
-            height: 20px;
-            background-color: black;
-        }
+    .marker-list .marker {
+        position: absolute;
+        width: 1px;
+        height: 20px;
+        background-color: black;
+    }
+
+    .list-group-item {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 0.25rem !important;
+        margin-top: 0.25rem !important;
+        border: none !important;
+    }
+    
+    .list-group {
+        margin-left: 1rem !important;
+        margin-right: 1rem !important;
+    }
 </style>
 
 <h1>Budgets</h1>
@@ -244,7 +257,7 @@
                             <div class="progress" style="height: 20px;">
                                 @if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
                                     <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
-                                        @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                                                                @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
                                             <ul class="marker-list">
                                                 <li class="marker" style="@todayLine"></li>
                                             </ul>

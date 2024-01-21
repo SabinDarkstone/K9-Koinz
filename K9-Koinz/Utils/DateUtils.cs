@@ -70,23 +70,20 @@ namespace K9_Koinz.Utils {
 
         public static double GetPercentThroughWeek(this DateTime dt) {
             var startDate = dt.StartOfWeek();
-            var today = dt.AtMidnight();
-            return (today - startDate).TotalDays * 100 / 7;
+            return (dt - startDate).TotalDays * 100 / 7;
         }
 
         public static double GetPercentThroughMonth(this DateTime dt) {
             var startDate = dt.StartOfMonth();
             var endDate = dt.EndOfMonth();
-            var today = dt.AtMidnight();
             var totalDays = (endDate - startDate).Days;
-            return (today - startDate).Days * 100 / totalDays;
+            return (dt - startDate).Days * 100 / totalDays;
         }
         public static double GetPercentThroughYear(this DateTime dt) {
             var startDate = dt.StartOfYear();
             var endDate = dt.EndOfYear();
-            var today = dt.AtMidnight();
             var totalDays = (endDate - startDate).Days;
-            return (today - startDate).Days * 100 / totalDays;
+            return (dt - startDate).Days * 100 / totalDays;
         }
 
         public static string FormatForUrl(this DateTime dt) {
