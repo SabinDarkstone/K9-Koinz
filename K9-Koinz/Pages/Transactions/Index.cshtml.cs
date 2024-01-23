@@ -28,6 +28,7 @@ namespace K9_Koinz.Pages.Transactions
         public List<Guid> CategoryFilters { get; set; }
         public Guid MerchantFilter { get; set; }
         public Guid AccountFilter { get; set; }
+        public Guid TagFilter { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
@@ -43,6 +44,7 @@ namespace K9_Koinz.Pages.Transactions
         public string SelectedCategory { get; set; }
         public string SelectedMerchant { get; set; }
         public string SelectedAccount { get; set; }
+        public string SelectedTag { get; set; }
 
         public string MinDateString {
             get {
@@ -67,7 +69,7 @@ namespace K9_Koinz.Pages.Transactions
         public SelectList CategoryOptions;
         public List<SelectListItem> AccountOptions;
 
-        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
+        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string? tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
             AccountOptions = AccountUtils.GetAccountList(_context, true);
 
@@ -78,6 +80,7 @@ namespace K9_Koinz.Pages.Transactions
             SelectedCategory = catFilter;
             SelectedMerchant = merchFilter;
             SelectedAccount = accountFilter;
+            SelectedTag = tagId;
             MinDateFilter = minDate;
             MaxDateFilter = maxDate;
 
@@ -99,6 +102,11 @@ namespace K9_Koinz.Pages.Transactions
             if (!string.IsNullOrWhiteSpace(accountFilter)) {
                 AccountFilter = Guid.Parse(SelectedAccount);
                 transactionsIQ = transactionsIQ.Where(trans => trans.AccountId == AccountFilter);
+            }
+
+            if (!string.IsNullOrWhiteSpace(tagId)) {
+                TagFilter = Guid.Parse(SelectedTag);
+                transactionsIQ = transactionsIQ.Where(trans => trans.TagId == TagFilter);
             }
 
             if (MinDateFilter.HasValue) {

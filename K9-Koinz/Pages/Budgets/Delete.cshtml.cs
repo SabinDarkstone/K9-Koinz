@@ -38,7 +38,12 @@ namespace K9_Koinz.Pages.Budgets
             var unsortedLines = await _context.BudgetLines
                 .Where(line => line.BudgetId == Budget.Id)
                 .ToListAsync();
+
             BudgetLines = unsortedLines.SortCategories();
+
+            if (Budget.DoNotUseCategories) {
+                Budget.BudgetedAmount = BudgetLines.First().BudgetedAmount;
+            }
 
             return Page();
         }
@@ -49,6 +54,7 @@ namespace K9_Koinz.Pages.Budgets
             }
 
             var budget = await _context.Budgets.FindAsync(id);
+
             if (budget != null) {
                 Budget = budget;
                 _context.Budgets.Remove(Budget);

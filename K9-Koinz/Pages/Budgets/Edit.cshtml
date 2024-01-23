@@ -15,6 +15,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Budget.DoNotUseCategories" />
             <input type="hidden" asp-for="Budget.Id" />
             <div class="form-group">
                 <label asp-for="Budget.Name" class="control-label"></label>
@@ -36,9 +37,23 @@
             <div class="form-group">
                 <label asp-for="Budget.BudgetTagId" class="control-label"></label>
                 <select asp-for="Budget.BudgetTagId" class="form-control" asp-items="@Model.TagOptions">
-                    <option value="@Guid.Empty" selected>No Tag</option>
+                    @if (Model.Budget.DoNotUseCategories) {
+                        <option value="@Guid.Empty" selected disabled>No Tag</option>
+                    } else {
+                        <option value="@Guid.Empty" selected>No Tag</option>
+                    }
                 </select>
             </div>
+            @if (Model.Budget.DoNotUseCategories) {
+                <div class="form-group">
+                    <label asp-for="Budget.BudgetedAmount" class="control-label"></label>
+                    <input asp-for="Budget.BudgetedAmount" class="form-control" />
+                </div>
+                <div class="form-group">
+                    @Html.EditorFor(model => Model.Budget.DoNoCategoryRollover)
+                    @Html.DisplayNameFor(model => Model.Budget.DoNoCategoryRollover)
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -46,40 +61,42 @@
     </div>
 </div>
 
-<h4>Budget Lines</h4>
+@if (!Model.Budget.DoNotUseCategories) {
+    <h4>Budget Lines</h4>
 
-<div class="col-sm-5">
-    <table class="table mt-2">
-        <thead>
-            <tr>
-                <th>Category Name</th>
-                <th>Budgeted Amount</th>
-                <th>
-                    <a class="btn btn-outline-primary" asp-page="/BudgetLines/Create" asp-route-budgetId="@Model.Budget.Id">Add Line</a>
-                </th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var budgetLine in Model.Budget.BudgetLines) {
+    <div class="col-sm-5">
+        <table class="table mt-2">
+            <thead>
                 <tr>
-                    <td>
-                        @budgetLine.BudgetCategory.Name
-                    </td>
-                    <td>
-                        <div class="col-sm-3">
-                            @budgetLine.BudgetedAmount.FormatCurrency()
-                        </div>
-                    </td>
-                    <td>
-                        <a asp-page="/BudgetLines/Edit" asp-route-id="@budgetLine.Id">Edit</a> |
-                        <a asp-page="/BudgetLines/Delete" asp-route-id="@budgetLine.Id">Delete</a>
-                    </td>
+                    <th>Category Name</th>
+                    <th>Budgeted Amount</th>
+                    <th>
+                        <a class="btn btn-outline-primary" asp-page="/BudgetLines/Create" asp-route-budgetId="@Model.Budget.Id">Add Line</a>
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+
+            <tbody>
+                @foreach (var budgetLine in Model.Budget.BudgetLines) {
+                    <tr>
+                        <td>
+                            @budgetLine.BudgetCategory.Name
+                        </td>
+                        <td>
+                            <div class="col-sm-3">
+                                @budgetLine.BudgetedAmount.FormatCurrency()
+                            </div>
+                        </td>
+                        <td>
+                            <a asp-page="/BudgetLines/Edit" asp-route-id="@budgetLine.Id">Edit</a> |
+                            <a asp-page="/BudgetLines/Delete" asp-route-id="@budgetLine.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 <div>
     <a asp-page="./Index">Back to List</a>

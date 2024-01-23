@@ -12,7 +12,10 @@ namespace K9_Koinz.Models {
         [Display(Name = "Transfer")]
         TRANSFER,
         [Display(Name = "Other")]
-        OTHER
+        OTHER,
+        [Display(Name = "All")]
+        ALL,
+        UNASSIGNED
     }
 
     public class Category : DateTrackedEntity, INameable {
@@ -23,7 +26,7 @@ namespace K9_Koinz.Models {
         public Category ParentCategory { get; set; }
         public string ParentCategoryName { get; set; }
         [DisplayName("Category Type")]
-        public CategoryType? CategoryType { get; set; }
+        public CategoryType CategoryType { get; set; } = CategoryType.UNASSIGNED;
         
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BudgetLine> BudgetLines { get; set; }

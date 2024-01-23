@@ -5,21 +5,31 @@ using System.Diagnostics;
 
 namespace K9_Koinz.Utils {
     public static class BudgetUtils {
-        public static List<Transaction> GetTransactions(this BudgetLine line, DateTime period) {
+        public static List<Transaction> GetTransactions(this BudgetLine line, DateTime period, KoinzContext context, ILogger<Pages.Budgets.IndexModel> logger) {
             var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate(period);
+
+            if (line.Budget.DoNotUseCategories) {
+                line.BudgetCategory.Transactions = context.Transactions.Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER).ToList();
+            }
+
             var transactionsIQ = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate);
+
             if (line.Budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId.Value);
             }
             var transactions = transactionsIQ.AsEnumerable();
-            var childCategoryTransactionsIQ = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).AsEnumerable();
-            if (line.Budget.BudgetTagId.HasValue) {
-                childCategoryTransactionsIQ = childCategoryTransactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId);
+
+            if (line.BudgetCategory.CategoryType == CategoryType.INCOME || line.BudgetCategory.CategoryType == CategoryType.EXPENSE) {
+                var childCategoryTransactionsIQ = line.BudgetCategory.ChildCategories.SelectMany(cat => cat.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate)).AsEnumerable();
+                if (line.Budget.BudgetTagId.HasValue) {
+                    childCategoryTransactionsIQ = childCategoryTransactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId);
+                }
+                var childCategoryTransactions = childCategoryTransactionsIQ.AsEnumerable();
+                transactions = [.. transactions, .. childCategoryTransactions];
             }
-            var childCategoryTransactions = childCategoryTransactionsIQ.AsEnumerable();
-            transactions = [.. transactions, .. childCategoryTransactions];
+
             line.SpentAmount = transactions.Sum(trans => trans.Amount);
-            if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE && line.SpentAmount != 0.0) {
+            if ((line.BudgetCategory.CategoryType == CategoryType.EXPENSE || line.BudgetCategory.CategoryType == CategoryType.ALL) && line.SpentAmount != 0.0) {
                 line.SpentAmount *= -1;
             }
             line.Transactions = transactions.ToList();
@@ -28,6 +38,11 @@ namespace K9_Koinz.Utils {
 
         public static List<BudgetLine> GetUnallocatedSpending(this Budget budget, KoinzContext context, DateTime period) {
             var categoryData = context.Categories.AsNoTracking().ToDictionary(cat => cat.Id);
+
+            // Is this budget not using categories?
+            if (budget.BudgetLines == null || budget.BudgetLines.Count == 0) {
+                return new List<BudgetLine>();
+            }
 
             // Get all budget categories from income and expense lines
             var allocatedCategories = budget.ExpenseLines

@@ -31,6 +31,7 @@ namespace K9_Koinz.Pages.BudgetLines {
             }
 
             var budgetLine = await _context.BudgetLines
+                .Include(line => line.BudgetCategory)
                 .FirstAsync(line => line.Id == id);
             if (budgetLine == null) {
                 return NotFound();
@@ -45,7 +46,14 @@ namespace K9_Koinz.Pages.BudgetLines {
                 return Page();
             }
 
-            var oldRecord = _context.BudgetLines.AsNoTracking().First(line => line.Id == BudgetLine.Id);
+            var oldRecord = _context.BudgetLines
+                .Include(line => line.BudgetCategory)
+                .Include(line => line.Budget)
+                .AsNoTracking()
+                .First(line => line.Id == BudgetLine.Id);
+
+            BudgetLine.BudgetCategory = oldRecord.BudgetCategory;
+            BudgetLine.Budget = oldRecord.Budget;
 
             if (!oldRecord.DoRollover && BudgetLine.DoRollover) {
                 _budgetPeriodUtils.DeleteOldBudgetLinePeriods(BudgetLine);
@@ -55,6 +63,11 @@ namespace K9_Koinz.Pages.BudgetLines {
             if (oldRecord.DoRollover && !BudgetLine.DoRollover) {
                 _budgetPeriodUtils.DeleteOldBudgetLinePeriods(BudgetLine);
             }
+
+            BudgetLine.BudgetCategoryId = oldRecord.BudgetCategoryId;
+            BudgetLine.BudgetId = oldRecord.BudgetId;
+            BudgetLine.BudgetCategory = null;
+            BudgetLine.Budget = null;
 
             _context.Attach(BudgetLine).State = EntityState.Modified;
 

@@ -16,12 +16,12 @@
         width: 100%;
     }
 
-    .marker-list .marker {
-        position: absolute;
-        width: 1px;
-        height: 20px;
-        background-color: black;
-    }
+        .marker-list .marker {
+            position: absolute;
+            width: 1px;
+            height: 20px;
+            background-color: black;
+        }
 
     .list-group-item {
         padding-left: 0 !important;
@@ -30,7 +30,7 @@
         margin-top: 0.25rem !important;
         border: none !important;
     }
-    
+
     .list-group {
         margin-left: 1rem !important;
         margin-right: 1rem !important;
@@ -102,140 +102,59 @@
 
     <hr />
 
-    @if (Model.SelectedBudget.IncomeLines.Any()) {
-        <div class="row">
-            <div class="col">
-                <h4>Income</h4>
-            </div>
-            <div class="col">
-                <h4 style="text-align: right;">
-                    @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
-                </h4>
-            </div>
-        </div>
-        <ul class="list-group mb-4">
-            @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
-                var spentOverBudgetedPercent = Math.Clamp((budgetLine.SpentAmount / budgetLine.BudgetedAmount) * 100, 0, 100);
+    if (Model.SelectedBudget.DoNotUseCategories) {
+        var budgetLine = Model.SelectedBudget.BudgetLines.First();
 
-                var width = "width: " + spentOverBudgetedPercent + "%;";
-                var todayLine = "left: " + budgetLine.TimePerent + "%;";
+        var todayLine = "left: " + budgetLine.TimePerent + "%;";
+        var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
+        var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col">
-                            <p>@budgetLine.BudgetCategory.Name</p>
-                        </div>
-                        <div class="col">
-                            <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
-                        </div>
-                    </div>
+        var solidWidthString = "";
+        var stripedWidthString = "";
 
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" role="progressbar" style="@width">
-                            <ul class="marker-list">
-                                <li class="marker" style="@todayLine"></li>
-                            </ul>
-                        </div>
+        var totalBarPercent = 0d;
 
-                    </div>
-                    <div class="text-secondary">
-                        @budgetLine.SpentAmount.FormatCurrency(0)
-                        <span style="font-weight:lighter;">
-                            of
-                        </span>
-                        @budgetLine.BudgetedAmount.FormatCurrency(0)
-                    </div>
-                </li>
-            }
-        </ul>
+        var solidProgressBarClassList = "progress-bar";
+        var stripedProgressBarClassList = "progress-bar progress-bar-striped";
 
-        @if (Model.SelectedBudget.UnallocatedLines.Any()) {
-            <div class="row">
-                <div class="col">
-                    <h4>Other Income</h4>
-                </div>
-                <div class="col">
-                    <h4 style="text-align: right;">
-                        @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
-                    </h4>
-                </div>
-            </div>
-            <ul>
-                @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
-                    var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
-                    var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+        var spentOverBudgetedPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / budgetLine.BudgetedAmount) * 100, 0, 100);
 
-                    <li>
-                        <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
-                    </li>
-                }
-            </ul>
+        if (budgetLine.RolloverStatus == RolloverStatus.NONE) {
+            solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
+            totalBarPercent = spentOverBudgetedPercent;
+        } else if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+            var spentOverBudgetedPlusRolloverPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / (budgetLine.BudgetedAmount + budgetLine.RolloverAmount.Value)) * 100, 0, 100);
+            var remainingPercent = spentOverBudgetedPercent - spentOverBudgetedPlusRolloverPercent;
+
+            solidWidthString = "width: " + remainingPercent + "%;";
+            stripedWidthString = "width: " + spentOverBudgetedPlusRolloverPercent + "%;";
+            totalBarPercent = spentOverBudgetedPercent;
+        } else {
+            var overagePercent = Math.Clamp(Math.Abs(budgetLine.RolloverAmount.Value) / budgetLine.BudgetedAmount * 100, 0, 100);
+
+            solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
+            stripedWidthString = "width: " + overagePercent + "%;";
+            totalBarPercent = overagePercent + spentOverBudgetedPercent;
         }
 
-    }
+        if (totalBarPercent >= 99.5) {
+            solidProgressBarClassList += " bg-danger";
+            stripedProgressBarClassList += " bg-danger";
+        } else if (totalBarPercent >= 80) {
+            solidProgressBarClassList += " bg-warning";
+            stripedProgressBarClassList += " bg-warning";
+        } else {
+            solidProgressBarClassList += " bg-success";
+            stripedProgressBarClassList += " bg-success";
+        }
 
-    <div class="row">
-        <div class="col">
-            <h4>Expenses</h4>
-        </div>
-        <div class="col">
-            <h4 style="text-align: right;">
-                @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
-            </h4>
-        </div>
-    </div>
-
-    <ul class="list-group mb-4">
-        @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
-            var todayLine = "left: " + budgetLine.TimePerent + "%;";
-            var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
-            var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
-
-            var solidWidthString = "";
-            var stripedWidthString = "";
-
-            var totalBarPercent = 0d;
-
-            var solidProgressBarClassList = "progress-bar";
-            var stripedProgressBarClassList = "progress-bar progress-bar-striped";
-
-            var spentOverBudgetedPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / budgetLine.BudgetedAmount) * 100, 0, 100);
-
-            if (budgetLine.RolloverStatus == RolloverStatus.NONE) {
-                solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
-                totalBarPercent = spentOverBudgetedPercent;
-            } else if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
-                var spentOverBudgetedPlusRolloverPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / (budgetLine.BudgetedAmount + budgetLine.RolloverAmount.Value)) * 100, 0, 100);
-                var remainingPercent = spentOverBudgetedPercent - spentOverBudgetedPlusRolloverPercent;
-
-                solidWidthString = "width: " + remainingPercent + "%;";
-                stripedWidthString = "width: " + spentOverBudgetedPlusRolloverPercent + "%;";
-                totalBarPercent = spentOverBudgetedPercent;
-            } else {
-                var overagePercent = Math.Clamp(Math.Abs(budgetLine.RolloverAmount.Value) / budgetLine.BudgetedAmount * 100, 0, 100);
-
-                solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
-                stripedWidthString = "width: " + overagePercent + "%;";
-                totalBarPercent = overagePercent + spentOverBudgetedPercent;
-            }
-
-            if (totalBarPercent >= 99.5) {
-                solidProgressBarClassList += " bg-danger";
-                stripedProgressBarClassList += " bg-danger";
-            } else if (totalBarPercent >= 80) {
-                solidProgressBarClassList += " bg-warning";
-                stripedProgressBarClassList += " bg-warning";
-            } else {
-                solidProgressBarClassList += " bg-success";
-                stripedProgressBarClassList += " bg-success";
-            }
-
+        <ul class="list-group">
             <li class="list-group-item">
                 <div class="row">
                     <div class="col">
                         <p>
                             <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
-                                <a class="no-underline" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.Name</a>
+                                <a class="no-underline" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-tagId="@Model.SelectedBudget.BudgetTagId">@budgetLine.BudgetCategory.Name</a>
                             </button>
                         </p>
                     </div>
@@ -263,7 +182,7 @@
                             <div class="progress" style="height: 20px;">
                                 @if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
                                     <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
-                                                                                @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                        @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
                                             <ul class="marker-list">
                                                 <li class="marker" style="@todayLine"></li>
                                             </ul>
@@ -318,30 +237,250 @@
                     }
                 </div>
             </li>
-        }
-    </ul>
+        </ul>
+    } else {
 
-    @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
+        @if (Model.SelectedBudget.IncomeLines.Any()) {
+            <div class="row">
+                <div class="col">
+                    <h4>Income</h4>
+                </div>
+                <div class="col">
+                    <h4 style="text-align: right;">
+                        @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                    </h4>
+                </div>
+            </div>
+            <ul class="list-group mb-4">
+                @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
+                    var spentOverBudgetedPercent = Math.Clamp((budgetLine.SpentAmount / budgetLine.BudgetedAmount) * 100, 0, 100);
+
+                    var width = "width: " + spentOverBudgetedPercent + "%;";
+                    var todayLine = "left: " + budgetLine.TimePerent + "%;";
+
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                <p>@budgetLine.BudgetCategory.Name</p>
+                            </div>
+                            <div class="col">
+                                <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
+                            </div>
+                        </div>
+
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" style="@width">
+                                <ul class="marker-list">
+                                    <li class="marker" style="@todayLine"></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div class="text-secondary">
+                            @budgetLine.SpentAmount.FormatCurrency(0)
+                            <span style="font-weight:lighter;">
+                                of
+                            </span>
+                            @budgetLine.BudgetedAmount.FormatCurrency(0)
+                        </div>
+                    </li>
+                }
+            </ul>
+
+            @if (Model.SelectedBudget.UnallocatedLines.Any()) {
+                <div class="row">
+                    <div class="col">
+                        <h4>Other Income</h4>
+                    </div>
+                    <div class="col">
+                        <h4 style="text-align: right;">
+                            @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
+                        </h4>
+                    </div>
+                </div>
+                <ul>
+                    @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
+                        var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
+                        var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
+
+                        <li>
+                            <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                        </li>
+                    }
+                </ul>
+            }
+
+        }
+
         <div class="row">
             <div class="col">
-                <h4>Other Spending</h4>
+                <h4>Expenses</h4>
             </div>
             <div class="col">
                 <h4 style="text-align: right;">
-                    @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+                    @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
                 </h4>
             </div>
         </div>
-        <ul>
-            @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
+
+        <ul class="list-group mb-4">
+            @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
+                var todayLine = "left: " + budgetLine.TimePerent + "%;";
                 var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
                 var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
-                <li>
-                    <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                var solidWidthString = "";
+                var stripedWidthString = "";
+
+                var totalBarPercent = 0d;
+
+                var solidProgressBarClassList = "progress-bar";
+                var stripedProgressBarClassList = "progress-bar progress-bar-striped";
+
+                var spentOverBudgetedPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / budgetLine.BudgetedAmount) * 100, 0, 100);
+
+                if (budgetLine.RolloverStatus == RolloverStatus.NONE) {
+                    solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
+                    totalBarPercent = spentOverBudgetedPercent;
+                } else if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+                    var spentOverBudgetedPlusRolloverPercent = Math.Clamp((Math.Abs(budgetLine.SpentAmount) / (budgetLine.BudgetedAmount + budgetLine.RolloverAmount.Value)) * 100, 0, 100);
+                    var remainingPercent = spentOverBudgetedPercent - spentOverBudgetedPlusRolloverPercent;
+
+                    solidWidthString = "width: " + remainingPercent + "%;";
+                    stripedWidthString = "width: " + spentOverBudgetedPlusRolloverPercent + "%;";
+                    totalBarPercent = spentOverBudgetedPercent;
+                } else {
+                    var overagePercent = Math.Clamp(Math.Abs(budgetLine.RolloverAmount.Value) / budgetLine.BudgetedAmount * 100, 0, 100);
+
+                    solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
+                    stripedWidthString = "width: " + overagePercent + "%;";
+                    totalBarPercent = overagePercent + spentOverBudgetedPercent;
+                }
+
+                if (totalBarPercent >= 99.5) {
+                    solidProgressBarClassList += " bg-danger";
+                    stripedProgressBarClassList += " bg-danger";
+                } else if (totalBarPercent >= 80) {
+                    solidProgressBarClassList += " bg-warning";
+                    stripedProgressBarClassList += " bg-warning";
+                } else {
+                    solidProgressBarClassList += " bg-success";
+                    stripedProgressBarClassList += " bg-success";
+                }
+
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
+                                    <a class="no-underline" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.Name</a>
+                                </button>
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p style="text-align: right;">@budgetLine.Budget.TimespanString</p>
+                        </div>
+                    </div>
+                    @if (budgetLine.RolloverStatus == RolloverStatus.NONE || budgetLine.RolloverStatus == RolloverStatus.NOT_READY) {
+                        <div class="row">
+                            <div class="col">
+                                <div class="progress" style="height: 20px;">
+                                    <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
+                                        @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                            <ul class="marker-list">
+                                                <li class="marker" style="@todayLine"></li>
+                                            </ul>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    } else {
+                        <div class="row">
+                            <div class="col">
+                                <div class="progress" style="height: 20px;">
+                                    @if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+                                        <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
+                                            @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                                <ul class="marker-list">
+                                                    <li class="marker" style="@todayLine"></li>
+                                                </ul>
+                                            }
+                                        </div>
+                                        <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
+                                        </div>
+                                    } else if (budgetLine.RolloverStatus == RolloverStatus.NEGATIVE) {
+                                        <div class="@solidProgressBarClassList" role="progressbar" style="@solidWidthString">
+                                            @if (Model.BudgetPeriod.Date == DateTime.Now.Date) {
+                                                <ul class="marker-list">
+                                                    <li class="marker" style="@todayLine"></li>
+                                                </ul>
+                                            }
+                                        </div>
+                                        <div class="@stripedProgressBarClassList" role="progressbar" style="@stripedWidthString">
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row text-secondary">
+                        <div class="col">
+                            @budgetLine.SpentAmount.FormatCurrency(0)
+                            <span style="font-weight:lighter;">
+                                of
+                            </span>
+                            @budgetLine.BudgetedAmount.FormatCurrency(0)
+                            @if (budgetLine.DoRollover && budgetLine.CurrentPeriod != null) {
+                                <span style="font-weight:lighter;">
+                                    @if (budgetLine.RolloverStatus == RolloverStatus.NEGATIVE) {
+                                        <text>
+                                            (@Math.Abs(budgetLine.RolloverAmount.Value).FormatCurrency(0) Over)
+                                        </text>
+                                    } else if (budgetLine.RolloverStatus == RolloverStatus.POSITIVE) {
+                                        <text>
+                                            (@budgetLine.RolloverAmount.Value.FormatCurrency(0) Extra)
+                                        </text>
+                                    }
+                                </span>
+                            }
+                        </div>
+                        @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
+                            <div class="col" style="text-align: right; font-weight: lighter">
+                                @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
+                            </div>
+                        } else {
+                            <div class="col" style="text-align: right; font-weight: lighter">
+                                @((budgetLine.SpentAmount - @budgetLine.BudgetedAmount).FormatCurrency(0)) Over
+                            </div>
+                        }
+                    </div>
                 </li>
             }
         </ul>
+
+        @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
+            <div class="row">
+                <div class="col">
+                    <h4>Other Spending</h4>
+                </div>
+                <div class="col">
+                    <h4 style="text-align: right;">
+                        @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+                    </h4>
+                </div>
+            </div>
+            <ul>
+                @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
+                    var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
+                    var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
+
+                    <li>
+                        <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                    </li>
+                }
+            </ul>
+        }
     }
 }
 

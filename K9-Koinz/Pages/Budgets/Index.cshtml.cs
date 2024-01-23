@@ -133,12 +133,16 @@ namespace K9_Koinz.Pages.Budgets {
 
         private void RetrieveAndHandleTransactions() {
             foreach (var category in SelectedBudget.BudgetLines) {
-                category.GetTransactions(BudgetPeriod);
-
+                var transactions = category.GetTransactions(BudgetPeriod, _context, _logger);
+                transactions.ForEach(trans => {
+                    _logger.LogInformation(trans.Amount.ToString());
+                });
             }
 
-            var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
-            SelectedBudget.UnallocatedLines = newBudgetLines;
+            if (!SelectedBudget.DoNotUseCategories) {
+                var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
+                SelectedBudget.UnallocatedLines = newBudgetLines;
+            }
         }
 
         private void UpdateCurrentPeriods() {

@@ -15,11 +15,19 @@ namespace K9_Koinz.Utils {
         public List<Transaction> GetTransactionsForCurrentBudgetLinePeriod(BudgetLine budgetLine, DateTime refDate) {
             var parentBudget = _context.Budgets.AsNoTracking().First(bud => bud.Id == budgetLine.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate(refDate);
-            var transactionList = _context.Transactions
-                .Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId)
+            var transactionsIQ = _context.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                .AsNoTracking()
-                .ToList();
+                .AsNoTracking();
+
+            if (budgetLine.BudgetCategory.CategoryType != CategoryType.ALL) {
+                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId);
+            }
+
+            if (budgetLine.Budget.BudgetTagId != null) {
+                transactionsIQ = transactionsIQ.Where(trans => trans.TagId == budgetLine.Budget.BudgetTagId);
+            }
+
+            var transactionList = transactionsIQ.ToList();
 
             transactionList.ForEach(trans => trans.Category = null);
 
@@ -29,11 +37,19 @@ namespace K9_Koinz.Utils {
         public List<Transaction> GetTransactionsForPreviousLinePeriod(BudgetLine budgetLine, DateTime refDate) {
             var parentBudget = _context.Budgets.AsNoTracking().First(bud => bud.Id == budgetLine.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate(refDate.GetPreviousPeriod(parentBudget.Timespan));
-            var transactionList = _context.Transactions
-                .Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId)
+            var transactionsIQ = _context.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                .AsNoTracking()
-                .ToList();
+                .AsNoTracking();
+
+            if (budgetLine.BudgetCategory.CategoryType != CategoryType.ALL) {
+                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId);
+            }
+
+            if (budgetLine.Budget.BudgetTagId != null) {
+                transactionsIQ = transactionsIQ.Where(trans => trans.TagId == budgetLine.Budget.BudgetTagId);
+            }
+
+            var transactionList = transactionsIQ.ToList();
 
             transactionList.ForEach(trans => trans.Category = null);
 

@@ -36,6 +36,26 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Budget.BudgetTagName)
         </dd>
+        @if (Model.Budget.DoNotUseCategories) {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Budget.BudgetedAmount)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Budget.BudgetedAmount.Value.FormatCurrency(0)
+            </dd>
+            <dt class="col-sm-2">
+                Rollover?
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.BudgetLines.First().Periods.Count == 0) {
+                    <span>No</span>
+                } else if (Model.BudgetLines.First().Periods.Count == 1) {
+                    <span>Yes - Not Ready</span>
+                } else {
+                    <span>Active</span>
+                }
+            </dd>
+        }
         @if (Model.Budget.CreatedDate != DateTime.MinValue) {
             <dt class="col-sm-2 mt-4">
                 @Html.DisplayNameFor(model => model.Budget.CreatedDate)
@@ -55,44 +75,47 @@
     </dl>
 </div>
 
-<h4>Budget Categories</h4>
-<div class="col-sm-5">
-    <table class="table mt-2">
-        <thead>
-            <tr>
-                <th>Category Name</th>
-                <th>Budgeted Amount</th>
-                <th>Rollover?</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var budgetLine in Model.BudgetLines) {
+@if (!Model.Budget.DoNotUseCategories) {
+    <h4>Budget Categories</h4>
+    <div class="col-sm-5">
+        <table class="table mt-2">
+            <thead>
                 <tr>
-                    <td>
-                        @budgetLine.BudgetCategoryName
-                    </td>
-                    <td>
-                        @budgetLine.BudgetedAmount.FormatCurrency(0)
-                    </td>
-                    <td>
-                        @if (budgetLine.Periods.Count == 0) {
-                            <span>No</span>
-                        } else if (budgetLine.Periods.Count == 1) {
-                            <span>Yes - Not Ready</span>
-                        } else {
-                            <span>Active</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-page="/BudgetLines/Edit" asp-route-id="@budgetLine.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                    </td>
+                    <th>Category Name</th>
+                    <th>Budgeted Amount</th>
+                    <th>Rollover?</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+
+            <tbody>
+                @foreach (var budgetLine in Model.BudgetLines) {
+                    <tr>
+                        <td>
+                            @budgetLine.BudgetCategoryName
+                        </td>
+                        <td>
+                            @budgetLine.BudgetedAmount.FormatCurrency(0)
+                        </td>
+                        <td>
+                            @if (budgetLine.Periods.Count == 0) {
+                                <span>No</span>
+                            } else if (budgetLine.Periods.Count == 1) {
+                                <span>Yes - Not Ready</span>
+                            } else {
+                                <span>Active</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-page="/BudgetLines/Edit" asp-route-id="@budgetLine.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
 <div>
     <a asp-page="./Edit" asp-route-id="@Model.Budget.Id">Edit</a> |
     <a asp-page="./Delete" asp-route-id="@Model.Budget.Id">Delete</a> |

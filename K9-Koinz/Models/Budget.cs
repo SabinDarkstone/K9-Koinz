@@ -24,6 +24,14 @@ namespace K9_Koinz.Models
         public Guid? BudgetTagId {  get; set; }
         public Tag BudgetTag {  get; set; }
         public string BudgetTagName { get; set; }
+        [DisplayName("Ignore Categories")]
+        public bool DoNotUseCategories { get; set; }
+        [NotMapped]
+        [DisplayName("Budgeted Amount")]
+        public double? BudgetedAmount { get; set; }
+        [NotMapped]
+        [DisplayName("Rollover Unspent Money")]
+        public bool DoNoCategoryRollover { get; set; }
 
         public ICollection<BudgetLine> BudgetLines { get; set; } = new List<BudgetLine>();
 

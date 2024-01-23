@@ -14,10 +14,12 @@ namespace K9_Koinz.Pages.Budgets {
     public class EditModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<EditModel> _logger;
+        private readonly BudgetPeriodUtils _budgetPeriodUtils;
 
         public EditModel(KoinzContext context, ILogger<EditModel> logger) {
             _context = context;
             _logger = logger;
+            _budgetPeriodUtils = new BudgetPeriodUtils(_context);
         }
 
         [BindProperty]
@@ -39,6 +41,12 @@ namespace K9_Koinz.Pages.Budgets {
                 return NotFound();
             }
             Budget = budget;
+
+            if (Budget.DoNotUseCategories) {
+                Budget.BudgetedAmount = Budget.BudgetLines.First().BudgetedAmount;
+                Budget.DoNoCategoryRollover = Budget.BudgetLines.First().DoRollover;
+            }
+
             return Page();
         }
 
@@ -54,6 +62,9 @@ namespace K9_Koinz.Pages.Budgets {
                 Budget.BudgetTagName = tag.Name;
             }
 
+            var oldRecord = _context.BudgetLines
+                .Single(line => line.BudgetId == Budget.Id);
+
             _context.Attach(Budget).State = EntityState.Modified;
 
             try {
@@ -66,11 +77,44 @@ namespace K9_Koinz.Pages.Budgets {
                 }
             }
 
+            if (Budget.DoNotUseCategories) {
+                var allowanceLine = _context.BudgetLines.SingleOrDefault(line => line.BudgetId == Budget.Id);
+                allowanceLine.BudgetedAmount = Budget.BudgetedAmount.Value;
+                allowanceLine.DoRollover = Budget.DoNoCategoryRollover;
+                _context.BudgetLines.Update(allowanceLine);
+                _context.SaveChanges();
+
+                if (!oldRecord.DoRollover && Budget.DoNoCategoryRollover) {
+                    _budgetPeriodUtils.DeleteOldBudgetLinePeriods(allowanceLine);
+                    CreateFirstBudgetLinePeriod(allowanceLine);
+                }
+
+                if (!Budget.DoNoCategoryRollover) {
+                    _budgetPeriodUtils.DeleteOldBudgetLinePeriods(allowanceLine);
+                }
+            }
+
             return RedirectToPage("./Index");
         }
 
         private bool BudgetExists(Guid id) {
             return _context.Budgets.Any(e => e.Id == id);
+        }
+
+        private void CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
+            var (startDate, endDate) = Budget.Timespan.GetStartAndEndDate();
+            var totalSpentSoFar = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now).Sum(trans => trans.Amount);
+
+            var firstPeriod = new BudgetLinePeriod {
+                BudgetLineId = budgetLine.Id,
+                StartingAmount = 0,
+                StartDate = startDate,
+                EndDate = endDate,
+                SpentAmount = totalSpentSoFar
+            };
+
+            _context.BudgetLinePeriods.Add(firstPeriod);
+            _context.SaveChanges();
         }
     }
 }

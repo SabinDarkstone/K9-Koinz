@@ -33,12 +33,18 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
 
             // Subcategories
-            modelBuilder.Entity<Category>().HasMany(x => x.ChildCategories).WithOne(x => x.ParentCategory).HasForeignKey(x => x.ParentCategoryId).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Category>()
+                .HasMany(x => x.ChildCategories)
+                .WithOne(x => x.ParentCategory)
+                .HasForeignKey(x => x.ParentCategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Uniqueness
-            modelBuilder.Entity<Merchant>().HasIndex(x => x.Name)
+            modelBuilder.Entity<Merchant>()
+                .HasIndex(x => x.Name)
                 .IsUnique();
-            modelBuilder.Entity<Category>().HasIndex(x => x.Name)
+            modelBuilder.Entity<Category>()
+                .HasIndex(x => x.Name)
                 .IsUnique();
         }
 

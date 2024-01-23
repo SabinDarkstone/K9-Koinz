@@ -37,7 +37,12 @@ namespace K9_Koinz.Pages.Budgets
                 .Where(line => line.BudgetId == Budget.Id)
                 .Include(line => line.Periods)
                 .ToListAsync();
+
             BudgetLines = unsortedLines.SortCategories();
+
+            if (Budget.DoNotUseCategories) {
+                Budget.BudgetedAmount = BudgetLines.First().BudgetedAmount;
+            }
 
             return Page();
         }
