@@ -17,8 +17,9 @@
             <input type="hidden" asp-for="Transaction.Id" />
             <div class="form-group">
                 <label asp-for="Transaction.AccountId" class="control-label"></label>
-                <select asp-for="Transaction.AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>
-                <span asp-validation-for="Transaction.AccountId" class="text-danger"></span>
+                <select asp-for="Transaction.AccountId" class ="form-control" asp-items="@Model.AccountOptions">
+                    <option value="" selected disabled>Select an Account...</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Transaction.Date" class="control-label"></label>

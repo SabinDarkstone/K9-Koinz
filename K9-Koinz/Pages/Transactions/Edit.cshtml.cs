@@ -21,6 +21,8 @@ namespace K9_Koinz.Pages.Transactions {
 
         [BindProperty]
         public Transaction Transaction { get; set; } = default!;
+
+        public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
@@ -28,6 +30,7 @@ namespace K9_Koinz.Pages.Transactions {
                 return NotFound();
             }
 
+            AccountOptions = AccountUtils.GetAccountList(_context, true);
             TagOptions = TagUtils.GetTagList(_context);
 
             var transaction = await _context.Transactions
@@ -36,7 +39,6 @@ namespace K9_Koinz.Pages.Transactions {
                 return NotFound();
             }
             Transaction = transaction;
-            ViewData["AccountId"] = new SelectList(_context.Accounts.OrderBy(acct => acct.Name), nameof(Account.Id), nameof(Account.Name));
             return Page();
         }
 
