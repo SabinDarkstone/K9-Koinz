@@ -110,9 +110,10 @@ namespace K9_Koinz.Pages.Budgets {
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
                 for (var i = 0; i < 7; i++) {
                     var optionDate = DateTime.Now.AddDays(i * -7);
+                    var weekStartDate = SelectedBudget.Timespan.GetStartAndEndDate(optionDate).Item1;
                     PeriodOptions.Add(new BudgetPeriodOption {
                         Value = optionDate,
-                        Text = i == 0 ? "This Week" : i == 1 ? "1 Week Ago" : i + " Weeks Ago",
+                        Text = i == 0 ? "This Week" : "Week of " + weekStartDate.Month + "/" + weekStartDate.Day,
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
                         IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfWeek() && trans.Date <= optionDate.EndOfWeek())
                     });
