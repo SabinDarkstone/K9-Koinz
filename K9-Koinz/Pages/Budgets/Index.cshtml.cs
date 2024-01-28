@@ -74,6 +74,7 @@ namespace K9_Koinz.Pages.Budgets {
             _context.SaveChanges();
         }
 
+        // TODO: This needs to be cleaned up
         private Budget GetBudgetDetails(string selectedBudget) {
             var budgetQuery = _context.Budgets
                 .Include(bud => bud.BudgetLines)
@@ -109,9 +110,10 @@ namespace K9_Koinz.Pages.Budgets {
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
                 for (var i = 0; i < 7; i++) {
                     var optionDate = DateTime.Now.AddDays(i * -7);
+                    var weekStartDate = SelectedBudget.Timespan.GetStartAndEndDate(optionDate).Item1;
                     PeriodOptions.Add(new BudgetPeriodOption {
                         Value = optionDate,
-                        Text = i == 0 ? "This Week" : i == 1 ? "1 Week Ago" : i + " Weeks Ago",
+                        Text = i == 0 ? "This Week" : "Week of " + weekStartDate.Month + "/" + weekStartDate.Day,
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
                         IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfWeek() && trans.Date <= optionDate.EndOfWeek())
                     });
@@ -132,13 +134,12 @@ namespace K9_Koinz.Pages.Budgets {
         }
 
         private void RetrieveAndHandleTransactions() {
+            // Get transactions for each budget line and write values to unmapped properties in the budget line model
             foreach (var category in SelectedBudget.BudgetLines) {
-                var transactions = category.GetTransactions(BudgetPeriod, _context, _logger);
-                transactions.ForEach(trans => {
-                    _logger.LogInformation(trans.Amount.ToString());
-                });
+                _ = category.GetTransactions(BudgetPeriod, _context, _logger);
             }
 
+            // If the current budget uses categories, determine unallocated spending
             if (!SelectedBudget.DoNotUseCategories) {
                 var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
                 SelectedBudget.UnallocatedLines = newBudgetLines;
@@ -147,21 +148,31 @@ namespace K9_Koinz.Pages.Budgets {
 
         private void UpdateCurrentPeriods() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
+            
+            // Loop through each budget line with rollover enabled
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
+                // Check if the previous period exists, but the current period does not
                 if (budgetLine.PreviousPeriod != null && budgetLine.CurrentPeriod == null) {
+                    // If this happens, we entered a new period and need to create a new period in the DB
                     budgetLine.CurrentPeriod = CreateNewCurrentPeriod(budgetLine);
                 } else if (budgetLine.PreviousPeriod == null && budgetLine.CurrentPeriod == null) {
+                    // We are browswing a budget period BEFORE rollover was activated, so ignore rollover this time
                     continue;
                 }
 
+                // Set the spent amount for the period based on the sum of the amounts of transations.
+                // Multiply by -1 to make value positive
                 budgetLine.CurrentPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
+
+                // Update the starting amount based on rollover from the last period
                 if (budgetLine.PreviousPeriod != null) {
                     budgetLine.CurrentPeriod.StartingAmount = budgetLine.BudgetedAmount - budgetLine.PreviousPeriod.SpentAmount;
                     periodsToUpdate.Add(budgetLine.PreviousPeriod);
                 }
             }
 
+            // Untrack budget from DB change tracker
             periodsToUpdate.ForEach(per => {
                 per.BudgetLine = null;
             });

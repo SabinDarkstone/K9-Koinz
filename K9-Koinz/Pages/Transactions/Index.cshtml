@@ -169,13 +169,19 @@
                 </tbody>
             </table>
         </div>
+
         <div class="card mt-4 d-block d-lg-none">
             <ul class="list-group list-group-flush">
                 @foreach (var transaction in Model.Transactions) {
                     <li class="list-group-item">
                         <div>
                             <div class="row">
-                                <div class="col-7 text-truncate transaction-item" data-id="@transaction.Id">@transaction.MerchantName</div>
+                                <div class="col-7 text-truncate transaction-item" data-id="@transaction.Id">
+                                    @if (transaction.TagId.HasValue) {
+                                        var style = "background-color: " + transaction.Tag.HexColor + "; text-decoration: none";
+                                        <span class="badge badge-primary" style="@style">@transaction.Tag.ShortForm</span>
+                                    }
+                                    @transaction.MerchantName</div>
                                 <div class="col-4 text-end transaction-item" data-id="@transaction.Id">
                                     @if (transaction.TransactionType == Models.TransactionType.PLUS) {
                                         <span class="text-success">
