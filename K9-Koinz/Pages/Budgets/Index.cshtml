@@ -16,12 +16,12 @@
         width: 100%;
     }
 
-        .marker-list .marker {
-            position: absolute;
-            width: 1px;
-            height: 20px;
-            background-color: black;
-        }
+    .marker-list .marker {
+        position: absolute;
+        width: 1px;
+        height: 20px;
+        background-color: black;
+    }
 
     .list-group-item {
         padding-left: 0 !important;
@@ -228,7 +228,7 @@
                     </div>
                     @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
                         <div class="col" style="text-align: right; font-weight: lighter">
-                            @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
+                            @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0))
                         </div>
                     } else {
                         <div class="col" style="text-align: right; font-weight: lighter">
@@ -445,15 +445,33 @@
                                 </span>
                             }
                         </div>
-                        @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
-                            <div class="col" style="text-align: right; font-weight: lighter">
-                                @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
-                            </div>
-                        } else {
-                            <div class="col" style="text-align: right; font-weight: lighter">
-                                @((budgetLine.SpentAmount - @budgetLine.BudgetedAmount).FormatCurrency(0)) Over
-                            </div>
-                        }
+                        <div class="col" style="text-align: right; font-weight: lighter">
+                            @if (!budgetLine.DoRollover) {
+                                @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
+                                    <text>
+                                        @((budgetLine.BudgetedAmount - @budgetLine.SpentAmount).FormatCurrency(0)) Left
+                                    </text>
+                                } else {
+                                    <text>
+                                        @((budgetLine.SpentAmount - @budgetLine.BudgetedAmount).FormatCurrency(0)) Over
+                                    </text>
+                                }
+                            }
+                        
+
+                            @if (budgetLine.DoRollover && budgetLine.CurrentPeriod != null && budgetLine.PreviousPeriod != null) {
+                                var spentAmountWithRollover = (budgetLine.BudgetedAmount + budgetLine.CurrentPeriod.StartingAmount) - budgetLine.SpentAmount;
+                                if (spentAmountWithRollover < 0) {
+                                    <text>
+                                        @Math.Abs(spentAmountWithRollover).FormatCurrency(0) Over
+                                    </text>
+                                } else if (spentAmountWithRollover >= 0) {
+                                    <text>
+                                        @Math.Abs(spentAmountWithRollover).FormatCurrency(0) Left
+                                    </text>
+                                }
+                            }
+                        </div>
                     </div>
                 </li>
             }
