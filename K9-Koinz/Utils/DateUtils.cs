@@ -31,7 +31,7 @@ namespace K9_Koinz.Utils {
         }
 
         public static DateTime EndOfMonth(this DateTime dt) {
-            return new DateTime(dt.Year, dt.Month, DateTime.DaysInMonth(dt.Year, dt.Month));
+            return new DateTime(dt.Year, dt.Month, 1).AddMonths(1).AddSeconds(-1);
         }
 
         public static DateTime StartOfYear(this DateTime dt) {
