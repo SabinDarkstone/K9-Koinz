@@ -87,6 +87,8 @@ namespace K9_Koinz.Pages.Budgets {
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.Periods)
                 .Include(bud => bud.BudgetTag)
+                .OrderBy(bud => bud.Id)
+                .AsSplitQuery()
                 .AsNoTracking();
 
             if (!string.IsNullOrEmpty(selectedBudget)) {
