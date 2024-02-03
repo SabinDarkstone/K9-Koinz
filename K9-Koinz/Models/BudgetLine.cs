@@ -15,14 +15,22 @@ namespace K9_Koinz.Models {
     public class BudgetLine : DateTrackedEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
+
         public Category BudgetCategory { get; set; }
+
         public string BudgetCategoryName { get; set; }
+
         [DisplayName("Budget Name")]
         public Guid BudgetId { get; set; }
+
         public Budget Budget { get; set; }
+
         public string BudgetName { get; set; }
+
         [DisplayName("Budgeted Amount")]
+        [Column(TypeName = "decimal(10, 2)")]
         public double BudgetedAmount { get; set; }
+
         [DisplayName("Rollover Unspent Money")]
         public bool DoRollover { get; set; }
 
@@ -42,7 +50,7 @@ namespace K9_Koinz.Models {
         [NotMapped]
         public BudgetLinePeriod PreviousPeriod { get; private set; }
 
-        public void GetPeriods(DateTime refDate) {
+        public void GetCurrentAndPreviousPeriods(DateTime refDate) {
             if (Periods == null) {
                 throw new Exception("Attempt to query budget line periods without retrieving them from the database.  Please make sure to Include BudgetLinePeriods in your query.");
             }

@@ -30,6 +30,7 @@ namespace K9_Koinz.Models {
         public Guid CategoryId { get; set; } = Guid.Empty;
         public Category Category { get; set; }
         public string CategoryName { get; set; }
+        [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }
         public string Notes { get; set; }
         [DisplayName("Does this transaction occur AFTER the initial balance was set?")]

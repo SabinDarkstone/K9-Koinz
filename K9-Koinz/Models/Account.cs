@@ -33,6 +33,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Account Type")]
         public AccountType Type { get; set; }
         [DisplayName("Initial Balance")]
+        [Column(TypeName = "decimal(10, 2)")]
         public double InitialBalance { get; set; }
         [DisplayName("Initial Balance Date")]
         public DateTime InitialBalanceDate {  get; set; }
