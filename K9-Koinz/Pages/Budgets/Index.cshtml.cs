@@ -67,7 +67,7 @@ namespace K9_Koinz.Pages.Budgets {
             GenerateBudgetPeriodOptions();
             RetrieveAndHandleTransactions();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
-                budgetLine.GetPeriods(BudgetPeriod);
+                budgetLine.GetCurrentAndPreviousPeriods(BudgetPeriod);
             }
             UpdatePreviousPeriods();
             UpdateCurrentPeriods();
@@ -162,12 +162,12 @@ namespace K9_Koinz.Pages.Budgets {
 
                 // Set the spent amount for the period based on the sum of the amounts of transations.
                 // Multiply by -1 to make value positive
-                budgetLine.CurrentPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
+                budgetLine.CurrentPeriod.SpentAmount = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
 
                 // Update the starting amount based on rollover from the last period
                 if (budgetLine.PreviousPeriod != null) {
-                    budgetLine.CurrentPeriod.StartingAmount = budgetLine.BudgetedAmount - budgetLine.PreviousPeriod.SpentAmount;
+                    budgetLine.CurrentPeriod.StartingAmount = (budgetLine.BudgetedAmount + budgetLine.PreviousPeriod.StartingAmount) - budgetLine.PreviousPeriod.SpentAmount;
                     periodsToUpdate.Add(budgetLine.PreviousPeriod);
                 }
             }
@@ -198,11 +198,14 @@ namespace K9_Koinz.Pages.Budgets {
         private void UpdatePreviousPeriods() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
-                if (budgetLine.PreviousPeriod != null) {
-                    budgetLine.PreviousPeriod.SpentAmount = -1 * _budgetPeriodUtils.GetTransactionsForPreviousLinePeriod(budgetLine, BudgetPeriod).Sum(trans => trans.Amount);
-                    budgetLine.PreviousPeriod.BudgetLine = null;
-                    periodsToUpdate.Add(budgetLine.PreviousPeriod);
+                if (budgetLine.PreviousPeriod == null) {
+                    // Skip this line, there is no previous period
+                    continue;
                 }
+
+                budgetLine.PreviousPeriod.SpentAmount = _budgetPeriodUtils.GetTransactionsForPreviousLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
+                budgetLine.PreviousPeriod.BudgetLine = null;
+                periodsToUpdate.Add(budgetLine.PreviousPeriod);
             }
 
             periodsToUpdate.ForEach(per => {
