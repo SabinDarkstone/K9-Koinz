@@ -100,6 +100,64 @@
 
     <p>@Model.SelectedBudget.Description</p>
 
+    @{
+        var incomeTotal = Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount);
+        var allocatedExpenseTotal = Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount);
+        var extraExpenseTotal = Model.SelectedBudget.UnallocatedExpenses.SelectMany(line => line.Transactions).ToList().GetTotalSpent();
+
+        var alertClass = "alert ";
+        if ((incomeTotal - allocatedExpenseTotal - extraExpenseTotal) > 0) {
+            alertClass += "alert-success";
+        } else {
+            alertClass += "alert-danger";
+        }
+
+        @if (!Model.SelectedBudget.DoNotUseCategories) {
+            <div class="row justify-content-center">
+                <div class="m-2 col-md-5 col-lg-4 col-xl-3 col-8">
+                    <div class="@alertClass">
+                        <h4 class="alert-heading">Overview</h4>
+                        <div class="p-2">
+                            <div class="row justify-content-between">
+                                <div class="col-8">
+                                    Estimated Income
+                                </div>
+                                <div class="col-4" style="text-align:right">
+                                    @incomeTotal.FormatCurrency(0)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    Planned Expenses
+                                </div>
+                                <div class="col-4" style="text-align:right">
+                                    @((allocatedExpenseTotal * -1).FormatCurrency(0))
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    Extra Expenses
+                                </div>
+                                <div class="col-4" style="text-align:right">
+                                    @((extraExpenseTotal * -1).FormatCurrency(0))
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-8">
+                                    Net Amount
+                                </div>
+                                <div class="col-4" style="text-align:right">
+                                    @((incomeTotal - allocatedExpenseTotal - extraExpenseTotal).FormatCurrency(0))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
     <hr />
 
     if (Model.SelectedBudget.DoNotUseCategories) {
