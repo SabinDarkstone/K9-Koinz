@@ -38,10 +38,9 @@ namespace K9_Koinz.Models {
         [DisplayName("Tag")]
         public Guid? TagId { get; set; }
         public Tag Tag { get; set; }
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
+        [DisplayName("Bill")]
+        public Guid? BillId { get; set; }
+        public Bill Bill { get; set; }
 
 		[NotMapped]
         public bool IsUnCategorized {

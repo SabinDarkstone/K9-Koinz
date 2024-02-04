@@ -59,9 +59,5 @@ namespace K9_Koinz.Models {
                 return CategoryType.GetAttribute<DisplayAttribute>()?.Name ?? string.Empty;
             }
         }
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
 	}
 }

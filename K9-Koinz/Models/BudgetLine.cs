@@ -118,9 +118,5 @@ namespace K9_Koinz.Models {
                 return null;
             }
         }
-
-        public override int GetHashCode() {
-            return Id.GetHashCode();
-        }
     }
 }

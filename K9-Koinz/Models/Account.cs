@@ -39,13 +39,10 @@ namespace K9_Koinz.Models {
         public DateTime InitialBalanceDate {  get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Bill> Bills { get; set; }
 
         [NotMapped]
         [DisplayName("Current Balance")]
         public double CurrentBalance { get; set; }
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
 	}
 }

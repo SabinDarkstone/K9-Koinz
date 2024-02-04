@@ -38,10 +38,6 @@ namespace K9_Koinz.Models
         [NotMapped]
         public ICollection<BudgetLine> UnallocatedLines { get; set; } = new List<BudgetLine>();
 
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
-
 		[NotMapped]
         public ICollection<BudgetLine> IncomeLines {
             get {

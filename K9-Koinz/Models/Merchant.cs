@@ -6,9 +6,6 @@ namespace K9_Koinz.Models {
         public string Name { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
+        public ICollection<Bill> Bills { get; set; }
 	}
 }
