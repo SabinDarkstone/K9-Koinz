@@ -24,15 +24,15 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             var transaction = await _context.Transactions
-                .Include(trans => trans.Merchant)
-                .Include(trans => trans.Account)
-                .Include(trans => trans.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(trans => trans.Tag)
+                .SingleOrDefaultAsync(trans => trans.Id == id);
+
             if (transaction == null) {
                 return NotFound();
-            } else {
-                Transaction = transaction;
             }
+
+            Transaction = transaction;
+
             return Page();
         }
     }

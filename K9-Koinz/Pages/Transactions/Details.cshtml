@@ -16,7 +16,9 @@
             @Html.DisplayNameFor(model => model.Transaction.Account)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Transaction.Account.Name)
+            <a asp-page="/Accounts/Details" asp-route-id="@Model.Transaction.AccountId" class="link-unstyled">
+                @Html.DisplayFor(model => model.Transaction.AccountName)
+            </a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Transaction.Date)
@@ -28,13 +30,17 @@
             @Html.DisplayNameFor(model => model.Transaction.MerchantId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Transaction.Merchant.Name)
+            <a asp-page="/Merchants/Details" asp-route-id="@Model.Transaction.MerchantId" class="link-unstyled">
+                @Html.DisplayFor(model => model.Transaction.MerchantName)
+            </a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Transaction.Category)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Transaction.Category.Name)
+            <a asp-page="/Categories/Details" asp-route-id="@Model.Transaction.CategoryId" class="link-unstyled">
+                @Html.DisplayFor(model => model.Transaction.CategoryName)
+            </a>
         </dd>
         @if (Model.Transaction.TagId.HasValue) {
             var style = "background-color: " + Model.Transaction.Tag.HexColor + "; text-decoration: none";
