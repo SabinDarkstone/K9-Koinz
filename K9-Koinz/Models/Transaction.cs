@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Models {
-
     public enum TransactionType {
         [Display(Name = "Debit")]
         MINUS,
@@ -42,7 +42,7 @@ namespace K9_Koinz.Models {
         public Guid? BillId { get; set; }
         public Bill Bill { get; set; }
 
-		[NotMapped]
+        [NotMapped]
         public bool IsUnCategorized {
             get {
                 return CategoryId == Guid.Empty;

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-
     public enum RolloverStatus {
         NONE,
         POSITIVE,

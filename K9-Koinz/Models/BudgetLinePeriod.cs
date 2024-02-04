@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Models {
     public class BudgetLinePeriod : BaseEntity {
