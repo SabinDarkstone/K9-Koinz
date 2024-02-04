@@ -30,7 +30,11 @@ namespace K9_Koinz.Utils {
                 .AsNoTracking();
 
             if (budgetLine.BudgetCategory.CategoryType != CategoryType.ALL) {
-                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId);
+                var childCategories = _context.Categories
+                    .Where(cat => cat.ParentCategoryId == budgetLine.BudgetCategoryId)
+                    .Select(cat => cat.Id)
+                    .ToList();
+                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId || childCategories.Contains(trans.CategoryId));
             }
 
             if (budgetLine.Budget.BudgetTagId != null) {

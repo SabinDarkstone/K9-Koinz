@@ -60,8 +60,8 @@ namespace K9_Koinz.Models {
 
             var prevRefDate = refDate.GetPreviousPeriod(Budget.Timespan);
 
-            CurrentPeriod = Periods.FirstOrDefault(per => per.StartDate <= refDate && per.EndDate >= refDate);
-            PreviousPeriod = Periods.FirstOrDefault(per => per.StartDate <= prevRefDate && per.EndDate >= prevRefDate);
+            CurrentPeriod = Periods.SingleOrDefault(per => per.StartDate <= refDate && per.EndDate >= refDate);
+            PreviousPeriod = Periods.SingleOrDefault(per => per.StartDate <= prevRefDate && per.EndDate >= prevRefDate);
         }
 
         [NotMapped]
