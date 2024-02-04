@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Data {
     public class KoinzContext : DbContext {
