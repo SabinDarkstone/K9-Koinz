@@ -1,8 +1,7 @@
-﻿using K9_Koinz.Pages;
+﻿using K9_Koinz.Services;
 
 namespace K9_Koinz.Utils {
     public static class ChartUtils {
-
         public static IEnumerable<Point> Accumulate(this IEnumerable<Point> points) {
             double sum = 0;
             foreach (var point in points) {
