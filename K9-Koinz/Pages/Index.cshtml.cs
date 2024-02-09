@@ -28,9 +28,11 @@ namespace K9_Koinz.Pages {
     }
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
+        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(KoinzContext context) {
+        public IndexModel(KoinzContext context, ILogger<IndexModel> logger) {
             _context = context;
+            _logger = logger;
         }
 
         public IList<Budget> Budget { get; set; } = default!;
@@ -53,8 +55,8 @@ namespace K9_Koinz.Pages {
                 .Where(trans => trans.Date >= startOfThisMonth && trans.Date <= endOfThisMonth)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
                 .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
-                .GroupBy(trans => trans.Date)
-                .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
+                .GroupBy(trans => trans.Date.Day)
+                .Select(group => new Point(group.Key, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();
 
             var lastMonthTransactions = await _context.Transactions
@@ -62,8 +64,8 @@ namespace K9_Koinz.Pages {
                 .Where(trans => trans.Date >= startOfLastMonth && trans.Date <= endOfLastMonth)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
                 .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
-                .GroupBy(trans => trans.Date)
-                .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
+                .GroupBy(trans => trans.Date.Day)
+                .Select(group => new Point(group.Key, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();
 
             ThisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
