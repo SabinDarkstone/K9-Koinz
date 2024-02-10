@@ -47,5 +47,9 @@ namespace K9_Koinz.Pages.Bills {
         public IActionResult OnGetMerchantAutoComplete(string text) {
             return _autocompleteService.AutocompleteMerchants(text.Trim());
         }
+
+        public IActionResult OnGetCategoryAutoComplete(string text) {
+            return _autocompleteService.AutocompleteCategories(text.Trim());
+        }
     }
 }

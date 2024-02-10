@@ -23,6 +23,10 @@ namespace K9_Koinz.Models {
         public Guid MerchantId {  get; set; }
         public Merchant Merchant { get; set; }
         public string MerchantName { get; set; }
+        [DisplayName("Category")]
+        public Guid? CategoryId { get; set; }
+        public Category Category { get; set; }
+        public string CategoryName { get; set; }
         [DisplayName("First Due Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]

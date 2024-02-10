@@ -32,6 +32,12 @@
                 <span asp-validation-for="Bill.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Bill.CategoryId" class="control-label"></label>
+                <input id="txtCategory" class="form-control" />
+                <input asp-for="Bill.CategoryId" type="hidden" id="hfMerchant" />
+                <span asp-validation-for="Bill.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Bill.BillAmount" class="control-label"></label>
                 <input asp-for="Bill.BillAmount" class="form-control" />
                 <span asp-validation-for="Bill.BillAmount" class="text-danger"></span>
@@ -92,6 +98,31 @@
                 },
                 select: function (e, i) {
                     $("#hfMerchant").val(i.item.val);
+                },
+                minLength: 1
+            });
+
+            $("#txtCategory").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Bills/Create?handler=CategoryAutoComplete",
+                        data: { text: request.term },
+                        type: "GET",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(JSON.stringify(response));
+                        },
+                        failure: function (response) {
+                            alert(JSON.stringify(response));
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#hfCategory").val(i.item.val);
                 },
                 minLength: 1
             });

@@ -31,6 +31,7 @@ namespace K9_Koinz.Models {
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BudgetLine> BudgetLines { get; set; }
+        public ICollection<Bill> Bills { get; set; }
         [DisplayName("Child Categories")]
         public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
 
