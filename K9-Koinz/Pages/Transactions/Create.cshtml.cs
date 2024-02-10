@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.EntityFrameworkCore;
 using Humanizer;
-using K9_Koinz.Utils;
 using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Transactions {
