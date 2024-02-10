@@ -9,24 +9,28 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Microsoft.EntityFrameworkCore;
 using Humanizer;
-using K9_Koinz.Utils;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<CreateModel> _logger;
+        private readonly IAccountService _accountService;
+        private readonly ITagService _tagService;
 
-        public CreateModel(KoinzContext context, ILogger<CreateModel> logger) {
+        public CreateModel(KoinzContext context, ILogger<CreateModel> logger, IAccountService accountService, ITagService tagService) {
             _context = context;
             _logger = logger;
+            _accountService = accountService;
+            _tagService = tagService;
         }
 
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
         public void OnGet() {
-            AccountOptions = AccountUtils.GetAccountList(_context, true);
-            TagOptions = TagUtils.GetTagList(_context);
+            AccountOptions = _accountService.GetAccountList(true);
+            TagOptions = _tagService.GetTagList();
         }
 
         [BindProperty]
