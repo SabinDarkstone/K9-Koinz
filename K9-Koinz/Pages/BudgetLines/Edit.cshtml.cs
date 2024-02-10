@@ -9,21 +9,18 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
+using K9_Koinz.Services;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.BudgetLines {
-    public class EditModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly ILogger<EditModel> _logger;
-        private readonly BudgetPeriodUtils _budgetPeriodUtils;
+    public class EditModel : AbstractEditModel<BudgetLine> {
+        private readonly IBudgetService _budgetService;
 
-        public EditModel(KoinzContext context, ILogger<EditModel> logger) {
-            _context = context;
-            _logger = logger;
-            _budgetPeriodUtils = new BudgetPeriodUtils(context);
+        public EditModel(KoinzContext context, IAccountService accountService,
+            IAutocompleteService autocompleteService, ITagService tagService, IBudgetService budgetService)
+            : base(context, accountService, autocompleteService, tagService) {
+            _budgetService = budgetService;
         }
-
-        [BindProperty]
-        public BudgetLine BudgetLine { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
@@ -37,7 +34,7 @@ namespace K9_Koinz.Pages.BudgetLines {
                 return NotFound();
             }
 
-            BudgetLine = budgetLine;
+            Record = budgetLine;
             return Page();
         }
 
@@ -50,65 +47,51 @@ namespace K9_Koinz.Pages.BudgetLines {
                 .Include(line => line.BudgetCategory)
                 .Include(line => line.Budget)
                 .AsNoTracking()
-                .First(line => line.Id == BudgetLine.Id);
+                .First(line => line.Id == Record.Id);
 
-            BudgetLine.BudgetCategory = oldRecord.BudgetCategory;
-            BudgetLine.Budget = oldRecord.Budget;
+            Record.BudgetCategory = oldRecord.BudgetCategory;
+            Record.Budget = oldRecord.Budget;
 
-            if (!oldRecord.DoRollover && BudgetLine.DoRollover) {
-                _budgetPeriodUtils.DeleteOldBudgetLinePeriods(BudgetLine);
+            if (!oldRecord.DoRollover && Record.DoRollover) {
+                _budgetService.DeleteOldBudgetLinePeriods(Record);
                 CreateFirstBudgetLinePeriod();
             }
 
-            if (oldRecord.DoRollover && !BudgetLine.DoRollover) {
-                _budgetPeriodUtils.DeleteOldBudgetLinePeriods(BudgetLine);
+            if (oldRecord.DoRollover && !Record.DoRollover) {
+                _budgetService.DeleteOldBudgetLinePeriods(Record);
             }
 
-            BudgetLine.BudgetCategoryId = oldRecord.BudgetCategoryId;
-            BudgetLine.BudgetId = oldRecord.BudgetId;
-            BudgetLine.BudgetCategory = null;
-            BudgetLine.Budget = null;
+            Record.BudgetCategoryId = oldRecord.BudgetCategoryId;
+            Record.BudgetId = oldRecord.BudgetId;
+            Record.BudgetCategory = null;
+            Record.Budget = null;
 
-            _context.Attach(BudgetLine).State = EntityState.Modified;
+            _context.Attach(Record).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!BudgetLineExists(BudgetLine.Id)) {
+                if (!RecordExists(Record.Id)) {
                     return NotFound();
                 } else {
                     throw;
                 }
             }
 
-            return RedirectToPage("/Budgets/Edit", new { id = BudgetLine.BudgetId });
+            return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId });
         }
 
         public IActionResult OnGetCategoryAutoComplete(string text) {
-            text = text.Trim();
-            var categories = _context.Categories
-                .Include(cat => cat.ParentCategory)
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(cat => cat.FullyQualifiedName.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(cat => new {
-                    label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
-                    val = cat.Id
-                }).ToList();
-            return new JsonResult(categories);
-        }
-
-        private bool BudgetLineExists(Guid id) {
-            return _context.BudgetLines.Any(e => e.Id == id);
+            return _autocompleteService.AutocompleteCategories(text.Trim());
         }
 
         private void CreateFirstBudgetLinePeriod() {
-            var parentBudget = _context.Budgets.Find(BudgetLine.BudgetId);
+            var parentBudget = _context.Budgets.Find(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(BudgetLine, DateTime.Now).Sum(trans => trans.Amount);
+            var totalSpentSoFar = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(Record, DateTime.Now).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
-                BudgetLineId = BudgetLine.Id,
+                BudgetLineId = Record.Id,
                 StartingAmount = 0,
                 StartDate = startDate,
                 EndDate = endDate,

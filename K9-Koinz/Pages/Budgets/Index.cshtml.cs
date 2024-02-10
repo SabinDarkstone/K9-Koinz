@@ -10,6 +10,7 @@ using K9_Koinz.Models;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Budgets {
 
@@ -28,12 +29,12 @@ namespace K9_Koinz.Pages.Budgets {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<IndexModel> _logger;
-        private readonly BudgetPeriodUtils _budgetPeriodUtils;
+        private readonly IBudgetService _budgetService;
 
-        public IndexModel(KoinzContext context, ILogger<IndexModel> logger) {
+        public IndexModel(KoinzContext context, ILogger<IndexModel> logger, IBudgetService budgetService) {
             _context = context;
             _logger = logger;
-            _budgetPeriodUtils = new BudgetPeriodUtils(context);
+            _budgetService = budgetService;
         }
 
         public IList<Budget> Budgets { get; set; } = default!;
@@ -137,13 +138,13 @@ namespace K9_Koinz.Pages.Budgets {
 
         private void RetrieveAndHandleTransactions() {
             // Get transactions for each budget line and write values to unmapped properties in the budget line model
-            foreach (var category in SelectedBudget.BudgetLines) {
-                _ = category.GetTransactions(BudgetPeriod, _context, _logger);
+            foreach (var budgetLine in SelectedBudget.BudgetLines) {
+                _ = _budgetService.GetTransactions(budgetLine, BudgetPeriod);
             }
 
             // If the current budget uses categories, determine unallocated spending
             if (!SelectedBudget.DoNotUseCategories) {
-                var newBudgetLines = SelectedBudget.GetUnallocatedSpending(_context, BudgetPeriod);
+                var newBudgetLines = _budgetService.GetUnallocatedSpending(SelectedBudget, BudgetPeriod);
                 SelectedBudget.UnallocatedLines = newBudgetLines;
             }
         }
@@ -164,7 +165,7 @@ namespace K9_Koinz.Pages.Budgets {
 
                 // Set the spent amount for the period based on the sum of the amounts of transations.
                 // Multiply by -1 to make value positive
-                budgetLine.CurrentPeriod.SpentAmount = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
+                budgetLine.CurrentPeriod.SpentAmount = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
 
                 // Update the starting amount based on rollover from the last period
@@ -205,7 +206,7 @@ namespace K9_Koinz.Pages.Budgets {
                     continue;
                 }
 
-                budgetLine.PreviousPeriod.SpentAmount = _budgetPeriodUtils.GetTransactionsForPreviousLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
+                budgetLine.PreviousPeriod.SpentAmount = _budgetService.GetTransactionsForPreviousLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
                 budgetLine.PreviousPeriod.BudgetLine = null;
                 periodsToUpdate.Add(budgetLine.PreviousPeriod);
             }

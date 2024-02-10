@@ -1,21 +1,24 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using K9_Koinz.Utils;
+using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Bills {
     public class CreateModel : PageModel {
         private readonly KoinzContext _context;
+        private readonly IAccountService _accountService;
+        private readonly IAutocompleteService _autocompleteService;
 
-        public CreateModel(KoinzContext context) {
+        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService) {
             _context = context;
+            _accountService = accountService;
+            _autocompleteService = autocompleteService;
         }
 
         public IActionResult OnGet() {
-            AccountOptions = AccountUtils.GetAccountList(_context, true);
+            AccountOptions = _accountService.GetAccountList(true);
 
             return Page();
         }
@@ -42,16 +45,7 @@ namespace K9_Koinz.Pages.Bills {
         }
 
         public IActionResult OnGetMerchantAutoComplete(string text) {
-            text = text.Trim();
-            var merchants = _context.Merchants
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(merch => new {
-                    label = merch.Name,
-                    val = merch.Id
-                }).ToList();
-            return new JsonResult(merchants);
+            return _autocompleteService.AutocompleteMerchants(text.Trim());
         }
     }
 }

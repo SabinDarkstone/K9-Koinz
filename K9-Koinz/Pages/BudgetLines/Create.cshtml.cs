@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,7 +11,7 @@ namespace K9_Koinz.Pages.BudgetLines {
     public class CreateModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<CreateModel> _logger;
-        private readonly BudgetPeriodUtils _budgetPeriodUtils;
+        private readonly IBudgetService _budgetService;
 
         public Budget Budget { get; set; }
 
@@ -18,10 +19,10 @@ namespace K9_Koinz.Pages.BudgetLines {
         public BudgetLine BudgetLine { get; set; }
 
 
-        public CreateModel(KoinzContext context, ILogger<CreateModel> logger) {
+        public CreateModel(KoinzContext context, ILogger<CreateModel> logger, IBudgetService budgetService) {
             _context = context;
             _logger = logger;
-            _budgetPeriodUtils = new BudgetPeriodUtils(context);
+            _budgetService = budgetService;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid budgetId) {
@@ -70,7 +71,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         private void CreateFirstBudgetLinePeriod() {
             var parentBudget = _context.Budgets.Find(BudgetLine.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(BudgetLine, DateTime.Now).Sum(trans => trans.Amount);
+            var totalSpentSoFar = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(BudgetLine, DateTime.Now).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = BudgetLine.Id,

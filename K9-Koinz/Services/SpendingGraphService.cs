@@ -21,7 +21,11 @@ namespace K9_Koinz.Services {
         }
     }
 
-    public class SpendingGraphService : AbstractService<SpendingGraphService>, ICustomService {
+    public interface ISpendingGraphService : ICustomService {
+        public abstract Task<string[]> CreateGraphData();
+    }
+
+    public class SpendingGraphService : AbstractService<SpendingGraphService>, ISpendingGraphService {
         public SpendingGraphService(KoinzContext context, ILogger<SpendingGraphService> logger) : base(context, logger) { }
 
         public async Task<string[]> CreateGraphData() {
@@ -31,23 +35,8 @@ namespace K9_Koinz.Services {
             var startOfLastMonth = DateTime.Now.AddMonths(-1).StartOfMonth();
             var endOfLastMonth = DateTime.Now.AddMonths(-1).EndOfMonth();
 
-            var thisMonthTransactions = await _context.Transactions
-                .Include(trans => trans.Account)
-                .Where(trans => trans.Date >= startOfThisMonth && trans.Date <= endOfThisMonth)
-                .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
-                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
-                .GroupBy(trans => trans.Date)
-                .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
-                .ToListAsync();
-
-            var lastMonthTransactions = await _context.Transactions
-                .Include(trans => trans.Account)
-                .Where(trans => trans.Date >= startOfLastMonth && trans.Date <= endOfLastMonth)
-                .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
-                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
-                .GroupBy(trans => trans.Date)
-                .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
-                .ToListAsync();
+            var thisMonthTransactions = await getTransactionsForGraph(startOfThisMonth, endOfThisMonth);
+            var lastMonthTransactions = await getTransactionsForGraph(startOfLastMonth, endOfLastMonth);
 
             var thisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
                 StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
@@ -58,6 +47,17 @@ namespace K9_Koinz.Services {
             });
 
             return [thisMonthSpendingJson, lastMonthSpendingJson];
+        }
+
+        private async Task<List<Point>> getTransactionsForGraph(DateTime startDate, DateTime endDate) {
+            return await _context.Transactions
+                .Include(trans => trans.Account)
+                .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
+                .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
+                .GroupBy(trans => trans.Date)
+                .Select(group => new Point(group.Key.Day, group.Sum(trans => -1 * trans.Amount)))
+                .ToListAsync();
         }
     }
 }

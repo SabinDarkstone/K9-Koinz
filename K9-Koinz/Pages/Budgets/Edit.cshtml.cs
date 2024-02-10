@@ -9,29 +9,25 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
+using K9_Koinz.Services;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Budgets {
-    public class EditModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly ILogger<EditModel> _logger;
-        private readonly BudgetPeriodUtils _budgetPeriodUtils;
+    public class EditModel : AbstractEditModel<Budget> {
+        private readonly IBudgetService _budgetService;
 
-        public EditModel(KoinzContext context, ILogger<EditModel> logger) {
-            _context = context;
-            _logger = logger;
-            _budgetPeriodUtils = new BudgetPeriodUtils(_context);
+        public EditModel(KoinzContext context, IAccountService accountService,
+            IAutocompleteService autocompleteService, ITagService tagService, IBudgetService budgetService)
+            : base(context, accountService, autocompleteService, tagService) {
+            _budgetService = budgetService;
         }
-
-        [BindProperty]
-        public Budget Budget { get; set; } = default!;
-        public SelectList TagOptions;
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
                 return NotFound();
             }
 
-            TagOptions = TagUtils.GetTagList(_context);
+            TagOptions = _tagService.GetTagList();
 
             var budget = await _context.Budgets
                 .Include(bud => bud.BudgetLines)
@@ -40,11 +36,11 @@ namespace K9_Koinz.Pages.Budgets {
             if (budget == null) {
                 return NotFound();
             }
-            Budget = budget;
+            Record = budget;
 
-            if (Budget.DoNotUseCategories) {
-                Budget.BudgetedAmount = Budget.BudgetLines.First().BudgetedAmount;
-                Budget.DoNoCategoryRollover = Budget.BudgetLines.First().DoRollover;
+            if (Record.DoNotUseCategories) {
+                Record.BudgetedAmount = Record.BudgetLines.First().BudgetedAmount;
+                Record.DoNoCategoryRollover = Record.BudgetLines.First().DoRollover;
             }
 
             return Page();
@@ -55,55 +51,51 @@ namespace K9_Koinz.Pages.Budgets {
                 return Page();
             }
 
-            if (Budget.BudgetTagId == Guid.Empty) {
-                Budget.BudgetTagId = null;
+            if (Record.BudgetTagId == Guid.Empty) {
+                Record.BudgetTagId = null;
             } else {
-                var tag = await _context.Tags.FindAsync(Budget.BudgetTagId);
-                Budget.BudgetTagName = tag.Name;
+                var tag = await _context.Tags.FindAsync(Record.BudgetTagId);
+                Record.BudgetTagName = tag.Name;
             }
 
             var oldRecord = _context.BudgetLines
-                .Single(line => line.BudgetId == Budget.Id);
+                .Single(line => line.BudgetId == Record.Id);
 
-            _context.Attach(Budget).State = EntityState.Modified;
+            _context.Attach(Record).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!BudgetExists(Budget.Id)) {
+                if (!RecordExists(Record.Id)) {
                     return NotFound();
                 } else {
                     throw;
                 }
             }
 
-            if (Budget.DoNotUseCategories) {
-                var allowanceLine = _context.BudgetLines.SingleOrDefault(line => line.BudgetId == Budget.Id);
-                allowanceLine.BudgetedAmount = Budget.BudgetedAmount.Value;
-                allowanceLine.DoRollover = Budget.DoNoCategoryRollover;
+            if (Record.DoNotUseCategories) {
+                var allowanceLine = _context.BudgetLines.SingleOrDefault(line => line.BudgetId == Record.Id);
+                allowanceLine.BudgetedAmount = Record.BudgetedAmount.Value;
+                allowanceLine.DoRollover = Record.DoNoCategoryRollover;
                 _context.BudgetLines.Update(allowanceLine);
                 _context.SaveChanges();
 
-                if (!oldRecord.DoRollover && Budget.DoNoCategoryRollover) {
-                    _budgetPeriodUtils.DeleteOldBudgetLinePeriods(allowanceLine);
+                if (!oldRecord.DoRollover && Record.DoNoCategoryRollover) {
+                    _budgetService.DeleteOldBudgetLinePeriods(allowanceLine);
                     CreateFirstBudgetLinePeriod(allowanceLine);
                 }
 
-                if (!Budget.DoNoCategoryRollover) {
-                    _budgetPeriodUtils.DeleteOldBudgetLinePeriods(allowanceLine);
+                if (!Record.DoNoCategoryRollover) {
+                    _budgetService.DeleteOldBudgetLinePeriods(allowanceLine);
                 }
             }
 
             return RedirectToPage("./Index");
         }
 
-        private bool BudgetExists(Guid id) {
-            return _context.Budgets.Any(e => e.Id == id);
-        }
-
         private void CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
-            var (startDate, endDate) = Budget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now).Sum(trans => trans.Amount);
+            var (startDate, endDate) = Record.Timespan.GetStartAndEndDate();
+            var totalSpentSoFar = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = budgetLine.Id,

@@ -1,44 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Humanizer;
-using K9_Koinz.Utils;
+using K9_Koinz.Services;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
-    public class EditModel : PageModel {
-        private readonly KoinzContext _context;
-
-        public EditModel(KoinzContext context) {
-            _context = context;
-        }
-
-        [BindProperty]
-        public Transaction Transaction { get; set; } = default!;
-
-        public List<SelectListItem> AccountOptions;
-        public SelectList TagOptions;
+    public class EditModel : AbstractEditModel<Transaction> {
+        public EditModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
+            : base(context, accountService, autocompleteService, tagService) { }
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
                 return NotFound();
             }
 
-            AccountOptions = AccountUtils.GetAccountList(_context, true);
-            TagOptions = TagUtils.GetTagList(_context);
+            AccountOptions = _accountService.GetAccountList(true);
+            TagOptions = _tagService.GetTagList();
 
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (transaction == null) {
                 return NotFound();
             }
-            Transaction = transaction;
+            Record = transaction;
             return Page();
         }
 
@@ -47,25 +34,25 @@ namespace K9_Koinz.Pages.Transactions {
                 return Page();
             }
 
-            Transaction.Date = Transaction.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
+            Record.Date = Record.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
-            var category = await _context.Categories.FindAsync(Transaction.CategoryId);
-            var merchant = await _context.Merchants.FindAsync(Transaction.MerchantId);
-            var account = await _context.Accounts.FindAsync(Transaction.AccountId);
-            Transaction.CategoryName = category.Name;
-            Transaction.MerchantName = merchant.Name;
-            Transaction.AccountName = account.Name;
+            var category = await _context.Categories.FindAsync(Record.CategoryId);
+            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
+            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            Record.CategoryName = category.Name;
+            Record.MerchantName = merchant.Name;
+            Record.AccountName = account.Name;
 
-            if (Transaction.TagId == Guid.Empty) {
-                Transaction.TagId = null;
+            if (Record.TagId == Guid.Empty) {
+                Record.TagId = null;
             }
 
-            _context.Attach(Transaction).State = EntityState.Modified;
+            _context.Attach(Record).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!TransactionExists(Transaction.Id)) {
+                if (!TransactionExists(Record.Id)) {
                     return NotFound();
                 } else {
                     throw;

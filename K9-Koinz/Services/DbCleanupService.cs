@@ -2,7 +2,11 @@
 using K9_Koinz.Services.Meta;
 
 namespace K9_Koinz.Services {
-    public class DbCleanupService : AbstractService<DbCleanupService>, ICustomService {
+    public interface  IDbCleanupService : ICustomService {
+        
+    }
+
+    public class DbCleanupService : AbstractService<DbCleanupService>, IDbCleanupService {
         public DbCleanupService(KoinzContext context, ILogger<DbCleanupService> logger) : base(context, logger) { }
     }
 }

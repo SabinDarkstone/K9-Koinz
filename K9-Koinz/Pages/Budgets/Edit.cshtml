@@ -15,43 +15,43 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Budget.DoNotUseCategories" />
-            <input type="hidden" asp-for="Budget.Id" />
+            <input type="hidden" asp-for="Record.DoNotUseCategories" />
+            <input type="hidden" asp-for="Record.Id" />
             <div class="form-group">
-                <label asp-for="Budget.Name" class="control-label"></label>
-                <input asp-for="Budget.Name" class="form-control" />
-                <span asp-validation-for="Budget.Name" class="text-danger"></span>
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Budget.Timespan" class="control-label"></label>
-                <select asp-for="Budget.Timespan" class="form-control" asp-items="@Html.GetEnumSelectList<BudgetTimeSpan>()">
+                <label asp-for="Record.Timespan" class="control-label"></label>
+                <select asp-for="Record.Timespan" class="form-control" asp-items="@Html.GetEnumSelectList<BudgetTimeSpan>()">
                     <option disabled selected>Select one...</option>
                 </select>
-                <span asp-validation-for="Budget.Timespan" class="text-danger"></span>
+                <span asp-validation-for="Record.Timespan" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Budget.Description" class="control-label"></label>
-                <input asp-for="Budget.Description" class="form-control" />
-                <span asp-validation-for="Budget.Description" class="text-danger"></span>
+                <label asp-for="Record.Description" class="control-label"></label>
+                <input asp-for="Record.Description" class="form-control" />
+                <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Budget.BudgetTagId" class="control-label"></label>
-                <select asp-for="Budget.BudgetTagId" class="form-control" asp-items="@Model.TagOptions">
-                    @if (Model.Budget.DoNotUseCategories) {
+                <label asp-for="Record.BudgetTagId" class="control-label"></label>
+                <select asp-for="Record.BudgetTagId" class="form-control" asp-items="@Model.TagOptions">
+                    @if (Model.Record.DoNotUseCategories) {
                         <option value="@Guid.Empty" selected disabled>No Tag</option>
                     } else {
                         <option value="@Guid.Empty" selected>No Tag</option>
                     }
                 </select>
             </div>
-            @if (Model.Budget.DoNotUseCategories) {
+            @if (Model.Record.DoNotUseCategories) {
                 <div class="form-group">
-                    <label asp-for="Budget.BudgetedAmount" class="control-label"></label>
-                    <input asp-for="Budget.BudgetedAmount" class="form-control" />
+                    <label asp-for="Record.BudgetedAmount" class="control-label"></label>
+                    <input asp-for="Record.BudgetedAmount" class="form-control" />
                 </div>
                 <div class="form-group">
-                    @Html.EditorFor(model => Model.Budget.DoNoCategoryRollover)
-                    @Html.DisplayNameFor(model => Model.Budget.DoNoCategoryRollover)
+                    @Html.EditorFor(model => Model.Record.DoNoCategoryRollover)
+                    @Html.DisplayNameFor(model => Model.Record.DoNoCategoryRollover)
                 </div>
             }
             <div class="form-group">
@@ -61,7 +61,7 @@
     </div>
 </div>
 
-@if (!Model.Budget.DoNotUseCategories) {
+@if (!Model.Record.DoNotUseCategories) {
     <h4>Budget Lines</h4>
 
     <div class="col-sm-5">
@@ -71,13 +71,13 @@
                     <th>Category Name</th>
                     <th>Budgeted Amount</th>
                     <th>
-                        <a class="btn btn-outline-primary" asp-page="/BudgetLines/Create" asp-route-budgetId="@Model.Budget.Id">Add Line</a>
+                        <a class="btn btn-outline-primary" asp-page="/BudgetLines/Create" asp-route-budgetId="@Model.Record.Id">Add Line</a>
                     </th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach (var budgetLine in Model.Budget.BudgetLines) {
+                @foreach (var budgetLine in Model.Record.BudgetLines) {
                     <tr>
                         <td>
                             @budgetLine.BudgetCategory.Name

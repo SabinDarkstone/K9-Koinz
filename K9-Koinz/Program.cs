@@ -19,9 +19,13 @@ namespace K9_Koinz {
                 options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
             });
 
-            builder.Services.AddScoped<ICustomService, SpendingGraphService>();
-            builder.Services.AddScoped<ICustomService, BillService>();
-            builder.Services.AddScoped<ICustomService, DbCleanupService>();
+            builder.Services.AddScoped<ISpendingGraphService, SpendingGraphService>();
+            builder.Services.AddScoped<IBillService, BillService>();
+            builder.Services.AddScoped<IDbCleanupService, DbCleanupService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IAutocompleteService, AutocompleteService>();
+            builder.Services.AddScoped<ITagService, TagService>();
+            builder.Services.AddScoped<IBudgetService, BudgetService>();
 
             var app = builder.Build();
 
