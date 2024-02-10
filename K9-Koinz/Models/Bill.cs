@@ -74,21 +74,7 @@ namespace K9_Koinz.Models {
                         return LastDueDate.Value.AddYears(RepeatFrequencyCount);
                     }
                 } else {
-                    var endOfMonth = DateTime.Today.EndOfMonth();
-                    var endOfYear = DateTime.Today.EndOfYear();
-                    if (RepeatFrequency == Frequency.MONTHLY) {
-                        if (FirstDueDate <= endOfMonth) {
-                            return FirstDueDate;
-                        } else {
-                            return FirstDueDate.AddMonths(RepeatFrequencyCount);
-                        }
-                    } else if (RepeatFrequency == Frequency.YEARLY) {
-                        if (FirstDueDate <= endOfYear) {
-                            return FirstDueDate;
-                        } else {
-                            return FirstDueDate.AddYears(RepeatFrequencyCount);
-                        }
-                    }
+                    return FirstDueDate;
                 }
 
                 return null;
