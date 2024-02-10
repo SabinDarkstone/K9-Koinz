@@ -56,7 +56,7 @@
                 </td>
             </tr>
             @if (!item.IsChildCategory) {
-                @foreach (var childCat in item.ChildCategories) {
+                @foreach (var childCat in item.ChildCategories.OrderBy(cCat => cCat.Name)) {
                     <tr>
                         <td>
                             <span class="mx-4">

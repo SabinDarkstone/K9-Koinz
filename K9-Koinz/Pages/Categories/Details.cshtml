@@ -23,7 +23,7 @@
             </dt>
             <dd class="col-sm-10">
                 <ul>
-                    @foreach (var child in Model.Category.ChildCategories) {
+                    @foreach (var child in Model.Category.ChildCategories.OrderBy(cCat => cCat.Name)) {
                         <li>@child.Name</li>
                     }
                 </ul>

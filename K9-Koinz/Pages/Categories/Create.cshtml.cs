@@ -43,7 +43,7 @@ namespace K9_Koinz.Pages.Categories {
         public IActionResult OnGetCategoryAutoComplete(string text) {
             text = text.Trim();
             var categories = _context.Categories
-                .Where(cat => !cat.IsChildCategory)
+                .Where(cat => cat.ParentCategoryId == null)
                 .AsNoTracking()
                 .AsEnumerable()
                 .Where(cat => cat.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))

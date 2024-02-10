@@ -54,7 +54,7 @@
             </thead>
 
             <tbody>
-                @foreach (var childCategory in Model.Record.ChildCategories) {
+                @foreach (var childCategory in Model.Record.ChildCategories.OrderBy(cCat => cCat.Name)) {
                     <tr>
                         <td>
                             @childCategory.Name
