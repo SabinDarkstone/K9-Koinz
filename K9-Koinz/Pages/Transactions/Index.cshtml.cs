@@ -73,8 +73,8 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList CategoryOptions;
         public List<SelectListItem> AccountOptions;
 
-        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string? tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
-            _billService.CreateTransactionsForBills(null);
+        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
+            _billService.CreateTransactionsForBills(DateTime.Now);
 
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
             AccountOptions = _accountSerice.GetAccountList(true);

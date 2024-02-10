@@ -4,6 +4,7 @@ using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Pages.Bills {
     public struct AccountSummary {
@@ -33,16 +34,32 @@ namespace K9_Koinz.Pages.Bills {
         public List<Bill> Bills { get; set; } = default;
         public Dictionary<Guid, AccountSummary> AccountsWithBills { get; set; } = new();
 
-        public async Task<IActionResult> OnGetAsync() {
+        [Display(Name = "Show All Bills")]
+        public bool ShowAllBills { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(bool? showAllBills) {
             var startDate = DateTime.Today.StartOfMonth();
             var endDate = DateTime.Today.EndOfMonth();
-            Bills = (await _context.Bills
-                .Include(bill => bill.Account)
-                .ToListAsync())
-                .Where(bill => bill.NextDueDate >= startDate)
-                .Where(bill => bill.NextDueDate <= endDate)
-                .OrderBy(bill => bill.NextDueDate)
-                .ToList();
+
+            if (showAllBills.HasValue) {
+                this.ShowAllBills = showAllBills.Value;
+            }
+
+            if (showAllBills.HasValue && showAllBills.Value) {
+                Bills = (await _context.Bills
+                    .Include(bill => bill.Account)
+                    .ToListAsync())
+                    .OrderBy(bill => bill.NextDueDate)
+                    .ToList();
+            } else {
+                Bills = (await _context.Bills
+                    .Include(bill => bill.Account)
+                    .ToListAsync())
+                    .Where(bill => bill.NextDueDate >= startDate)
+                    .Where(bill => bill.NextDueDate <= endDate)
+                    .OrderBy(bill => bill.NextDueDate)
+                    .ToList();
+            }
 
             List<Account> accounts = Bills.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();
 

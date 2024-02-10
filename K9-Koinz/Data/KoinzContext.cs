@@ -42,6 +42,13 @@ namespace K9_Koinz.Data {
                 .HasForeignKey(x => x.ParentCategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // Bills
+            modelBuilder.Entity<Bill>()
+                .HasMany(x => x.Transactions)
+                .WithOne(x => x.Bill)
+                .HasForeignKey(x => x.BillId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Uniqueness
             modelBuilder.Entity<Merchant>()
                 .HasIndex(x => x.Name)

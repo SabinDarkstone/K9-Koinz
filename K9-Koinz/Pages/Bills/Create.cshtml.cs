@@ -34,9 +34,11 @@ namespace K9_Koinz.Pages.Bills {
 
             var account = _context.Accounts.Find(Bill.AccountId);
             var merchant = _context.Merchants.Find(Bill.MerchantId);
+            var category = _context.Categories.Find(Bill.CategoryId);
 
             Bill.AccountName = account.Name;
             Bill.MerchantName = merchant.Name;
+            Bill.CategoryName = category.Name;
 
             _context.Bills.Add(Bill);
             await _context.SaveChangesAsync();

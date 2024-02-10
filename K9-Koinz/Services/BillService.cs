@@ -5,32 +5,27 @@ using K9_Koinz.Utils;
 
 namespace K9_Koinz.Services {
     public interface IBillService : ICustomService {
-        public abstract List<Transaction> CreateTransactionsForBills(DateTime? date);
+        public abstract List<Transaction> CreateTransactionsForBills(DateTime date);
     }
 
     public class BillService : AbstractService<BillService>, IBillService {
         public BillService(KoinzContext context, ILogger<BillService> logger) : base(context, logger) { }
 
-        public List<Transaction> CreateTransactionsForBills(DateTime? date) {
-            if (!date.HasValue) {
-                date = DateTime.Now;
-            }
+        public List<Transaction> CreateTransactionsForBills(DateTime date) {
+            var bills = GetBillsFromMonthStartToNow(date);
 
-            var bills = GetBillsFromMonthStartToNow(date.Value);
-            
             List<Transaction> transactionsToCreate = new List<Transaction>();
             foreach (var bill in bills) {
-                var newTransaction = new Transaction {
-                    AccountId = bill.Id,
-                    AccountName = bill.AccountName,
-                    BillId = bill.Id,
-                    MerchantId = bill.MerchantId,
-                    MerchantName = bill.MerchantName,
-                    CategoryId = bill.CategoryId.Value,
-                    CategoryName = bill.CategoryName,
-                    Amount = bill.BillAmount * -1,
-                    Date = bill.NextDueDate ?? DateTime.Today
-                };
+                var newTransaction = new Transaction();
+                newTransaction.AccountId = bill.AccountId;
+                newTransaction.AccountName = bill.AccountName;
+                newTransaction.BillId = bill.Id;
+                newTransaction.MerchantId = bill.MerchantId;
+                newTransaction.MerchantName = bill.MerchantName;
+                newTransaction.CategoryId = bill.CategoryId.Value;
+                newTransaction.CategoryName = bill.CategoryName;
+                newTransaction.Amount = bill.BillAmount * -1;
+                newTransaction.Date = bill.NextDueDate.Value;
                 transactionsToCreate.Add(newTransaction);
             }
 
@@ -52,7 +47,7 @@ namespace K9_Koinz.Services {
         private List<Bill> GetBillsFromMonthStartToNow(DateTime refDate) {
             var startDate = refDate.StartOfMonth();
 
-            return _context.Bills.AsEnumerable()
+            return (_context.Bills.ToList())
                 .Where(bill => bill.NextDueDate >= startDate)
                 .Where(bill => bill.NextDueDate <= refDate)
                 .ToList();
