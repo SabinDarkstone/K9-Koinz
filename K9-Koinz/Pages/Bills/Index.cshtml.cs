@@ -44,13 +44,14 @@ namespace K9_Koinz.Pages.Bills {
                 .OrderBy(bill => bill.NextDueDate)
                 .ToList();
 
-            var accounts = await _context.Accounts.ToListAsync();
-            accounts.ForEach(acct => AccountsWithBills.Add(acct.Id, new AccountSummary(acct, Bills)));
+            List<Account> accounts = Bills.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();
 
-            foreach (var bill in Bills) {
-                if (!AccountsWithBills.ContainsKey(bill.AccountId)) {
-                    AccountsWithBills.Add(bill.AccountId, new AccountSummary(bill.Account));
-                }
+            foreach (var account in accounts) {
+                var billsForAccount = Bills.Where(Bill => Bill.AccountId == account.Id).ToList();
+                AccountsWithBills.Add(
+                    account.Id,
+                    new AccountSummary(account, billsForAccount)
+                );
             }
 
             return Page();
