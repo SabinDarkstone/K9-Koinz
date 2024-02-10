@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-
     public enum RolloverStatus {
         NONE,
         POSITIVE,
@@ -60,8 +60,8 @@ namespace K9_Koinz.Models {
 
             var prevRefDate = refDate.GetPreviousPeriod(Budget.Timespan);
 
-            CurrentPeriod = Periods.FirstOrDefault(per => per.StartDate <= refDate && per.EndDate >= refDate);
-            PreviousPeriod = Periods.FirstOrDefault(per => per.StartDate <= prevRefDate && per.EndDate >= prevRefDate);
+            CurrentPeriod = Periods.SingleOrDefault(per => per.StartDate <= refDate && per.EndDate >= refDate);
+            PreviousPeriod = Periods.SingleOrDefault(per => per.StartDate <= prevRefDate && per.EndDate >= prevRefDate);
         }
 
         [NotMapped]
@@ -117,10 +117,6 @@ namespace K9_Koinz.Models {
                 }
                 return null;
             }
-        }
-
-        public override int GetHashCode() {
-            return Id.GetHashCode();
         }
     }
 }

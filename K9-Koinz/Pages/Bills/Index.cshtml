@@ -1,0 +1,152 @@
+﻿@page
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Bills.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Bills</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<form method="get" name="form1">
+    <div class="mb-4">
+        <input type="checkbox" asp-for="@Model.ShowAllBills" onclick="document.form1.submit()" /> Show All Bills
+    </div>
+</form>
+
+@foreach (var accountEntry in Model.AccountsWithBills.OrderBy(acct => acct.Value.Name)) {
+    <h4>@accountEntry.Value.Name</h4>
+    <p>Total Due This Month: @accountEntry.Value.AmountDueThisMonth.FormatCurrency(0)</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bills[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bills[0].MerchantId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bills[0].RepeatFrequency)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bills[0].BillAmount)
+                </th>
+                <th>
+                    Next Due Date
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.MerchantName
+                    </td>
+                    <td>
+                        @item.RepeatString
+                    </td>
+                    <td>
+                        @item.BillAmount.FormatCurrency(2)
+                    </td>
+                    <td>
+                        @if (item.NextDueDate.HasValue) {
+                            @Html.DisplayFor(x => item.NextDueDate)
+                            <span style="font-weight:lighter;">
+                                @{
+                                    var daysRemaining = (item.NextDueDate.Value - DateTime.Today).Days;
+                                    if (daysRemaining < 0) {
+                                        <text>&nbsp;</text>
+                                    } else if (daysRemaining >= 0 && daysRemaining < 1) {
+                                        <text>(Today)</text>
+                                    } else if (daysRemaining == 1) {
+                                        <text>(Tomorrow)</text>
+                                    } else {
+                                        <text>(@daysRemaining Days)</text>
+                                    }
+                                }
+                            </span>
+                        } else {
+                            <span class="text-danger">Error</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+    </style>
+}

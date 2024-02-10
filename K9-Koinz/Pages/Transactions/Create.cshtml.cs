@@ -1,32 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.EntityFrameworkCore;
 using Humanizer;
-using K9_Koinz.Utils;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<CreateModel> _logger;
+        private readonly IAccountService _accountService;
+        private readonly IAutocompleteService _autocompleteService;
+        private readonly ITagService _tagService;
 
-        public CreateModel(KoinzContext context, ILogger<CreateModel> logger) {
+        public CreateModel(KoinzContext context, ILogger<CreateModel> logger, IAccountService accountService,
+            IAutocompleteService autocompleteService, ITagService tagService) {
             _context = context;
             _logger = logger;
+            _accountService = accountService;
+            _autocompleteService = autocompleteService;
+            _tagService = tagService;
         }
 
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
         public void OnGet() {
-            AccountOptions = AccountUtils.GetAccountList(_context, true);
-            TagOptions = TagUtils.GetTagList(_context);
+            AccountOptions = _accountService.GetAccountList(true);
+            TagOptions = _tagService.GetTagList();
         }
 
         [BindProperty]
@@ -57,30 +59,11 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public IActionResult OnGetMerchantAutoComplete(string text) {
-            text = text.Trim();
-            var merchants = _context.Merchants
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(merch => new {
-                    label = merch.Name,
-                    val = merch.Id
-                }).ToList();
-            return new JsonResult(merchants);
+            return _autocompleteService.AutocompleteMerchants(text.Trim());
         }
 
         public IActionResult OnGetCategoryAutoComplete(string text) {
-            text = text.Trim();
-            var categories = _context.Categories
-                .Include(cat => cat.ParentCategory)
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(cat => cat.FullyQualifiedName.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(cat => new {
-                    label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
-                    val = cat.Id
-                }).ToList();
-            return new JsonResult(categories);
+            return _autocompleteService.AutocompleteCategories(text.Trim());
         }
     }
 }

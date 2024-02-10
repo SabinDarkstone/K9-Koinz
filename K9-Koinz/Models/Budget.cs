@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 
-namespace K9_Koinz.Models
-{
+namespace K9_Koinz.Models {
     public enum BudgetTimeSpan {
         [Display(Name = "Weekly")]
         WEEKLY,
@@ -37,10 +37,6 @@ namespace K9_Koinz.Models
 
         [NotMapped]
         public ICollection<BudgetLine> UnallocatedLines { get; set; } = new List<BudgetLine>();
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
 
 		[NotMapped]
         public ICollection<BudgetLine> IncomeLines {

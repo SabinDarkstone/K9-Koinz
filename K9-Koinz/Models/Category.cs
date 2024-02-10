@@ -1,4 +1,5 @@
-﻿using K9_Koinz.Utils;
+﻿using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,14 +23,15 @@ namespace K9_Koinz.Models {
         [Unique<Category>]
         public string Name { get; set; }
         [DisplayName("Parent Category")]
-        public Guid? ParentCategoryId {  get; set; }
+        public Guid? ParentCategoryId { get; set; }
         public Category ParentCategory { get; set; }
         public string ParentCategoryName { get; set; }
         [DisplayName("Category Type")]
         public CategoryType CategoryType { get; set; } = CategoryType.UNASSIGNED;
-        
+
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BudgetLine> BudgetLines { get; set; }
+        public ICollection<Bill> Bills { get; set; }
         [DisplayName("Child Categories")]
         public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
 
@@ -59,9 +61,5 @@ namespace K9_Koinz.Models {
                 return CategoryType.GetAttribute<DisplayAttribute>()?.Name ?? string.Empty;
             }
         }
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
-	}
+    }
 }

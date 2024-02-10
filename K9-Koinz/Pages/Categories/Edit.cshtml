@@ -14,23 +14,23 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Category.Id" />
+            <input type="hidden" asp-for="Record.Id" />
             <div class="form-group">
-                <label asp-for="Category.Name" class="control-label"></label>
-                <input asp-for="Category.Name" class="form-control" />
-                <span asp-validation-for="Category.Name" class="text-danger"></span>
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Category.CategoryType" class="control-label"></label>
-                <select asp-for="Category.CategoryType" class="form-control" asp-items="@Html.GetEnumSelectList<CategoryType>()"></select>
-                <span asp-validation-for="Category.CategoryType" class="text-danger"></span>
+                <label asp-for="Record.CategoryType" class="control-label"></label>
+                <select asp-for="Record.CategoryType" class="form-control" asp-items="@Html.GetEnumSelectList<CategoryType>()"></select>
+                <span asp-validation-for="Record.CategoryType" class="text-danger"></span>
             </div>
-            @if (Model.Category.IsChildCategory) {
+            @if (Model.Record.IsChildCategory) {
                 <div class="form-group">
-                    <label asp-for="Category.ParentCategoryId" class="control-label"></label>
-                    <input id="txtParentCategory" class="form-control" value="@Model.Category.ParentCategory.Name" />
-                    <input asp-for="Category.ParentCategoryId" type="hidden" id="hfParentCategory" />
-                    <span asp-validation-for="Category.ParentCategoryId" class="text-danger"></span>
+                    <label asp-for="Record.ParentCategoryId" class="control-label"></label>
+                    <input id="txtParentCategory" class="form-control" value="@Model.Record.ParentCategory.Name" />
+                    <input asp-for="Record.ParentCategoryId" type="hidden" id="hfParentCategory" />
+                    <span asp-validation-for="Record.ParentCategoryId" class="text-danger"></span>
                 </div>
             }
             <div class="form-group">
@@ -40,7 +40,7 @@
     </div>
 </div>
 
-@if (!Model.Category.IsChildCategory) {
+@if (!Model.Record.IsChildCategory) {
     <h4>Child Categories</h4>
     <div class="col-sm-5">
         <table class="table mt-2">
@@ -48,13 +48,13 @@
                 <tr>
                     <th>Name</th>
                     <th>
-                        <a class="btn btn-outline-primary" asp-page="/Categories/Create" asp-route-parentCategoryId="@Model.Category.Id">Add Child</a>
+                        <a class="btn btn-outline-primary" asp-page="/Categories/Create" asp-route-parentCategoryId="@Model.Record.Id">Add Child</a>
                     </th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach (var childCategory in Model.Category.ChildCategories) {
+                @foreach (var childCategory in Model.Record.ChildCategories) {
                     <tr>
                         <td>
                             @childCategory.Name

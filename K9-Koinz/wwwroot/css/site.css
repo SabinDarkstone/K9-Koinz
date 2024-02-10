@@ -1,24 +1,24 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .no-underline {
@@ -26,9 +26,9 @@ body {
     text-decoration: none;
 }
 
-.no-underline:hover {
-    color: inherit;
-}
+    .no-underline:hover {
+        color: inherit;
+    }
 
 .nav-link-hover {
     border-radius: 10px;
@@ -36,8 +36,18 @@ body {
     margin-right: 2px;
 }
 
-.nav-link-hover:hover {
-    color: white !important;
-    background-color: black;
-    border-radius: 10px;
+    .nav-link-hover:hover {
+        color: white !important;
+        background-color: black;
+        border-radius: 10px;
+    }
+
+.link-unstyled, .link-unstyled:link {
+    color: inherit;
+    text-decoration: inherit;
 }
+
+    .link-unstyled:hover {
+        color: inherit;
+        text-decoration: underline;
+    }

@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Humanizer;
+using K9_Koinz.Pages.Meta;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
-    public class EditModel : PageModel {
-        private readonly KoinzContext _context;
-
-        public EditModel(KoinzContext context) {
-            _context = context;
-        }
-
-        [BindProperty]
-        public Category Category { get; set; } = default!;
+    public class EditModel : AbstractEditModel<Category> {
+        public EditModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
+            : base(context, accountService, autocompleteService, tagService) { }
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (id == null) {
@@ -34,7 +23,7 @@ namespace K9_Koinz.Pages.Categories {
                 return NotFound();
             }
 
-            Category = category;
+            Record = category;
             return Page();
         }
 
@@ -44,24 +33,24 @@ namespace K9_Koinz.Pages.Categories {
             }
 
             var childCategories = await _context.Categories
-                .Where(cat => cat.ParentCategoryId == Category.Id)
+                .Where(cat => cat.ParentCategoryId == Record.Id)
                 .ToListAsync();
             foreach (var childCat in childCategories) {
-                childCat.CategoryType = Category.CategoryType;
+                childCat.CategoryType = Record.CategoryType;
                 _context.Attach(childCat).State = EntityState.Modified;
             }
 
-            if (Category.ParentCategoryId.HasValue) {
-                var parentCategory = await _context.Categories.FindAsync(Category.ParentCategoryId);
-                Category.ParentCategoryName = parentCategory.Name;
+            if (Record.ParentCategoryId.HasValue) {
+                var parentCategory = await _context.Categories.FindAsync(Record.ParentCategoryId);
+                Record.ParentCategoryName = parentCategory.Name;
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
+            _context.Attach(Record).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!CategoryExists(Category.Id)) {
+                if (!RecordExists(Record.Id)) {
                     return NotFound();
                 } else {
                     throw;
@@ -83,10 +72,6 @@ namespace K9_Koinz.Pages.Categories {
                     val = cat.Id
                 }).ToList();
             return new JsonResult(categories);
-        }
-
-        private bool CategoryExists(Guid id) {
-            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

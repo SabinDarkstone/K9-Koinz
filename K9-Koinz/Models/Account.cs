@@ -1,4 +1,5 @@
-﻿using K9_Koinz.Utils;
+﻿using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -39,13 +40,10 @@ namespace K9_Koinz.Models {
         public DateTime InitialBalanceDate {  get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Bill> Bills { get; set; }
 
         [NotMapped]
         [DisplayName("Current Balance")]
         public double CurrentBalance { get; set; }
-
-		public override int GetHashCode() {
-			return Id.GetHashCode();
-		}
 	}
 }

@@ -9,15 +9,18 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Budgets {
     public class CreateModel : PageModel {
         private readonly KoinzContext _context;
-        private readonly BudgetPeriodUtils _budgetPeriodUtils;
+        private readonly IBudgetService _budgetService;
+        private readonly ITagService _tagService;
 
-        public CreateModel(KoinzContext context) {
+        public CreateModel(KoinzContext context, IBudgetService budgetService, ITagService tagService) {
             _context = context;
-            _budgetPeriodUtils = new BudgetPeriodUtils(_context);
+            _budgetService = budgetService;
+            _tagService = tagService;
         }
 
         [BindProperty]
@@ -25,7 +28,7 @@ namespace K9_Koinz.Pages.Budgets {
         public SelectList TagOptions;
 
         public IActionResult OnGet() {
-            TagOptions = TagUtils.GetTagList(_context);
+            TagOptions = _tagService.GetTagList();
             return Page();
         }
 
@@ -77,7 +80,7 @@ namespace K9_Koinz.Pages.Budgets {
 
         private void CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
             var (startDate, endDate) = Budget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = _budgetPeriodUtils.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now).Sum(trans => trans.Amount);
+            var totalSpentSoFar = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = budgetLine.Id,

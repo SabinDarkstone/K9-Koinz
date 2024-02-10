@@ -14,31 +14,31 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Account.Id" />
+            <input type="hidden" asp-for="Record.Id" />
             <div class="form-group">
-                <label asp-for="Account.Name" class="control-label"></label>
-                <input asp-for="Account.Name" class="form-control" />
-                <span asp-validation-for="Account.Name" class="text-danger"></span>
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Account.Description" class="control-label"></label>
-                <input asp-for="Account.Description" class="form-control" />
-                <span asp-validation-for="Account.Description" class="text-danger"></span>
+                <label asp-for="Record.Description" class="control-label"></label>
+                <input asp-for="Record.Description" class="form-control" />
+                <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Account.Type" class="control-label"></label>
-                <select asp-for="Account.Type" class="form-control" asp-items="@Html.GetEnumSelectList<AccountType>()"></select>
-                <span asp-validation-for="Account.Type" class="text-danger"></span>
+                <label asp-for="Record.Type" class="control-label"></label>
+                <select asp-for="Record.Type" class="form-control" asp-items="@Html.GetEnumSelectList<AccountType>()"></select>
+                <span asp-validation-for="Record.Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Account.InitialBalance" class="control-label"></label>
-                <input asp-for="Account.InitialBalance" class="form-control" type="number" />
-                <span asp-validation-for="Account.InitialBalance" class="text-danger"></span>
+                <label asp-for="Record.InitialBalance" class="control-label"></label>
+                <input asp-for="Record.InitialBalance" class="form-control" type="number" />
+                <span asp-validation-for="Record.InitialBalance" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Account.InitialBalanceDate" class="control-label"></label>
-                <input asp-for="Account.InitialBalanceDate" class="form-control" type="date" />
-                <span asp-validation-for="Account.InitialBalanceDate" class="text-danger"></span>
+                <label asp-for="Record.InitialBalanceDate" class="control-label"></label>
+                <input asp-for="Record.InitialBalanceDate" class="form-control" type="date" />
+                <span asp-validation-for="Record.InitialBalanceDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Data {
     public class KoinzContext : DbContext {
@@ -16,6 +17,7 @@ namespace K9_Koinz.Data {
         public DbSet<BudgetLine> BudgetLines { get; set; }
         public DbSet<BudgetLinePeriod> BudgetLinePeriods { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Bill> Bills { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -31,6 +33,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<Merchant>().ToTable("Merchant").HasKey(x => x.Id);
             modelBuilder.Entity<BudgetLinePeriod>().ToTable("BudgetPeriod").HasKey(x => x.Id);
             modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
+            modelBuilder.Entity<Bill>().ToTable("Bill").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
@@ -39,11 +42,24 @@ namespace K9_Koinz.Data {
                 .HasForeignKey(x => x.ParentCategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // Bills
+            modelBuilder.Entity<Bill>()
+                .HasMany(x => x.Transactions)
+                .WithOne(x => x.Bill)
+                .HasForeignKey(x => x.BillId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Uniqueness
             modelBuilder.Entity<Merchant>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
             modelBuilder.Entity<Category>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<Tag>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<Bill>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
         }
