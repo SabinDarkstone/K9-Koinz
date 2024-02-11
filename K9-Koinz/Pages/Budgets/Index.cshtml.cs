@@ -31,6 +31,8 @@ namespace K9_Koinz.Pages.Budgets {
         private readonly ILogger<IndexModel> _logger;
         private readonly IBudgetService _budgetService;
 
+        private Budget selectedBudget;
+
         public IndexModel(KoinzContext context, ILogger<IndexModel> logger, IBudgetService budgetService) {
             _context = context;
             _logger = logger;
@@ -38,7 +40,15 @@ namespace K9_Koinz.Pages.Budgets {
         }
 
         public IList<Budget> Budgets { get; set; } = default!;
-        public Budget SelectedBudget { get; set; }
+        public Budget SelectedBudget {
+            get {
+                selectedBudget.BudgetLines = selectedBudget.BudgetLines.OrderBy(line => line.BudgetCategoryName).ToList();
+                return selectedBudget;
+            }
+            set {
+                selectedBudget = value;
+            }
+        }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]

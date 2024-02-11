@@ -323,7 +323,7 @@
                 </div>
             </div>
             <ul class="list-group mb-4">
-                @foreach (var budgetLine in Model.SelectedBudget.IncomeLines.OrderBy(line => line.BudgetCategoryName)) {
+                @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
                     var spentOverBudgetedPercent = Math.Clamp((budgetLine.SpentAmount / budgetLine.BudgetedAmount) * 100, 0, 100);
 
                     var width = "width: " + spentOverBudgetedPercent + "%;";
@@ -370,7 +370,7 @@
                     </div>
                 </div>
                 <ul>
-                    @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes.OrderBy(line => line.BudgetCategoryName)) {
+                    @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
                         var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
                         var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
 
@@ -395,7 +395,7 @@
         </div>
 
         <ul class="list-group mb-4">
-            @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines.OrderBy(line => line.BudgetCategoryName)) {
+            @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
                 var todayLine = "left: " + budgetLine.TimePerent + "%;";
                 var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
                 var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
@@ -557,7 +557,7 @@
                 </div>
             </div>
             <ul>
-                @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses.OrderBy(line => line.BudgetCategoryName)) {
+                @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
                     var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
                     var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
