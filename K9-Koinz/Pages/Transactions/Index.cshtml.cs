@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
@@ -18,14 +14,12 @@ namespace K9_Koinz.Pages.Transactions {
         private readonly IConfiguration _configuration;
         private readonly ILogger<IndexModel> _logger;
         private readonly IAccountService _accountSerice;
-        private readonly IBillService _billService;
 
-        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService, IBillService billService) {
+        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService) {
             _context = context;
             _configuration = configuration;
             _logger = logger;
             _accountSerice = accountService;
-            _billService = billService;
         }
 
         public string SearchString { get; set; }
@@ -74,8 +68,6 @@ namespace K9_Koinz.Pages.Transactions {
         public List<SelectListItem> AccountOptions;
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
-            _billService.CreateTransactionsForBills(DateTime.Now);
-
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
             AccountOptions = _accountSerice.GetAccountList(true);
 

@@ -3,6 +3,7 @@ using K9_Koinz.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Services;
+using K9_Koinz.Services.BackgroundWorkers;
 namespace K9_Koinz {
     public class Program {
         public static void Main(string[] args) {
@@ -20,12 +21,13 @@ namespace K9_Koinz {
             });
 
             builder.Services.AddScoped<ISpendingGraphService, SpendingGraphService>();
-            builder.Services.AddScoped<IBillService, BillService>();
             builder.Services.AddScoped<IDbCleanupService, DbCleanupService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAutocompleteService, AutocompleteService>();
             builder.Services.AddScoped<ITagService, TagService>();
             builder.Services.AddScoped<IBudgetService, BudgetService>();
+
+            builder.Services.AddHostedService<ScheduledTransactionCreation>();
 
             var app = builder.Build();
 
