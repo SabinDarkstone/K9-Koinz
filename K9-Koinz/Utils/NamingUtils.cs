@@ -1,5 +1,4 @@
 ﻿using K9_Koinz.Data;
-using K9_Koinz.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Utils {

@@ -1,7 +1,4 @@
-﻿using K9_Koinz.Pages;
-using System.Text;
-
-namespace K9_Koinz.Utils {
+﻿namespace K9_Koinz.Utils {
     public static class FileUtils {
         public static List<string> ReadAsList(this IFormFile file) {
             var result = new List<string>();

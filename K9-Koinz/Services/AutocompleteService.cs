@@ -1,5 +1,4 @@
 ﻿using K9_Koinz.Data;
-using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

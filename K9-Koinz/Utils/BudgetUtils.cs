@@ -1,7 +1,4 @@
-﻿using K9_Koinz.Data;
-using K9_Koinz.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
+﻿using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
     public static class BudgetUtils {

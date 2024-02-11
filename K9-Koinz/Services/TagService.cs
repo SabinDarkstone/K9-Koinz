@@ -4,7 +4,7 @@ using K9_Koinz.Services.Meta;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace K9_Koinz.Services {
-    public interface  ITagService : ICustomService {
+    public interface ITagService : ICustomService {
         public abstract void CreateTagsIfNeeded();
         public abstract SelectList GetTagList();
     }

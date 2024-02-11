@@ -1,5 +1,4 @@
 ﻿using K9_Koinz.Models;
-using System.Collections.Generic;
 
 namespace K9_Koinz.Utils {
     public static class CategoriesCreator {

@@ -37,7 +37,7 @@ namespace K9_Koinz.Models {
         [Column(TypeName = "decimal(10, 2)")]
         public double InitialBalance { get; set; }
         [DisplayName("Initial Balance Date")]
-        public DateTime InitialBalanceDate {  get; set; }
+        public DateTime InitialBalanceDate { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<Bill> Bills { get; set; }
@@ -45,5 +45,5 @@ namespace K9_Koinz.Models {
         [NotMapped]
         [DisplayName("Current Balance")]
         public double CurrentBalance { get; set; }
-	}
+    }
 }

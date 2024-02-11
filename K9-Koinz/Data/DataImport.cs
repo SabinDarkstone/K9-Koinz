@@ -1,7 +1,6 @@
 ﻿using K9_Koinz.Models;
 using K9_Koinz.Pages;
 using K9_Koinz.Utils;
-using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 
 namespace K9_Koinz.Data {

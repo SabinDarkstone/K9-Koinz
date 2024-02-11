@@ -2,8 +2,8 @@
 using K9_Koinz.Services.Meta;
 
 namespace K9_Koinz.Services {
-    public interface  IDbCleanupService : ICustomService {
-        
+    public interface IDbCleanupService : ICustomService {
+
     }
 
     public class DbCleanupService : AbstractService<DbCleanupService>, IDbCleanupService {

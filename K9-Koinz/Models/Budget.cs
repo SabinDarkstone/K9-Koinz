@@ -21,8 +21,8 @@ namespace K9_Koinz.Models {
         public int SortOrder { get; set; }
         public BudgetTimeSpan Timespan { get; set; }
         [DisplayName("Tag")]
-        public Guid? BudgetTagId {  get; set; }
-        public Tag BudgetTag {  get; set; }
+        public Guid? BudgetTagId { get; set; }
+        public Tag BudgetTag { get; set; }
         public string BudgetTagName { get; set; }
         [DisplayName("Ignore Categories")]
         public bool DoNotUseCategories { get; set; }
@@ -38,7 +38,7 @@ namespace K9_Koinz.Models {
         [NotMapped]
         public ICollection<BudgetLine> UnallocatedLines { get; set; } = new List<BudgetLine>();
 
-		[NotMapped]
+        [NotMapped]
         public ICollection<BudgetLine> IncomeLines {
             get {
                 return BudgetLines

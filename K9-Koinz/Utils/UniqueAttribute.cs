@@ -1,5 +1,4 @@
-﻿using K9_Koinz.Data;
-using K9_Koinz.Models.Meta;
+﻿using K9_Koinz.Models.Meta;
 using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Utils {

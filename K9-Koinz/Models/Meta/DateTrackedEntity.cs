@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace K9_Koinz.Models.Meta
-{
-    public abstract class DateTrackedEntity : BaseEntity
-    {
+namespace K9_Koinz.Models.Meta {
+    public abstract class DateTrackedEntity : BaseEntity {
         [DisplayName("Created Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm tt}", ApplyFormatInEditMode = true)]
         public DateTime CreatedDate { get; set; }

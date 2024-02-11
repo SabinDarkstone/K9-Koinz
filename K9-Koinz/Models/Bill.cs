@@ -20,7 +20,7 @@ namespace K9_Koinz.Models {
         public Account Account { get; set; }
         public string AccountName { get; set; }
         [DisplayName("Merchant")]
-        public Guid MerchantId {  get; set; }
+        public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
         public string MerchantName { get; set; }
         [DisplayName("Category")]
@@ -42,7 +42,7 @@ namespace K9_Koinz.Models {
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? LastDueDate { get; set; }
-        
+
         public ICollection<Transaction> Transactions { get; set; }
 
         [NotMapped]
