@@ -52,6 +52,16 @@
                 <span class="badge badge-pill" style="@style">@Model.Transaction.Tag.ShortForm</span>
             </dd>
         }
+        @if (Model.Transaction.BillId.HasValue) {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Transaction.BillId)
+            </dt>            
+            <dd class="col-sm-10">
+                <a asp-page="/Bills/Details" asp-route-id="@Model.Transaction.BillId">
+                    @Html.DisplayFor(model => model.Transaction.Bill.Name)
+                </a>
+             </dd>
+        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Transaction.Amount)
         </dt>

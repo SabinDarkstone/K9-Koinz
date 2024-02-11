@@ -25,6 +25,7 @@ namespace K9_Koinz.Pages.Transactions {
 
             var transaction = await _context.Transactions
                 .Include(trans => trans.Tag)
+                .Include(trans => trans.Bill)
                 .SingleOrDefaultAsync(trans => trans.Id == id);
 
             if (transaction == null) {
