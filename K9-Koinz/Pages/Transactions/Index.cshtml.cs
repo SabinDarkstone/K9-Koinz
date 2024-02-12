@@ -14,12 +14,14 @@ namespace K9_Koinz.Pages.Transactions {
         private readonly IConfiguration _configuration;
         private readonly ILogger<IndexModel> _logger;
         private readonly IAccountService _accountSerice;
+        private readonly IAutocompleteService _autocompleteService;
 
-        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService) {
+        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService, IAutocompleteService autocompleteService) {
             _context = context;
             _configuration = configuration;
             _logger = logger;
             _accountSerice = accountService;
+            _autocompleteService = autocompleteService;
         }
 
         public string SearchString { get; set; }
@@ -69,7 +71,7 @@ namespace K9_Koinz.Pages.Transactions {
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
-            AccountOptions = await _accountSerice.GetAccountList(true);
+            AccountOptions = await _accountSerice.GetAccountListAsync(true);
 
             DateSort = string.IsNullOrEmpty(sortOrder) || sortOrder == "Date" ? "date_desc" : "Date";
             MerchantSort = sortOrder == "Merchant" ? "merchant_desc" : "Merchant";
@@ -148,17 +150,8 @@ namespace K9_Koinz.Pages.Transactions {
             Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
         }
 
-        public IActionResult OnGetMerchantAutoComplete(string text) {
-            text = text.Trim();
-            var merchants = _context.Merchants
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(merch => new {
-                    label = merch.Name,
-                    val = merch.Id
-                }).ToList();
-            return new JsonResult(merchants);
+        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
         }
     }
 }

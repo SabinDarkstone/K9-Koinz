@@ -23,14 +23,14 @@ namespace K9_Koinz.Pages.BudgetLines {
             Budget = await _context.Budgets.FindAsync(RelatedId);
         }
 
-        public IActionResult OnGetCategoryAutoComplete(string text) {
-            return _autocompleteService.AutocompleteCategories(text.Trim());
+        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
 
         private async Task CreateFirstBudgetLinePeriod() {
             var parentBudget = await _context.Budgets.FindAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(Record, DateTime.Now)).Sum(trans => trans.Amount);
+            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now)).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = Record.Id,
@@ -43,14 +43,14 @@ namespace K9_Koinz.Pages.BudgetLines {
             _context.BudgetLinePeriods.Add(firstPeriod);
         }
 
-        protected override async Task AfterSaveActions() {
+        protected override async Task AfterSaveActionsAsync() {
             if (Record.DoRollover) {
                 await CreateFirstBudgetLinePeriod();
                 await _context.SaveChangesAsync();
             }
         }
 
-        protected override async Task BeforeSaveActions() {
+        protected override async Task BeforeSaveActionsAsync() {
             var category = await _context.Categories.SingleOrDefaultAsync(cat => cat.Id == Record.BudgetCategoryId);
             var budget = await _context.Budgets.SingleOrDefaultAsync(bud => bud.Id == Record.BudgetId);
             

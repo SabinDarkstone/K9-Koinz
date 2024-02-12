@@ -15,7 +15,7 @@ namespace K9_Koinz.Pages.Budgets {
             _budgetService = budgetService;
         }
 
-        protected override async Task AfterSaveActions() {
+        protected override async Task AfterSaveActionsAsync() {
             if (Record.DoNotUseCategories) {
                 BudgetLine allowanceLine;
                 var allCategory = await _context.Categories.SingleOrDefaultAsync(cat => cat.CategoryType == CategoryType.ALL);
@@ -39,13 +39,13 @@ namespace K9_Koinz.Pages.Budgets {
                 await _context.SaveChangesAsync();
 
                 if (Record.DoNoCategoryRollover) {
-                    CreateFirstBudgetLinePeriod(allowanceLine);
+                    await CreateFirstBudgetLinePeriod(allowanceLine);
                     await _context.SaveChangesAsync();
                 }
             }
         }
 
-        protected override async Task BeforeSaveActions() {
+        protected override async Task BeforeSaveActionsAsync() {
             if (Record.BudgetTagId == Guid.Empty) {
                 Record.BudgetTagId = null;
             } else {
@@ -56,7 +56,7 @@ namespace K9_Koinz.Pages.Budgets {
 
         private async Task CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
             var (startDate, endDate) = Record.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now))
+            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, DateTime.Now))
                 .Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {

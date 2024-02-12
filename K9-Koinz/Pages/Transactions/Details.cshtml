@@ -3,7 +3,7 @@
 @model K9_Koinz.Pages.Transactions.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Transaction Details";
 }
 
 <h1>Details</h1>
@@ -13,86 +13,86 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Transaction.Account)
+            @Html.DisplayNameFor(model => model.Record.Account)
         </dt>
         <dd class="col-sm-10">
-            <a asp-page="/Accounts/Details" asp-route-id="@Model.Transaction.AccountId" class="link-unstyled">
-                @Html.DisplayFor(model => model.Transaction.AccountName)
+            <a asp-page="/Accounts/Details" asp-route-id="@Model.Record.AccountId" class="link-unstyled">
+                @Html.DisplayFor(model => model.Record.AccountName)
             </a>
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Transaction.Date)
+            @Html.DisplayNameFor(model => model.Record.Date)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Transaction.Date)
+            @Html.DisplayFor(model => model.Record.Date)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Transaction.MerchantId)
+            @Html.DisplayNameFor(model => model.Record.MerchantId)
         </dt>
         <dd class="col-sm-10">
-            <a asp-page="/Merchants/Details" asp-route-id="@Model.Transaction.MerchantId" class="link-unstyled">
-                @Html.DisplayFor(model => model.Transaction.MerchantName)
+            <a asp-page="/Merchants/Details" asp-route-id="@Model.Record.MerchantId" class="link-unstyled">
+                @Html.DisplayFor(model => model.Record.MerchantName)
             </a>
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Transaction.Category)
+            @Html.DisplayNameFor(model => model.Record.Category)
         </dt>
         <dd class="col-sm-10">
-            <a asp-page="/Categories/Details" asp-route-id="@Model.Transaction.CategoryId" class="link-unstyled">
-                @Html.DisplayFor(model => model.Transaction.CategoryName)
+            <a asp-page="/Categories/Details" asp-route-id="@Model.Record.CategoryId" class="link-unstyled">
+                @Html.DisplayFor(model => model.Record.CategoryName)
             </a>
         </dd>
-        @if (Model.Transaction.TagId.HasValue) {
-            var style = "background-color: " + Model.Transaction.Tag.HexColor + "; text-decoration: none";
+        @if (Model.Record.TagId.HasValue) {
+            var style = "background-color: " + Model.Record.Tag.HexColor + "; text-decoration: none";
 
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Transaction.TagId)
+                @Html.DisplayNameFor(model => model.Record.TagId)
             </dt>
             <dd class="col-sm-10">
-                <span class="badge badge-pill" style="@style">@Model.Transaction.Tag.ShortForm</span>
+                <span class="badge badge-pill" style="@style">@Model.Record.Tag.ShortForm</span>
             </dd>
         }
-        @if (Model.Transaction.BillId.HasValue) {
+        @if (Model.Record.BillId.HasValue) {
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Transaction.BillId)
+                @Html.DisplayNameFor(model => model.Record.BillId)
             </dt>            
             <dd class="col-sm-10">
-                <a asp-page="/Bills/Details" asp-route-id="@Model.Transaction.BillId">
-                    @Html.DisplayFor(model => model.Transaction.Bill.Name)
+                <a asp-page="/Bills/Details" asp-route-id="@Model.Record.BillId">
+                    @Html.DisplayFor(model => model.Record.Bill.Name)
                 </a>
              </dd>
         }
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Transaction.Amount)
+            @Html.DisplayNameFor(model => model.Record.Amount)
         </dt>
         <dd class="col-sm-10">
-            @Model.Transaction.Amount.FormatCurrency(2)
+            @Model.Record.Amount.FormatCurrency(2)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Transaction.Notes)
+            @Html.DisplayNameFor(model => model.Record.Notes)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Transaction.Notes)
+            @Html.DisplayFor(model => model.Record.Notes)
         </dd>
-        @if (Model.Transaction.CreatedDate != DateTime.MinValue) {
+        @if (Model.Record.CreatedDate != DateTime.MinValue) {
             <dt class="col-sm-2 mt-4">
-                @Html.DisplayNameFor(model => model.Transaction.CreatedDate)
+                @Html.DisplayNameFor(model => model.Record.CreatedDate)
             </dt>
             <dd class="col-sm-10 mt-4">
-                @Html.DisplayFor(model => model.Transaction.CreatedDate)
+                @Html.DisplayFor(model => model.Record.CreatedDate)
         </dd>
         }
-        @if (Model.Transaction.LastModifiedDate != DateTime.MinValue) {
+        @if (Model.Record.LastModifiedDate != DateTime.MinValue) {
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Transaction.LastModifiedDate)
+                @Html.DisplayNameFor(model => model.Record.LastModifiedDate)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Transaction.LastModifiedDate)
+                @Html.DisplayFor(model => model.Record.LastModifiedDate)
         </dd>
         }
     </dl>
 </div>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Transaction.Id">Edit</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.Record.Id">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>

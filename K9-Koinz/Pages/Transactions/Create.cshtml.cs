@@ -12,19 +12,15 @@ namespace K9_Koinz.Pages.Transactions {
             ITagService tagService)
                 : base(context, logger, accountService, autocompleteService, tagService) { }
 
-        public IActionResult OnGetMerchantAutoComplete(string text) {
-            return _autocompleteService.AutocompleteMerchants(text.Trim());
+        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
         }
 
-        public IActionResult OnGetCategoryAutoComplete(string text) {
-            return _autocompleteService.AutocompleteCategories(text.Trim());
+        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
 
-        protected override async Task AfterSaveActions() {
-            return;
-        }
-
-        protected override async Task BeforeSaveActions() {
+        protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
             var category = await _context.Categories.FindAsync(Record.CategoryId);

@@ -1,36 +1,19 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Categories {
-    public class DetailsModel : PageModel {
-        private readonly KoinzContext _context;
+    public class DetailsModel : AbstractDetailsModel<Category> {
+        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public DetailsModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public Category Category { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
+        protected override async Task<Category> QueryRecordAsync(Guid id) {
+            return await _context.Categories
                 .Include(cat => cat.ParentCategory)
                 .Include(cat => cat.ChildCategories)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cat => cat.Id == id);
-
-            if (category == null) {
-                return NotFound();
-            } else {
-                Category = category;
-            }
-            return Page();
         }
     }
 }

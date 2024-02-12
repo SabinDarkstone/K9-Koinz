@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Services {
     public interface ITagService : ICustomService {
         public abstract void CreateTagsIfNeeded();
-        public abstract Task<SelectList> GetTagList();
+        public abstract Task<SelectList> GetTagListAsync();
     }
 
     public class TagService : AbstractService<TagService>, ITagService {
@@ -25,7 +25,7 @@ namespace K9_Koinz.Services {
             }
         }
 
-        public async Task<SelectList> GetTagList() {
+        public async Task<SelectList> GetTagListAsync() {
             return new SelectList(await _context.Tags.OrderBy(tag => tag.Name).ToListAsync(), nameof(Tag.Id), nameof(Tag.Name));
         }
     }

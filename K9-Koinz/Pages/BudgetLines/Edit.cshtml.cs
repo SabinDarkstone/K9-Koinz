@@ -11,44 +11,31 @@ namespace K9_Koinz.Pages.BudgetLines {
         private readonly IBudgetService _budgetService;
 
         public EditModel(KoinzContext context, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService, IBudgetService budgetService)
-            : base(context, accountService, autocompleteService, tagService) {
+            IAutocompleteService autocompleteService, ITagService tagService,
+            IBudgetService budgetService) 
+                : base(context, accountService, autocompleteService, tagService) {
             _budgetService = budgetService;
         }
 
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var budgetLine = await _context.BudgetLines
+        protected override async Task<BudgetLine> QueryRecordAsync(Guid id) {
+            return await _context.BudgetLines
                 .Include(line => line.BudgetCategory)
                 .FirstAsync(line => line.Id == id);
-            if (budgetLine == null) {
-                return NotFound();
-            }
-
-            Record = budgetLine;
-            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                return Page();
-            }
-
-            var oldRecord = _context.BudgetLines
+        protected override async Task BeforeSaveActionsAsync() {
+            var oldRecord = await _context.BudgetLines
                 .Include(line => line.BudgetCategory)
                 .Include(line => line.Budget)
                 .AsNoTracking()
-                .First(line => line.Id == Record.Id);
+                .FirstOrDefaultAsync(line => line.Id == Record.Id);
 
             Record.BudgetCategory = oldRecord.BudgetCategory;
             Record.Budget = oldRecord.Budget;
 
             if (!oldRecord.DoRollover && Record.DoRollover) {
                 _budgetService.DeleteOldBudgetLinePeriods(Record);
-                CreateFirstBudgetLinePeriod();
+                await CreateFirstBudgetLinePeriod();
             }
 
             if (oldRecord.DoRollover && !Record.DoRollover) {
@@ -59,30 +46,20 @@ namespace K9_Koinz.Pages.BudgetLines {
             Record.BudgetId = oldRecord.BudgetId;
             Record.BudgetCategory = null;
             Record.Budget = null;
-
-            _context.Attach(Record).State = EntityState.Modified;
-
-            try {
-                await _context.SaveChangesAsync();
-            } catch (DbUpdateConcurrencyException) {
-                if (!RecordExists(Record.Id)) {
-                    return NotFound();
-                } else {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId });
         }
 
-        public IActionResult OnGetCategoryAutoComplete(string text) {
-            return _autocompleteService.AutocompleteCategories(text.Trim());
+        protected override IActionResult NavigationOnSuccess() {
+            return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId } );
+        }
+
+        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
 
         private async Task CreateFirstBudgetLinePeriod() {
-            var parentBudget = _context.Budgets.Find(Record.BudgetId);
+            var parentBudget = await _context.Budgets.FindAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(Record, DateTime.Now)).Sum(trans => trans.Amount);
+            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now)).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = Record.Id,
