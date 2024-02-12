@@ -1,32 +1,19 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Merchants {
-    public class CreateModel : PageModel {
-        private readonly KoinzContext _context;
+    public class CreateModel : AbstractCreateModel<Merchant> {
+        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
+            : base(context, accountService, autocompleteService, tagService) { }
 
-        public CreateModel(KoinzContext context) {
-            _context = context;
+        protected override async Task AfterSaveActions() {
+            return;
         }
 
-        public IActionResult OnGet() {
-            return Page();
-        }
-
-        [BindProperty]
-        public Merchant Merchant { get; set; } = default!;
-
-        public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                return Page();
-            }
-
-            _context.Merchants.Add(Merchant);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+        protected override async Task BeforeSaveActions() {
+            return;
         }
     }
 }

@@ -87,9 +87,9 @@ namespace K9_Koinz.Pages.Budgets {
             return RedirectToPage("./Index");
         }
 
-        private void CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
+        private async Task CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
             var (startDate, endDate) = Record.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now).Sum(trans => trans.Amount);
+            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, DateTime.Now)).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = budgetLine.Id,
@@ -100,7 +100,7 @@ namespace K9_Koinz.Pages.Budgets {
             };
 
             _context.BudgetLinePeriods.Add(firstPeriod);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

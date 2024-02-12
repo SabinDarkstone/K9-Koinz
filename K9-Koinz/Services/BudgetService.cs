@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Services {
     public interface IBudgetService : ICustomService {
         public abstract List<Transaction> GetTransactions(BudgetLine budgetLine, DateTime period);
-        public abstract List<BudgetLine> GetUnallocatedSpending(Budget budget, DateTime period);
-        public abstract List<Transaction> GetTransactionsForCurrentBudgetLinePeriod(BudgetLine budgetLine, DateTime refDate);
+        public abstract Task<List<BudgetLine>> GetUnallocatedSpending(Budget budget, DateTime period);
+        public abstract Task<List<Transaction>> GetTransactionsForCurrentBudgetLinePeriod(BudgetLine budgetLine, DateTime refDate);
         public abstract List<Transaction> GetTransactionsForPreviousLinePeriod(BudgetLine budgetLine, DateTime refDate);
         public abstract void DeleteOldBudgetLinePeriods(BudgetLine budgetLine);
     }
@@ -51,8 +51,8 @@ namespace K9_Koinz.Services {
             return transactions.ToList();
         }
 
-        public List<BudgetLine> GetUnallocatedSpending(Budget budget, DateTime period) {
-            var categoryData = _context.Categories.AsNoTracking().ToDictionary(cat => cat.Id);
+        public async Task<List<BudgetLine>> GetUnallocatedSpending(Budget budget, DateTime period) {
+            var categoryData = await _context.Categories.AsNoTracking().ToDictionaryAsync(cat => cat.Id);
 
             // Is this budget not using categories?
             if (budget.BudgetLines == null || budget.BudgetLines.Count == 0) {
@@ -80,7 +80,7 @@ namespace K9_Koinz.Services {
             if (budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == budget.BudgetTagId.Value);
             }
-            var transactions = transactionsIQ.ToList();
+            var transactions = await transactionsIQ.ToListAsync();
 
             var unallocatedBudgetLines = new Dictionary<Guid, BudgetLine>();
             foreach (var trans in transactions) {
@@ -110,8 +110,8 @@ namespace K9_Koinz.Services {
             return unallocatedBudgetLines.Values.Where(line => line.Transactions.Sum(trans => trans.Amount) != 0).ToList();
         }
 
-        public List<Transaction> GetTransactionsForCurrentBudgetLinePeriod(BudgetLine budgetLine, DateTime refDate) {
-            var parentBudget = _context.Budgets.AsNoTracking().First(bud => bud.Id == budgetLine.BudgetId);
+        public async Task<List<Transaction>> GetTransactionsForCurrentBudgetLinePeriod(BudgetLine budgetLine, DateTime refDate) {
+            var parentBudget = await _context.Budgets.AsNoTracking().FirstAsync(bud => bud.Id == budgetLine.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate(refDate);
             return GetTransactionsForLineBetweenDates(budgetLine, startDate, endDate);
         }

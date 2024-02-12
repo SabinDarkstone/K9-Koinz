@@ -15,48 +15,48 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Bill.Name" class="control-label"></label>
-                <input asp-for="Bill.Name" class="form-control" />
-                <span asp-validation-for="Bill.Name" class="text-danger"></span>
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.AccountId" class="control-label"></label>
-                <select asp-for="Bill.AccountId" class="form-control" asp-items="@Model.AccountOptions">
+                <label asp-for="Record.AccountId" class="control-label"></label>
+                <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
                     <option value="" selected disabled>Select an Account...</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.MerchantId" class="control-label"></label>
+                <label asp-for="Record.MerchantId" class="control-label"></label>
                 <input id="txtMerchant" class="form-control" />
-                <input asp-for="Bill.MerchantId" type="hidden" id="hfMerchant" />
-                <span asp-validation-for="Bill.MerchantId" class="text-danger"></span>
+                <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
+                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.CategoryId" class="control-label"></label>
+                <label asp-for="Record.CategoryId" class="control-label"></label>
                 <input id="txtCategory" class="form-control" />
-                <input asp-for="Bill.CategoryId" type="hidden" id="hfCategory" />
-                <span asp-validation-for="Bill.CategoryId" class="text-danger"></span>
+                <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
+                <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.BillAmount" class="control-label"></label>
-                <input asp-for="Bill.BillAmount" class="form-control" />
-                <span asp-validation-for="Bill.BillAmount" class="text-danger"></span>
+                <label asp-for="Record.BillAmount" class="control-label"></label>
+                <input asp-for="Record.BillAmount" class="form-control" />
+                <span asp-validation-for="Record.BillAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.FirstDueDate" class="control-label"></label>
-                <input asp-for="Bill.FirstDueDate" class="form-control" />
-                <span asp-validation-for="Bill.FirstDueDate" class="text-danger"></span>
+                <label asp-for="Record.FirstDueDate" class="control-label"></label>
+                <input asp-for="Record.FirstDueDate" class="form-control" />
+                <span asp-validation-for="Record.FirstDueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.RepeatFrequency" class="control-label"></label>
-                <select asp-for="Bill.RepeatFrequency" class="form-control" asp-items="Html.GetEnumSelectList<Frequency>()">
+                <label asp-for="Record.RepeatFrequency" class="control-label"></label>
+                <select asp-for="Record.RepeatFrequency" class="form-control" asp-items="Html.GetEnumSelectList<Frequency>()">
                 </select>
-                <span asp-validation-for="Bill.RepeatFrequency" class="text-danger"></span>
+                <span asp-validation-for="Record.RepeatFrequency" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bill.RepeatFrequencyCount" class="control-label"></label>
-                <input asp-for="Bill.RepeatFrequencyCount" class="form-control" value="1"/>
-                <span asp-validation-for="Bill.RepeatFrequencyCount" class="text-danger"></span>
+                <label asp-for="Record.RepeatFrequencyCount" class="control-label"></label>
+                <input asp-for="Record.RepeatFrequencyCount" class="form-control" value="1" />
+                <span asp-validation-for="Record.RepeatFrequencyCount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

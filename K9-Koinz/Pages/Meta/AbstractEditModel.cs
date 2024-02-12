@@ -13,7 +13,7 @@ namespace K9_Koinz.Pages.Meta {
         protected readonly ITagService _tagService;
 
         [BindProperty]
-        public T Record { get; set; } = default(T)!;
+        public T Record { get; set; } = default!;
 
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;

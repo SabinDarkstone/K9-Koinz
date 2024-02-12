@@ -15,43 +15,43 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Transaction.AccountId" class="control-label"></label>
-                <select asp-for="Transaction.AccountId" class ="form-control" asp-items="@Model.AccountOptions">
+                <label asp-for="Record.AccountId" class="control-label"></label>
+                <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
                     <option value="" selected disabled>Select an Account...</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.Date" class="control-label"></label>
-                <input asp-for="Transaction.Date" class="form-control" />
-                <span asp-validation-for="Transaction.Date" class="text-danger"></span>
+                <label asp-for="Record.Date" class="control-label"></label>
+                <input asp-for="Record.Date" class="form-control" />
+                <span asp-validation-for="Record.Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.MerchantId" class="control-label"></label>
+                <label asp-for="Record.MerchantId" class="control-label"></label>
                 <input id="txtMerchant" class="form-control" />
-                <input asp-for="Transaction.MerchantId" type="hidden" id="hfMerchant" />
-                <span asp-validation-for="Transaction.MerchantId" class="text-danger"></span>
+                <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
+                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.CategoryId" class="control-label"></label>
+                <label asp-for="Record.CategoryId" class="control-label"></label>
                 <input id="txtCategory" class="form-control" />
-                <input asp-for="Transaction.CategoryId" type="hidden" id="hfCategory" />
-                <span asp-validation-for="Transaction.CategoryId" class="text-danger"></span>
+                <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
+                <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.TagId" class="control-label"></label>
-                <select asp-for="Transaction.TagId" class="form-control" asp-items="@Model.TagOptions">
+                <label asp-for="Record.TagId" class="control-label"></label>
+                <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
                     <option value="@Guid.Empty" selected>No Tag</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.Amount" class="control-label"></label>
-                <input asp-for="Transaction.Amount" class="form-control" />
-                <span asp-validation-for="Transaction.Amount" class="text-danger"></span>
+                <label asp-for="Record.Amount" class="control-label"></label>
+                <input asp-for="Record.Amount" class="form-control" />
+                <span asp-validation-for="Record.Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.Notes" class="control-label"></label>
-                <textarea asp-for="Transaction.Notes" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Transaction.Notes" class="text-danger"></span>
+                <label asp-for="Record.Notes" class="control-label"></label>
+                <textarea asp-for="Record.Notes" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Record.Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

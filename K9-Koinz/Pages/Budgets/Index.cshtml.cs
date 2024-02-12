@@ -140,7 +140,7 @@ namespace K9_Koinz.Pages.Budgets {
             PeriodOptions.Reverse();
         }
 
-        private void RetrieveAndHandleTransactions() {
+        private async Task RetrieveAndHandleTransactions() {
             // Get transactions for each budget line and write values to unmapped properties in the budget line model
             foreach (var budgetLine in SelectedBudget.BudgetLines) {
                 _ = _budgetService.GetTransactions(budgetLine, BudgetPeriod);
@@ -148,12 +148,12 @@ namespace K9_Koinz.Pages.Budgets {
 
             // If the current budget uses categories, determine unallocated spending
             if (!SelectedBudget.DoNotUseCategories) {
-                var newBudgetLines = _budgetService.GetUnallocatedSpending(SelectedBudget, BudgetPeriod);
+                var newBudgetLines = await _budgetService.GetUnallocatedSpending(SelectedBudget, BudgetPeriod);
                 SelectedBudget.UnallocatedLines = newBudgetLines;
             }
         }
 
-        private void UpdateCurrentPeriods() {
+        private async Task UpdateCurrentPeriods() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
             
             // Loop through each budget line with rollover enabled
@@ -169,7 +169,7 @@ namespace K9_Koinz.Pages.Budgets {
 
                 // Set the spent amount for the period based on the sum of the amounts of transations.
                 // Multiply by -1 to make value positive
-                budgetLine.CurrentPeriod.SpentAmount = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
+                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod)).GetTotalSpent();
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
 
                 // Update the starting amount based on rollover from the last period
