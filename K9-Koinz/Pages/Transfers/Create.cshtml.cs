@@ -13,20 +13,22 @@ namespace K9_Koinz.Pages.Transfers {
         private readonly ILogger<CreateModel> _logger;
         private readonly IAccountService _accountService;
         private readonly ITagService _tagService;
+        private readonly IAutocompleteService _autocompleteService;
 
-        public CreateModel(KoinzContext context, ILogger<CreateModel> logger, IAccountService accountService, ITagService tagService) {
+        public CreateModel(KoinzContext context, ILogger<CreateModel> logger, IAccountService accountService, ITagService tagService, IAutocompleteService autocompleteService) {
             _context = context;
             _logger = logger;
             _accountService = accountService;
             _tagService = tagService;
+            _autocompleteService = autocompleteService;
         }
 
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
         public async Task OnGetAsync() {
-            AccountOptions = await _accountService.GetAccountList(true);
-            TagOptions = await _tagService.GetTagList();
+            AccountOptions = await _accountService.GetAccountListAsync(true);
+            TagOptions = await _tagService.GetTagListAsync();
         }
 
         [BindProperty]
@@ -80,31 +82,12 @@ namespace K9_Koinz.Pages.Transfers {
             return RedirectToPage("/Transactions/Index");
         }
 
-        public IActionResult OnGetMerchantAutoComplete(string text) {
-            text = text.Trim();
-            var merchants = _context.Merchants
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(merch => new {
-                    label = merch.Name,
-                    val = merch.Id
-                }).ToList();
-            return new JsonResult(merchants);
+        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
         }
 
-        public IActionResult OnGetCategoryAutoComplete(string text) {
-            text = text.Trim();
-            var categories = _context.Categories
-                .Include(cat => cat.ParentCategory)
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(cat => cat.FullyQualifiedName.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(cat => new {
-                    label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
-                    val = cat.Id
-                }).ToList();
-            return new JsonResult(categories);
+        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
     }
 }

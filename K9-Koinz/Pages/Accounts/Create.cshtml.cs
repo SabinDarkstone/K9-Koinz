@@ -11,11 +11,7 @@ namespace K9_Koinz.Pages.Accounts {
             ITagService tagService)
                 : base(context, logger, accountService, autocompleteService, tagService) { }
 
-        protected override async Task AfterSaveActions() {
-            return;
-        }
-
-        protected override async Task BeforeSaveActions() {
+        protected override void BeforeSaveActions() {
             Record.InitialBalanceDate = Record.InitialBalanceDate.AtMidnight();
         }
     }

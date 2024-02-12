@@ -6,40 +6,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Bills {
     public class EditModel : AbstractEditModel<Bill> {
-        public EditModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, accountService, autocompleteService, tagService) { }
+        public EditModel(KoinzContext context, IAccountService accountService,
+            IAutocompleteService autocompleteService, ITagService tagService)
+                : base(context, accountService, autocompleteService, tagService) { }
 
-        public async Task<IActionResult> OnGetAsync() {
-            AccountOptions = await _accountService.GetAccountList(true);
-
-            return Page();
+        protected override async Task BeforeQueryActionsAsync() {
+            AccountOptions = await _accountService.GetAccountListAsync(true);
         }
 
-        public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                return Page();
-            }
-
-            var account = _context.Accounts.Find(Record.AccountId);
-            var merchant = _context.Merchants.Find(Record.MerchantId);
-            var category = _context.Categories.Find(Record.CategoryId);
+        protected override async Task BeforeSaveActionsAsync() {
+            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
+            var category = await _context.Categories.FindAsync(Record.CategoryId);
 
             Record.AccountName = account.Name;
             Record.MerchantName = merchant.Name;
             Record.CategoryName = category.Name;
-
-            _context.Bills.Add(Record);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
         }
 
-        public IActionResult OnGetMerchantAutoComplete(string text) {
-            return _autocompleteService.AutocompleteMerchants(text.Trim());
+        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
         }
 
-        public IActionResult OnGetCategoryAutoComplete(string text) {
-            return _autocompleteService.AutocompleteCategories(text.Trim());
+        public async Task<IActionResult> OnGetCategory
+            (string text) {
+            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
     }
 }

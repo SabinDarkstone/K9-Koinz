@@ -9,13 +9,5 @@ namespace K9_Koinz.Pages.Merchants {
             IAccountService accountService, IAutocompleteService autocompleteService,
             ITagService tagService)
                 : base(context, logger, accountService, autocompleteService, tagService) { }
-
-        protected override async Task AfterSaveActions() {
-            return;
-        }
-
-        protected override async Task BeforeSaveActions() {
-            return;
-        }
     }
 }

@@ -148,7 +148,7 @@ namespace K9_Koinz.Pages.Budgets {
 
             // If the current budget uses categories, determine unallocated spending
             if (!SelectedBudget.DoNotUseCategories) {
-                var newBudgetLines = await _budgetService.GetUnallocatedSpending(SelectedBudget, BudgetPeriod);
+                var newBudgetLines = await _budgetService.GetUnallocatedSpendingAsync(SelectedBudget, BudgetPeriod);
                 SelectedBudget.UnallocatedLines = newBudgetLines;
             }
         }
@@ -169,7 +169,7 @@ namespace K9_Koinz.Pages.Budgets {
 
                 // Set the spent amount for the period based on the sum of the amounts of transations.
                 // Multiply by -1 to make value positive
-                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(budgetLine, BudgetPeriod)).GetTotalSpent();
+                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotalSpent();
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
 
                 // Update the starting amount based on rollover from the last period
@@ -202,7 +202,7 @@ namespace K9_Koinz.Pages.Budgets {
             return newPeriod;
         }
 
-        private void UpdatePreviousPeriods() {
+        private async Task UpdatePreviousPeriods() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
                 if (budgetLine.PreviousPeriod == null) {
@@ -210,7 +210,7 @@ namespace K9_Koinz.Pages.Budgets {
                     continue;
                 }
 
-                budgetLine.PreviousPeriod.SpentAmount = _budgetService.GetTransactionsForPreviousLinePeriod(budgetLine, BudgetPeriod).GetTotalSpent();
+                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotalSpent();
                 budgetLine.PreviousPeriod.BudgetLine = null;
                 periodsToUpdate.Add(budgetLine.PreviousPeriod);
             }

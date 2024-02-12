@@ -9,13 +9,12 @@ namespace K9_Koinz.Pages.Categories {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IAccountService accountService, IAutocompleteService autocompleteService,
             ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) {
-        }
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         public Category ParentCategory { get; set; }
 
-        public IActionResult OnGetCategoryAutoComplete(string text) {
-            return _autocompleteService.AutocompleteCategories(text.Trim());
+        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
+            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
 
         protected override async Task BeforePageLoadActions() {
@@ -26,11 +25,7 @@ namespace K9_Koinz.Pages.Categories {
             }
         }
 
-        protected override async Task AfterSaveActions() {
-            return;
-        }
-
-        protected override async Task BeforeSaveActions() {
+        protected override async Task BeforeSaveActionsAsync() {
             if (Record.ParentCategoryId.HasValue) {
                 var parentCategory = await _context.Categories.FindAsync(Record.ParentCategoryId);
                 Record.ParentCategoryName = parentCategory.Name;

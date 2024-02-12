@@ -1,45 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Accounts {
-    public class DetailsModel : PageModel {
-        private readonly KoinzContext _context;
+    public class DetailsModel : AbstractDetailsModel<Account> {
+        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public DetailsModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public Account Account { get; set; } = default!;
-        public List<Transaction> Transactions => Account?.Transactions
+        public List<Transaction> Transactions => Record?.Transactions
             .OrderByDescending(trans => trans.Date)
             .ToList() ?? new List<Transaction>();
 
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var account = await _context.Accounts
+        protected override async Task<Account> QueryRecordAsync(Guid id) {
+            return await _context.Accounts
                 .Include(acct => acct.Transactions)
                     .ThenInclude(trans => trans.Category)
                 .Include(acct => acct.Transactions)
                     .ThenInclude(trans => trans.Merchant)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(acct => acct.Id == id);
+        }
 
-            if (account == null) {
-                return NotFound();
-            } else {
-                Account = account;
-                var newBalance = Transactions
-                    .Where(trans => (trans.Date > Account.InitialBalanceDate || (trans.Date.Date == Account.InitialBalanceDate.Date && trans.DoNotSkip)) && trans.AccountId == Account.Id)
-                    .Sum(trans => trans.Amount);
-                Account.CurrentBalance = Account.InitialBalance + newBalance;
-            }
-            return Page();
+        protected override void AdditionalActions() {
+            var newBalance = Transactions
+                .Where(trans => trans.Date > Record.InitialBalanceDate || (trans.Date.Date == Record.InitialBalanceDate.Date && trans.DoNotSkip))
+                .Where(trans => trans.AccountId == Record.Id)
+                .Sum(trans => trans.Amount);
+            Record.CurrentBalance = Record.InitialBalance + newBalance;
         }
     }
 }

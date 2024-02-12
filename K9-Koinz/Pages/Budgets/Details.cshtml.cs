@@ -4,42 +4,26 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Budgets {
-    public class DetailsModel : PageModel {
-        private readonly KoinzContext _context;
+    public class DetailsModel : AbstractDetailsModel<Budget> {
+        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public DetailsModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public Budget Budget { get; set; } = default!;
         public List<BudgetLine> BudgetLines { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var budget = await _context.Budgets.FirstOrDefaultAsync(m => m.Id == id);
-            if (budget == null) {
-                return NotFound();
-            } else {
-                Budget = budget;
-            }
-
+        protected override async Task AdditionalActionsAsync() {
             var unsortedLines = await _context.BudgetLines
-                .Where(line => line.BudgetId == Budget.Id)
+                .Where(line => line.BudgetId == Record.Id)
                 .Include(line => line.Periods)
                 .ToListAsync();
 
             BudgetLines = unsortedLines.SortCategories();
 
-            if (Budget.DoNotUseCategories) {
-                Budget.BudgetedAmount = BudgetLines.First().BudgetedAmount;
+            if (Record.DoNotUseCategories) {
+                Record.BudgetedAmount = BudgetLines.First().BudgetedAmount;
             }
-
-            return Page();
         }
     }
 }

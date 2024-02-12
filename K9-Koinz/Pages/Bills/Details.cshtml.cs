@@ -1,35 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Bills {
-    public class DetailsModel : PageModel {
-        private readonly KoinzContext _context;
+    public class DetailsModel : AbstractDetailsModel<Bill> {
+        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public DetailsModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public Bill Bill { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var bill = await _context.Bills
+        protected override async Task<Bill> QueryRecordAsync(Guid id) {
+            return await _context.Bills
                 .Include(bill => bill.Transactions)
                 .FirstOrDefaultAsync(trans => trans.Id == id);
-
-            if (bill == null) {
-                return NotFound();
-            }
-
-            Bill = bill;
-
-            return Page();
         }
     }
 }

@@ -16,13 +16,16 @@ namespace K9_Koinz.Pages.Meta {
             if (!id.HasValue) {
                 return NotFound();
             }
-
-            var record = await _context.Set<T>().FindAsync(id.Value);
+            var record = await QueryRecordAsync(id.Value);
+            
             if (record == null) {
                 return NotFound();
             }
 
             Record = record;
+
+            await AfterQueryActionAsync();
+            AfterQueryActions();
 
             if (saveChangedError.GetValueOrDefault()) {
                 ErrorMessage = string.Format("Delete {id} failed. Try again.", id);
@@ -44,6 +47,10 @@ namespace K9_Koinz.Pages.Meta {
             Record = record;
             try {
                 _context.Set<T>().Remove(Record);
+
+                await AdditionalDatabaseActionsAsync();
+                AdditioanlDatabaseActions();
+
                 await _context.SaveChangesAsync();
                 return NavigateOnSuccess();
             } catch (DbUpdateException ex) {
@@ -52,8 +59,22 @@ namespace K9_Koinz.Pages.Meta {
             }
         }
 
-        public virtual IActionResult NavigateOnSuccess() {
+        protected virtual IActionResult NavigateOnSuccess() {
             return RedirectToPage("./Index");
         }
+
+        protected virtual async Task<T> QueryRecordAsync(Guid id) {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        protected virtual Task AfterQueryActionAsync() {
+            return Task.CompletedTask;
+        }
+        protected virtual void AfterQueryActions() { }
+
+        protected virtual Task AdditionalDatabaseActionsAsync() {
+            return Task.CompletedTask;
+        }
+        protected virtual void AdditioanlDatabaseActions() { }
     }
 }

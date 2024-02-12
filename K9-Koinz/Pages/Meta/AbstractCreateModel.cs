@@ -34,8 +34,8 @@ namespace K9_Koinz.Pages.Meta {
         }
 
         protected virtual async Task BeforePageLoadActions() {
-            AccountOptions = await _accountService.GetAccountList(true);
-            TagOptions = await _tagService.GetTagList();
+            AccountOptions = await _accountService.GetAccountListAsync(true);
+            TagOptions = await _tagService.GetTagListAsync();
         }
 
         public virtual async Task<IActionResult> OnPostAsync() {
@@ -43,18 +43,27 @@ namespace K9_Koinz.Pages.Meta {
                 return NavigationOnFailure();
             }
 
-            await BeforeSaveActions();
+            await BeforeSaveActionsAsync();
+            BeforeSaveActions();
 
             _context.Set<T>().Add(Record);
             await _context.SaveChangesAsync();
 
-            await AfterSaveActions();
+            await AfterSaveActionsAsync();
+            AfterSaveActions();
 
             return NavigateOnSuccess();
         }
 
-        protected abstract Task AfterSaveActions();
-        protected abstract Task BeforeSaveActions();
+        protected virtual Task AfterSaveActionsAsync() {
+            return Task.CompletedTask;
+        }
+        protected virtual void AfterSaveActions() { }
+
+        protected virtual Task BeforeSaveActionsAsync() {
+            return Task.CompletedTask;
+        }
+        protected virtual void BeforeSaveActions() { }
 
         public virtual IActionResult NavigateOnSuccess() {
             return RedirectToPage("./Index");

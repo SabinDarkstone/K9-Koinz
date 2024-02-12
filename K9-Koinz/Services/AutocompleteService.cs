@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services {
     public interface IAutocompleteService : ICustomService {
-        public abstract JsonResult AutocompleteCategories(string text);
-        public abstract JsonResult AutocompleteMerchants(string text);
+        public abstract Task<JsonResult> AutocompleteCategoriesAsync(string text);
+        public abstract Task<JsonResult> AutocompleteMerchantsAsync(string text);
     }
 
     public class AutocompleteService : AbstractService<AutocompleteService>, IAutocompleteService {
         public AutocompleteService(KoinzContext context, ILogger<AutocompleteService> logger) : base(context, logger) { }
 
-        public JsonResult AutocompleteCategories(string text) {
-            var suggestions = _context.Categories
+        public async Task<JsonResult> AutocompleteCategoriesAsync(string text) {
+            var suggestions = (await _context.Categories
                 .Include(cat => cat.ParentCategory)
                 .AsNoTracking()
-                .AsEnumerable()
+                .ToListAsync())
                 .Where(cat => cat.FullyQualifiedName.Contains(text, StringComparison.CurrentCultureIgnoreCase))
                 .Select(cat => new {
                     label = cat.ParentCategoryId != null ? cat.ParentCategory.Name + ": " + cat.Name : cat.Name,
@@ -25,10 +25,10 @@ namespace K9_Koinz.Services {
             return new JsonResult(suggestions);
         }
 
-        public JsonResult AutocompleteMerchants(string text) {
-            var suggestions = _context.Merchants
+        public async Task<JsonResult> AutocompleteMerchantsAsync(string text) {
+            var suggestions = (await _context.Merchants
                 .AsNoTracking()
-                .AsEnumerable()
+                .ToListAsync())
                 .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
                 .Select(merch => new {
                     label = merch.Name,

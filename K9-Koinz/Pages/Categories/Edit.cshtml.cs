@@ -7,31 +7,18 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
     public class EditModel : AbstractEditModel<Category> {
-        public EditModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, accountService, autocompleteService, tagService) { }
+        public EditModel(KoinzContext context, IAccountService accountService,
+            IAutocompleteService autocompleteService, ITagService tagService)
+                : base(context, accountService, autocompleteService, tagService) { }
 
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
+        protected override async Task<Category> QueryRecordAsync(Guid id) {
+            return await _context.Categories
                 .Include(cat => cat.ChildCategories)
                 .Include(cat => cat.ParentCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null) {
-                return NotFound();
-            }
-
-            Record = category;
-            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                return Page();
-            }
-
+        protected override async Task BeforeSaveActionsAsync() {
             var childCategories = await _context.Categories
                 .Where(cat => cat.ParentCategoryId == Record.Id)
                 .ToListAsync();
@@ -44,20 +31,6 @@ namespace K9_Koinz.Pages.Categories {
                 var parentCategory = await _context.Categories.FindAsync(Record.ParentCategoryId);
                 Record.ParentCategoryName = parentCategory.Name;
             }
-
-            _context.Attach(Record).State = EntityState.Modified;
-
-            try {
-                await _context.SaveChangesAsync();
-            } catch (DbUpdateConcurrencyException) {
-                if (!RecordExists(Record.Id)) {
-                    return NotFound();
-                } else {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
         }
 
         public IActionResult OnGetParentCategoryAutoComplete(string text) {
