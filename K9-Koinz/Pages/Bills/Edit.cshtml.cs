@@ -9,8 +9,8 @@ namespace K9_Koinz.Pages.Bills {
         public EditModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
             : base(context, accountService, autocompleteService, tagService) { }
 
-        public IActionResult OnGet() {
-            AccountOptions = _accountService.GetAccountList(true);
+        public async Task<IActionResult> OnGetAsync() {
+            AccountOptions = await _accountService.GetAccountList(true);
 
             return Page();
         }

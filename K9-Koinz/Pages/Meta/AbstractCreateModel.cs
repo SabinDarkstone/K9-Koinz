@@ -2,12 +2,10 @@
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace K9_Koinz.Pages.Meta {
-    public abstract class AbstractCreateModel<T> : PageModel where T : BaseEntity {
-        protected readonly KoinzContext _context;
+    public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IAccountService _accountService;
         protected readonly IAutocompleteService _autocompleteService;
         protected readonly ITagService _tagService;
@@ -20,8 +18,9 @@ namespace K9_Koinz.Pages.Meta {
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        protected AbstractCreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService) {
-            _context = context;
+        protected AbstractCreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService) : base(context, logger) {
             _accountService = accountService;
             _autocompleteService = autocompleteService;
             _tagService = tagService;
@@ -35,8 +34,8 @@ namespace K9_Koinz.Pages.Meta {
         }
 
         protected virtual async Task BeforePageLoadActions() {
-            AccountOptions = _accountService.GetAccountList(true);
-            TagOptions = _tagService.GetTagList();
+            AccountOptions = await _accountService.GetAccountList(true);
+            TagOptions = await _tagService.GetTagList();
         }
 
         public virtual async Task<IActionResult> OnPostAsync() {
@@ -57,11 +56,11 @@ namespace K9_Koinz.Pages.Meta {
         protected abstract Task AfterSaveActions();
         protected abstract Task BeforeSaveActions();
 
-        public IActionResult NavigateOnSuccess() {
+        public virtual IActionResult NavigateOnSuccess() {
             return RedirectToPage("./Index");
         }
 
-        public IActionResult NavigationOnFailure() {
+        public virtual IActionResult NavigationOnFailure() {
             return Page();
         }
     }

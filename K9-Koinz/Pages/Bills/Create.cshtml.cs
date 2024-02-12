@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Bills {
     public class CreateModel : AbstractCreateModel<Bill> {
-        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, accountService, autocompleteService, tagService) { }
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         public IActionResult OnGetMerchantAutoComplete(string text) {
             return _autocompleteService.AutocompleteMerchants(text.Trim());

@@ -5,8 +5,10 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Merchants {
     public class CreateModel : AbstractCreateModel<Merchant> {
-        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, accountService, autocompleteService, tagService) { }
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         protected override async Task AfterSaveActions() {
             return;

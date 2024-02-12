@@ -1,21 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
-    public class DeleteModel : PageModel {
-        private readonly KoinzContext _context;
+    public class DeleteModel : AbstractDeleteModel<Transaction> {
+        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public DeleteModel(KoinzContext context) {
-            _context = context;
-        }
-
-        [BindProperty]
-        public Transaction Transaction { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
+        public override async Task<IActionResult> OnGetAsync(Guid? id, bool? saveChangedError = false) {
             if (id == null) {
                 return NotFound();
             }
@@ -27,24 +21,9 @@ namespace K9_Koinz.Pages.Transactions {
             if (transaction == null) {
                 return NotFound();
             } else {
-                Transaction = transaction;
+                Record = transaction;
             }
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var transaction = await _context.Transactions.FindAsync(id);
-            if (transaction != null) {
-                Transaction = transaction;
-                _context.Transactions.Remove(Transaction);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
         }
     }
 }

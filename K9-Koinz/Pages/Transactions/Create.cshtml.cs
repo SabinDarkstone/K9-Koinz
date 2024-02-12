@@ -7,8 +7,10 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
-        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, accountService, autocompleteService, tagService) { }
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         public IActionResult OnGetMerchantAutoComplete(string text) {
             return _autocompleteService.AutocompleteMerchants(text.Trim());

@@ -6,8 +6,11 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
     public class CreateModel : AbstractCreateModel<Category> {
-        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, accountService, autocompleteService, tagService) { }
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) {
+        }
 
         public Category ParentCategory { get; set; }
 

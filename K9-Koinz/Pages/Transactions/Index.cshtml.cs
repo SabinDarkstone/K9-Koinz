@@ -69,7 +69,7 @@ namespace K9_Koinz.Pages.Transactions {
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
-            AccountOptions = _accountSerice.GetAccountList(true);
+            AccountOptions = await _accountSerice.GetAccountList(true);
 
             DateSort = string.IsNullOrEmpty(sortOrder) || sortOrder == "Date" ? "date_desc" : "Date";
             MerchantSort = sortOrder == "Merchant" ? "merchant_desc" : "Merchant";

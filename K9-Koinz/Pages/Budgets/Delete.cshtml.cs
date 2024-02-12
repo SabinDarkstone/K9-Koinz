@@ -4,20 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Budgets {
-    public class DeleteModel : PageModel {
-        private readonly KoinzContext _context;
-
-        public DeleteModel(KoinzContext context) {
-            _context = context;
-        }
-
-        [BindProperty]
-        public Budget Budget { get; set; } = default!;
+    public class DeleteModel : AbstractDeleteModel<Budget> {
         public List<BudgetLine> BudgetLines { get; set; }
+        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
+        public override async Task<IActionResult> OnGetAsync(Guid? id, bool? saveChangedError = false) {
             if (id == null) {
                 return NotFound();
             }
@@ -27,36 +22,20 @@ namespace K9_Koinz.Pages.Budgets {
             if (budget == null) {
                 return NotFound();
             } else {
-                Budget = budget;
+                Record = budget;
             }
 
             var unsortedLines = await _context.BudgetLines
-                .Where(line => line.BudgetId == Budget.Id)
+                .Where(line => line.BudgetId == Record.Id)
                 .ToListAsync();
 
             BudgetLines = unsortedLines.SortCategories();
 
-            if (Budget.DoNotUseCategories) {
-                Budget.BudgetedAmount = BudgetLines.First().BudgetedAmount;
+            if (Record.DoNotUseCategories) {
+                Record.BudgetedAmount = BudgetLines.First().BudgetedAmount;
             }
 
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(Guid? id) {
-            if (id == null) {
-                return NotFound();
-            }
-
-            var budget = await _context.Budgets.FindAsync(id);
-
-            if (budget != null) {
-                Budget = budget;
-                _context.Budgets.Remove(Budget);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
         }
     }
 }

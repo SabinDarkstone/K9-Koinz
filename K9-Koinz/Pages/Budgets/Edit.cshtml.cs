@@ -21,7 +21,7 @@ namespace K9_Koinz.Pages.Budgets {
                 return NotFound();
             }
 
-            TagOptions = _tagService.GetTagList();
+            TagOptions = await _tagService.GetTagList();
 
             var budget = await _context.Budgets
                 .Include(bud => bud.BudgetLines)
