@@ -15,23 +15,23 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="BudgetLine.BudgetId" class="control-label"></label>
+                <label asp-for="Record.BudgetId" class="control-label"></label>
                 <input type="text" value="@Model.Budget.Name" class="form-control" readonly />
-                <input type="hidden" asp-for="BudgetLine.BudgetId" value="@Model.Budget.Id" readonly/>
+                <input type="hidden" asp-for="Record.BudgetId" value="@Model.Budget.Id" readonly />
             </div>
             <div class="form-group">
-                <label asp-for="BudgetLine.BudgetCategoryId" class="control-label"></label>
+                <label asp-for="Record.BudgetCategoryId" class="control-label"></label>
                 <input id="txtCategory" class="form-control" />
-                <input asp-for="BudgetLine.BudgetCategoryId" type="hidden" id="hfCategory" />
-                <span asp-validation-for="BudgetLine.BudgetCategoryId" class="text-danger"></span>
+                <input asp-for="Record.BudgetCategoryId" type="hidden" id="hfCategory" />
+                <span asp-validation-for="Record.BudgetCategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BudgetLine.BudgetedAmount" class="control-label"></label>
-                <input asp-for="BudgetLine.BudgetedAmount" class="form-control" />
-                <span asp-validation-for="BudgetLine.BudgetedAmount" class="text-danger"></span>
+                <label asp-for="Record.BudgetedAmount" class="control-label"></label>
+                <input asp-for="Record.BudgetedAmount" class="form-control" />
+                <span asp-validation-for="Record.BudgetedAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="checkbox" asp-for="BudgetLine.DoRollover" /> Rollover Unspent Amount?
+                <input type="checkbox" asp-for="Record.DoRollover" /> Rollover Unspent Amount?
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -24,9 +24,9 @@ namespace K9_Koinz.Pages.Transfers {
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        public void OnGet() {
-            AccountOptions = _accountService.GetAccountList(true);
-            TagOptions = _tagService.GetTagList();
+        public async Task OnGetAsync() {
+            AccountOptions = await _accountService.GetAccountList(true);
+            TagOptions = await _tagService.GetTagList();
         }
 
         [BindProperty]

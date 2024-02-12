@@ -2,11 +2,12 @@
 using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services {
     public interface ITagService : ICustomService {
         public abstract void CreateTagsIfNeeded();
-        public abstract SelectList GetTagList();
+        public abstract Task<SelectList> GetTagList();
     }
 
     public class TagService : AbstractService<TagService>, ITagService {
@@ -24,8 +25,8 @@ namespace K9_Koinz.Services {
             }
         }
 
-        public SelectList GetTagList() {
-            return new SelectList(_context.Tags.OrderBy(tag => tag.Name).ToList(), nameof(Tag.Id), nameof(Tag.Name));
+        public async Task<SelectList> GetTagList() {
+            return new SelectList(await _context.Tags.OrderBy(tag => tag.Name).ToListAsync(), nameof(Tag.Id), nameof(Tag.Name));
         }
     }
 }

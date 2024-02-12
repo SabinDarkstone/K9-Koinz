@@ -1,50 +1,15 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace K9_Koinz.Pages.Bills {
-    public class CreateModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly IAccountService _accountService;
-        private readonly IAutocompleteService _autocompleteService;
-
-        public CreateModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService) {
-            _context = context;
-            _accountService = accountService;
-            _autocompleteService = autocompleteService;
-        }
-
-        public IActionResult OnGet() {
-            AccountOptions = _accountService.GetAccountList(true);
-
-            return Page();
-        }
-
-        [BindProperty]
-        public Bill Bill { get; set; } = default!;
-        public List<SelectListItem> AccountOptions;
-
-        public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                return Page();
-            }
-
-            var account = _context.Accounts.Find(Bill.AccountId);
-            var merchant = _context.Merchants.Find(Bill.MerchantId);
-            var category = _context.Categories.Find(Bill.CategoryId);
-
-            Bill.AccountName = account.Name;
-            Bill.MerchantName = merchant.Name;
-            Bill.CategoryName = category.Name;
-
-            _context.Bills.Add(Bill);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+    public class CreateModel : AbstractCreateModel<Bill> {
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         public IActionResult OnGetMerchantAutoComplete(string text) {
             return _autocompleteService.AutocompleteMerchants(text.Trim());
@@ -52,6 +17,20 @@ namespace K9_Koinz.Pages.Bills {
 
         public IActionResult OnGetCategoryAutoComplete(string text) {
             return _autocompleteService.AutocompleteCategories(text.Trim());
+        }
+
+        protected override async Task AfterSaveActions() {
+            return;
+        }
+
+        protected override async Task BeforeSaveActions() {
+            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
+            var category = await _context.Categories.FindAsync(Record.CategoryId);
+
+            Record.AccountName = account.Name;
+            Record.MerchantName = merchant.Name;
+            Record.CategoryName = category.Name;
         }
     }
 }

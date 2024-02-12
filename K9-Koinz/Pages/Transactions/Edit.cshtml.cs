@@ -16,8 +16,8 @@ namespace K9_Koinz.Pages.Transactions {
                 return NotFound();
             }
 
-            AccountOptions = _accountService.GetAccountList(true);
-            TagOptions = _tagService.GetTagList();
+            AccountOptions = await _accountService.GetAccountList(true);
+            TagOptions = await _tagService.GetTagList();
 
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(m => m.Id == id);

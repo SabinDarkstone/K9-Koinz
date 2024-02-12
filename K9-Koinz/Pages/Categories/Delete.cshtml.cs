@@ -1,24 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Categories {
-    public class DeleteModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly ILogger<DeleteModel> _logger;
+    public class DeleteModel : AbstractDeleteModel<Category> {
+        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) { }
 
-        public DeleteModel(KoinzContext context, ILogger<DeleteModel> logger) {
-            _context = context;
-            _logger = logger;
-        }
-
-        [BindProperty]
-        public Category Category { get; set; } = default!;
-        public string ErrorMessage { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(Guid? id, bool? saveChangesError = false) {
+        public override async Task<IActionResult> OnGetAsync(Guid? id, bool? saveChangesError = false) {
             if (id == null) {
                 return NotFound();
             }
@@ -31,7 +22,7 @@ namespace K9_Koinz.Pages.Categories {
                 return NotFound();
             }
 
-            Category = category;
+            Record = category;
 
             if (saveChangesError.GetValueOrDefault()) {
                 ErrorMessage = string.Format("Delete {id} failed. Try again.", id);
@@ -40,7 +31,7 @@ namespace K9_Koinz.Pages.Categories {
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid? id) {
+        public override async Task<IActionResult> OnPostAsync(Guid? id) {
             if (id == null) {
                 return NotFound();
             }
@@ -53,11 +44,11 @@ namespace K9_Koinz.Pages.Categories {
                 return NotFound();
             }
 
-            Category = category;
+            Record = category;
 
             try {
-                _context.Categories.RemoveRange(Category.ChildCategories);
-                _context.Categories.Remove(Category);
+                _context.Categories.RemoveRange(Record.ChildCategories);
+                _context.Categories.Remove(Record);
                 await _context.SaveChangesAsync();
                 return RedirectToPage("./Index");
             } catch (DbUpdateException ex) {

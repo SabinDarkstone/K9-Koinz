@@ -79,10 +79,10 @@ namespace K9_Koinz.Pages.BudgetLines {
             return _autocompleteService.AutocompleteCategories(text.Trim());
         }
 
-        private void CreateFirstBudgetLinePeriod() {
+        private async Task CreateFirstBudgetLinePeriod() {
             var parentBudget = _context.Budgets.Find(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = _budgetService.GetTransactionsForCurrentBudgetLinePeriod(Record, DateTime.Now).Sum(trans => trans.Amount);
+            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriod(Record, DateTime.Now)).Sum(trans => trans.Amount);
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = Record.Id,
