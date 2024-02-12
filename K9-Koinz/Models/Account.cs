@@ -26,7 +26,6 @@ namespace K9_Koinz.Models {
         }
 
         [Required]
-        [Unique<Account>]
         [DisplayName("Account Name")]
         public string Name { get; set; }
         public string Description { get; set; }

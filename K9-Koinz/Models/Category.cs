@@ -20,7 +20,6 @@ namespace K9_Koinz.Models {
     }
 
     public class Category : DateTrackedEntity, INameable {
-        [Unique<Category>]
         public string Name { get; set; }
         [DisplayName("Parent Category")]
         public Guid? ParentCategoryId { get; set; }
