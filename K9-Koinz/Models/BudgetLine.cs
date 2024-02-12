@@ -32,6 +32,8 @@ namespace K9_Koinz.Models {
 
         [DisplayName("Rollover Unspent Money")]
         public bool DoRollover { get; set; }
+        [DisplayName("Always Green")]
+        public bool GreenBarAlways { get; set; }
 
         public List<BudgetLinePeriod> Periods { get; set; } = new();
 
