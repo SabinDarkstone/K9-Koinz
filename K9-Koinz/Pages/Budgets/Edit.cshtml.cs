@@ -11,10 +11,10 @@ namespace K9_Koinz.Pages.Budgets {
 
         private BudgetLine oldBudgetLineRecord;
 
-        public EditModel(KoinzContext context, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService,
-            IBudgetService budgetService)
-                : base(context, accountService, autocompleteService, tagService) {
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService, IBudgetService budgetService)
+                : base(context, logger, accountService, autocompleteService, tagService) {
             _budgetService = budgetService;
         }
 

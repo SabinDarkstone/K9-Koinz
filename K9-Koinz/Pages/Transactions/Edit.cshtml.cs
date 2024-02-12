@@ -7,9 +7,10 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : AbstractEditModel<Transaction> {
-        public EditModel(KoinzContext context, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService)
-                : base(context, accountService, autocompleteService, tagService) { }
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight()

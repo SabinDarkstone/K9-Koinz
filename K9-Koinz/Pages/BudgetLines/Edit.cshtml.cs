@@ -10,10 +10,10 @@ namespace K9_Koinz.Pages.BudgetLines {
     public class EditModel : AbstractEditModel<BudgetLine> {
         private readonly IBudgetService _budgetService;
 
-        public EditModel(KoinzContext context, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService,
-            IBudgetService budgetService) 
-                : base(context, accountService, autocompleteService, tagService) {
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService, IBudgetService budgetService)
+                : base(context, logger, accountService, autocompleteService, tagService) {
             _budgetService = budgetService;
         }
 
@@ -46,6 +46,12 @@ namespace K9_Koinz.Pages.BudgetLines {
             Record.BudgetId = oldRecord.BudgetId;
             Record.BudgetCategory = null;
             Record.Budget = null;
+
+            var category = await _context.Categories.FindAsync(Record.BudgetCategoryId);
+            var budget = await _context.Budgets.FindAsync(Record.BudgetId);
+
+            Record.BudgetCategoryName = category.Name;
+            Record.BudgetName = budget.Name;
         }
 
         protected override IActionResult NavigationOnSuccess() {

@@ -7,9 +7,10 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
     public class EditModel : AbstractEditModel<Category> {
-        public EditModel(KoinzContext context, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService)
-                : base(context, accountService, autocompleteService, tagService) { }
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger, accountService, autocompleteService, tagService) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
             return await _context.Categories

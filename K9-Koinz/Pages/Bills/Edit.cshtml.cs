@@ -6,13 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Bills {
     public class EditModel : AbstractEditModel<Bill> {
-        public EditModel(KoinzContext context, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService)
-                : base(context, accountService, autocompleteService, tagService) { }
-
-        protected override async Task BeforeQueryActionsAsync() {
-            AccountOptions = await _accountService.GetAccountListAsync(true);
-        }
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+            : base(context, logger, accountService, autocompleteService, tagService) { }
 
         protected override async Task BeforeSaveActionsAsync() {
             var account = await _context.Accounts.FindAsync(Record.AccountId);
@@ -28,8 +25,7 @@ namespace K9_Koinz.Pages.Bills {
             return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
         }
 
-        public async Task<IActionResult> OnGetCategory
-            (string text) {
+        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
             return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
     }

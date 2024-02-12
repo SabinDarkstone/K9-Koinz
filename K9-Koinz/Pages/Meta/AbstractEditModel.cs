@@ -2,13 +2,12 @@
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Meta {
-    public abstract class AbstractEditModel<T> : PageModel where T : BaseEntity {
-        protected readonly KoinzContext _context;
+    public abstract class AbstractEditModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IAccountService _accountService;
         protected readonly IAutocompleteService _autocompleteService;
         protected readonly ITagService _tagService;
@@ -19,8 +18,10 @@ namespace K9_Koinz.Pages.Meta {
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        protected AbstractEditModel(KoinzContext context, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService) {
-            _context = context;
+        protected AbstractEditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+            IAccountService accountService, IAutocompleteService autocompleteService,
+            ITagService tagService)
+                : base(context, logger) {
             _accountService = accountService;
             _autocompleteService = autocompleteService;
             _tagService = tagService;
@@ -55,6 +56,8 @@ namespace K9_Koinz.Pages.Meta {
 
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
+
+            _logger.LogInformation("Record: " + Record.ToJson());
 
             _context.Attach(Record).State = EntityState.Modified;
 

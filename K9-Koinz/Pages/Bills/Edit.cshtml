@@ -1,5 +1,6 @@
 ﻿@page
 @using Models
+@using Utils
 @model K9_Koinz.Pages.Bills.EditModel
 
 @{
@@ -14,6 +15,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Record.Id" />
             <div class="form-group">
                 <label asp-for="Record.Name" class="control-label"></label>
                 <input asp-for="Record.Name" class="form-control" />
@@ -44,7 +46,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.FirstDueDate" class="control-label"></label>
-                <input asp-for="Record.FirstDueDate" class="form-control" />
+                <input asp-for="Record.FirstDueDate" class="form-control" value="@Model.Record.FirstDueDate.FormatForUrl()"/>
                 <span asp-validation-for="Record.FirstDueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -60,7 +62,7 @@
                 <span asp-validation-for="Record.RepeatFrequencyCount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -81,7 +83,7 @@
             $("#txtMerchant").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "/Bills/Create?handler=MerchantAutoComplete",
+                        url: "/Bills/Edit?handler=MerchantAutoComplete",
                         data: { text: request.term },
                         type: "GET",
                         success: function (data) {
@@ -106,7 +108,7 @@
             $("#txtCategory").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "/Bills/Create?handler=CategoryAutoComplete",
+                        url: "/Bills/Edit?handler=CategoryAutoComplete",
                         data: { text: request.term },
                         type: "GET",
                         success: function (data) {
