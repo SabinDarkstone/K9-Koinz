@@ -70,13 +70,13 @@ namespace K9_Koinz.Pages.Budgets {
             }
 
             GenerateBudgetPeriodOptions();
-            RetrieveAndHandleTransactions();
+            await RetrieveAndHandleTransactionsAsync();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
                 budgetLine.GetCurrentAndPreviousPeriods(BudgetPeriod);
             }
-            UpdatePreviousPeriods();
-            UpdateCurrentPeriods();
-            _context.SaveChanges();
+            await UpdatePreviousPeriodsAsync();
+            await UpdateCurrentPeriodsAsync();
+            await _context.SaveChangesAsync();
         }
 
         // TODO: This needs to be cleaned up
@@ -115,7 +115,7 @@ namespace K9_Koinz.Pages.Budgets {
                     });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
-                for (var i = 0; i < 7; i++) {
+                for (var i = 0; i < 8; i++) {
                     var optionDate = DateTime.Now.AddDays(i * -7);
                     var weekStartDate = SelectedBudget.Timespan.GetStartAndEndDate(optionDate).Item1;
                     PeriodOptions.Add(new BudgetPeriodOption {
@@ -140,10 +140,10 @@ namespace K9_Koinz.Pages.Budgets {
             PeriodOptions.Reverse();
         }
 
-        private async Task RetrieveAndHandleTransactions() {
+        private async Task RetrieveAndHandleTransactionsAsync() {
             // Get transactions for each budget line and write values to unmapped properties in the budget line model
             foreach (var budgetLine in SelectedBudget.BudgetLines) {
-                _ = _budgetService.GetTransactions(budgetLine, BudgetPeriod);
+                _budgetService.GetTransactions(budgetLine, BudgetPeriod);
             }
 
             // If the current budget uses categories, determine unallocated spending
@@ -153,7 +153,7 @@ namespace K9_Koinz.Pages.Budgets {
             }
         }
 
-        private async Task UpdateCurrentPeriods() {
+        private async Task UpdateCurrentPeriodsAsync() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
             
             // Loop through each budget line with rollover enabled
@@ -202,7 +202,7 @@ namespace K9_Koinz.Pages.Budgets {
             return newPeriod;
         }
 
-        private async Task UpdatePreviousPeriods() {
+        private async Task UpdatePreviousPeriodsAsync() {
             var periodsToUpdate = new List<BudgetLinePeriod>();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
                 if (budgetLine.PreviousPeriod == null) {

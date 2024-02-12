@@ -16,12 +16,12 @@
         width: 100%;
     }
 
-    .marker-list .marker {
-        position: absolute;
-        width: 1px;
-        height: 20px;
-        background-color: black;
-    }
+        .marker-list .marker {
+            position: absolute;
+            width: 1px;
+            height: 20px;
+            background-color: black;
+        }
 
     .list-group-item {
         padding-left: 0 !important;
@@ -39,6 +39,7 @@
 
 <h1>Budgets</h1>
 
+
 @if (!Model.Budgets.Any()) {
     <div>
         <p>You do not have any budgets created yet.  Click the button below to make one!</p>
@@ -49,6 +50,9 @@
         <a asp-page="Create">New Budget</a>
     </p>
 
+    <!--
+        BUDGET SELECTION BUTTONS
+    -->
     <div>
         <ul class="nav nav-pills mb-2 row">
             @foreach (var budget in Model.Budgets) {
@@ -70,28 +74,33 @@
         </ul>
     </div>
 
-    <div class="row mb-4">
-        @foreach (var period in Model.PeriodOptions) {
-            var classList = "btn";
-            if (period.IsSelected) {
-                classList += " btn-secondary";
-            } else {
-                classList += " btn-outline-secondary";
-            }
+    <!--
+        BUDGET PERIOD SELECTION BUTTONS
+    -->
+    <div class="row mb-4 justify-content-center">
+            @foreach (var period in Model.PeriodOptions) {
+                var classList = "btn";
+                if (period.IsSelected) {
+                    classList += " btn-secondary";
+                } else {
+                    classList += " btn-outline-secondary";
+                }
 
-            if (period.IsDisabled) {
-                classList += " disabled";
+                if (period.IsDisabled) {
+                    classList += " disabled";
+                }
+                <div class="col-3 col-sm-4 col-md-3 col-xl-1 mb-2" style="text-align:center">
+                    <a class="@classList" style="width:100%" asp-page="./Index" asp-route-budgetPeriod="@period.ValueString" asp-route-selectedBudget="@Model.SelectedBudget.Id">
+                        <span>@period.Text</span>
+                    </a>
+                </div>
             }
-            <div class="col mb-2" style="text-align:center">
-                <a class="@classList" asp-page="./Index" asp-route-budgetPeriod="@period.ValueString" asp-route-selectedBudget="@Model.SelectedBudget.Id">@period.Text</a>
-            </div>
-        }
-    </div>
+        </div>
 }
 
 @if (Model.SelectedBudget == null) {
     if (Model.Budgets.Any()) {
-        <p>There has been an error displaying your selected budget.</p>
+        <p class="text-danger">There has been an error displaying your selected budget.</p>
     }
 } else {
     <h2>
