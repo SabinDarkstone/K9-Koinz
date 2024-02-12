@@ -271,7 +271,7 @@
                     </div>
                 }
                 <div class="row text-secondary">
-                    <div class="col">
+                    <div class="col-8">
                         @budgetLine.SpentAmount.FormatCurrency(0)
                         <span style="font-weight:lighter;">
                             of
@@ -291,7 +291,7 @@
                             </span>
                         }
                     </div>
-                    <div class="col" style="text-align: right; font-weight: lighter">
+                    <div class="col-4" style="text-align: right; font-weight: lighter">
                         @if (!budgetLine.DoRollover || (budgetLine.DoRollover && budgetLine.PreviousPeriod == null)) {
                             @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
                                 <text>
@@ -505,7 +505,7 @@
                         </div>
                     }
                     <div class="row text-secondary">
-                        <div class="col">
+                        <div class="col-8">
                             @budgetLine.SpentAmount.FormatCurrency(0)
                             <span style="font-weight:lighter;">
                                 of
@@ -525,7 +525,7 @@
                                 </span>
                             }
                         </div>
-                        <div class="col" style="text-align: right; font-weight: lighter">
+                        <div class="col-4" style="text-align: right; font-weight: lighter">
                             @if (!budgetLine.DoRollover || (budgetLine.DoRollover && budgetLine.PreviousPeriod == null)) {
                                 @if (budgetLine.BudgetedAmount >= budgetLine.SpentAmount) {
                                     <text>
