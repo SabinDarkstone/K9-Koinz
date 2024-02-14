@@ -9,12 +9,10 @@ namespace K9_Koinz.Models {
         [DisplayName("From Account")]
         public Guid FromAccountId { get; set; }
         public Account FromAccount { get; set; }
-        public string FromAccountName { get; set; }
         [Required]
         [DisplayName("To Account")]
         public Guid ToAccountId { get; set; }
         public Account ToAccount { get; set; }
-        public string ToAccountName { get; set; }
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
@@ -22,12 +20,10 @@ namespace K9_Koinz.Models {
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
-        public string MerchantName { get; set; }
         [Required]
         [DisplayName("Category")]
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
-        public string CategoryName { get; set; }
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.EntityFrameworkCore;
 using Humanizer;
 using K9_Koinz.Services;
 
@@ -15,7 +14,9 @@ namespace K9_Koinz.Pages.Transfers {
         private readonly ITagService _tagService;
         private readonly IAutocompleteService _autocompleteService;
 
-        public CreateModel(KoinzContext context, ILogger<CreateModel> logger, IAccountService accountService, ITagService tagService, IAutocompleteService autocompleteService) {
+        public CreateModel(KoinzContext context, ILogger<CreateModel> logger,
+            IAccountService accountService, ITagService tagService,
+            IAutocompleteService autocompleteService) {
             _context = context;
             _logger = logger;
             _accountService = accountService;
@@ -75,8 +76,7 @@ namespace K9_Koinz.Pages.Transfers {
                 Date = Transfer.Date
             };
 
-            _context.Transactions.Add(fromTransaction);
-            _context.Transactions.Add(toTransaction);
+            _context.Transactions.AddRange(new List<Transaction> { fromTransaction, toTransaction });
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Transactions/Index");
