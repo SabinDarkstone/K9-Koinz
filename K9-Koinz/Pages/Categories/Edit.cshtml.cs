@@ -34,6 +34,46 @@ namespace K9_Koinz.Pages.Categories {
             }
         }
 
+        protected override async Task AfterSaveActionsAsync() {
+            var childCategories = await _context.Categories
+                .Where(cat => cat.ParentCategoryId == Record.Id)
+                .ToListAsync();
+
+            var relatedTransactions = await _context.Transactions
+                .Where(trans => trans.CategoryId == Record.Id)
+                .ToListAsync();
+
+            var relatedBills = await _context.Bills
+                .Where(bill => bill.CategoryId == Record.Id)
+                .ToListAsync();
+
+            var relatedBudgetLines = await _context.BudgetLines
+                .Where(line => line.BudgetCategoryId == Record.Id)
+                .ToListAsync();
+
+            foreach (var cat in childCategories) {
+                cat.ParentCategoryName = Record.Name;
+            }
+
+            foreach (var trans in relatedTransactions) {
+                trans.CategoryName = Record.Name;
+            }
+
+            foreach (var bill in relatedBills) {
+                bill.CategoryName = Record.Name;
+            }
+
+            foreach (var budgetLine in relatedBudgetLines) {
+                budgetLine.BudgetCategoryName = Record.Name;
+            }
+
+            _context.Categories.UpdateRange(childCategories);
+            _context.Transactions.UpdateRange(relatedTransactions);
+            _context.Bills.UpdateRange(relatedBills);
+            _context.BudgetLines.UpdateRange(relatedBudgetLines);
+            await _context.SaveChangesAsync();
+        }
+
         public IActionResult OnGetParentCategoryAutoComplete(string text) {
             text = text.Trim();
             var categories = _context.Categories
