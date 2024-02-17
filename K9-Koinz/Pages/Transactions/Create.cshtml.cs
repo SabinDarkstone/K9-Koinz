@@ -7,6 +7,8 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
+        private bool doHandleSavingsGoal;
+
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IAccountService accountService, IAutocompleteService autocompleteService,
             ITagService tagService)
@@ -33,6 +35,32 @@ namespace K9_Koinz.Pages.Transactions {
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
             }
+        }
+
+        protected override async Task AfterSaveActionsAsync() {
+            doHandleSavingsGoal = await CheckIfAvailableForSavingsGoal();
+        }
+
+        public override IActionResult NavigateOnSuccess() {
+            if (doHandleSavingsGoal) {
+                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = Record.Id });
+            } else {
+                return base.NavigateOnSuccess();
+            }
+        }
+
+        private async Task<bool> CheckIfAvailableForSavingsGoal() {
+            if (Record.Category.CategoryType != CategoryType.TRANSFER && Record.Category.CategoryType != CategoryType.INCOME) {
+                return false;
+            }
+
+            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            if (account.Type != AccountType.SAVINGS && account.Type != AccountType.CHECKING) {
+                return false;
+            }
+
+            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == Record.AccountId);
+            return accountHasGoals;
         }
     }
 }

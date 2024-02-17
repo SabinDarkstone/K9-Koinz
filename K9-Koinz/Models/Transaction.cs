@@ -41,6 +41,10 @@ namespace K9_Koinz.Models {
         [DisplayName("Bill")]
         public Guid? BillId { get; set; }
         public Bill Bill { get; set; }
+        [DisplayName("Savings Goal")]
+        public Guid? SavingsGoalId {  get; set; }
+        public SavingsGoal SavingsGoal { get; set; }
+        public string SavingsGoalName { get; set; }
 
         [NotMapped]
         public bool IsUnCategorized {
@@ -58,6 +62,16 @@ namespace K9_Koinz.Models {
                     return TransactionType.MINUS;
                 }
             }
+        }
+    }
+
+    public struct TinyTransaction {
+        public Guid Id { get; init; }
+        public double Amount { get; init; }
+
+        public TinyTransaction(Transaction transaction) {
+            this.Id = transaction.Id;
+            this.Amount = transaction.Amount;
         }
     }
 }

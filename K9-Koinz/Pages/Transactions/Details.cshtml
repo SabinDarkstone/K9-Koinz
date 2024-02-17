@@ -62,6 +62,14 @@
                 </a>
              </dd>
         }
+        @if (Model.Record.SavingsGoalId.HasValue) {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Record.SavingsGoalName)
+            </dd>
+        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Record.Amount)
         </dt>
