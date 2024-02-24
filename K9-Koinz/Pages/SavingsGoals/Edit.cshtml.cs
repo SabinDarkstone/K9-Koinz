@@ -9,5 +9,11 @@ namespace K9_Koinz.Pages.SavingsGoals {
             IAccountService accountService, IAutocompleteService autocompleteService,
             ITagService tagService)
                 : base(context, logger, accountService, autocompleteService, tagService) { }
+
+        protected override async Task BeforeSaveActionsAsync() {
+            var account = await _context.Accounts.FindAsync(Record.AccountId);
+
+            Record.AccountName = account.Name;
+        }
     }
 }

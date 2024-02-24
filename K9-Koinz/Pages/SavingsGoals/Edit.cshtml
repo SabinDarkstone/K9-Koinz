@@ -1,5 +1,6 @@
 ﻿@page
 @using K9_Koinz.Models
+@using K9_Koinz.Utils
 @model K9_Koinz.Pages.SavingsGoals.EditModel
 
 @{
@@ -11,6 +12,53 @@
 <h4>Savings Goal</h4>
 <hr />
 <div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Record.Id" />
+            <div class="form-group">
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.Description" class="control-label"></label>
+                <input asp-for="Record.Description" class="form-control" />
+                <span asp-validation-for="Record.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.AccountId" class="control-label"></label>
+                <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
+                    <option value="" selected disabled>Select an Account...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.TargetAmount" class="control-label"></label>
+                <input asp-for="Record.TargetAmount" class="form-control" />
+                <span asp-validation-for="Record.TargetAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.TargetDate" class="control-label"></label>
+                @if (Model.Record.TargetDate.HasValue) {
+                    <input asp-for="Record.TargetDate" class="form-control" value="@Model.Record.TargetDate.Value.FormatForUrl()" />
+                } else {
+                    <input asp-for="Record.TargetDate" class="form-control" />
+
+                }
+                <span asp-validation-for="Record.TargetDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.StartingAmount" class="control-label"></label>
+                <input asp-for="Record.StartingAmount" class="form-control" />
+                <span asp-validation-for="Record.StartingAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary my-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Save
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div>
@@ -18,5 +66,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

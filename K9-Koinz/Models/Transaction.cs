@@ -63,6 +63,9 @@ namespace K9_Koinz.Models {
                 }
             }
         }
+
+        [NotMapped]
+        public bool CreateAnother { get; set; }
     }
 
     public struct TinyTransaction {

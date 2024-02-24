@@ -44,7 +44,11 @@
     </div>
 } else {
     <p>
-        <a asp-page="Create">New Goal</a>
+        <a asp-page="Create" class="no-underline-ever">
+            <span class="btn btn-success btn-sm">
+                <i class="fa-solid fa-plus"></i> New Goal
+            </span>
+        </a>
     </p>
 }
 
@@ -55,7 +59,9 @@
         @foreach (var goal in goalGroups.Value) {
             <li class="list-group-item">
 
-                <h4>@goal.Name</h4>
+                <h4>
+                    <a asp-page="/SavingsGoals/Details" asp-route-id="@goal.Id" class="no-underline">@goal.Name</a>
+                </h4>
                 <p>@goal.Description</p>
 
                 @{
@@ -108,7 +114,7 @@
                 <div class="row">
                     <div class="col">
                         <p>
-                            Saved So Far: @goal.SavedAmount.FormatCurrency(0)
+                            Saved So Far: @goal.TotalContributed.FormatCurrency(0)
                         </p>
                     </div>
                     <div class="col">
