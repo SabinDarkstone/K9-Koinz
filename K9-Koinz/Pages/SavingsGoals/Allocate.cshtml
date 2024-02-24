@@ -1,0 +1,57 @@
+﻿@page
+@model K9_Koinz.Pages.SavingsGoals.AllocateModel
+
+@{
+    ViewData["Title"] = "Allocate To Savings Goal";
+}
+
+<h1>Allocate</h1>
+
+<h4>Transaction -> Savings Goal</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <input type="hidden" asp-for="Transaction.Id" />
+            <input type="hidden" asp-for="Transaction.AccountId" />
+            <input type="hidden" asp-for="Transaction.MerchantId" />
+            <input type="hidden" asp-for="Transaction.CategoryId" />
+            <input type="hidden" asp-for="Transaction.Date" />
+            <input type="hidden" asp-for="Transaction.CreatedDate" />
+            <input type="hidden" asp-for="Transaction.LastModifiedDate" />
+            <input type="hidden" asp-for="Transaction.TagId" />
+            <input type="hidden" asp-for="Transaction.Notes" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Transaction.AccountId" class="control-label"></label>
+                <input asp-for="Transaction.AccountName" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.CategoryId" class="control-label"></label>
+                <input asp-for="Transaction.CategoryName" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.MerchantId" class="control-label"></label>
+                <input asp-for="Transaction.MerchantName" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.Amount" class="control-label"></label>
+                <input asp-for="Transaction.Amount" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Transaction.SavingsGoalId" class="control-label"></label>
+                <select asp-for="Transaction.SavingsGoalId" class="form-control" asp-items="@Model.GoalOptions">
+                    <option value="@Guid.Empty">No Goal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Allocate" class="btn btn-primary" />
+            </div>
+
+            <div>
+                <a asp-page="/Transaction/Detail" asp-route-id="@Model.Transaction.Id">Back to Transaction</a>
+            </div>
+        </form>
+    </div>
+</div>

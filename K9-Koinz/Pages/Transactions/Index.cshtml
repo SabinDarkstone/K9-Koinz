@@ -15,9 +15,23 @@
 <h1>Your Transactions</h1>
 
 <p>
-    <a asp-page="./Create">Create New</a> |
-    <a asp-page="/Transfers/Create">Add Transfer</a> |
-    <a asp-page="./Print">Print View</a>
+    <a asp-page="Create" class="no-underline-ever">
+        <span class="btn btn-success btn-sm">
+            <i class="fa-solid fa-plus"></i> Create New
+        </span>
+    </a>
+
+    <a asp-page="/Transfers/Create" class="no-underline-ever">
+        <span class="btn btn-success btn-sm">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i> Add Transfer
+        </span>
+    </a>
+
+    <a asp-page="Print" class="no-underline-ever">
+        <span class="btn btn-success btn-sm">
+            <i class="fa-solid fa-print"></i> Print View
+        </span>
+    </a>
 </p>
 
 <div class="row">
@@ -48,7 +62,7 @@
                 <div class="form-group mb-3">
                     <label for="txtMerchant" class="control-label">Merchant Filter</label>
                     <input id="txtMerchant" class="form-control" placeholder="Enter a Merchant" />
-                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value=""/>
+                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value="" />
                 </div>
 
                 <div class="form-group mb-3 d-block d-lg-none">
@@ -172,7 +186,8 @@
                                         var style = "background-color: " + transaction.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@transaction.Tag.ShortForm</span>
                                     }
-                                    @transaction.MerchantName</div>
+                                    @transaction.MerchantName
+                                </div>
                                 <div class="col-4 text-end transaction-item" data-id="@transaction.Id">
                                     @if (transaction.TransactionType == Models.TransactionType.PLUS) {
                                         <span class="text-success">
@@ -246,8 +261,8 @@
     }
 
     <script>
-        $(function() {
-            $(".transaction-item").click(function() {
+        $(function () {
+            $(".transaction-item").click(function () {
                 window.location = "/Transactions/Details?id=" + $(this).data("id");
                 return false;
             });

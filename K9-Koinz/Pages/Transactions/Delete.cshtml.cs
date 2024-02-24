@@ -13,5 +13,12 @@ namespace K9_Koinz.Pages.Transactions {
                 .Include(trans => trans.Tag)
                 .FirstOrDefaultAsync(trans => trans.Id == id);
         }
+
+        protected override void AdditioanlDatabaseActions() {
+            if (Record.SavingsGoalId.HasValue) {
+                var goal = _context.SavingsGoals.Find(Record.SavingsGoalId);
+                goal.SavedAmount -= Record.Amount;
+            }
+        }
     }
 }

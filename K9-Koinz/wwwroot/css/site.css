@@ -21,14 +21,19 @@ body {
     margin-bottom: 60px;
 }
 
-.no-underline {
+.no-underline, .no-underline-ever {
     color: inherit;
     text-decoration: none;
 }
-
     .no-underline:hover {
         color: inherit;
+        text-decoration: underline;
     }
+
+    .no-underline-ever:hover {
+        color: inherit;
+    }
+
 
 .nav-link-hover {
     border-radius: 10px;

@@ -46,9 +46,11 @@
         <a asp-page="./Create" class="btn btn-primary">New Budget</a>
     </div>
 } else {
-    <p>
-        <a asp-page="Create">New Budget</a>
-    </p>
+    <a asp-page="Create" class="no-underline-ever">
+        <span class="btn btn-success btn-sm mb-3">
+            <i class="fa-solid fa-plus"></i> Create New
+        </span>
+    </a>
 
     <!--
         BUDGET SELECTION BUTTONS

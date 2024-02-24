@@ -49,6 +49,14 @@
                 <input asp-for="Record.Amount" class="form-control" />
                 <span asp-validation-for="Record.Amount" class="text-danger"></span>
             </div>
+            @if (Model.Record.Category.CategoryType != Models.CategoryType.EXPENSE) {
+                <div class="form-group">
+                    <label asp-for="Record.SavingsGoalId" class="control-label"></label>
+                    <select asp-for="Record.SavingsGoalId" class="form-control" asp-items="@Model.GoalOptions">
+                        <option value="@Guid.Empty">No Goal</option>
+                    </select>
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="Record.Notes" class="control-label"></label>
                 <textarea asp-for="Record.Notes" class="form-control" rows="5"></textarea>

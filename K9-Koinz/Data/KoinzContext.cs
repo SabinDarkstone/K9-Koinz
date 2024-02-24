@@ -14,6 +14,7 @@ namespace K9_Koinz.Data {
         public DbSet<BudgetLinePeriod> BudgetLinePeriods { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Bill> Bills { get; set; }
+        public DbSet<SavingsGoal> SavingsGoals { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -30,6 +31,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<BudgetLinePeriod>().ToTable("BudgetPeriod").HasKey(x => x.Id);
             modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
             modelBuilder.Entity<Bill>().ToTable("Bill").HasKey(x => x.Id);
+            modelBuilder.Entity<SavingsGoal>().ToTable("Goals").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
@@ -56,6 +58,9 @@ namespace K9_Koinz.Data {
                 .HasIndex(x => x.Name)
                 .IsUnique();
             modelBuilder.Entity<Bill>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<SavingsGoal>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
         }

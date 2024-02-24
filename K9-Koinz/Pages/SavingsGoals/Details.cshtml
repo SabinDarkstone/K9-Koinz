@@ -1,0 +1,95 @@
+﻿@page
+@using Utils
+@model K9_Koinz.Pages.SavingsGoals.DetailsModel
+
+@{
+    ViewData["Title"] = "Savings Goal Details";
+}
+
+<h1>Details</h1>
+<div>
+    <h4>Savings Goal</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.Name)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Record.Name)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.Description)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Record.Description)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.AccountId)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Record.AccountName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.TargetAmount)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Record.TargetAmount.FormatCurrency(0)
+        </dd>
+        @if (Model.Record.StartingAmount.HasValue) {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Record.StartingAmount)
+            </dt>
+            <dd class="col-sm-9">
+                @Model.Record.StartingAmount.Value.FormatCurrency(0)
+            </dd>
+        }
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.SavedAmount)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Record.SavedAmount.FormatCurrency(0)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.TotalContributed)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Record.TotalContributed.FormatCurrency(0) (@Model.Record.SavingsPercent%)
+        </dd>
+    </dl>
+</div>
+<div class="row">
+    <h5>Transactions</h5>
+    @if (Model.Record.Transactions.Any()) {
+        <div class="col-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model.Record.Transactions.OrderByDescending(trans => trans.Date)) {
+                        <tr>
+                            <td>@transaction.Date.FormatShortString()</td>
+                            <td>@transaction.Amount.FormatCurrency(2)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    } else {
+        <div class="col-5 mb-3">
+            You do not have any transactions towards this goal, yet.
+        </div>
+    }
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
+        <i class="fa-solid fa-pen-to-square"></i> Edit
+    </a>
+    <a asp-page="Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
+        <i class="fa-solid fa-trash"></i> Delete
+    </a>
+</div>
+<a asp-page="./Index">Back to List</a>
