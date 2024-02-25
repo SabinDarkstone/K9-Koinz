@@ -44,6 +44,20 @@
             </dd>
         }
         <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.StartDate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Record.StartDate)
+        </dd>
+        @if (Model.Record.TargetDate.HasValue) {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Record.TargetDate.Value)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Record.TargetDate.Value)
+            </dd>
+        }
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.SavedAmount)
         </dt>
         <dd class="col-sm-9">

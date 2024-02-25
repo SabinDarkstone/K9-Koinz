@@ -1,4 +1,5 @@
 ﻿@page
+@using K9_Koinz.Utils
 @using Models
 @model K9_Koinz.Pages.SavingsGoals.CreateModel
 
@@ -34,6 +35,11 @@
                 <label asp-for="Record.TargetAmount" class="control-label"></label>
                 <input asp-for="Record.TargetAmount" class="form-control" />
                 <span asp-validation-for="Record.TargetAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.StartDate" class="control-label"></label>
+                <input asp-for="Record.StartDate" class="form-control" value="@DateTime.Today.FormatForUrl()"/>
+                <span asp-validation-for="Record.StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.TargetDate" class="control-label"></label>
