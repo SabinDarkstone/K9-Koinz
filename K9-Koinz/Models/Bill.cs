@@ -10,7 +10,9 @@ namespace K9_Koinz.Models {
         [Display(Name = "Monthly")]
         MONTHLY,
         [Display(Name = "Annually")]
-        YEARLY
+        YEARLY,
+        [Display(Name = "Weekly")]
+        WEEKLY
     }
 
     public class Bill : BaseEntity, INameable {
@@ -57,6 +59,8 @@ namespace K9_Koinz.Models {
                     value += " Month" + (RepeatFrequencyCount > 1 ? "s" : string.Empty);
                 } else if (RepeatFrequency == Frequency.YEARLY) {
                     value += " Year" + (RepeatFrequencyCount > 1 ? "s" : string.Empty);
+                } else if (RepeatFrequency == Frequency.WEEKLY) {
+                    value += " Week" + (RepeatFrequencyCount > 1 ? "s" : string.Empty);
                 }
 
                 return value;
@@ -72,6 +76,8 @@ namespace K9_Koinz.Models {
                         return LastDueDate.Value.AddMonths(RepeatFrequencyCount);
                     } else if (RepeatFrequency == Frequency.YEARLY) {
                         return LastDueDate.Value.AddYears(RepeatFrequencyCount);
+                    } else if (RepeatFrequency == Frequency.WEEKLY) {
+                        return LastDueDate.Value.AddDays(RepeatFrequencyCount * 7);
                     }
                 } else {
                     return FirstDueDate;
