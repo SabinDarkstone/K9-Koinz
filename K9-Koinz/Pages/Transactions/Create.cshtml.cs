@@ -4,10 +4,12 @@ using K9_Koinz.Models;
 using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
+using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
         private bool doHandleSavingsGoal;
+        private bool foundMatchingTransaction;
 
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IAccountService accountService, IAutocompleteService autocompleteService,
@@ -35,6 +37,13 @@ namespace K9_Koinz.Pages.Transactions {
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
             }
+
+            foundMatchingTransaction = (await _context.Transactions
+                .Where(trans => trans.Amount == Record.Amount)
+                .Where(trans => trans.MerchantId == Record.MerchantId)
+                .ToListAsync())
+                .Where(trans => Math.Abs((trans.Date - Record.Date).TotalDays) <= 5)
+                .Any();
         }
 
         protected override async Task AfterSaveActionsAsync() {
@@ -42,7 +51,9 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public override IActionResult NavigateOnSuccess() {
-            if (doHandleSavingsGoal) {
+            if (foundMatchingTransaction) {
+                return RedirectToPage("DuplicateFound", new { id = Record.Id });
+            } else if (doHandleSavingsGoal) {
                 return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = Record.Id });
             } else {
                 return base.NavigateOnSuccess();
