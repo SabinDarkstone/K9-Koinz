@@ -32,13 +32,13 @@ namespace K9_Koinz {
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment()) {
-                app.UseExceptionHandler("/Error");
                 app.UseHttpsRedirection();
                 app.UseHsts();
             } else {
-                app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }
+
+            app.UseDeveloperExceptionPage();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
