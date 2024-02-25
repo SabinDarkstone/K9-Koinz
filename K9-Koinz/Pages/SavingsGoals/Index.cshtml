@@ -67,6 +67,11 @@
                 @{
                     var todayLine = "left: " + goal.TimePercent + "%;";
                     var savedWidth = "width: " + goal.SavingsPercent + "%;";
+                    var progressBarClasses = "progress-bar ";
+
+                    if (goal.TargetAmount == goal.TotalContributed) {
+                        progressBarClasses += "bg-success";
+                    }
                 }
 
                 <div class="row" style="margin-bottom:-5px">
@@ -102,10 +107,12 @@
                 <div class="row" style="margin-bottom:5px;">
                     <div class="col">
                         <div class="progress" style="height: 20px;">
-                            <div class="progress-bar" style="@savedWidth">
-                                <ul class="marker-list">
-                                    <li class="marker" style="@todayLine"></li>
-                                </ul>
+                            <div class="@progressBarClasses" style="@savedWidth">
+                                @if (goal.TargetDate.HasValue) {
+                                    <ul class="marker-list">
+                                        <li class="marker" style="@todayLine"></li>
+                                    </ul>
+                                }
                             </div>
                         </div>
                     </div>
