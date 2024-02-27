@@ -37,7 +37,7 @@ jobs:
 
       # We will output publish files to the folder we previously created
       - name: Publish
-        run: dotnet publish -c Release -o /home/sabin/k9-koinz
+        run: dotnet publish -c Release -o /var/www/k9-koinz
 
       - name: Restart the app
         run: |
