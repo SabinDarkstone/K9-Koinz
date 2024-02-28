@@ -15,7 +15,6 @@ namespace K9_Koinz.Pages.SavingsGoals {
             var account = _context.Accounts.Find(Record.AccountId);
             Record.AccountName = account.Name;
 
-            Record.StartDate = DateTime.Now.AtMidnight();
             Record.SavedAmount = 0d;
         }
     }
