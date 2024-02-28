@@ -29,13 +29,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.MerchantId" class="control-label"></label>
-                <input id="txtMerchant" class="form-control" value="@Model.Record.MerchantName"/>
+                <input id="txtMerchant" class="form-control" value="@Model.Record.MerchantName" />
                 <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
                 <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.CategoryId" class="control-label"></label>
-                <input id="txtCategory" class="form-control" value="@Model.Record.CategoryName"/>
+                <input id="txtCategory" class="form-control" value="@Model.Record.CategoryName" />
                 <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
                 <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>
@@ -46,7 +46,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.FirstDueDate" class="control-label"></label>
-                <input asp-for="Record.FirstDueDate" class="form-control" value="@Model.Record.FirstDueDate.FormatForUrl()"/>
+                <input asp-for="Record.FirstDueDate" class="form-control" value="@Model.Record.FirstDueDate.FormatForUrl()" />
                 <span asp-validation-for="Record.FirstDueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -60,6 +60,15 @@
                 <label asp-for="Record.RepeatFrequencyCount" class="control-label"></label>
                 <input asp-for="Record.RepeatFrequencyCount" class="form-control" value="1" />
                 <span asp-validation-for="Record.RepeatFrequencyCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.EndDate" class="control-label"></label>
+                @if (Model.Record.EndDate.HasValue) {
+                    <input asp-for="Record.EndDate" class="form-control" value="@Model.Record.EndDate.Value.FormatForUrl()" />
+                } else {
+                    <input asp-for="Record.EndDate" class="form-control" />
+                }
+                <span asp-validation-for="Record.EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">

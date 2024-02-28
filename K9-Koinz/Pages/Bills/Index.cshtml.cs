@@ -57,6 +57,7 @@ namespace K9_Koinz.Pages.Bills {
                     .ToListAsync())
                     .Where(bill => bill.NextDueDate >= startDate)
                     .Where(bill => bill.NextDueDate <= endDate)
+                    .Where(bill => !bill.IsExpired)
                     .OrderBy(bill => bill.NextDueDate)
                     .ToList();
             }

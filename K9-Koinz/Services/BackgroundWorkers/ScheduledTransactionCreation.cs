@@ -63,9 +63,10 @@ namespace K9_Koinz.Services.BackgroundWorkers {
 
         private List<Bill> GetBillsFromMonthStartToNow(DateTime refDate) {
             var startDate = refDate.StartOfMonth();
-            return (_context.Bills.ToList())
+            return _context.Bills.ToList()
                 .Where(bill => bill.NextDueDate >= startDate)
                 .Where(bill => bill.NextDueDate <= refDate)
+                .Where(bill => !bill.IsExpired)
                 .ToList();
         }
     }

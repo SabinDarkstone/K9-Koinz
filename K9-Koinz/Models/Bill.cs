@@ -37,6 +37,10 @@ namespace K9_Koinz.Models {
         public Frequency RepeatFrequency { get; set; }
         [DisplayName("Repeat Gap")]
         public int RepeatFrequencyCount { get; set; }
+        [DisplayName("Bill End Date")]
+        [DataType(DataType.Date, ErrorMessage = "Date only")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? EndDate { get; set; }
         [DisplayName("Amount")]
         public double BillAmount { get; set; }
 
@@ -71,19 +75,35 @@ namespace K9_Koinz.Models {
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         public DateTime? NextDueDate {
             get {
+                DateTime? nextDate;
                 if (LastDueDate.HasValue) {
                     if (RepeatFrequency == Frequency.MONTHLY) {
-                        return LastDueDate.Value.AddMonths(RepeatFrequencyCount);
+                        nextDate = LastDueDate.Value.AddMonths(RepeatFrequencyCount);
                     } else if (RepeatFrequency == Frequency.YEARLY) {
-                        return LastDueDate.Value.AddYears(RepeatFrequencyCount);
+                        nextDate = LastDueDate.Value.AddYears(RepeatFrequencyCount);
                     } else if (RepeatFrequency == Frequency.WEEKLY) {
-                        return LastDueDate.Value.AddDays(RepeatFrequencyCount * 7);
+                        nextDate = LastDueDate.Value.AddDays(RepeatFrequencyCount * 7);
+                    } else {
+                        throw new Exception("Unknown repeat type for bill");
                     }
+
+                    return nextDate;
                 } else {
-                    return FirstDueDate;
+                    nextDate = FirstDueDate;
                 }
 
-                return null;
+                if (EndDate.HasValue && EndDate.Value < nextDate) {
+                    nextDate = null;
+                }
+
+                return nextDate;
+            }
+        }
+
+        [NotMapped]
+        public bool IsExpired {
+            get {
+                return EndDate.HasValue && EndDate.Value < NextDueDate.Value;
             }
         }
     }
