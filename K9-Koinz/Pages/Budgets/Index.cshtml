@@ -196,6 +196,14 @@
             solidWidthString = "width: " + remainingPercent + "%;";
             stripedWidthString = "width: " + spentOverBudgetedPlusRolloverPercent + "%;";
             totalBarPercent = spentOverBudgetedPercent;
+
+            if (spentOverBudgetedPlusRolloverPercent >= 99.5 && !budgetLine.GreenBarAlways) {
+                stripedProgressBarClassList += " bg-danger";
+            } else if (spentOverBudgetedPlusRolloverPercent >= 80 && !budgetLine.GreenBarAlways) {
+                stripedProgressBarClassList += " bg-warning";
+            } else {
+                stripedProgressBarClassList += " bg-success";
+            }
         } else {
             var overagePercent = Math.Clamp(Math.Abs(budgetLine.RolloverAmount.Value) / budgetLine.BudgetedAmount * 100, 0, 100);
 
@@ -206,13 +214,13 @@
 
         if (totalBarPercent >= 99.5 && !budgetLine.GreenBarAlways) {
             solidProgressBarClassList += " bg-danger";
-            stripedProgressBarClassList += " bg-danger";
+            // stripedProgressBarClassList += " bg-danger";
         } else if (totalBarPercent >= 80 && !budgetLine.GreenBarAlways) {
             solidProgressBarClassList += " bg-warning";
-            stripedProgressBarClassList += " bg-warning";
+            // stripedProgressBarClassList += " bg-warning";
         } else {
             solidProgressBarClassList += " bg-success";
-            stripedProgressBarClassList += " bg-success";
+            // stripedProgressBarClassList += " bg-success";
         }
 
         <ul class="list-group">
@@ -431,6 +439,14 @@
                     solidWidthString = "width: " + remainingPercent + "%;";
                     stripedWidthString = "width: " + spentOverBudgetedPlusRolloverPercent + "%;";
                     totalBarPercent = spentOverBudgetedPercent;
+
+                    if (spentOverBudgetedPlusRolloverPercent >= 99.5 && !budgetLine.GreenBarAlways) {
+                        stripedProgressBarClassList += " bg-danger";
+                    } else if (spentOverBudgetedPlusRolloverPercent >= 80 && !budgetLine.GreenBarAlways) {
+                        stripedProgressBarClassList += " bg-warning";
+                    } else {
+                        stripedProgressBarClassList += " bg-success";
+                    }
                 } else {
                     var overagePercent = Math.Clamp(Math.Abs(budgetLine.RolloverAmount.Value) / budgetLine.BudgetedAmount * 100, 0, 100);
 
@@ -439,15 +455,16 @@
                     totalBarPercent = overagePercent + spentOverBudgetedPercent;
                 }
 
+
                 if (totalBarPercent >= 99.5 && !budgetLine.GreenBarAlways) {
                     solidProgressBarClassList += " bg-danger";
-                    stripedProgressBarClassList += " bg-danger";
+                    // stripedProgressBarClassList += " bg-danger";
                 } else if (totalBarPercent >= 80 && !budgetLine.GreenBarAlways) {
                     solidProgressBarClassList += " bg-warning";
-                    stripedProgressBarClassList += " bg-warning";
+                    // stripedProgressBarClassList += " bg-warning";
                 } else {
                     solidProgressBarClassList += " bg-success";
-                    stripedProgressBarClassList += " bg-success";
+                    // stripedProgressBarClassList += " bg-success";
                 }
 
                 <li class="list-group-item">

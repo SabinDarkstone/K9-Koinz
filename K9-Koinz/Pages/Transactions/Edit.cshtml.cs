@@ -41,14 +41,17 @@ namespace K9_Koinz.Pages.Transactions {
             Record.MerchantName = merchant.Name;
             Record.AccountName = account.Name;
 
+
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
             }
-            if (Record.SavingsGoalId == Guid.Empty) {
-                Record.SavingsGoalId = null;
-            } else {
-                var savingsGoal = await _context.SavingsGoals.FindAsync(Record.SavingsGoalId);
-                Record.SavingsGoalName = savingsGoal.Name;
+            if (Record.SavingsGoalId.HasValue) {
+                if (Record.SavingsGoalId.Value == Guid.Empty) {
+                    Record.SavingsGoalId = null;
+                } else {
+                    var savingsGoal = await _context.SavingsGoals.FindAsync(Record.SavingsGoalId);
+                    Record.SavingsGoalName = savingsGoal.Name;
+                }
             }
         }
 
