@@ -78,7 +78,7 @@
     </table>
 
     <form method="post">
-        <button type="submit" class="btn btn-primary" asp-route-mode="confirm">Confirm</button>
+        <button type="submit" class="btn btn-primary" asp-route-mode="confirm" asp-route-id="@Model.Transaction.Id">Confirm</button>
         <button type="submit" class="btn btn-outline-primary" asp-route-mode="cancel" asp-route-id="@Model.Transaction.Id">Cancel</button>
     </form>
 </div>
