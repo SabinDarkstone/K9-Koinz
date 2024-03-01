@@ -44,6 +44,12 @@
         <dd class="col-sm-10">
             @Model.Transaction.Amount.FormatCurrency(2)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transaction.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transaction.Notes)
+        </dd>
     </dl>
 
     <h3>Matching Transaction(s)</h3>
@@ -68,12 +74,11 @@
                     <td>@match.Amount.FormatCurrency(2)</td>
                 </tr>
             }
-        </tbody> 
+        </tbody>
     </table>
 
     <form method="post">
-        <input type="hidden" asp-for="Transaction.Id" />
         <button type="submit" class="btn btn-primary" asp-route-mode="confirm">Confirm</button>
-        <button type="submit" class="btn btn-outline-primary" asp-route-mode="cancel">Cancel</button>
+        <button type="submit" class="btn btn-outline-primary" asp-route-mode="cancel" asp-route-id="@Model.Transaction.Id">Cancel</button>
     </form>
 </div>

@@ -76,8 +76,33 @@ namespace K9_Koinz.Pages.Transfers {
                 Date = Transfer.Date
             };
 
+            var foundMatchingTransactions = _context.Transactions
+                .Where(trans =>
+                    (trans.AccountId == toTransaction.AccountId && trans.Amount == toTransaction.Amount) ||
+                    (trans.AccountId == fromTransaction.AccountId && trans.Amount == fromTransaction.Amount)
+                )
+                .ToList()
+                .Where(trans => Math.Abs((trans.Date - toTransaction.Date).TotalDays) <= 5)
+                .Any();
+
             _context.Transactions.AddRange(new List<Transaction> { fromTransaction, toTransaction });
             await _context.SaveChangesAsync();
+
+            fromTransaction.PairedTransactionId = toTransaction.Id;
+            toTransaction.PairedTransactionId = fromTransaction.Id;
+
+            _context.Transactions.UpdateRange(new List<Transaction> { fromTransaction, toTransaction });
+            await _context.SaveChangesAsync();
+
+            if (foundMatchingTransactions) {
+                return RedirectToPage("/Transactions/DuplicateFound", new { id = toTransaction.Id });
+            }
+
+            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
+
+            if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
+                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = toTransaction.Id });
+            }
 
             return RedirectToPage("/Transactions/Index");
         }
