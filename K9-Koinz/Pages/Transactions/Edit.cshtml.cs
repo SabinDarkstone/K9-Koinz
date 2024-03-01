@@ -23,7 +23,7 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         protected override async Task AfterQueryActionsAsync() {
-            if (Record.SavingsGoalId.HasValue) {
+            if (Record.SavingsGoalId.HasValue || Record.IsSavingsSpending) {
                 GoalOptions = new SelectList(await _context.SavingsGoals
                     .Where(goal => goal.AccountId == Record.AccountId)
                     .ToListAsync(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
@@ -53,6 +53,14 @@ namespace K9_Koinz.Pages.Transactions {
                     Record.SavingsGoalName = savingsGoal.Name;
                 }
             }
+        }
+
+        protected override IActionResult NavigationOnSuccess() {
+            if (Record.IsSavingsSpending && !Record.SavingsGoalId.HasValue) {
+                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = Record.Id });
+            }
+
+            return RedirectToPage("Index");
         }
 
         public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {

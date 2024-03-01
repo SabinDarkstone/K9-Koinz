@@ -47,6 +47,13 @@ namespace K9_Koinz.Data {
                 .HasForeignKey(x => x.BillId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            // Savings Goals
+            modelBuilder.Entity<SavingsGoal>()
+                .HasMany(x => x.Transactions)
+                .WithOne(x => x.SavingsGoal)
+                .HasForeignKey(x => x.SavingsGoalId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Uniqueness
             modelBuilder.Entity<Merchant>()
                 .HasIndex(x => x.Name)

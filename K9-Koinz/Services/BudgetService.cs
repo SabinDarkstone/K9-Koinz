@@ -20,10 +20,15 @@ namespace K9_Koinz.Services {
             var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate(period);
 
             if (line.Budget.DoNotUseCategories) {
-                line.BudgetCategory.Transactions = _context.Transactions.Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER).ToList();
+                line.BudgetCategory.Transactions = _context.Transactions
+                    .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER)
+                    .Where(trans => !trans.IsSavingsSpending)
+                    .ToList();
             }
 
-            var transactionsIQ = line.BudgetCategory.Transactions.Where(trans => trans.Date >= startDate && trans.Date <= endDate);
+            var transactionsIQ = line.BudgetCategory.Transactions
+                .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                .Where(trans => !trans.IsSavingsSpending);
 
             if (line.Budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId.Value);
@@ -34,6 +39,7 @@ namespace K9_Koinz.Services {
                 var childCategoryTransactionsIQ = line.BudgetCategory.ChildCategories
                     .SelectMany(cat => cat.Transactions
                         .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                        .Where(trans => !trans.IsSavingsSpending)
                     ).AsEnumerable();
 
                 if (line.Budget.BudgetTagId.HasValue) {
@@ -75,8 +81,10 @@ namespace K9_Koinz.Services {
 
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(period);
             var transactionsIQ = _context.Transactions.AsNoTracking()
-                .Where(trans => trans.Date >= startDate && trans.Date <= endDate && !allUnallocatedCategories.Contains(trans.CategoryId) &&
-                    trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY);
+                .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                .Where(trans => !allUnallocatedCategories.Contains(trans.CategoryId))
+                .Where(trans => trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY)
+                .Where(trans => !trans.IsSavingsSpending);
             if (budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == budget.BudgetTagId.Value);
             }
@@ -111,13 +119,17 @@ namespace K9_Koinz.Services {
         }
 
         public async Task<List<Transaction>> GetTransactionsForCurrentBudgetLinePeriodAsync(BudgetLine budgetLine, DateTime refDate) {
-            var parentBudget = await _context.Budgets.AsNoTracking().FirstAsync(bud => bud.Id == budgetLine.BudgetId);
+            var parentBudget = await _context.Budgets
+                .AsNoTracking()
+                .FirstAsync(bud => bud.Id == budgetLine.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate(refDate);
             return await GetTransactionsForLineBetweenDatesAsync(budgetLine, startDate, endDate);
         }
 
         public async Task<List<Transaction>> GetTransactionsForPreviousLinePeriodAsync(BudgetLine budgetLine, DateTime refDate) {
-            var parentBudget = await _context.Budgets.AsNoTracking().FirstOrDefaultAsync(bud => bud.Id == budgetLine.BudgetId);
+            var parentBudget = await _context.Budgets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(bud => bud.Id == budgetLine.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate(refDate.GetPreviousPeriod(parentBudget.Timespan));
             return await GetTransactionsForLineBetweenDatesAsync(budgetLine, startDate, endDate);
         }
@@ -127,7 +139,7 @@ namespace K9_Koinz.Services {
                 .Where(per => per.BudgetLineId == budgetLine.Id)
                 .ToList();
 
-            if (oldPeriods.Any()) {
+            if (oldPeriods.Count > 0) {
                 oldPeriods.ForEach(per => per.BudgetLine = null);
                 _context.BudgetLinePeriods.RemoveRange(oldPeriods);
                 _context.SaveChanges();
@@ -137,6 +149,7 @@ namespace K9_Koinz.Services {
         private async Task<List<Transaction>> GetTransactionsForLineBetweenDatesAsync(BudgetLine budgetLine, DateTime startDate, DateTime endDate) {
             var transactionsIQ = _context.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                .Where(trans => !trans.IsSavingsSpending)
                 .AsNoTracking();
 
             if (budgetLine.BudgetCategory.CategoryType != CategoryType.ALL) {
@@ -144,7 +157,9 @@ namespace K9_Koinz.Services {
                     .Where(cat => cat.ParentCategoryId == budgetLine.BudgetCategoryId)
                     .Select(cat => cat.Id)
                     .ToListAsync();
-                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId || childCategories.Contains(trans.CategoryId));
+                transactionsIQ = transactionsIQ
+                    .Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId || childCategories.Contains(trans.CategoryId))
+                    .Where(trans => !trans.IsSavingsSpending);
             }
 
             if (budgetLine.Budget.BudgetTagId != null) {
