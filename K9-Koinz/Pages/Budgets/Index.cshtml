@@ -210,17 +210,22 @@
             solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
             stripedWidthString = "width: " + overagePercent + "%;";
             totalBarPercent = overagePercent + spentOverBudgetedPercent;
+
+            if (totalBarPercent >= 99.5 && !budgetLine.GreenBarAlways) {
+                stripedProgressBarClassList += " bg-danger";
+            } else if (totalBarPercent >= 80 && !budgetLine.GreenBarAlways) {
+                stripedProgressBarClassList += " bd-warning";
+            } else {
+                solidProgressBarClassList += " bg-success";
+            }
         }
 
         if (totalBarPercent >= 99.5 && !budgetLine.GreenBarAlways) {
             solidProgressBarClassList += " bg-danger";
-            // stripedProgressBarClassList += " bg-danger";
         } else if (totalBarPercent >= 80 && !budgetLine.GreenBarAlways) {
             solidProgressBarClassList += " bg-warning";
-            // stripedProgressBarClassList += " bg-warning";
         } else {
             solidProgressBarClassList += " bg-success";
-            // stripedProgressBarClassList += " bg-success";
         }
 
         <ul class="list-group">
@@ -453,18 +458,23 @@
                     solidWidthString = "width: " + spentOverBudgetedPercent + "%;";
                     stripedWidthString = "width: " + overagePercent + "%;";
                     totalBarPercent = overagePercent + spentOverBudgetedPercent;
+
+                    if (totalBarPercent >= 99.5 && !budgetLine.GreenBarAlways) {
+                        stripedProgressBarClassList += " bg-danger";
+                    } else if (totalBarPercent >= 80 && !budgetLine.GreenBarAlways) {
+                        stripedProgressBarClassList += " bd-warning";
+                    } else {
+                        solidProgressBarClassList += " bg-success";
+                    }
                 }
 
 
                 if (totalBarPercent >= 99.5 && !budgetLine.GreenBarAlways) {
                     solidProgressBarClassList += " bg-danger";
-                    // stripedProgressBarClassList += " bg-danger";
                 } else if (totalBarPercent >= 80 && !budgetLine.GreenBarAlways) {
                     solidProgressBarClassList += " bg-warning";
-                    // stripedProgressBarClassList += " bg-warning";
                 } else {
                     solidProgressBarClassList += " bg-success";
-                    // stripedProgressBarClassList += " bg-success";
                 }
 
                 <li class="list-group-item">
