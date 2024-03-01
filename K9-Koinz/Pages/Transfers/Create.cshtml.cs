@@ -86,13 +86,7 @@ namespace K9_Koinz.Pages.Transfers {
                 .Any();
 
             _context.Transactions.AddRange(new List<Transaction> { fromTransaction, toTransaction });
-            await _context.SaveChangesAsync();
-
-            fromTransaction.PairedTransactionId = toTransaction.Id;
-            toTransaction.PairedTransactionId = fromTransaction.Id;
-
-            _context.Transactions.UpdateRange(new List<Transaction> { fromTransaction, toTransaction });
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             if (foundMatchingTransactions) {
                 return RedirectToPage("/Transactions/DuplicateFound", new { id = toTransaction.Id });
