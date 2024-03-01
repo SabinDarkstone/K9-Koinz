@@ -2,6 +2,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DuplicateFoundModel : PageModel {
@@ -37,16 +38,25 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public IActionResult OnPost(Guid id, string mode) {
-            var transactions = _context.Transactions
-                .Where(trans => trans.Id == id || trans.PairedTransactionId == id)
-                .ToList();
-
             if (mode == "cancel") {
+                var transactions = _context.Transactions
+                    .Where(trans => trans.Id == id || trans.PairedTransactionId == id)
+                    .ToList();
+
                 _context.Transactions.RemoveRange(transactions);
                 _context.SaveChanges();
+                return RedirectToPage("/Transactions/Index");
             }
 
-            return RedirectToPage("Index");
+            var toTransaction = _context.Transactions
+                .Include(trans => trans.Category)
+                .Where(trans => trans.Id == id)
+                .SingleOrDefault();
+            if (toTransaction.Category.CategoryType == CategoryType.TRANSFER || toTransaction.Category.CategoryType == CategoryType.INCOME) {
+                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = id });
+            }
+
+            return RedirectToPage("/Transactions/Index");
         }
     }
 }
