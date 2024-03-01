@@ -3,6 +3,7 @@ using System;
 using K9_Koinz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K9_Koinz.Migrations
 {
     [DbContext(typeof(KoinzContext))]
-    partial class KoinzContextModelSnapshot : ModelSnapshot
+    [Migration("20240301214011_PairingTransactions")]
+    partial class PairingTransactions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -393,6 +396,9 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("PairedTransactionId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid?>("SavingsGoalId")
                         .HasColumnType("TEXT");
 
@@ -411,6 +417,8 @@ namespace K9_Koinz.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("MerchantId");
+
+                    b.HasIndex("PairedTransactionId");
 
                     b.HasIndex("SavingsGoalId");
 
@@ -529,6 +537,10 @@ namespace K9_Koinz.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("K9_Koinz.Models.Transaction", "PairedTransaction")
+                        .WithMany()
+                        .HasForeignKey("PairedTransactionId");
+
                     b.HasOne("K9_Koinz.Models.SavingsGoal", "SavingsGoal")
                         .WithMany("Transactions")
                         .HasForeignKey("SavingsGoalId")
@@ -545,6 +557,8 @@ namespace K9_Koinz.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Merchant");
+
+                    b.Navigation("PairedTransaction");
 
                     b.Navigation("SavingsGoal");
 

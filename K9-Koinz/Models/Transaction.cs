@@ -55,8 +55,6 @@ namespace K9_Koinz.Models {
         public SavingsGoal SavingsGoal { get; set; }
         public string SavingsGoalName { get; set; }
 
-        public Guid? PairedTransactionId { get; set; }
-
         [DisplayName("Hide from Budgets and Trends")]
         public bool IsSavingsSpending { get; set; }
 

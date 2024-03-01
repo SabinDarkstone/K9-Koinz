@@ -25,18 +25,15 @@ namespace K9_Koinz.Pages.SavingsGoals {
             if (Transaction.IsSavingsSpending) {
                 GoalOptions = new SelectList(_context.SavingsGoals
                     .Where(goal => goal.StartDate <= DateTime.Now && goal.TargetDate >= DateTime.Now)
-                    .OrderBy(goal => goal.AccountName)
-                    .ThenBy(goal => goal.Name)
+                    .OrderBy(goal => goal.Name)
                     .ToList(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
             } else {
                 GoalOptions = new SelectList(_context.SavingsGoals
                     .Where(goal => goal.StartDate <= DateTime.Now && goal.TargetDate >= DateTime.Now)
                     .Where(goal => goal.AccountId == Transaction.AccountId)
-                    .OrderBy(goal => goal.AccountName)
-                    .ThenBy(goals => goals.Name)
+                    .OrderBy(goals => goals.Name)
                     .ToList(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
             }
-
 
             return Page();
         }
