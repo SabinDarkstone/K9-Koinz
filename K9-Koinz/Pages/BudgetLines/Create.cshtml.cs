@@ -50,6 +50,10 @@ namespace K9_Koinz.Pages.BudgetLines {
             }
         }
 
+        public override IActionResult NavigateOnSuccess() {
+            return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId });
+        }
+
         protected override async Task BeforeSaveActionsAsync() {
             var category = await _context.Categories.SingleOrDefaultAsync(cat => cat.Id == Record.BudgetCategoryId);
             var budget = await _context.Budgets.SingleOrDefaultAsync(bud => bud.Id == Record.BudgetId);
