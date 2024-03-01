@@ -55,6 +55,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
                 .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
+                .Where(trans => !trans.IsSavingsSpending)
                 .GroupBy(trans => trans.Date.Day)
                 .Select(group => new Point(group.Key, group.Sum(trans => -1 * trans.Amount)))
                 .ToListAsync();

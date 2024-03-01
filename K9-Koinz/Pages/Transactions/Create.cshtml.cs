@@ -47,7 +47,7 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         protected override async Task AfterSaveActionsAsync() {
-            doHandleSavingsGoal = await CheckIfAvailableForSavingsGoal();
+            doHandleSavingsGoal = await CheckIfAvailableForSavingsGoal() || Record.IsSavingsSpending;
         }
 
         public override IActionResult NavigateOnSuccess() {

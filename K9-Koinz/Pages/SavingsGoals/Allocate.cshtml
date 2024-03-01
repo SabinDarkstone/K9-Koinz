@@ -21,6 +21,10 @@
             <input type="hidden" asp-for="Transaction.LastModifiedDate" />
             <input type="hidden" asp-for="Transaction.TagId" />
             <input type="hidden" asp-for="Transaction.Notes" />
+            <input type="hidden" asp-for="Transaction.DoNotSkip" />
+            <input type="hidden" asp-for="Transaction.BillId" />
+            <input type="hidden" asp-for="Transaction.PairedTransactionId" />
+            <input type="hidden" asp-for="Transaction.IsSavingsSpending" />
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -42,7 +46,11 @@
             <div class="form-group">
                 <label asp-for="Transaction.SavingsGoalId" class="control-label"></label>
                 <select asp-for="Transaction.SavingsGoalId" class="form-control" asp-items="@Model.GoalOptions">
-                    <option value="@Guid.Empty">No Goal</option>
+                    @if (Model.Transaction.SavingsGoalId == null) {
+                        <option value="@Guid.Empty">No Goal</option>
+                    } else {
+                        <option value="@Model.Transaction.SavingsGoalId" selected>@Model.Transaction.SavingsGoalName</option>
+                    }
                 </select>
             </div>
             <div class="form-group">

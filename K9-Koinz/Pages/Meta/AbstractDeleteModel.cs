@@ -28,7 +28,7 @@ namespace K9_Koinz.Pages.Meta {
             AfterQueryActions();
 
             if (saveChangedError.GetValueOrDefault()) {
-                ErrorMessage = string.Format("Delete {id} failed. Try again.", id);
+                ErrorMessage = string.Format("Delete {0} failed. Try again.", id.Value.ToString());
             }
 
             return Page();
@@ -55,7 +55,7 @@ namespace K9_Koinz.Pages.Meta {
                 return NavigateOnSuccess();
             } catch (DbUpdateException ex) {
                 _logger.LogError(ex, ErrorMessage);
-                return RedirectToAction("./Delete", new { id, saveChangedError = true });
+                return RedirectToPage("./Delete", new { id, saveChangedError = true });
             }
         }
 
