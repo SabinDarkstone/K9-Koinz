@@ -69,7 +69,7 @@
                     var savedWidth = "width: " + goal.SavingsPercent + "%;";
                     var progressBarClasses = "progress-bar ";
 
-                    if (goal.TargetAmount == goal.TotalContributed) {
+                    if (goal.TargetAmount >= goal.TotalContributed) {
                         progressBarClasses += "bg-success";
                     }
                 }
