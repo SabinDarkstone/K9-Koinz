@@ -1,0 +1,75 @@
+﻿@using K9_Koinz.Models
+@using K9_Koinz.Utils
+@model List<Account>
+
+@{
+    var minBalanceAccounts = Model.Where(acct => acct.MinimumBalance.HasValue);
+    var accountsNearMinimum = minBalanceAccounts.Where(acct => acct.CurrentBalance >= acct.MinimumBalance.Value && acct.CurrentBalance < (acct.MinimumBalance.Value * 1.1));
+    var accountsBelowMinimum = minBalanceAccounts.Where(acct => acct.CurrentBalance < acct.MinimumBalance.Value);
+}
+
+@if (minBalanceAccounts.Count() > 0) {
+    if (accountsNearMinimum.Count() > 0) {
+        <div class="alert alert-warning">
+            <h4 class="alert-heading">
+                Minimum Balance Warning
+            </h4>
+
+            <p>One or more of your account are near your minimum balance!</p>
+
+            <hr />
+
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Balance</th>
+                        <th>Minimum</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var account in accountsNearMinimum) {
+                        <tr>
+                            <td>@account.Name</td>
+                            <td>@account.CurrentBalance.FormatCurrency(0)</td>
+                            <td>@account.MinimumBalance.Value.FormatCurrency(0)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    if (accountsBelowMinimum.Count() > 0) {
+        <div class="alert alert-danger">
+            <h4 class="alert-heading">
+                Minimum Balance Alert!
+            </h4>
+
+            <p>One or more of your account are BELOW your minimum balance set!</p>
+
+            <hr />
+
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Balance</th>
+                        <th>Minimum</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var account in accountsBelowMinimum) {
+                        <tr>
+                            <td>@account.Name</td>
+                            <td>@account.CurrentBalance.FormatCurrency(0)</td>
+                            <td>@account.MinimumBalance.Value.FormatCurrency(0)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}

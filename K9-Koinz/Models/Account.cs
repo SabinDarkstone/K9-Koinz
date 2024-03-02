@@ -37,6 +37,9 @@ namespace K9_Koinz.Models {
         public double InitialBalance { get; set; }
         [DisplayName("Initial Balance Date")]
         public DateTime InitialBalanceDate { get; set; }
+        [DisplayName("Minimum Balance")]
+        [Column(TypeName = "decimal(10, 2)")]
+        public double? MinimumBalance { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<Bill> Bills { get; set; }
