@@ -45,7 +45,6 @@ namespace K9_Koinz.Models {
         public Guid? SavingsGoalId {  get; set; }
         public SavingsGoal SavingsGoal { get; set; }
         public string SavingsGoalName { get; set; }
-        public Guid? PairedTransactionId { get; set; }
 
         [NotMapped]
         public bool IsUnCategorized {

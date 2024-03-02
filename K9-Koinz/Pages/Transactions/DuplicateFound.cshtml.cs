@@ -40,7 +40,7 @@ namespace K9_Koinz.Pages.Transactions {
         public IActionResult OnPost(Guid id, string mode) {
             if (mode == "cancel") {
                 var transactions = _context.Transactions
-                    .Where(trans => trans.Id == id || trans.PairedTransactionId == id)
+                    .Where(trans => trans.Id == id)
                     .ToList();
 
                 _context.Transactions.RemoveRange(transactions);

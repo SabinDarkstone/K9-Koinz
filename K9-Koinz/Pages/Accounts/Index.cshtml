@@ -31,7 +31,16 @@
         </thead>
         <tbody>
             @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.CHECKING || acct.Type == AccountType.SAVINGS)) {
-                <tr>
+                string rowClassList = "";
+                if (item.MinimumBalance.HasValue) {
+                    if (item.CurrentBalance < item.MinimumBalance.Value) {
+                        rowClassList = "table-danger";
+                    } else if (item.CurrentBalance >= item.MinimumBalance.Value && item.CurrentBalance < (item.MinimumBalance.Value * 1.1)) {
+                        rowClassList = "table-warning";
+                    }
+                }
+
+                <tr class="@rowClassList">
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>

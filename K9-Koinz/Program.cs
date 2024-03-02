@@ -12,6 +12,8 @@ namespace K9_Koinz {
                 options.EnableSensitiveDataLogging(true);
             });
 
+            builder.Services.AddMvc();
+
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();

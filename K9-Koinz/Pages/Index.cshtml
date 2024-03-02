@@ -1,4 +1,5 @@
 ﻿@page
+@using K9_Koinz.ViewComponents
 @model K9_Koinz.Pages.IndexModel
 @{
     ViewData["Title"] = "K9 Koinz";
@@ -9,10 +10,11 @@
         <p class="lead">Welcome to K9 Koinz, a simple and customized budgeting app!</p>
         <hr class="my-4" />
         <p>You can explore the different sections of the app with the navigation bar at the top of the page.  From there, you have access to your accounts, transactions, budgets, and more.</p>
-        <p class="lead">
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </p>
     </div>
+</div>
+
+<div class="homepage-alerts mb-2">
+    @await Component.InvokeAsync(nameof(MinimumBalanceAlert))
 </div>
 
 <div class="mt-6">

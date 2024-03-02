@@ -40,6 +40,11 @@
                 <span asp-validation-for="Record.InitialBalanceDate" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Record.MinimumBalance" class="control-label"></label>
+                <input asp-for="Record.MinimumBalance" class="form-control" type="number" />
+                <span asp-validation-for="Record.MinimumBalance" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">
                     <i class="fa-solid fa-floppy-disk"></i> Create
                 </button>
