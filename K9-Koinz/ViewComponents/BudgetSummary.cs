@@ -12,7 +12,7 @@ namespace K9_Koinz.ViewComponents {
                 .Sum(line => line.BudgetedAmount) * -1;
             ExtraExpenseTotal = budget.UnallocatedExpenses
                 .SelectMany(line => line.Transactions)
-                .Sum(trans => trans.Amount) * -1;
+                .Sum(trans => trans.Amount);
 
             return View(this);
         }
