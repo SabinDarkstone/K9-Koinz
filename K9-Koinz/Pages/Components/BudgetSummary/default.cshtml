@@ -1,0 +1,45 @@
+﻿@using K9_Koinz.Utils
+@model K9_Koinz.ViewComponents.BudgetSummary
+
+<div class="row justify-content-center">
+    <div class="m-2 col-md-5 col-lg-4 col-xl-3 col-8">
+        <div class="@Model.AlertClasses">
+            <h4 class="alert-heading">Overview</h4>
+            <div class="p-2">
+                <div class="row justify-content-between">
+                    <div class="col-7">
+                        @Html.DisplayNameFor(model => Model.IncomeTotal)
+                    </div>
+                    <div class="col-5" style="text-align:right">
+                        @Model.IncomeTotal.FormatCurrency(0)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        @Html.DisplayNameFor(model => Model.AllocatedExpenseTotal)
+                    </div>
+                    <div class="col-5" style="text-align:right">
+                        @Model.AllocatedExpenseTotal.FormatCurrency(0)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        @Html.DisplayNameFor(model => Model.ExtraExpenseTotal)
+                    </div>
+                    <div class="col-5" style="text-align:right">
+                        @Model.ExtraExpenseTotal.FormatCurrency(0)
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-7">
+                        @Html.DisplayNameFor(model => Model.NetAmount)
+                    </div>
+                    <div class="col-5" style="text-align:right">
+                        @Model.NetAmount.FormatCurrency(0)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

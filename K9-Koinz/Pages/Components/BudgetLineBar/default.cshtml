@@ -1,0 +1,111 @@
+﻿@using K9_Koinz.Utils
+@model K9_Koinz.ViewComponents.BudgetLineBar
+
+<li class="list-group-item">
+    <div class="row">
+        <div class="col">
+            <p>
+                <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
+                    <a class="no-underline" asp-page="/Transactions/Index"
+                       asp-route-minDate="@Model.StartDate"
+                       asp-route-maxDate="@Model.EndDate"
+                       asp-route-catFilter="@Model.CategoryId">
+                        @Model.CategoryName
+                    </a>
+                </button>
+            </p>
+        </div>
+        <div class="col">
+            <p style="text-align: right;">@Model.TimespanString</p>
+        </div>
+    </div>
+    @if (Model.RolloverInactive) {
+        <div class="row">
+            <div class="col">
+                <div class="progress" style="height: 20px;">
+                    <div class="@Model.SolidProgressBarClassList" role="progressbar" style="@Model.SolidWidthString">
+                        @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
+                            <ul class="marker-list">
+                                <li class="marker" style="@Model.TodayLineStyle"></li>
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else {
+        <div class="row">
+            <div class="col">
+                <div class="progress" style="height: 20px;">
+                    @if (Model.HadExtraMoneyLastPeriod) {
+                        <div class="@Model.StripedProgressBarClassList" role="progressbar" style="@Model.StripedWidthString">
+                            @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
+                                <ul class="marker-list">
+                                    <li class="marker" style="@Model.TodayLineStyle"></li>
+                                </ul>
+                            }
+                        </div>
+                        <div class="@Model.SolidProgressBarClassList" role="progressbar" style="@Model.SolidWidthString">
+                        </div>
+                    } else if (Model.WentOverBudgetLastPeriod) {
+                        <div class="@Model.SolidProgressBarClassList" role="progressbar" style="@Model.SolidWidthString">
+                            @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
+                                <ul class="marker-list">
+                                    <li class="marker" style="@Model.TodayLineStyle"></li>
+                                </ul>
+                            }
+                        </div>
+                        <div class="@Model.StripedProgressBarClassList" role="progressbar" style="@Model.StripedWidthString">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row text-secondary">
+        <div class="col-8">
+            @Model.SpentAmountString
+            <span style="font-weight:lighter;">
+                of
+            </span>
+            @Model.BudgetedAmountString
+            @if (Model.ShowOverUnderAmount) {
+                <span style="font-weight:lighter;">
+                    @if (Model.WentOverBudgetLastPeriod) {
+                        <text>
+                            (@Model.RolloverAmountString Over)
+                        </text>
+                    } else if (Model.HadExtraMoneyLastPeriod) {
+                        <text>
+                            (@Model.RolloverAmountString Extra)
+                        </text>
+                    }
+                </span>
+            }
+        </div>
+        <div class="col-4" style="text-align: right; font-weight: lighter">
+            @if (Model.ShowAmountLeft) {
+                @if (Model.HasExtraNow) {
+                    <text>
+                        @((Model.BudgetedAmount - Model.SpentAmount).FormatCurrency(0)) Left
+                    </text>
+                } else {
+                    <text>
+                        @((Model.SpentAmount - Model.BudgetedAmount).FormatCurrency(0)) Over
+                    </text>
+                }
+            } else if (Model.ShowAmountLeftWithRollover) {
+                var spentAmountWithRollover = (Model.BudgetedAmount + Model.StartingAmount) - Model.SpentAmount;
+                if (spentAmountWithRollover < 0) {
+                    <text>
+                        @Math.Abs(spentAmountWithRollover).FormatCurrency(0) Over
+                    </text>
+                } else if (spentAmountWithRollover >= 0) {
+                    <text>
+                        @Math.Abs(spentAmountWithRollover).FormatCurrency(0) Left
+                    </text>
+                }
+            }
+        </div>
+    </div>
+</li>

@@ -66,25 +66,20 @@ namespace K9_Koinz.Services {
             }
 
             // Get all budget categories from income and expense lines
-            var allocatedCategories = budget.ExpenseLines
-                .Select(line => line.BudgetCategoryId)
-                .Concat(budget.IncomeLines.Select(line => line.BudgetCategoryId));
-
-            var transferCategoryIds = categoryData.Values.Where(cat => cat.CategoryType == CategoryType.TRANSFER).Select(cat => cat.Id);
-            allocatedCategories = allocatedCategories.Concat(transferCategoryIds).AsEnumerable();
-
-            // Get child categories for those allocated categories, too
-            var allocatedChildCategories = budget.ExpenseLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).AsEnumerable().Concat(budget.IncomeLines.SelectMany(line => line.BudgetCategory.ChildCategories.Select(cat => cat.Id)).ToList());
-
-            // Concat those two lists of Category GUIDs together
-            var allUnallocatedCategories = allocatedCategories.Concat(allocatedChildCategories);
+            var unallocatedCategories = await _context.Categories
+                .Where(cat => !budget.BudgetLines.Select(line => line.BudgetCategoryId).Contains(cat.Id))
+                .Where(cat => cat.CategoryType == CategoryType.INCOME || cat.CategoryType == CategoryType.EXPENSE)
+                .Select(cat => cat.Id)
+                .ToListAsync();
 
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(period);
-            var transactionsIQ = _context.Transactions.AsNoTracking()
+            var transactionsIQ = _context.Transactions
+                .AsNoTracking()
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                .Where(trans => !allUnallocatedCategories.Contains(trans.CategoryId))
-                .Where(trans => trans.Account.Type != AccountType.LOAN && trans.Account.Type != AccountType.INVESTMENT && trans.Account.Type != AccountType.PROPERTY)
+                .Where(trans => unallocatedCategories.Contains(trans.CategoryId))
+                .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.CREDIT_CARD)
                 .Where(trans => !trans.IsSavingsSpending);
+
             if (budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == budget.BudgetTagId.Value);
             }
