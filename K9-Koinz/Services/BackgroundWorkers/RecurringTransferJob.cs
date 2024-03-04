@@ -9,7 +9,6 @@ namespace K9_Koinz.Services.BackgroundWorkers {
             : base(scopeFactory, DateTime.Now, new CronData(Cron.Hourly, 1), true) { }
 
         protected override async void DoWork(object state) {
-            base.DoWork(state);
             _logger.LogInformation("Checking for recurring transfers that need to be created: " + DateTime.Now.ToShortTimeString());
 
             var nextMinute = DateTime.Now.AddMinutes(1);

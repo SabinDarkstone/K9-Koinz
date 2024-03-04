@@ -9,11 +9,9 @@ namespace K9_Koinz.Services.BackgroundWorkers {
     public class DailyBillToTransactionJob : AbstractWorker<DailyBillToTransactionJob> {
 
         public DailyBillToTransactionJob(IServiceScopeFactory scopeFactory)
-            : base(scopeFactory, DateTime.Today.AtMidnight(), new CronData(Cron.Daily, 1), true) {
-        }
+            : base(scopeFactory, DateTime.Today.AtMidnight(), new CronData(Cron.Daily, 1), true) { }
 
         protected override void DoWork(object state) {
-            base.DoWork(state);
             _logger.LogInformation("Checking for any transactions that need to be created for bills today: " + DateTime.Today.ToShortDateString());
             var transactionsCreated = new List<Transaction>();
             var nextMinute = DateTime.Now.AddMinutes(1);

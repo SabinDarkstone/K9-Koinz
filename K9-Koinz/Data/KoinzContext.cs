@@ -16,6 +16,7 @@ namespace K9_Koinz.Data {
         public DbSet<SavingsGoal> SavingsGoals { get; set; }
         public DbSet<RepeatConfig> RepeatConfigs { get; set; }
         public DbSet<RecurringTransfer> RepeatTransfers { get; set; }
+        public DbSet<ScheduledJobStatus> JobStatuses { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -35,6 +36,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<SavingsGoal>().ToTable("Goals").HasKey(x => x.Id);
             modelBuilder.Entity<RepeatConfig>().ToTable("RepeatConfig").HasKey(x => x.Id);
             modelBuilder.Entity<RecurringTransfer>().ToTable("RepeatTransfer").HasKey(x => x.Id);
+            modelBuilder.Entity<ScheduledJobStatus>().ToTable("JobStatus").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
