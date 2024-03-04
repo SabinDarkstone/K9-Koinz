@@ -48,17 +48,19 @@ namespace K9_Koinz.Pages.Bills {
             if (showAllBills.HasValue && showAllBills.Value) {
                 Bills = (await _context.Bills
                     .Include(bill => bill.Account)
+                    .Include(bill => bill.RepeatConfig)
                     .ToListAsync())
-                    .OrderBy(bill => bill.NextDueDate)
+                    .OrderBy(bill => bill.RepeatConfig.NextFiring)
                     .ToList();
             } else {
                 Bills = (await _context.Bills
                     .Include(bill => bill.Account)
+                    .Include(bill => bill.RepeatConfig)
                     .ToListAsync())
-                    .Where(bill => bill.NextDueDate >= startDate)
-                    .Where(bill => bill.NextDueDate <= endDate)
-                    .Where(bill => !bill.IsExpired)
-                    .OrderBy(bill => bill.NextDueDate)
+                    .Where(bill => bill.RepeatConfig.NextFiring.HasValue)
+                    .Where(bill => bill.RepeatConfig.NextFiring >= startDate)
+                    .Where(bill => bill.RepeatConfig.NextFiring <= endDate)
+                    .OrderBy(bill => bill.RepeatConfig.NextFiring)
                     .ToList();
             }
 

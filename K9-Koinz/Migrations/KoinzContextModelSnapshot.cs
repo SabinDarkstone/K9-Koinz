@@ -23,9 +23,6 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -33,9 +30,6 @@ namespace K9_Koinz.Migrations
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<DateTime>("InitialBalanceDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<double?>("MinimumBalance")
@@ -92,6 +86,9 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("RepeatConfigId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("RepeatFrequency")
                         .HasColumnType("INTEGER");
 
@@ -109,6 +106,8 @@ namespace K9_Koinz.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
+                    b.HasIndex("RepeatConfigId");
+
                     b.ToTable("Bill", (string)null);
                 });
 
@@ -124,17 +123,11 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("BudgetTagName")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("DoNotUseCategories")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -173,17 +166,11 @@ namespace K9_Koinz.Migrations
                     b.Property<double>("BudgetedAmount")
                         .HasColumnType("decimal(10, 2)");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("DoRollover")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("GreenBarAlways")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -231,12 +218,6 @@ namespace K9_Koinz.Migrations
                     b.Property<int>("CategoryType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -262,12 +243,6 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -277,6 +252,35 @@ namespace K9_Koinz.Migrations
                         .IsUnique();
 
                     b.ToTable("Merchant", (string)null);
+                });
+
+            modelBuilder.Entity("K9_Koinz.Models.RepeatConfig", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("FirstFiring")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Frequency")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("IntervalGap")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastFiring")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Mode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("TerminationDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RepeatConfig", (string)null);
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.SavingsGoal", b =>
@@ -320,6 +324,38 @@ namespace K9_Koinz.Migrations
                         .IsUnique();
 
                     b.ToTable("Goals", (string)null);
+                });
+
+            modelBuilder.Entity("K9_Koinz.Models.ScheduledJobStatus", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ErrorMessages")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("JobName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("NextRunTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobStatus", (string)null);
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.Tag", b =>
@@ -372,9 +408,6 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("CategoryName")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -383,9 +416,6 @@ namespace K9_Koinz.Migrations
 
                     b.Property<bool>("IsSavingsSpending")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("MerchantId")
                         .HasColumnType("TEXT");
@@ -405,6 +435,9 @@ namespace K9_Koinz.Migrations
                     b.Property<Guid?>("TagId")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("TransferId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -419,7 +452,61 @@ namespace K9_Koinz.Migrations
 
                     b.HasIndex("TagId");
 
+                    b.HasIndex("TransferId");
+
                     b.ToTable("Transaction", (string)null);
+                });
+
+            modelBuilder.Entity("K9_Koinz.Models.Transfer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("FromAccountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("RepeatConfigId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SavingsGoalId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ToAccountId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("FromAccountId");
+
+                    b.HasIndex("MerchantId");
+
+                    b.HasIndex("RepeatConfigId");
+
+                    b.HasIndex("SavingsGoalId");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("ToAccountId");
+
+                    b.ToTable("Transfer", (string)null);
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.Bill", b =>
@@ -440,11 +527,17 @@ namespace K9_Koinz.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("K9_Koinz.Models.RepeatConfig", "RepeatConfig")
+                        .WithMany()
+                        .HasForeignKey("RepeatConfigId");
+
                     b.Navigation("Account");
 
                     b.Navigation("Category");
 
                     b.Navigation("Merchant");
+
+                    b.Navigation("RepeatConfig");
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.Budget", b =>
@@ -491,7 +584,7 @@ namespace K9_Koinz.Migrations
                     b.HasOne("K9_Koinz.Models.Category", "ParentCategory")
                         .WithMany("ChildCategories")
                         .HasForeignKey("ParentCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ParentCategory");
                 });
@@ -541,6 +634,11 @@ namespace K9_Koinz.Migrations
                         .WithMany()
                         .HasForeignKey("TagId");
 
+                    b.HasOne("K9_Koinz.Models.Transfer", "Transfer")
+                        .WithMany("Transactions")
+                        .HasForeignKey("TransferId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Account");
 
                     b.Navigation("Bill");
@@ -552,6 +650,61 @@ namespace K9_Koinz.Migrations
                     b.Navigation("SavingsGoal");
 
                     b.Navigation("Tag");
+
+                    b.Navigation("Transfer");
+                });
+
+            modelBuilder.Entity("K9_Koinz.Models.Transfer", b =>
+                {
+                    b.HasOne("K9_Koinz.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("K9_Koinz.Models.Account", "FromAccount")
+                        .WithMany()
+                        .HasForeignKey("FromAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("K9_Koinz.Models.Merchant", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("K9_Koinz.Models.RepeatConfig", "RepeatConfig")
+                        .WithMany()
+                        .HasForeignKey("RepeatConfigId");
+
+                    b.HasOne("K9_Koinz.Models.SavingsGoal", "SavingsGoal")
+                        .WithMany()
+                        .HasForeignKey("SavingsGoalId");
+
+                    b.HasOne("K9_Koinz.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId");
+
+                    b.HasOne("K9_Koinz.Models.Account", "ToAccount")
+                        .WithMany()
+                        .HasForeignKey("ToAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("FromAccount");
+
+                    b.Navigation("Merchant");
+
+                    b.Navigation("RepeatConfig");
+
+                    b.Navigation("SavingsGoal");
+
+                    b.Navigation("Tag");
+
+                    b.Navigation("ToAccount");
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.Account", b =>
@@ -595,6 +748,11 @@ namespace K9_Koinz.Migrations
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.SavingsGoal", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("K9_Koinz.Models.Transfer", b =>
                 {
                     b.Navigation("Transactions");
                 });

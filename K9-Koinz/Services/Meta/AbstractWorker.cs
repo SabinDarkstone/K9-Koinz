@@ -1,5 +1,6 @@
 ﻿
 using K9_Koinz.Data;
+using K9_Koinz.Models;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace K9_Koinz.Services.Meta {
@@ -26,7 +27,11 @@ namespace K9_Koinz.Services.Meta {
         protected KoinzContext _context;
         protected readonly ILogger<T> _logger;
 
-        protected AbstractWorker(IServiceScopeFactory scopeFactory, DateTime startTime, CronData repeat, Boolean doRunImmediatelyToo) {
+        private ScheduledJobStatus statusRecord;
+        private TimeSpan repeat;
+
+        protected AbstractWorker(IServiceScopeFactory scopeFactory, DateTime startTime, CronData repeat, bool doRunImmediatelyToo) {
+            this.repeat = getRepeatFromCron(repeat);
             _scopeFactory = scopeFactory;
             using (var scope =  scopeFactory.CreateScope()) {
                 _logger = scope.ServiceProvider.GetRequiredService<ILogger<T>>();
@@ -38,17 +43,28 @@ namespace K9_Koinz.Services.Meta {
             }
             var timeUntilStart = startTime - DateTime.Now;
 
-            _timer = new Timer(DoWork, null, timeUntilStart, getRepeatFromCron(repeat));
+            _timer = new Timer(ExecuteJob, null, timeUntilStart, getRepeatFromCron(repeat));
             _logger.LogInformation("Creating scheduled job to start at " + startTime.ToString() + " which is in " + timeUntilStart.TotalHours.ToString() + " hours and will repeat every " + getRepeatFromCron(repeat).TotalHours + " hours");
 
             if (doRunImmediatelyToo) {
                 _logger.LogInformation("Run Immediately is set, so running an instance of the job now...");
-                DoWork(null);
+                ExecuteJob(null);
             }
         }
 
         protected virtual void CreateScopeOnInit(IServiceScope scope) {
             _logger.LogDebug("No init scope needed for " + this.GetType().Name);
+        }
+
+        private void ExecuteJob(object state) {
+            BeforeWork();
+            try {
+                DoWork(state);
+                AfterWork();
+            } catch (Exception ex) {
+                WorkError(ex);
+            }
+            FinalizeJob();
         }
 
         private TimeSpan getRepeatFromCron(CronData cron) {
@@ -77,14 +93,41 @@ namespace K9_Koinz.Services.Meta {
             _logger.LogDebug("No additional scope needed for " + this.GetType().Name);
         }
 
-        protected virtual void DoWork(object state) {
-            BeforeWork();
-        }
+        protected abstract void DoWork(object state);
 
         private void BeforeWork() {
+            statusRecord = new ScheduledJobStatus {
+                StartTime = DateTime.Now,
+                JobName = this.GetType().Name,
+                Status = "In Progress"
+            };
+
             var scope = _scopeFactory.CreateScope();
             _context = scope.ServiceProvider.GetRequiredService<KoinzContext>();
+
+            _context.JobStatuses.Add(statusRecord);
+            _context.SaveChanges();
+
             CreateAdditionalScope(scope);
+        }
+
+        private void WorkError(Exception ex) {
+            statusRecord.ErrorMessages = ex.Message;
+            statusRecord.Status = "Error";
+            statusRecord.StackTrace = ex.StackTrace;
+            statusRecord.EndTime = DateTime.Now;
+        }
+
+        private void AfterWork() {
+            statusRecord.Status = "Complete";
+            statusRecord.EndTime = DateTime.Now;
+        }
+
+        private void FinalizeJob() {
+            statusRecord.NextRunTime = statusRecord.StartTime + repeat;
+
+            _context.Update(statusRecord);
+            _context.SaveChanges();
         }
 
         public virtual void Dispose() {

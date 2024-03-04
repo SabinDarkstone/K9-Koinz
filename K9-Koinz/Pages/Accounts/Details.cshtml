@@ -46,22 +46,6 @@
                 <span>None</span>
             }
         </dd>
-        @if (Model.Record.CreatedDate != DateTime.MinValue) {
-            <dt class="col-sm-2 mt-4">
-                @Html.DisplayNameFor(model => model.Record.CreatedDate)
-            </dt>
-            <dd class="col-sm-10 mt-4">
-                @Html.DisplayFor(model => model.Record.CreatedDate)
-        </dd>
-        }
-        @if (Model.Record.LastModifiedDate != DateTime.MinValue) {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Record.LastModifiedDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Record.LastModifiedDate)
-        </dd>
-        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Record.Transactions)
         </dt>

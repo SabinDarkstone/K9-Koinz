@@ -15,49 +15,49 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Transfer.FromAccountId" class="control-label"></label>
-                <select asp-for="Transfer.FromAccountId" class="form-control" asp-items="@Model.AccountOptions">
+                <label asp-for="Record.FromAccountId" class="control-label"></label>
+                <select asp-for="Record.FromAccountId" class="form-control" asp-items="@Model.AccountOptions">
                     <option value="" selected disabled>Select an Account...</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.ToAccountId" class="control-label"></label>
-                <select asp-for="Transfer.ToAccountId" class="form-control" asp-items="@Model.AccountOptions">
+                <label asp-for="Record.ToAccountId" class="control-label"></label>
+                <select asp-for="Record.ToAccountId" class="form-control" asp-items="@Model.AccountOptions">
                     <option value="" selected disabled>Select an Account...</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.Date" class="control-label"></label>
-                <input asp-for="Transfer.Date" class="form-control" />
-                <span asp-validation-for="Transfer.Date" class="text-danger"></span>
+                <label asp-for="Record.Date" class="control-label"></label>
+                <input asp-for="Record.Date" class="form-control" />
+                <span asp-validation-for="Record.Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.MerchantId" class="control-label"></label>
+                <label asp-for="Record.MerchantId" class="control-label"></label>
                 <input id="txtMerchant" class="form-control" />
-                <input asp-for="Transfer.MerchantId" type="hidden" id="hfMerchant" />
-                <span asp-validation-for="Transfer.MerchantId" class="text-danger"></span>
+                <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
+                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.CategoryId" class="control-label"></label>
+                <label asp-for="Record.CategoryId" class="control-label"></label>
                 <input id="txtCategory" class="form-control" />
-                <input asp-for="Transfer.CategoryId" type="hidden" id="hfCategory" />
-                <span asp-validation-for="Transfer.CategoryId" class="text-danger"></span>
+                <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
+                <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.TagId" class="control-label"></label>
-                <select asp-for="Transfer.TagId" class="form-control" asp-items="@Model.TagOptions">
+                <label asp-for="Record.TagId" class="control-label"></label>
+                <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
                     <option value="@Guid.Empty" selected>No Tag</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.Amount" class="control-label"></label>
-                <input asp-for="Transfer.Amount" class="form-control" />
-                <span asp-validation-for="Transfer.Amount" class="text-danger"></span>
+                <label asp-for="Record.Amount" class="control-label"></label>
+                <input asp-for="Record.Amount" class="form-control" />
+                <span asp-validation-for="Record.Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transfer.Notes" class="control-label"></label>
-                <textarea asp-for="Transfer.Notes" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Transfer.Notes" class="text-danger"></span>
+                <label asp-for="Record.Notes" class="control-label"></label>
+                <textarea asp-for="Record.Notes" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Record.Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -11,7 +11,7 @@ namespace K9_Koinz.Models {
         NOT_READY
     }
 
-    public class BudgetLine : DateTrackedEntity {
+    public class BudgetLine : BaseEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
 

@@ -50,7 +50,12 @@ namespace K9_Koinz.Pages.SavingsGoals {
                 Transaction.SavingsGoalName = savingsGoal.Name;
             }
 
-            _context.Attach(Transaction).State = EntityState.Modified;
+            var savingsGoalId = Transaction.SavingsGoalId;
+            var oldTransaction = await _context.Transactions.FindAsync(Transaction.Id);
+            Transaction = oldTransaction;
+            Transaction.SavingsGoalId = savingsGoalId;
+
+            _context.Transactions.Update(Transaction);
 
             try {
                 await _context.SaveChangesAsync();

@@ -50,7 +50,7 @@ namespace K9_Koinz.Pages.BudgetLines {
             }
         }
 
-        public override IActionResult NavigateOnSuccess() {
+        protected override IActionResult NavigateOnSuccess() {
             return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId });
         }
 

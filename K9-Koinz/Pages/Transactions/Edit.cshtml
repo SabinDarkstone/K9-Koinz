@@ -15,6 +15,7 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.Id" />
+            <input type="hidden" asp-for="Record.TransferId" />
             <div class="form-group">
                 <label asp-for="Record.AccountId" class="control-label"></label>
                 <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">

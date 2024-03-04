@@ -37,17 +37,17 @@
             @Model.Record.BillAmount.FormatCurrency(2)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Record.RepeatFrequency)
+            @Html.DisplayNameFor(model => model.Record.RepeatConfig.RepeatString)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Record.RepeatString)
+            @Html.DisplayFor(model => model.Record.RepeatConfig.RepeatString)
         </dd>
-        @if (Model.Record.EndDate.HasValue) {
+        @if (Model.Record.RepeatConfig.TerminationDate.HasValue) {
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Record.EndDate)
+                @Html.DisplayNameFor(model => model.Record.RepeatConfig.TerminationDate)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Record.EndDate)
+                @Html.DisplayFor(model => model.Record.RepeatConfig.TerminationDate)
             </dd>
         }
     </dl>

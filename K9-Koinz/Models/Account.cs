@@ -20,7 +20,7 @@ namespace K9_Koinz.Models {
         PROPERTY
     }
 
-    public class Account : DateTrackedEntity, INameable {
+    public class Account : BaseEntity, INameable {
         public static Account EmptyAccount() {
             return new Account();
         }

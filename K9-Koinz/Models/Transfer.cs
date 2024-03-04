@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using K9_Koinz.Models.Meta;
+using K9_Koinz.Data;
 
 namespace K9_Koinz.Models {
-    public class Transfer {
-        public Guid Id { get; set; }
+    public class Transfer : BaseEntity {
         [Required]
         [DisplayName("From Account")]
         public Guid FromAccountId { get; set; }
@@ -27,9 +28,18 @@ namespace K9_Koinz.Models {
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }
+        [NotMapped]
         public string Notes { get; set; }
         [DisplayName("Tag")]
         public Guid? TagId { get; set; }
         public Tag Tag { get; set; }
+        [DisplayName("Savings Goal")]
+        public Guid? SavingsGoalId { get; set; }
+        public SavingsGoal SavingsGoal { get; set; }
+        public Guid? RepeatConfigId { get; set; }
+        [DisplayName("Repeat Settings")]
+        public RepeatConfig RepeatConfig { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

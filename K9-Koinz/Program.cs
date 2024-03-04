@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using Microsoft.AspNetCore.HttpOverrides;
-using K9_Koinz.Services;
-using K9_Koinz.Services.BackgroundWorkers;
+using K9_Koinz.Utils;
 namespace K9_Koinz {
     public class Program {
         public static void Main(string[] args) {
@@ -21,14 +20,11 @@ namespace K9_Koinz {
                 options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
             });
 
-            builder.Services.AddScoped<ISpendingGraphService, SpendingGraphService>();
-            builder.Services.AddScoped<IDbCleanupService, DbCleanupService>();
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IAutocompleteService, AutocompleteService>();
-            builder.Services.AddScoped<ITagService, TagService>();
-            builder.Services.AddScoped<IBudgetService, BudgetService>();
+            // Add K9 Koinz Services
+            builder.Services.AddMyServices();
 
-            builder.Services.AddHostedService<ScheduledTransactionCreation>();
+            // Add K9Koinz Scheduled Jobs
+            builder.Services.AddScheduledJobs();
 
             var app = builder.Build();
 
@@ -51,7 +47,6 @@ namespace K9_Koinz {
 
                 var context = services.GetRequiredService<KoinzContext>();
                 context.Database.Migrate();
-                //DbInitializer.Initialize(context);
             }
 
             app.UseHttpsRedirection();
