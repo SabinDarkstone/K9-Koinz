@@ -12,20 +12,8 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
-            <input type="hidden" asp-for="Transaction.Id" />
-            <input type="hidden" asp-for="Transaction.AccountId" />
-            <input type="hidden" asp-for="Transaction.MerchantId" />
-            <input type="hidden" asp-for="Transaction.CategoryId" />
-            <input type="hidden" asp-for="Transaction.Date" />
-            <input type="hidden" asp-for="Transaction.CreatedDate" />
-            <input type="hidden" asp-for="Transaction.LastModifiedDate" />
-            <input type="hidden" asp-for="Transaction.TagId" />
-            <input type="hidden" asp-for="Transaction.Notes" />
-            <input type="hidden" asp-for="Transaction.DoNotSkip" />
-            <input type="hidden" asp-for="Transaction.BillId" />
-            <input type="hidden" asp-for="Transaction.IsSavingsSpending" />
-
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Transaction.Id" />
             <div class="form-group">
                 <label asp-for="Transaction.AccountId" class="control-label"></label>
                 <input asp-for="Transaction.AccountName" class="form-control" readonly />

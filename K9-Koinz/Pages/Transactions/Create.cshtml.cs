@@ -50,7 +50,7 @@ namespace K9_Koinz.Pages.Transactions {
             doHandleSavingsGoal = await CheckIfAvailableForSavingsGoal() || Record.IsSavingsSpending;
         }
 
-        public override IActionResult NavigateOnSuccess() {
+        protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingTransaction) {
                 return RedirectToPage("DuplicateFound", new { id = Record.Id });
             } else if (doHandleSavingsGoal) {

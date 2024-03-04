@@ -65,11 +65,11 @@ namespace K9_Koinz.Pages.Meta {
         }
         protected virtual void BeforeSaveActions() { }
 
-        public virtual IActionResult NavigateOnSuccess() {
+        protected virtual IActionResult NavigateOnSuccess() {
             return RedirectToPage("./Index");
         }
 
-        public virtual IActionResult NavigationOnFailure() {
+        protected virtual IActionResult NavigationOnFailure() {
             return Page();
         }
     }

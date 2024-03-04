@@ -1,7 +1,7 @@
 ﻿using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Models {
-    public class Merchant : DateTrackedEntity, INameable {
+    public class Merchant : BaseEntity, INameable {
         public string Name { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }

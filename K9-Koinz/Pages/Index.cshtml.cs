@@ -10,10 +10,12 @@ namespace K9_Koinz.Pages {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ISpendingGraphService _spendingGraph;
+        private readonly IDbCleanupService _dbCleanupService;
 
-        public IndexModel(KoinzContext context, ISpendingGraphService spendingGraph) {
+        public IndexModel(KoinzContext context, ISpendingGraphService spendingGraph, IDbCleanupService cleanupService) {
             _context = context;
             _spendingGraph = spendingGraph;
+            _dbCleanupService = cleanupService;
         }
 
         public string ThisMonthSpendingJson { get; set; }
@@ -21,7 +23,7 @@ namespace K9_Koinz.Pages {
         public List<Account> Accounts { get; set; } = default!;
 
         public async Task OnGetAsync() {
-            NamingUtils.AssignNames(_context);
+            await _dbCleanupService.DateMigrateBillSchedules();
 
             var results = await _spendingGraph.CreateGraphData();
             ThisMonthSpendingJson = results[0];

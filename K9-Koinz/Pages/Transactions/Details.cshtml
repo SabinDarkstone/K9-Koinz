@@ -88,22 +88,6 @@
         <dd class="col-sm-9">
             @(Model.Record.IsSavingsSpending ? "Yes" : "No")
         </dd>
-        @if (Model.Record.CreatedDate != DateTime.MinValue) {
-            <dt class="col-sm-3 mt-4">
-                @Html.DisplayNameFor(model => model.Record.CreatedDate)
-            </dt>
-            <dd class="col-sm-9 mt-4">
-                @Html.DisplayFor(model => model.Record.CreatedDate)
-        </dd>
-        }
-        @if (Model.Record.LastModifiedDate != DateTime.MinValue) {
-            <dt class="col-sm-3">
-                @Html.DisplayNameFor(model => model.Record.LastModifiedDate)
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.Record.LastModifiedDate)
-        </dd>
-        }
     </dl>
 </div>
 <div>

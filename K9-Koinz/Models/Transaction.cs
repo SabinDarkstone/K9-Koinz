@@ -10,8 +10,7 @@ namespace K9_Koinz.Models {
         [Display(Name = "Credit")]
         PLUS
     }
-
-    public class Transaction : DateTrackedEntity {
+    public class Transaction : BaseEntity {
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
@@ -51,12 +50,14 @@ namespace K9_Koinz.Models {
         public Bill Bill { get; set; }
 
         [DisplayName("Savings Goal")]
-        public Guid? SavingsGoalId {  get; set; }
+        public Guid? SavingsGoalId { get; set; }
         public SavingsGoal SavingsGoal { get; set; }
         public string SavingsGoalName { get; set; }
 
         [DisplayName("Hide from Budgets and Trends")]
         public bool IsSavingsSpending { get; set; }
+        public Guid? TransferId { get; set; }
+        public Transfer Transfer { get; set; }
 
         [NotMapped]
         public bool IsUnCategorized {
@@ -75,9 +76,6 @@ namespace K9_Koinz.Models {
                 }
             }
         }
-
-        [NotMapped]
-        public bool CreateAnother { get; set; }
     }
 
     public struct TinyTransaction {
