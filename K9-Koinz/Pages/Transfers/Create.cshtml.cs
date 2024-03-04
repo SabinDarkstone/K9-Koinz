@@ -1,49 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transfers {
-    public class CreateModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly ILogger<CreateModel> _logger;
-        private readonly IAccountService _accountService;
-        private readonly ITagService _tagService;
-        private readonly IAutocompleteService _autocompleteService;
+    public class CreateModel : AbstractCreateModel<Transfer> {
+        private Transaction[] transactions = new Transaction[2];
+        private bool foundMatchingTransactions;
 
-        public CreateModel(KoinzContext context, ILogger<CreateModel> logger,
-            IAccountService accountService, ITagService tagService,
-            IAutocompleteService autocompleteService) {
-            _context = context;
-            _logger = logger;
-            _accountService = accountService;
-            _tagService = tagService;
-            _autocompleteService = autocompleteService;
-        }
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
+            : base(context, logger, accountService, autocompleteService, tagService) { }
 
-        public List<SelectListItem> AccountOptions;
-        public SelectList TagOptions;
+        protected override async Task BeforeSaveActionsAsync() {
+            Record.Date = Record.Date.AtMidnight() + DateTime.Now.TimeOfDay;
 
-        public async Task OnGetAsync() {
-            AccountOptions = await _accountService.GetAccountListAsync(true);
-            TagOptions = await _tagService.GetTagListAsync();
-        }
-
-        [BindProperty]
-        public Transfer Transfer { get; set; } = default!;
-
-        public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                return Page();
-            }
-
-            Transfer.Date = Transfer.Date.AtMidnight() + DateTime.Now.TimeOfDay;
-
-            var transactions = await Transfer.CreateTransactions(_context, false);
+            transactions = (await Record.CreateTransactions(_context, false)).ToArray();
 
             var foundMatchingTransactions = _context.Transactions
                 .Where(trans =>
@@ -55,14 +29,23 @@ namespace K9_Koinz.Pages.Transfers {
                 .Any();
 
             _context.Transactions.AddRange(transactions);
-            await _context.SaveChangesAsync();
+        }
 
+        protected override async Task AfterSaveActionsAsync() {
+            foreach (var transaction in transactions) {
+                transaction.TransferId = Record.Id;
+            }
+
+            _context.Transactions.UpdateRange(transactions);
+            await _context.SaveChangesAsync();
+        }
+
+        protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingTransactions) {
                 return RedirectToPage("/Transactions/DuplicateFound", new { id = transactions[1].Id });
             }
 
-            var toAccount = await _context.Accounts.FindAsync(transactions[1].AccountId);
-
+            var toAccount = _context.Accounts.Find(transactions[1].AccountId);
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {

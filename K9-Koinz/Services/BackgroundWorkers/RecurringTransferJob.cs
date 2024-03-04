@@ -21,7 +21,8 @@ namespace K9_Koinz.Services.BackgroundWorkers {
         }
 
         private async Task<List<Transaction>> CreateTransfers(DateTime mark) {
-            var repeatingTransfers = _context.RepeatTransfers
+            var repeatingTransfers = _context.Transfers
+                .Where(fer => fer.RepeatConfigId.HasValue)
                 .Include(fer => fer.RepeatConfig)
                 .AsEnumerable()
                 .Where(fer => fer.RepeatConfig.NextFiring.HasValue)

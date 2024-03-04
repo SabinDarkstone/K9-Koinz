@@ -41,7 +41,6 @@ namespace K9_Koinz.Pages.Transactions {
             Record.MerchantName = merchant.Name;
             Record.AccountName = account.Name;
 
-
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
             }
@@ -52,6 +51,20 @@ namespace K9_Koinz.Pages.Transactions {
                     var savingsGoal = await _context.SavingsGoals.FindAsync(Record.SavingsGoalId);
                     Record.SavingsGoalName = savingsGoal.Name;
                 }
+            }
+
+            if (Record.TransferId.HasValue) {
+                var otherTransaction = await _context.Transactions
+                    .Where(trans => trans.TransferId == Record.TransferId)
+                    .Where(trans => trans.Id != Record.Id)
+                    .SingleOrDefaultAsync();
+
+                otherTransaction.Amount = -1 * Record.Amount;
+                otherTransaction.Date = Record.Date;
+                otherTransaction.Notes = Record.Notes;
+                otherTransaction.TagId = Record.TagId;
+
+                _context.Transactions.Update(otherTransaction);
             }
         }
 

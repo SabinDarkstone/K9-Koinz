@@ -43,14 +43,16 @@ namespace K9_Koinz.Pages.SavingsGoals {
                 return NotFound();
             }
 
+            var oldTransaction = await _context.Transactions.FindAsync(Transaction.Id);
+
             if (Transaction.SavingsGoalId == Guid.Empty) {
-                Transaction.SavingsGoalId = null;
+                oldTransaction.SavingsGoalId = null;
             } else {
                 var savingsGoal = await _context.SavingsGoals.FindAsync(Transaction.SavingsGoalId);
-                Transaction.SavingsGoalName = savingsGoal.Name;
+                oldTransaction.SavingsGoalName = savingsGoal.Name;
             }
 
-            _context.Attach(Transaction).State = EntityState.Modified;
+            _context.Attach(oldTransaction).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();

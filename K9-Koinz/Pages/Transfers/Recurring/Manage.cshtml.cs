@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace K9_Koinz.Pages.Transfers.RecurringTransfer
+namespace K9_Koinz.Pages.Transfers.Recurring
 {
-    public class DeleteModel : PageModel
+    public class ManageModel : PageModel
     {
         public void OnGet()
         {
