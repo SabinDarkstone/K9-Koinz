@@ -27,6 +27,10 @@ namespace K9_Koinz.Pages.Bills {
             Record.AccountName = account.Name;
             Record.MerchantName = merchant.Name;
             Record.CategoryName = category.Name;
+
+            if (Record.RepeatConfig.Mode == RepeatMode.SPECIFIC_DAY) {
+                Record.RepeatConfig.IntervalGap = null;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace K9_Koinz.Pages.Bills {
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
             return await _context.Bills
                 .Include(bill => bill.Transactions)
+                .Include(bill => bill.RepeatConfig)
                 .FirstOrDefaultAsync(trans => trans.Id == id);
         }
     }
