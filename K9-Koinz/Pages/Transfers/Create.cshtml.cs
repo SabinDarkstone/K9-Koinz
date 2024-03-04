@@ -5,6 +5,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Humanizer;
 using K9_Koinz.Services;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : PageModel {
@@ -40,62 +41,32 @@ namespace K9_Koinz.Pages.Transfers {
                 return Page();
             }
 
-            Transfer.Date = Transfer.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
+            Transfer.Date = Transfer.Date.AtMidnight() + DateTime.Now.TimeOfDay;
 
-            var category = await _context.Categories.FindAsync(Transfer.CategoryId);
-            var merchant = await _context.Merchants.FindAsync(Transfer.MerchantId);
-            var fromAccount = await _context.Accounts.FindAsync(Transfer.FromAccountId);
-            var toAccount = await _context.Accounts.FindAsync(Transfer.ToAccountId);
-
-            if (Transfer.TagId == Guid.Empty) {
-                Transfer.TagId = null;
-            }
-
-            var fromTransaction = new Transaction {
-                AccountId = Transfer.FromAccountId,
-                AccountName = fromAccount.Name,
-                CategoryId = Transfer.CategoryId,
-                CategoryName = category.Name,
-                MerchantId = Transfer.MerchantId,
-                MerchantName = merchant.Name,
-                Amount = -1 * Transfer.Amount,
-                Notes = Transfer.Notes,
-                TagId = Transfer.TagId,
-                Date = Transfer.Date
-            };
-            var toTransaction = new Transaction {
-                AccountId = Transfer.ToAccountId,
-                AccountName = toAccount.Name,
-                CategoryId = Transfer.CategoryId,
-                CategoryName = category.Name,
-                MerchantId = Transfer.MerchantId,
-                MerchantName = merchant.Name,
-                Amount = Transfer.Amount,
-                Notes = Transfer.Notes,
-                TagId = Transfer.TagId,
-                Date = Transfer.Date
-            };
+            var transactions = await Transfer.CreateTransactions(_context, false);
 
             var foundMatchingTransactions = _context.Transactions
                 .Where(trans =>
-                    (trans.AccountId == toTransaction.AccountId && trans.Amount == toTransaction.Amount) ||
-                    (trans.AccountId == fromTransaction.AccountId && trans.Amount == fromTransaction.Amount)
+                    (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[1].Amount) ||
+                    (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[0].Amount)
                 )
                 .ToList()
-                .Where(trans => Math.Abs((trans.Date - toTransaction.Date).TotalDays) <= 5)
+                .Where(trans => Math.Abs((trans.Date - transactions[1].Date).TotalDays) <= 5)
                 .Any();
 
-            _context.Transactions.AddRange(new List<Transaction> { fromTransaction, toTransaction });
+            _context.Transactions.AddRange(transactions);
             await _context.SaveChangesAsync();
 
             if (foundMatchingTransactions) {
-                return RedirectToPage("/Transactions/DuplicateFound", new { id = toTransaction.Id });
+                return RedirectToPage("/Transactions/DuplicateFound", new { id = transactions[1].Id });
             }
+
+            var toAccount = await _context.Accounts.FindAsync(transactions[1].AccountId);
 
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = toTransaction.Id });
+                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = transactions[1].Id });
             }
 
             return RedirectToPage("/Transactions/Index");
