@@ -14,7 +14,7 @@ namespace K9_Koinz.Models {
         YEARLY
     }
 
-    public class Budget : DateTrackedEntity, INameable {
+    public class Budget : BaseEntity, INameable {
         public string Name { get; set; } = "New Budget";
         public string Description { get; set; }
         public int SortOrder { get; set; }

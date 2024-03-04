@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Models {
-    public class Transfer {
-        public Guid Id { get; set; }
+    public class Transfer : BaseEntity {
         [Required]
         [DisplayName("From Account")]
         public Guid FromAccountId { get; set; }

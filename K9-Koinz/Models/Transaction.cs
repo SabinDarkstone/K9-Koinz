@@ -10,8 +10,7 @@ namespace K9_Koinz.Models {
         [Display(Name = "Credit")]
         PLUS
     }
-
-    public class Transaction : DateTrackedEntity {
+    public class Transaction : BaseEntity {
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
