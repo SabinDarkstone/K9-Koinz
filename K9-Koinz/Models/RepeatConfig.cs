@@ -1,6 +1,5 @@
 ﻿using Humanizer;
 using K9_Koinz.Models.Meta;
-using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,9 +7,9 @@ namespace K9_Koinz.Models {
 
     public enum RepeatMode {
         [Display(Name = "On a Specific Day")]
-        SPECIFIC_DAY,
+        SPECIFIC_DAY = 0,
         [Display(Name = "Every X")]
-        INTERVAL
+        INTERVAL = 1
     }
 
     public enum RepeatFrequency {
@@ -25,26 +24,13 @@ namespace K9_Koinz.Models {
     }
 
     public class RepeatConfig : BaseEntity {
-        private int _intervalGap;
-
         public RepeatMode Mode { get; set; }
 
         [DisplayName("Repeat Frequency")]
         public RepeatFrequency Frequency { get; set; }
 
         [DisplayName("Repeat Gap")]
-        public int IntervalGap {
-            get {
-                return _intervalGap;
-            }
-            set {
-                if (ValidateIntervalGap(value)) {
-                    _intervalGap = value;
-                } else {
-                    throw new Exception("An invalid interval gap was entered.");
-                }
-            }
-        }
+        public int? IntervalGap { get; set; }
 
         [DisplayName("First Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
@@ -111,7 +97,7 @@ namespace K9_Koinz.Models {
                         case RepeatFrequency.DAILY:
                             return "Every Day";
                         case RepeatFrequency.WEEKLY:
-                            return "Every Week on " + NextFiring.Value.DayOfWeek.GetAttribute<DisplayAttribute>().Name;
+                            return "Every Week on " + NextFiring.Value.DayOfWeek.ToString();
                         case RepeatFrequency.MONTHLY:
                             return "Every Month on the " + NextFiring.Value.Date.Day.Ordinalize();
                         case RepeatFrequency.YEARLY:
@@ -175,17 +161,17 @@ namespace K9_Koinz.Models {
             // Get either the last firing, or if that is null, the first firing
             DateTime lastOrFirstFiring = LastFiring ?? FirstFiring;
 
+            if (!IntervalGap.HasValue) {
+                throw new Exception("Interval gap cannot be null in internal mode.");
+            }
+
             return Frequency switch {
-                RepeatFrequency.DAILY => lastOrFirstFiring.AddDays(IntervalGap),
-                RepeatFrequency.WEEKLY => lastOrFirstFiring.AddDays(7 * IntervalGap),
-                RepeatFrequency.MONTHLY => lastOrFirstFiring.AddMonths(IntervalGap),
-                RepeatFrequency.YEARLY => lastOrFirstFiring.AddYears(IntervalGap),
+                RepeatFrequency.DAILY => lastOrFirstFiring.AddDays(IntervalGap.Value),
+                RepeatFrequency.WEEKLY => lastOrFirstFiring.AddDays(7 * IntervalGap.Value),
+                RepeatFrequency.MONTHLY => lastOrFirstFiring.AddMonths(IntervalGap.Value),
+                RepeatFrequency.YEARLY => lastOrFirstFiring.AddYears(IntervalGap.Value),
                 _ => throw new Exception("Unknown frequency value chosen")
             };
-        }
-
-        private bool ValidateIntervalGap(int proposedValue) {
-            return proposedValue > 0;
         }
     }
 }

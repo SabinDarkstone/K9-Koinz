@@ -31,5 +31,8 @@ namespace K9_Koinz.Models {
         [DisplayName("Tag")]
         public Guid? TagId { get; set; }
         public Tag Tag { get; set; }
+        [DisplayName("Savings Goal")]
+        public Guid? SavingsGoalId { get; set; }
+        public SavingsGoal SavingsGoal { get; set; }
     }
 }

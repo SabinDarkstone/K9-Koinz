@@ -6,9 +6,9 @@ using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services.BackgroundWorkers {
-    public class ScheduledTransactionCreation : AbstractWorker<ScheduledTransactionCreation> {
+    public class DailyBillToTransactionJob : AbstractWorker<DailyBillToTransactionJob> {
 
-        public ScheduledTransactionCreation(IServiceScopeFactory scopeFactory)
+        public DailyBillToTransactionJob(IServiceScopeFactory scopeFactory)
             : base(scopeFactory, DateTime.Today.AtMidnight(), new CronData(Cron.Daily, 1), true) {
         }
 
@@ -26,7 +26,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
 
             _logger.LogInformation("Checking for yearly bills...");
             transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, RepeatFrequency.YEARLY));
-            
+
             if (transactionsCreated.Count > 0) {
                 transactionsCreated.ForEach(trans => {
                     _logger.LogInformation("Created transaction: " + trans.Id.ToString() + " : " + trans.AccountName

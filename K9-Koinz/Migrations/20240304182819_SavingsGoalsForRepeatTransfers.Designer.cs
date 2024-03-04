@@ -3,6 +3,7 @@ using System;
 using K9_Koinz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K9_Koinz.Migrations
 {
     [DbContext(typeof(KoinzContext))]
-    partial class KoinzContextModelSnapshot : ModelSnapshot
+    [Migration("20240304182819_SavingsGoalsForRepeatTransfers")]
+    partial class SavingsGoalsForRepeatTransfers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -321,7 +324,7 @@ namespace K9_Koinz.Migrations
                     b.Property<int>("Frequency")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("IntervalGap")
+                    b.Property<int>("IntervalGap")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastFiring")
