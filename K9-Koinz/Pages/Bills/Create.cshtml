@@ -43,26 +43,33 @@
                 <span asp-validation-for="Record.BillAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Record.FirstDueDate" class="control-label"></label>
-                <input asp-for="Record.FirstDueDate" class="form-control" />
-                <span asp-validation-for="Record.FirstDueDate" class="text-danger"></span>
+                <label asp-for="Record.RepeatConfig.FirstFiring" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" />
+                <span asp-validation-for="Record.RepeatConfig.FirstFiring" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Record.EndDate" class="control-label"></label>
-                <input asp-for="Record.EndDate" class="form-control" />
-                <span asp-validation-for="Record.EndDate" class="text-danger"></span>
+                <label asp-for="Record.RepeatConfig.TerminationDate" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" />
+                <span asp-validation-for="Record.RepeatConfig.TerminationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Record.RepeatFrequency" class="control-label"></label>
-                <select asp-for="Record.RepeatFrequency" class="form-control" asp-items="Html.GetEnumSelectList<Frequency>()">
+                <label asp-for="Record.RepeatConfig.Mode" class="control-label"></label>
+                <select asp-for="Record.RepeatConfig.Mode" class="form-control" asp-items="Html.GetEnumSelectList<RepeatMode>()">
                 </select>
-                <span asp-validation-for="Record.RepeatFrequency" class="text-danger"></span>
+                <span asp-validation-for="Record.RepeatConfig.Mode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Record.RepeatFrequencyCount" class="control-label"></label>
-                <input asp-for="Record.RepeatFrequencyCount" class="form-control" value="1" />
-                <span asp-validation-for="Record.RepeatFrequencyCount" class="text-danger"></span>
+                <label asp-for="Record.RepeatConfig.Frequency" class="control-label"></label>
+                <select asp-for="Record.RepeatConfig.Frequency" class="form-control" asp-items="Html.GetEnumSelectList<RepeatFrequency>()">
+                </select>
+                <span asp-validation-for="Record.RepeatConfig.Frequency" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Record.RepeatConfig.IntervalGap" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" />
+                <span asp-validation-for="Record.RepeatConfig.IntervalGap" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">
                     <i class="fa-solid fa-floppy-disk"></i> Create

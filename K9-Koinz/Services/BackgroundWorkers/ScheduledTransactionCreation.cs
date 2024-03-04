@@ -3,6 +3,7 @@ using Humanizer;
 using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services.BackgroundWorkers {
     public class ScheduledTransactionCreation : AbstractWorker<ScheduledTransactionCreation> {
@@ -18,13 +19,13 @@ namespace K9_Koinz.Services.BackgroundWorkers {
             var nextMinute = DateTime.Now.AddMinutes(1);
 
             _logger.LogInformation("Checking for weekly bills...");
-            transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, Frequency.WEEKLY));
+            transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, RepeatFrequency.WEEKLY));
 
             _logger.LogInformation("Checking for monthly bills...");
-            transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, Frequency.MONTHLY));
+            transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, RepeatFrequency.MONTHLY));
 
             _logger.LogInformation("Checking for yearly bills...");
-            transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, Frequency.YEARLY));
+            transactionsCreated.AddRange(CreateTransactionsForBills(nextMinute, RepeatFrequency.YEARLY));
             
             if (transactionsCreated.Count > 0) {
                 transactionsCreated.ForEach(trans => {
@@ -37,17 +38,17 @@ namespace K9_Koinz.Services.BackgroundWorkers {
             }
         }
 
-        private List<Transaction> CreateTransactionsForBills(DateTime date, Frequency frequency) {
+        private List<Transaction> CreateTransactionsForBills(DateTime date, RepeatFrequency frequency) {
             DateTime startDate, endDate;
 
             switch (frequency) {
-                case Frequency.WEEKLY:
+                case RepeatFrequency.WEEKLY:
                     startDate = date.StartOfWeek();
                     break;
-                case Frequency.MONTHLY:
+                case RepeatFrequency.MONTHLY:
                     startDate = date.StartOfMonth();
                     break;
-                case Frequency.YEARLY:
+                case RepeatFrequency.YEARLY:
                     startDate = date.StartOfYear();
                     break;
                 default:
@@ -71,7 +72,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                         CategoryId = bill.CategoryId.Value,
                         CategoryName = bill.CategoryName,
                         Amount = bill.BillAmount * -1,
-                        Date = bill.NextDueDate.Value
+                        Date = bill.RepeatConfig.NextFiring.Value
                     };
                     transactionsToCreate.Add(newTransaction);
                 }
@@ -80,7 +81,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                     _context.Transactions.AddRange(transactionsToCreate);
 
                     foreach (var bill in bills) {
-                        bill.LastDueDate = bill.NextDueDate;
+                        bill.RepeatConfig.FireNow();
                     }
 
                     _context.Bills.UpdateRange(bills);
@@ -96,9 +97,12 @@ namespace K9_Koinz.Services.BackgroundWorkers {
         }
 
         private List<Bill> getBillsForTimePeriod(DateTime startDate, DateTime endDate) {
-            return _context.Bills.AsEnumerable()
-                .Where(bill => bill.NextDueDate >= startDate && bill.NextDueDate <= endDate)
-                .Where(bill => !bill.IsExpired)
+            return _context.Bills
+                .Include(bill => bill.RepeatConfig)
+                .AsEnumerable()
+                .Where(bill => bill.RepeatConfigId != null)
+                .Where(bill => bill.RepeatConfig.NextFiring.HasValue)
+                .Where(bill => bill.RepeatConfig.NextFiring >= startDate && bill.RepeatConfig.NextFiring <= endDate)
                 .ToList();
         }
     }

@@ -44,7 +44,7 @@
                         @Html.DisplayNameFor(model => model.Bills[0].MerchantId)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].RepeatFrequency)
+                        @Html.DisplayNameFor(model => model.Bills[0].RepeatConfig.Frequency)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Bills[0].BillAmount)
@@ -65,17 +65,17 @@
                             @item.MerchantName
                         </td>
                         <td>
-                            @item.RepeatString
+                            @item.RepeatConfig.RepeatString
                         </td>
                         <td>
                             @item.BillAmount.FormatCurrency(2)
                         </td>
                         <td>
-                            @if (item.NextDueDate.HasValue) {
-                                @Html.DisplayFor(x => item.NextDueDate)
+                            @if (item.RepeatConfig.NextFiring.HasValue) {
+                                @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
                                 <span style="font-weight:lighter;">
                                     @{
-                                        var daysRemaining = (item.NextDueDate.Value - DateTime.Today).Days;
+                                        var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
                                         if (daysRemaining < 0) {
                                             <text>&nbsp;</text>
                                         } else if (daysRemaining >= 0 && daysRemaining < 1) {
@@ -92,10 +92,7 @@
                             }
                         </td>
                         <td>
-                            @if (!item.LastDueDate.HasValue) {
-                                <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a>
-                                <text> | </text>
-                            }
+                            <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
                             <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
                             <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                         </td>
@@ -124,14 +121,14 @@
                     </div>
                     <div class="row">
                         <div class="col-4 text-secondary bill-item" data-id="@item.Id">
-                            @item.RepeatString
+                            @item.RepeatConfig.RepeatString
                         </div>
                         <div class="col-7 text-secondary text-end bill-item" data-id="@item.Id">
-                            @if (item.NextDueDate.HasValue) {
-                                @Html.DisplayFor(x => item.NextDueDate)
+                            @if (item.RepeatConfig.NextFiring.HasValue) {
+                                @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
                                 <span style="font-weight:lighter;">
                                     @{
-                                        var daysRemaining = (item.NextDueDate.Value - DateTime.Today).Days;
+                                        var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
                                         if (daysRemaining < 0) {
                                             <text>&nbsp;</text>
                                         } else if (daysRemaining >= 0 && daysRemaining < 1) {

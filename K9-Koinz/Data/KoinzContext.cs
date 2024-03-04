@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Models;
-using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Data {
     public class KoinzContext : DbContext {
@@ -15,6 +14,8 @@ namespace K9_Koinz.Data {
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<SavingsGoal> SavingsGoals { get; set; }
+        public DbSet<RepeatConfig> RepeatConfigs { get; set; }
+        public DbSet<RecurringTransfer> RepeatTransfers { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -32,6 +33,8 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
             modelBuilder.Entity<Bill>().ToTable("Bill").HasKey(x => x.Id);
             modelBuilder.Entity<SavingsGoal>().ToTable("Goals").HasKey(x => x.Id);
+            modelBuilder.Entity<RepeatConfig>().ToTable("RepeatConfig").HasKey(x => x.Id);
+            modelBuilder.Entity<RecurringTransfer>().ToTable("RepeatTransfer").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
@@ -70,43 +73,6 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<SavingsGoal>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
-        }
-
-        public override int SaveChanges() {
-            var entries = ChangeTracker
-                .Entries()
-                .Where(e => e.Entity is DateTrackedEntity && (
-                    e.State == EntityState.Added ||
-                    e.State == EntityState.Modified));
-
-            foreach (var entityEntry in entries) {
-                ((DateTrackedEntity)entityEntry.Entity).LastModifiedDate = DateTime.Now;
-
-                if (entityEntry.State == EntityState.Added) {
-                    ((DateTrackedEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
-                }
-            }
-
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) {
-            var entries = ChangeTracker
-                .Entries()
-                .Where(e => e.Entity is DateTrackedEntity && (
-                    e.State == EntityState.Added ||
-                    e.State == EntityState.Modified));
-
-            foreach (var entityEntry in entries) {
-                var dateTracked = (DateTrackedEntity)entityEntry.Entity;
-                dateTracked.LastModifiedDate = DateTime.Now;
-
-                if (entityEntry.State == EntityState.Added) {
-                    dateTracked.CreatedDate = DateTime.Now;
-                }
-            }
-
-            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }
