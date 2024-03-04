@@ -101,13 +101,13 @@ namespace K9_Koinz.ViewComponents {
 
         public bool ShowAmountLeft {
             get {
-                return line.DoRollover || (line.DoRollover && line.PreviousPeriod != null);
+                return !line.DoRollover || (line.DoRollover && line.PreviousPeriod != null);
             }
         }
 
         public bool HasExtraNow {
             get {
-                return BudgetedAmount > SpentAmount;
+                return BudgetedAmount >= SpentAmount;
             }
         }
 
