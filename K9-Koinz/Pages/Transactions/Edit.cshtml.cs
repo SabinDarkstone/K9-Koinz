@@ -23,7 +23,7 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         protected override async Task AfterQueryActionsAsync() {
-            if (Record.SavingsGoalId.HasValue || Record.IsSavingsSpending) {
+            if (Record.SavingsGoalId.HasValue || Record.IsSavingsSpending || Record.Category.CategoryType == CategoryType.TRANSFER) {
                 GoalOptions = new SelectList(await _context.SavingsGoals
                     .Where(goal => goal.AccountId == Record.AccountId)
                     .ToListAsync(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
