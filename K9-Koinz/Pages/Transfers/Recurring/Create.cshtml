@@ -1,4 +1,162 @@
 ﻿@page
+@using K9_Koinz.Models
 @model K9_Koinz.Pages.Transfers.Recurring.CreateModel
 @{
+    ViewData["Title"] = "Schedule New Recurring Transfer";
+}
+
+<h1>Schedule</h1>
+
+<h4>Recurring Transfer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Record.FromAccountId" class="control-label"></label>
+                <select asp-for="Record.FromAccountId" class="form-control" asp-items="@Model.AccountOptions">
+                    <option value="" selected disabled>Select an Account...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.ToAccountId" class="control-label"></label>
+                <select asp-for="Record.ToAccountId" class="form-control" asp-items="@Model.AccountOptions">
+                    <option value="" selected disabled>Select an Account...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.MerchantId" class="control-label"></label>
+                <input id="txtMerchant" class="form-control" />
+                <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
+                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.CategoryId" class="control-label"></label>
+                <input id="txtCategory" class="form-control" value="@Model.DefaultCategory.Name"/>
+                <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
+                <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.TagId" class="control-label"></label>
+                <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
+                    <option value="@Guid.Empty" selected>No Tag</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.Amount" class="control-label"></label>
+                <input asp-for="Record.Amount" class="form-control" />
+                <span asp-validation-for="Record.Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.Notes" class="control-label"></label>
+                <textarea asp-for="Record.Notes" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Record.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.RepeatConfig.FirstFiring" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" />
+                <span asp-validation-for="Record.RepeatConfig.FirstFiring" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.RepeatConfig.TerminationDate" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" />
+                <span asp-validation-for="Record.RepeatConfig.TerminationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.RepeatConfig.Mode" class="control-label"></label>
+                <select asp-for="Record.RepeatConfig.Mode" id="modeSelector" class="form-control" asp-items="Html.GetEnumSelectList<RepeatMode>()">
+                </select>
+                <span asp-validation-for="Record.RepeatConfig.Mode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.RepeatConfig.Frequency" class="control-label"></label>
+                <select asp-for="Record.RepeatConfig.Frequency" class="form-control" asp-items="Html.GetEnumSelectList<RepeatFrequency>()">
+                </select>
+                <span asp-validation-for="Record.RepeatConfig.Frequency" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="grpIntervalGap">
+                <label asp-for="Record.RepeatConfig.IntervalGap" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+          rel="Stylesheet" type="text/css" />
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(function () {
+            $('#grpIntervalGap').hide();
+
+            $('#modeSelector').change(function () {
+                if (this.value == 1) {
+                    $('#grpIntervalGap').show();
+                } else {
+                    $('#grpIntervalGap').hide();
+                }
+            })
+
+            $("#txtMerchant").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Transfers/Recurring/Create?handler=MerchantAutoComplete",
+                        data: { text: request.term },
+                        type: "GET",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(JSON.stringify(response));
+                        },
+                        failure: function (response) {
+                            alert(JSON.stringify(response));
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#hfMerchant").val(i.item.val);
+                },
+                minLength: 1
+            });
+
+            $("#txtCategory").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Transfers/Recurring/Create?handler=CategoryAutoComplete",
+                        data: { text: request.term },
+                        type: "GET",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(JSON.stringify(response));
+                        },
+                        failure: function (response) {
+                            alert(JSON.stringify(response));
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#hfCategory").val(i.item.val);
+                },
+                minLength: 1
+            });
+        });
+    </script>
 }

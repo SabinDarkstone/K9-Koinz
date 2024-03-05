@@ -1,18 +1,17 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.SavingsGoals {
-    public class IndexModel : PageModel {
-        private readonly KoinzContext _context;
+    public class IndexModel : AbstractDbPage {
+        public IndexModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+            : base(context, logger) {
+        }
 
         public Dictionary<string, List<SavingsGoal>> SavingsGoalsDict { get; set; }
-
-        public IndexModel(KoinzContext context) {
-            _context = context;
-        }
 
         public async Task<IActionResult> OnGetAsync() {
             SavingsGoalsDict = await _context.SavingsGoals

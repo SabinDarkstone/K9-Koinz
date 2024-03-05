@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.CategoryId" class="control-label"></label>
-                <input id="txtCategory" class="form-control" />
+                <input id="txtCategory" class="form-control" value="@Model.Record.Category.Name"/>
                 <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
                 <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>

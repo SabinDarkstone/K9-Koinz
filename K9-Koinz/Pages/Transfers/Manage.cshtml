@@ -1,0 +1,84 @@
+﻿@page
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Transfers.ManageModel
+@{
+    ViewData["Title"] = "Manage Transfers";
+}
+
+<h1>Manage Transfers</h1>
+
+<p class="mb-4">
+    <a asp-page="/Transfers/Create" class="no-underline-ever">
+        <span class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i> New Transfer
+        </span>
+    </a>
+
+    <a asp-page="/Transfers/Recurring/Create" class="no-underline-ever">
+        <span class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-repeat"></i> Schedule New Recurring
+        </span>
+    </a>
+</p>
+
+@foreach (var transferGroups in Model.RecurringTransfersDict.OrderBy(x => x.Key)) {
+    <h3>From: @transferGroups.Key</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>To Account</th>
+                <th>Merchant</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Savings Goal</th>
+                <th>Repeat Schedule</th>
+                <th>Amount</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var transfer in transferGroups.Value) {
+                <tr>
+                    <td>@transfer.ToAccount.Name</td>
+                    <td>@transfer.Merchant.Name</td>
+                    <td>@transfer.Category.Name</td>
+                    <td>
+                        @if (transfer.RepeatConfig.NextFiring.HasValue) {
+                            @Html.DisplayFor(x => transfer.RepeatConfig.NextFiring)
+                            <span style="font-weight:lighter;">
+                                @{
+                                    var daysRemaining = (transfer.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                    if (daysRemaining < 0) {
+                                        <text>(Overdue)</text>
+                                    } else if (daysRemaining >= 0 && daysRemaining < 1) {
+                                        <test>(Today)</test>
+                                    } else if (daysRemaining == 1) {
+                                        <text>(Tomorrow)</text>
+                                    } else {
+                                        <text>(@daysRemaining Days)</text>
+                                    }
+                                }
+                            </span>
+                        } else {
+                            <span class="text-danger">Expired</span>
+                        }
+                    </td>
+                    <td>
+                        @if (transfer.SavingsGoalId.HasValue) {
+                            <text>@transfer.SavingsGoal.Name</text>
+                        }
+                    </td>
+                    <td>@transfer.RepeatConfig.RepeatString</td>
+                    <td>@transfer.Amount.FormatCurrency(0)</td>
+                    <td>
+                        <a asp-page="/Transfers/Recurring/Edit" asp-route-id="@transfer.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="/Transfers/Recurring/Details" asp-route-id="@transfer.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="/Transfers/Recurring/Delete" asp-route-id="@transfer.Id"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

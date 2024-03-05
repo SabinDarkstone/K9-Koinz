@@ -4,8 +4,8 @@ using K9_Koinz.Pages.Meta;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers.Recurring {
-    public class DeleteModel : AbstractDeleteModel<Transfer> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+    public class DetailsModel : AbstractDetailsModel<Transfer> {
+        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }
 
         protected override async Task<Transfer> QueryRecordAsync(Guid id) {
@@ -17,6 +17,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                 .Include(fer => fer.Merchant)
                 .Include(fer => fer.RepeatConfig)
                 .Include(fer => fer.SavingsGoal)
+                .Include(fer => fer.Transactions)
                 .FirstOrDefaultAsync(fer => fer.Id == id);
         }
     }

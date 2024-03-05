@@ -14,12 +14,24 @@ namespace K9_Koinz.Pages.Transfers {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
             : base(context, logger, accountService, autocompleteService, tagService) { }
 
+        protected override Task BeforePageLoadActions() {
+            var defaultCategory = _context.Categories
+                .Where(cat => cat.Name == "Transfer")
+                .FirstOrDefault();
+            Record = new Transfer {
+                Category = defaultCategory,
+                CategoryId = defaultCategory.Id,
+            };
+
+            return base.BeforePageLoadActions();
+        }
+
         protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight() + DateTime.Now.TimeOfDay;
 
             transactions = (await Record.CreateTransactions(_context, false)).ToArray();
 
-            var foundMatchingTransactions = _context.Transactions
+            foundMatchingTransactions = _context.Transactions
                 .Where(trans =>
                     (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[1].Amount) ||
                     (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[0].Amount)
