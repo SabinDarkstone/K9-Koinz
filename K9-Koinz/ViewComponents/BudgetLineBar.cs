@@ -168,7 +168,7 @@ namespace K9_Koinz.ViewComponents {
                     StripedProgressBarClassList += " bg-success";
                 }
             } else {
-                var overagePercent = Math.Clamp(Math.Abs(line.RolloverAmount.Value) / line.BudgetedAmount, 0, 100);
+                var overagePercent = Math.Clamp(Math.Abs(line.RolloverAmount.Value) / line.BudgetedAmount * 100, 0, 100);
 
                 SolidWidthString = "width: " + SpentOverBudgetedPercent + "%;";
                 StripedWidthString = "width: " + overagePercent + "%;";
