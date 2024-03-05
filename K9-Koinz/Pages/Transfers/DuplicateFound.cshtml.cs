@@ -35,6 +35,7 @@ namespace K9_Koinz.Pages.Transfers {
                 .Where(fer => fer.RepeatConfig.Mode == Transfer.RepeatConfig.Mode)
                 .Where(fer => fer.RepeatConfig.IntervalGap == Transfer.RepeatConfig.IntervalGap)
                 .Where(fer => fer.RepeatConfig.Frequency == Transfer.RepeatConfig.Frequency)
+                .Where(fer => fer.Id != Transfer.Id)
                 .AsEnumerable()
                 .Where(fer => Math.Abs((fer.Date - Transfer.Date).TotalDays) <= 5)
                 .ToList();

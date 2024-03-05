@@ -10,7 +10,6 @@ namespace K9_Koinz.Utils {
             var merchant = await context.Merchants.FindAsync(transfer.MerchantId);
             var fromAccount = await context.Accounts.FindAsync(transfer.FromAccountId);
             var toAccount = await context.Accounts.FindAsync(transfer.ToAccountId);
-            var savingsGoal = await context.SavingsGoals.FindAsync(transfer.SavingsGoalId);
 
             if (transfer.TagId == Guid.Empty) {
                 transfer.TagId = null;
@@ -41,7 +40,8 @@ namespace K9_Koinz.Utils {
                 Date = transfer.Date
             };
 
-            if (trustSavingsGoals) {
+            if (trustSavingsGoals && toTransaction.SavingsGoalId.HasValue) {
+                var savingsGoal = await context.SavingsGoals.FindAsync(transfer.SavingsGoalId);
                 toTransaction.SavingsGoalId = transfer.SavingsGoalId;
                 toTransaction.SavingsGoalName = savingsGoal.Name;
             }

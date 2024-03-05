@@ -18,13 +18,14 @@ namespace K9_Koinz.Pages.Transfers {
                 .Include(fer => fer.RepeatConfig)
                 .Include(fer => fer.Merchant)
                 .Include(fer => fer.Category)
+                .Include(fer => fer.SavingsGoal)
                 .Where(fer => fer.RepeatConfigId.HasValue)
                 .AsNoTracking()
                 .GroupBy(fer => fer.FromAccount.Name)
                 .ToDictionaryAsync(
                     x => x.Key,
                     x => x.AsEnumerable()
-                        .OrderByDescending(fer => fer.RepeatConfig.NextFiring)
+                        .OrderBy(fer => fer.RepeatConfig.NextFiring)
                         .ThenBy(fer => fer.ToAccount.Name)
                         .ToList()
                 );

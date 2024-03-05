@@ -31,6 +31,7 @@
                 <th>Merchant</th>
                 <th>Category</th>
                 <th>Date</th>
+                <th>Savings Goal</th>
                 <th>Repeat Schedule</th>
                 <th>Amount</th>
                 <th></th>
@@ -62,6 +63,11 @@
                             </span>
                         } else {
                             <span class="text-danger">Expired</span>
+                        }
+                    </td>
+                    <td>
+                        @if (transfer.SavingsGoalId.HasValue) {
+                            <text>@transfer.SavingsGoal.Name</text>
                         }
                     </td>
                     <td>@transfer.RepeatConfig.RepeatString</td>

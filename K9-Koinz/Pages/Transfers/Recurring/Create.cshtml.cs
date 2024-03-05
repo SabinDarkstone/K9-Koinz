@@ -31,6 +31,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             foundMatchingSchedule = (await _context.Transfers
                 .Where(fer => fer.ToAccountId == Record.ToAccountId && fer.FromAccountId == Record.FromAccountId)
                 .Where(fer => fer.Amount == Record.Amount)
+                .Where(fer => fer.RepeatConfigId.HasValue)
                 .Where(fer => fer.RepeatConfig.FirstFiring == Record.RepeatConfig.FirstFiring)
                 .Where(fer => fer.RepeatConfig.Mode == Record.RepeatConfig.Mode)
                 .Where(fer => fer.RepeatConfig.IntervalGap == Record.RepeatConfig.IntervalGap)
@@ -62,11 +63,11 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingSchedule) {
-                return RedirectToPage("/Tranfers/DuplicateFound", new { id = Record.Id });
+                return RedirectToPage("/Transfers/DuplicateFound", new { id = Record.Id });
             }
 
             var toAccount = _context.Accounts.Find(Record.ToAccountId);
-            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
+            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == Record.ToAccountId);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage("/SavingsGoals/AllocateRecurring", new { relatedId = Record.Id });
