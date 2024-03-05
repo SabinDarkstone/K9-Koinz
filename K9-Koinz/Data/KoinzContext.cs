@@ -82,6 +82,12 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<SavingsGoal>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
+
+            // Budget -> Budget Line
+            modelBuilder.Entity<Budget>()
+                .HasMany(x => x.BudgetLines)
+                .WithOne(x => x.Budget)
+                .HasForeignKey(x => x.BudgetId);
         }
     }
 }

@@ -18,7 +18,10 @@ namespace K9_Koinz.Pages.Transfers {
             var defaultCategory = _context.Categories
                 .Where(cat => cat.Name == "Transfer")
                 .FirstOrDefault();
-            Record.CategoryId = defaultCategory.Id;
+            Record = new Transfer {
+                Category = defaultCategory,
+                CategoryId = defaultCategory.Id,
+            };
 
             return base.BeforePageLoadActions();
         }
