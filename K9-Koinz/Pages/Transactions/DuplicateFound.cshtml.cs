@@ -10,8 +10,6 @@ namespace K9_Koinz.Pages.Transactions {
         private KoinzContext _context;
 
         public Transaction Transaction { get; set; }
-        public Transaction OtherTransaction { get; set; }
-
         public List<Transaction> MatchingTransactions { get; set; }
 
         public DuplicateFoundModel(KoinzContext context) {

@@ -47,6 +47,7 @@ namespace K9_Koinz.Models {
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? LastFiring { get; set; }
 
+        [DisplayName("Next Firing")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         public DateTime? NextFiring {

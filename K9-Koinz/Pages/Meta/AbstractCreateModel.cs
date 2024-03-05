@@ -3,6 +3,7 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.Json;
 
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
@@ -45,6 +46,8 @@ namespace K9_Koinz.Pages.Meta {
 
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
+
+            _logger.LogDebug("Attempting to create data: " + JsonSerializer.Serialize(Record, new JsonSerializerOptions { WriteIndented = true }));
 
             _context.Set<T>().Add(Record);
             await _context.SaveChangesAsync();

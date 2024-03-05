@@ -1,0 +1,91 @@
+﻿@page
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Transfers.DuplicateFoundModel
+@{
+    ViewData["Title"] = "Duplicate Scheduled Transfer Found";
+}
+
+
+<h1>Duplicate Transfer(s) Found</h1>
+
+<h3>Are you sure you want to schedule this transfer?</h3>
+<div>
+    <h4>Transfer</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.FromAccountId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transfer.FromAccount.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.ToAccountId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transfer.ToAccount.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.MerchantId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transfer.Merchant.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.Category)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transfer.Category.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.Amount)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transfer.Amount.FormatCurrency(2)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transfer.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Transfer.RepeatConfigId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Transfer.RepeatConfig.RepeatString)
+        </dd>
+    </dl>
+
+    <h3>Matching Transfer(s)</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Schedule</th>
+                <th>From Account</th>
+                <th>To Account</th>
+                <th>Merchant</th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var match in Model.MatchingTransfers) {
+                <tr>
+                    <td>@Html.DisplayFor(model => match.RepeatConfig.RepeatString)</td>
+                    <td>@Html.DisplayFor(model => match.FromAccount.Name)</td>
+                    <td>@Html.DisplayFor(model => match.ToAccount.Name)</td>
+                    <td>@Html.DisplayFor(model => match.Merchant.Name)</td>
+                    <td>@Html.DisplayFor(model => match.Category.Name)</td>
+                    <td>@match.Amount.FormatCurrency(2)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <form method="post">
+        <button type="submit" class="btn btn-primary" asp-route-mode="confirm" asp-route-id="@Model.Transfer.Id">Confirm</button>
+        <button type="submit" class="btn btn-outline-primary" asp-route-mode="cancel" asp-route-id="@Model.Transfer.Id">Cancel</button>
+    </form>
+</div>
