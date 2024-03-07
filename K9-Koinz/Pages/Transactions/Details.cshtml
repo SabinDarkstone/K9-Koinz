@@ -55,12 +55,12 @@
         @if (Model.Record.BillId.HasValue) {
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.BillId)
-            </dt>            
+            </dt>
             <dd class="col-sm-9">
                 <a asp-page="/Bills/Details" asp-route-id="@Model.Record.BillId">
                     @Html.DisplayFor(model => model.Record.Bill.Name)
                 </a>
-             </dd>
+            </dd>
         }
         @if (Model.Record.SavingsGoalId.HasValue) {
             <dt class="col-sm-3">
@@ -90,10 +90,49 @@
         </dd>
     </dl>
 </div>
+
+@if (Model.Record.SplitTransactions.Any()) {
+    <h4>Split Transactions</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => Model.Record.MerchantId)</th>
+                <th>@Html.DisplayNameFor(model => Model.Record.CategoryId)</th>
+                <th>@Html.DisplayNameFor(model => Model.Record.Amount)</th>
+                <th>@Html.DisplayNameFor(model => Model.Record.Notes)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var split in Model.Record.SplitTransactions) {
+                <tr>
+                    <td>@Html.DisplayFor(model => split.MerchantName)</td>
+                    <td>@Html.DisplayFor(model => split.CategoryName)</td>
+                    <td>@split.Amount.FormatCurrency(2)</td>
+                    <td>@Html.DisplayFor(model => split.Notes)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <div>
     <a asp-page="./Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
         <i class="fa-solid fa-pen-to-square"></i> Edit
     </a>
+    <a class="btn btn-secondary mb-2" asp-page="/Transactions/Split" asp-route-parentId="@Model.Record.Id">
+        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+        @if (Model.Record.SplitTransactions.Any()) {
+            <text>Edit Split</text>
+        } else {
+            <text>Split Transaction</text>
+        }
+    </a>
+    @if (Model.Record.IsSplit) {
+        <a class="btn btn-outline-secondary mb-2" asp-page="/Transactions/RemoveSplit" asp-route-parentId="@Model.Record.Id">
+            Remove Split
+        </a>
+    }
     <a asp-page="Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
         <i class="fa-solid fa-trash"></i> Delete
     </a>

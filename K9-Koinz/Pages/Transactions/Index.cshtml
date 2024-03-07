@@ -145,6 +145,9 @@
                                         var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
                                     }
+                                    @if (item.IsSplit) {
+                                        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                                    }
                                     @Html.DisplayFor(modelItem => item.MerchantName)
                                 </a>
                             </td>

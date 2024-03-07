@@ -24,7 +24,6 @@ namespace K9_Koinz.Pages.Transactions {
             _autocompleteService = autocompleteService;
         }
 
-        public string SearchString { get; set; }
         public List<Guid> CategoryFilters { get; set; }
         public Guid MerchantFilter { get; set; }
         public Guid AccountFilter { get; set; }
@@ -69,7 +68,7 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList CategoryOptions;
         public List<SelectListItem> AccountOptions;
 
-        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, string searchText, int? pageIndex) {
+        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
             AccountOptions = await _accountSerice.GetAccountListAsync(true);
 
@@ -91,7 +90,9 @@ namespace K9_Koinz.Pages.Transactions {
                 CategoryFilters = [Guid.Parse(SelectedCategory)];
                 var childCategories = _context.Categories.Where(cat => cat.ParentCategoryId == Guid.Parse(SelectedCategory)).Include(cat => cat.ChildCategories).Select(cat => cat.Id).ToList();
                 CategoryFilters.AddRange(childCategories);
-                transactionsIQ = transactionsIQ.Where(trans => CategoryFilters.Contains(trans.CategoryId));
+                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId.HasValue && CategoryFilters.Contains(trans.CategoryId.Value));
+            } else {
+                transactionsIQ = transactionsIQ.Where(trans => !trans.ParentTransactionId.HasValue);
             }
 
             if (!string.IsNullOrWhiteSpace(merchFilter)) {
@@ -141,10 +142,6 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
-
-            if (!string.IsNullOrWhiteSpace(searchText)) {
-                transactionsIQ = transactionsIQ.Where(trans => trans.Notes.Contains(searchText) || trans.Account.Name.Contains(searchText) || trans.Category.Name.Contains(searchText) || trans.Amount.ToString().Contains(searchText));
-            }
 
             var pageSize = _configuration.GetValue("PageSize", 10);
             Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
