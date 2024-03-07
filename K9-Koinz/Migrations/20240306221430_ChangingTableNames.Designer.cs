@@ -3,6 +3,7 @@ using System;
 using K9_Koinz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K9_Koinz.Migrations
 {
     [DbContext(typeof(KoinzContext))]
-    partial class KoinzContextModelSnapshot : ModelSnapshot
+    [Migration("20240306221430_ChangingTableNames")]
+    partial class ChangingTableNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -417,9 +420,6 @@ namespace K9_Koinz.Migrations
                     b.Property<bool>("IsSavingsSpending")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsSplit")
-                        .HasColumnType("INTEGER");
-
                     b.Property<Guid>("MerchantId")
                         .HasColumnType("TEXT");
 
@@ -427,9 +427,6 @@ namespace K9_Koinz.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ParentTransactionId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("SavingsGoalId")
@@ -453,8 +450,6 @@ namespace K9_Koinz.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("MerchantId");
-
-                    b.HasIndex("ParentTransactionId");
 
                     b.HasIndex("SavingsGoalId");
 
@@ -633,10 +628,6 @@ namespace K9_Koinz.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("K9_Koinz.Models.Transaction", "ParentTransaction")
-                        .WithMany("SplitTransactions")
-                        .HasForeignKey("ParentTransactionId");
-
                     b.HasOne("K9_Koinz.Models.SavingsGoal", "SavingsGoal")
                         .WithMany("Transactions")
                         .HasForeignKey("SavingsGoalId")
@@ -658,8 +649,6 @@ namespace K9_Koinz.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Merchant");
-
-                    b.Navigation("ParentTransaction");
 
                     b.Navigation("SavingsGoal");
 
@@ -764,11 +753,6 @@ namespace K9_Koinz.Migrations
             modelBuilder.Entity("K9_Koinz.Models.SavingsGoal", b =>
                 {
                     b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("K9_Koinz.Models.Transaction", b =>
-                {
-                    b.Navigation("SplitTransactions");
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.Transfer", b =>

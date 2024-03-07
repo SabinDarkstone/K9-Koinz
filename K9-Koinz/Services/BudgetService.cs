@@ -22,6 +22,7 @@ namespace K9_Koinz.Services {
             if (line.Budget.DoNotUseCategories) {
                 line.BudgetCategory.Transactions = _context.Transactions
                     .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER)
+                    .Where(trans => !trans.IsSplit)
                     .Where(trans => !trans.IsSavingsSpending)
                     .ToList();
             }
@@ -76,7 +77,8 @@ namespace K9_Koinz.Services {
             var transactionsIQ = _context.Transactions
                 .AsNoTracking()
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                .Where(trans => unallocatedCategories.Contains(trans.CategoryId))
+                .Where(trans => trans.CategoryId.HasValue && unallocatedCategories.Contains(trans.CategoryId.Value))
+                .Where(trans => !trans.IsSplit)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.CREDIT_CARD)
                 .Where(trans => !trans.IsSavingsSpending);
 
@@ -87,22 +89,26 @@ namespace K9_Koinz.Services {
 
             var unallocatedBudgetLines = new Dictionary<Guid, BudgetLine>();
             foreach (var trans in transactions) {
-                if (unallocatedBudgetLines.ContainsKey(trans.CategoryId)) {
-                    unallocatedBudgetLines[trans.CategoryId].Transactions.Add(trans);
+                if (!trans.CategoryId.HasValue) {
+                    continue;
+                }
+
+                if (unallocatedBudgetLines.ContainsKey(trans.CategoryId.Value)) {
+                    unallocatedBudgetLines[trans.CategoryId.Value].Transactions.Add(trans);
                 } else {
-                    var budgetCategory = categoryData[trans.CategoryId];
+                    var budgetCategory = categoryData[trans.CategoryId.Value];
                     if (budgetCategory.ParentCategoryId.HasValue) {
                         budgetCategory.ParentCategory = categoryData[budgetCategory.ParentCategoryId.Value];
                     }
 
                     var newBudgetLine = new BudgetLine {
-                        BudgetCategoryId = trans.CategoryId,
-                        BudgetCategory = categoryData[trans.CategoryId],
+                        BudgetCategoryId = trans.CategoryId.Value,
+                        BudgetCategory = categoryData[trans.CategoryId.Value],
                         BudgetId = budget.Id,
                         Transactions = new List<Transaction>()
                     };
                     newBudgetLine.Transactions.Add(trans);
-                    unallocatedBudgetLines.Add(trans.CategoryId, newBudgetLine);
+                    unallocatedBudgetLines.Add(trans.CategoryId.Value, newBudgetLine);
                 }
             }
 
@@ -144,6 +150,7 @@ namespace K9_Koinz.Services {
         private async Task<List<Transaction>> GetTransactionsForLineBetweenDatesAsync(BudgetLine budgetLine, DateTime startDate, DateTime endDate) {
             var transactionsIQ = _context.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                .Where(trans => !trans.IsSplit)
                 .Where(trans => !trans.IsSavingsSpending)
                 .AsNoTracking();
 
@@ -153,7 +160,8 @@ namespace K9_Koinz.Services {
                     .Select(cat => cat.Id)
                     .ToListAsync();
                 transactionsIQ = transactionsIQ
-                    .Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId || childCategories.Contains(trans.CategoryId))
+                    .Where(trans => trans.CategoryId.HasValue)
+                    .Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId || childCategories.Contains(trans.CategoryId.Value))
                     .Where(trans => !trans.IsSavingsSpending);
             }
 

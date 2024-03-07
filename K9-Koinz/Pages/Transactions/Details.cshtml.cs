@@ -12,6 +12,7 @@ namespace K9_Koinz.Pages.Transactions {
             return await _context.Transactions
                 .Include(trans => trans.Tag)
                 .Include(trans => trans.Bill)
+                .Include(trans => trans.SplitTransactions)
                 .SingleOrDefaultAsync(trans => trans.Id == id);
         }
     }

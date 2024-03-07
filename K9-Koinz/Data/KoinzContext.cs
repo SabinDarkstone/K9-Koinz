@@ -26,14 +26,14 @@ namespace K9_Koinz.Data {
             // Table names
             modelBuilder.Entity<Account>().ToTable("Account").HasKey(x => x.Id);
             modelBuilder.Entity<Category>().ToTable("Category").HasKey(x => x.Id);
-            modelBuilder.Entity<Transaction>().ToTable("Transaction").HasKey(x => x.Id);
+            modelBuilder.Entity<Transaction>().ToTable("BankTransaction").HasKey(x => x.Id);
             modelBuilder.Entity<Budget>().ToTable("Budget").HasKey(x => x.Id);
             modelBuilder.Entity<BudgetLine>().ToTable("BudgetLineItem").HasKey(x => x.Id);
             modelBuilder.Entity<Merchant>().ToTable("Merchant").HasKey(x => x.Id);
             modelBuilder.Entity<BudgetLinePeriod>().ToTable("BudgetPeriod").HasKey(x => x.Id);
             modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
             modelBuilder.Entity<Bill>().ToTable("Bill").HasKey(x => x.Id);
-            modelBuilder.Entity<SavingsGoal>().ToTable("Goals").HasKey(x => x.Id);
+            modelBuilder.Entity<SavingsGoal>().ToTable("Goal").HasKey(x => x.Id);
             modelBuilder.Entity<RepeatConfig>().ToTable("RepeatConfig").HasKey(x => x.Id);
             modelBuilder.Entity<Transfer>().ToTable("Transfer").HasKey(x => x.Id);
             modelBuilder.Entity<ScheduledJobStatus>().ToTable("JobStatus").HasKey(x => x.Id);

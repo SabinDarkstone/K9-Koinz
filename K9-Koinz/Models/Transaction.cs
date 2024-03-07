@@ -27,9 +27,8 @@ namespace K9_Koinz.Models {
         public Merchant Merchant { get; set; }
         public string MerchantName { get; set; }
 
-        [Required]
         [DisplayName("Category")]
-        public Guid CategoryId { get; set; } = Guid.Empty;
+        public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
         public string CategoryName { get; set; }
 
@@ -58,6 +57,11 @@ namespace K9_Koinz.Models {
         public bool IsSavingsSpending { get; set; }
         public Guid? TransferId { get; set; }
         public Transfer Transfer { get; set; }
+        public bool IsSplit { get; set; }
+        public Guid? ParentTransactionId { get; set; }
+        public Transaction ParentTransaction { get; set; }
+
+        public ICollection<Transaction> SplitTransactions { get; set; }
 
         [NotMapped]
         public bool IsUnCategorized {

@@ -46,6 +46,9 @@ namespace K9_Koinz.Pages.Meta {
 
             Record = record;
             try {
+                await BeforeDeleteActionsAsync();
+                BeforeDeleteActions();
+
                 _context.Set<T>().Remove(Record);
 
                 await AdditionalDatabaseActionsAsync();
@@ -76,5 +79,11 @@ namespace K9_Koinz.Pages.Meta {
             return Task.CompletedTask;
         }
         protected virtual void AdditioanlDatabaseActions() { }
+
+        protected virtual void BeforeDeleteActions() { }
+
+        protected virtual Task BeforeDeleteActionsAsync() {
+            return Task.CompletedTask;
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace K9_Koinz.Pages.Transactions {
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
             return await _context.Transactions
                 .Include(trans => trans.Category)
+                .Include(trans => trans.SplitTransactions)
                 .SingleOrDefaultAsync(trans => trans.Id == id);
         }
 

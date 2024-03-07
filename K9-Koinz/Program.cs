@@ -8,7 +8,8 @@ namespace K9_Koinz {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<KoinzContext>(options => {
                 options.UseSqlite("Data Source=K9-Koinz.db");
-                options.EnableSensitiveDataLogging(true);
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
             });
 
             builder.Services.AddMvc();

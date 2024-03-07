@@ -13,7 +13,17 @@ namespace K9_Koinz.Pages.Transactions {
                 .Include(trans => trans.Tag)
                 .Include(trans => trans.Transfer)
                     .ThenInclude(fer => fer.Transactions)
+                .Include(trans => trans.SplitTransactions)
                 .FirstOrDefaultAsync(trans => trans.Id == id);
+        }
+
+        protected override void BeforeDeleteActions() {
+            var splitTransactions = _context.Transactions
+                .Where(trans => trans.ParentTransactionId == Record.Id);
+
+            if (splitTransactions.Any()) {
+                _context.Transactions.RemoveRange(splitTransactions);
+            }
         }
 
         protected override void AdditioanlDatabaseActions() {
