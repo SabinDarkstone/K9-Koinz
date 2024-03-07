@@ -189,6 +189,9 @@
                                         var style = "background-color: " + transaction.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@transaction.Tag.ShortForm</span>
                                     }
+                                    @if (transaction.IsSplit) {
+                                        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                                    }
                                     @transaction.MerchantName
                                 </div>
                                 <div class="col-4 text-end transaction-item" data-id="@transaction.Id">

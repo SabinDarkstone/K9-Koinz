@@ -64,9 +64,7 @@ namespace K9_Koinz.Pages.Transactions {
             AccountFilter = accountId;
 
             var transactions = _context.Transactions
-                .Include(trans => trans.Category)
-                .Include(trans => trans.Account)
-                .Include(trans => trans.Merchant)
+                .Where(trans => !trans.ParentTransactionId.HasValue)
                 .Where(trans => trans.Date >= MinDateFilter.Value && trans.Date <= MaxDateFilter);
 
             if (accountId != null) {

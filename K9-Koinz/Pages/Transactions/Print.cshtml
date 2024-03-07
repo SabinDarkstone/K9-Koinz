@@ -56,7 +56,7 @@
             @foreach (var transaction in Model.Transactions) {
                 <tr>
                     <td class="col-2">@Html.DisplayFor(model => transaction.Date)</td>
-                    <td class="col-8">@transaction.Merchant.Name</td>
+                    <td class="col-8">@transaction.MerchantName</td>
                     <td class="col-2">@transaction.Amount.FormatCurrency(2)</td>
                 </tr>
             }

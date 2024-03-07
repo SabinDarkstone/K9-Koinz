@@ -8,6 +8,10 @@
 
 <h1>Details</h1>
 
+@if (Model.Record.ParentTransactionId.HasValue) {
+    <h3 class="text-danger">This is a Split Transaction Child.  Be very careful, do not edit!</h3>
+}
+
 <div>
     <h4>Transaction</h4>
     <hr />
