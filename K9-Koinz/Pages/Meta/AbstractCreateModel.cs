@@ -47,8 +47,6 @@ namespace K9_Koinz.Pages.Meta {
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
 
-            _logger.LogDebug("Attempting to create data: " + JsonSerializer.Serialize(Record, new JsonSerializerOptions { WriteIndented = true }));
-
             _context.Set<T>().Add(Record);
             await _context.SaveChangesAsync();
 

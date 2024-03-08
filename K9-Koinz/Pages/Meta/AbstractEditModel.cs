@@ -57,8 +57,6 @@ namespace K9_Koinz.Pages.Meta {
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
 
-            _logger.LogInformation("Record: " + Record.ToJson());
-
             _context.Attach(Record).State = EntityState.Modified;
 
             try {

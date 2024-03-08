@@ -57,8 +57,6 @@ namespace K9_Koinz.Pages.Transactions {
                 split.CategoryName = category.Name;
                 split.MerchantName = merchant.Name;
                 split.Date = parent.Date;
-
-                _logger.LogInformation(JsonSerializer.Serialize(split, new JsonSerializerOptions { WriteIndented = true }));
             }
 
             var validSplits = SplitTransactions.Where(splt => splt.Amount != 0).ToList();

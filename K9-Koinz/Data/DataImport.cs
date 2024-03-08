@@ -25,8 +25,6 @@ namespace K9_Koinz.Data {
             CreateCategoryMap();
 
             foreach (var line in rowsOfCsv.Skip(1)) {
-                _logger.LogDebug("csv line >>> " + line);
-
                 var splitRow = line.Split(',');
                 var account = ParseAccount(splitRow);
                 var merchant = ParseMerchant(splitRow);
@@ -45,30 +43,10 @@ namespace K9_Koinz.Data {
 
             _context.Accounts.AddRange(accounts);
             _context.Merchants.AddRange(merchants);
-            _logger.LogInformation("Inserting accounts and merchants...");
             _context.SaveChanges();
-            _logger.LogInformation("Complete");
 
             _context.Transactions.AddRange(transactions);
-            _logger.LogInformation("Inserting transactions...");
             _context.SaveChanges();
-            _logger.LogInformation("Complete");
-
-            foreach (var x in _context.Accounts) {
-                _logger.LogInformation(x.Id + " >>> " + x.Name);
-            }
-
-            foreach (var x in _context.Merchants) {
-                _logger.LogInformation(x.Id + " >>> " + x.Name);
-            }
-
-            foreach (var x in _context.Categories) {
-                _logger.LogInformation(x.Id + " >>> " + x.Name);
-            }
-
-            foreach (var x in _context.Transactions) {
-                _logger.LogInformation(x.Id + " >>> " + x.Amount);
-            }
         }
 
         private void GetCategoryMap() {

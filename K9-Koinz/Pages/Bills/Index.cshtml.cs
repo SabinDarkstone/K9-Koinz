@@ -47,6 +47,7 @@ namespace K9_Koinz.Pages.Bills {
 
             if (showAllBills.HasValue && showAllBills.Value) {
                 Bills = (await _context.Bills
+                    .AsNoTracking()
                     .Include(bill => bill.Account)
                     .Include(bill => bill.RepeatConfig)
                     .ToListAsync())
@@ -54,6 +55,7 @@ namespace K9_Koinz.Pages.Bills {
                     .ToList();
             } else {
                 Bills = (await _context.Bills
+                    .AsNoTracking()
                     .Include(bill => bill.Account)
                     .Include(bill => bill.RepeatConfig)
                     .ToListAsync())

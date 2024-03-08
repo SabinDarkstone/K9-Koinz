@@ -12,6 +12,7 @@ namespace K9_Koinz.Pages.JobStatuses {
 
         public async Task OnGetAsync() {
             ScheduledJobStatus = await _context.JobStatuses
+                .AsNoTracking()
                 .OrderByDescending(job => job.StartTime)
                 .ToListAsync();
         }

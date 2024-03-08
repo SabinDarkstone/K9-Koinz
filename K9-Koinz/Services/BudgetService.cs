@@ -38,10 +38,11 @@ namespace K9_Koinz.Services {
 
             if (line.BudgetCategory.CategoryType == CategoryType.INCOME || line.BudgetCategory.CategoryType == CategoryType.EXPENSE) {
                 var childCategoryTransactionsIQ = line.BudgetCategory.ChildCategories
-                    .SelectMany(cat => cat.Transactions
-                        .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                        .Where(trans => !trans.IsSavingsSpending)
-                    ).AsEnumerable();
+                    .SelectMany(cCat => cCat.Transactions)
+                    .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                    .Where(trans => !trans.IsSavingsSpending)
+                    .Where(trans => !trans.IsSplit)
+                    .AsEnumerable();
 
                 if (line.Budget.BudgetTagId.HasValue) {
                     childCategoryTransactionsIQ = childCategoryTransactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId);
@@ -66,12 +67,13 @@ namespace K9_Koinz.Services {
                 return new List<BudgetLine>();
             }
 
-            // Get all budget categories from income and expense lines
-            var unallocatedCategories = await _context.Categories
-                .Where(cat => !budget.BudgetLines.Select(line => line.BudgetCategoryId).Contains(cat.Id))
-                .Where(cat => cat.CategoryType == CategoryType.INCOME || cat.CategoryType == CategoryType.EXPENSE)
-                .Select(cat => cat.Id)
-                .ToListAsync();
+            var topLevelCategoryIds = budget.BudgetLines.Select(line => line.BudgetCategory).Select(cat => cat.Id).ToList();
+            var childCategoryIds = budget.BudgetLines.SelectMany(line => line.BudgetCategory.ChildCategories).Select(cat => cat.Id).ToList();
+
+            var unallocatedCategories = categoryData.Keys
+                .Where(catId => !topLevelCategoryIds.Contains(catId))
+                .Where(catId => !childCategoryIds.Contains(catId))
+                .ToList();
 
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(period);
             var transactionsIQ = _context.Transactions

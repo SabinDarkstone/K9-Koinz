@@ -55,8 +55,8 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var category = await _context.Categories.SingleOrDefaultAsync(cat => cat.Id == Record.BudgetCategoryId);
-            var budget = await _context.Budgets.SingleOrDefaultAsync(bud => bud.Id == Record.BudgetId);
+            var category = await _context.Categories.FindAsync(Record.BudgetCategoryId);
+            var budget = await _context.Budgets.FindAsync(Record.BudgetId);
             
             Record.BudgetCategoryName = category.Name;
             Record.BudgetName = budget.Name;

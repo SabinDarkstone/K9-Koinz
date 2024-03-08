@@ -12,9 +12,10 @@ namespace K9_Koinz.Pages.Merchants {
 
         protected override async Task AdditionalActionsAsync() {
             Transactions = await _context.Transactions
-                    .Where(trans => trans.MerchantId == Record.Id)
-                    .OrderByDescending(trans => trans.Date)
-                    .ToListAsync();
+                .AsNoTracking()
+                .Where(trans => trans.MerchantId == Record.Id)
+                .OrderByDescending(trans => trans.Date)
+                .ToListAsync();
         }
     }
 }

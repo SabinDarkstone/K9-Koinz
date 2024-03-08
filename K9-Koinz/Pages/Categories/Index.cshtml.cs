@@ -15,12 +15,14 @@ namespace K9_Koinz.Pages.Categories {
 
         public async Task OnGetAsync() {
             var catList = await _context.Categories
+                .AsNoTracking()
                 .Include(cat => cat.ChildCategories)
                     .ThenInclude(cCat => cCat.Transactions)
                 .Include(cat => cat.Transactions)
                 .OrderBy(cat => cat.CategoryType)
                     .ThenBy(cat => cat.Name)
                 .ToListAsync();
+
             Categories = catList
                 .Where(cat => !cat.IsChildCategory)
                 .ToList();
