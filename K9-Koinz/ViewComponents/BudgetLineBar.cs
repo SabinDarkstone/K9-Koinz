@@ -191,6 +191,11 @@ namespace K9_Koinz.ViewComponents {
                 SolidProgressBarClassList += " bg-success";
             }
 
+            if (line.BudgetCategory.CategoryType == CategoryType.INCOME) {
+                SolidProgressBarClassList = "progress-bar bg-primary";
+                StripedProgressBarClassList = "progress-bar progress-bar-striped bg-primary";
+            }
+
             return View(this);
         }
     }

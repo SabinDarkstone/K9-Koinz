@@ -1,0 +1,44 @@
+﻿@page
+@model K9_Koinz.Pages.Tags.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Tag</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.ShortForm" class="control-label"></label>
+                <input asp-for="Record.ShortForm" class="form-control" />
+                <span asp-validation-for="Record.ShortForm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.HexColor" class="control-label"></label>
+                <input asp-for="Record.HexColor" class="form-control" />
+                <span asp-validation-for="Record.HexColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -10,5 +10,7 @@ namespace K9_Koinz.Models {
         [StringLength(1)]
         public string ShortForm { get; set; }
         public string HexColor { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }
