@@ -1,12 +1,17 @@
 ﻿@page
+@using K9_Koinz.Models.Helpers
 @using K9_Koinz.Utils
+@using System.Text.Json
 @model K9_Koinz.Pages.Transactions.EditModel
 
 @{
     ViewData["Title"] = "Edit Transaction";
+
+    var payloadString = Request.Cookies["backToTransactions"];
+    var payload = JsonSerializer.Deserialize<TransactionNavPayload>(payloadString);
 }
 
-<h1>Edit</h1>
+<h1>Edit</h1>s
 
 <h4>Transaction</h4>
 <hr />
@@ -84,7 +89,16 @@
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="/Transactions/Index"
+       asp-route-sortOrder="@payload.SortOrder"
+       asp-route-catFiler="@payload.CatFilter"
+       asp-route-pageIndex="@payload.PageIndex"
+       asp-route-accountFilter="@payload.AccountFilter"
+       asp-route-minDate="@payload.MinDate"
+       asp-route-maxDate="@payload.MaxDate"
+       asp-route-merchFilter="@payload.MerchFilter">
+        Back to List
+    </a>
 </div>
 
 @section Scripts {
