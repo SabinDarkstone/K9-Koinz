@@ -8,8 +8,9 @@ namespace K9_Koinz.Pages.Meta {
             : base(context, logger) { }
 
         public T Record { get; set; } = default!;
+        public string QueryParamsNav { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(Guid? id) {
+        public async Task<IActionResult> OnGetAsync([FromQuery] Guid? id, [FromBody] string queryParams) {
             if (!id.HasValue) {
                 return NotFound();
             }
@@ -19,6 +20,7 @@ namespace K9_Koinz.Pages.Meta {
                 return NotFound();
             }
 
+            QueryParamsNav = queryParams;
             Record = record;
 
             await AdditionalActionsAsync();
