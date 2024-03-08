@@ -1,0 +1,37 @@
+﻿@page
+@model K9_Koinz.Pages.Tags.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Tag</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Record.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Record.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Record.ShortForm)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Record.ShortForm)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Record.HexColor)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Record.HexColor)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Record.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
