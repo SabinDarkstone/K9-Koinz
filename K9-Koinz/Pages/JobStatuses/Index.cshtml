@@ -1,0 +1,63 @@
+﻿@page
+@model K9_Koinz.Pages.JobStatuses.IndexModel
+
+@{
+    ViewData["Title"] = "Job Statuses";
+}
+
+<h1>Execution History</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].JobName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].StackTrace)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].ErrorMessages)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].NextRunTime)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ScheduledJobStatus) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StackTrace)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ErrorMessages)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NextRunTime)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

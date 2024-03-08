@@ -7,8 +7,8 @@
             <p>
                 <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
                     <a class="no-underline" asp-page="/Transactions/Index"
-                       asp-route-minDate="@Model.StartDate"
-                       asp-route-maxDate="@Model.EndDate"
+                       asp-route-minDate="@Model.StartDate.FormatForUrl()"
+                       asp-route-maxDate="@Model.EndDate.FormatForUrl()"
                        asp-route-catFilter="@Model.CategoryId">
                         @Model.CategoryName
                     </a>

@@ -61,7 +61,7 @@ namespace K9_Koinz.Models {
         public Guid? ParentTransactionId { get; set; }
         public Transaction ParentTransaction { get; set; }
 
-        public ICollection<Transaction> SplitTransactions { get; set; }
+        public List<Transaction> SplitTransactions { get; set; }
 
         [NotMapped]
         public bool IsUnCategorized {

@@ -13,6 +13,7 @@ namespace K9_Koinz.Pages.Transactions {
                 .Include(trans => trans.Tag)
                 .Include(trans => trans.Bill)
                 .Include(trans => trans.SplitTransactions)
+                .Include(trans => trans.Category)
                 .SingleOrDefaultAsync(trans => trans.Id == id);
         }
     }

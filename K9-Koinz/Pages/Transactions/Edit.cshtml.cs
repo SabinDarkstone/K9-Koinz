@@ -38,7 +38,11 @@ namespace K9_Koinz.Pages.Transactions {
             var category = await _context.Categories.FindAsync(Record.CategoryId);
             var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
             var account = await _context.Accounts.FindAsync(Record.AccountId);
-            Record.CategoryName = category.Name;
+            if (!Record.IsSplit) {
+                Record.CategoryName = category.Name;
+            } else {
+                Record.CategoryName = "Multiple";
+            }
             Record.MerchantName = merchant.Name;
             Record.AccountName = account.Name;
 
@@ -66,6 +70,21 @@ namespace K9_Koinz.Pages.Transactions {
                 otherTransaction.TagId = Record.TagId;
 
                 _context.Transactions.Update(otherTransaction);
+            }
+
+            if (Record.IsSplit) {
+                var childTransactions = _context.Transactions
+                    .Where(trans => trans.ParentTransactionId == Record.Id)
+                    .ToList();
+
+                if (childTransactions.All(splt => splt.MerchantId == childTransactions[0].MerchantId)) {
+                    childTransactions.ForEach(splt => {
+                        splt.MerchantId = Record.MerchantId;
+                        splt.MerchantName = Record.MerchantName;
+                    });
+
+                    _context.Transactions.UpdateRange(childTransactions);
+                }
             }
         }
 

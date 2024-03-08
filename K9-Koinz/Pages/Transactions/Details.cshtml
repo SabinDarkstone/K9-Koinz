@@ -13,12 +13,12 @@
 
 <h1>Details</h1>
 
-@if (Model.Record.ParentTransactionId.HasValue) {
-    <h3 class="text-danger">This is a Split Transaction Child.  Be very careful, do not edit!</h3>
-}
-
 <div>
-    <h4>Transaction</h4>
+    @if (Model.Record.ParentTransactionId.HasValue) {
+        <h4>Child Transaction</h4>
+    } else {
+        <h4>Transaction</h4>
+    }
     <hr />
     <dl class="row">
         <dt class="col-sm-3">
@@ -126,29 +126,37 @@
 }
 
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
-        <i class="fa-solid fa-pen-to-square"></i> Edit
-    </a>
-    <a class="btn btn-secondary mb-2" asp-page="/Transactions/Split" asp-route-parentId="@Model.Record.Id">
-        <i class="fa-solid fa-arrows-split-up-and-left"></i>
-        @if (Model.Record.SplitTransactions.Any()) {
-            <text>Edit Split</text>
-        } else {
-            <text>Split Transaction</text>
+    @if (!Model.Record.ParentTransactionId.HasValue) {
+        <a asp-page="./Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+        </a>
+        if (Model.Record.Category.CategoryType != Models.CategoryType.TRANSFER) {
+            <a class="btn btn-secondary mb-2" asp-page="/Transactions/Split" asp-route-parentId="@Model.Record.Id">
+                <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                @if (Model.Record.SplitTransactions.Any()) {
+                    <text>Edit Split</text>
+                } else {
+                    <text>Split Transaction</text>
+                }
+            </a>
+            @if (Model.Record.IsSplit) {
+                <a class="btn btn-outline-secondary mb-2" asp-page="/Transactions/RemoveSplit" asp-route-parentId="@Model.Record.Id">
+                    Remove Split
+                </a>
+            }
         }
-    </a>
-    @if (Model.Record.IsSplit) {
-        <a class="btn btn-outline-secondary mb-2" asp-page="/Transactions/RemoveSplit" asp-route-parentId="@Model.Record.Id">
-            Remove Split
+        <a asp-page="Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
+            <i class="fa-solid fa-trash"></i> Delete
+        </a>
+    } else {
+        <a asp-page="Details" asp-route-id="@Model.Record.ParentTransactionId" class="btn btn-primary mb-2">
+            Go to Parent
         </a>
     }
-    <a asp-page="Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
-        <i class="fa-solid fa-trash"></i> Delete
-    </a>
 </div>
 <a asp-page="/Transactions/Index"
    asp-route-sortOrder="@payload.SortOrder"
-   asp-route-catFiler="@payload.CatFilter"
+   asp-route-catFilter="@payload.CatFilter"
    asp-route-pageIndex="@payload.PageIndex"
    asp-route-accountFilter="@payload.AccountFilter"
    asp-route-minDate="@payload.MinDate"

@@ -37,7 +37,7 @@
 
     <a asp-page="/Transfers/Manage" class="no-underline-ever">
         <span class="btn btn-success btn-sm">
-            <i class="fa-solid fa-arrow-right-arrow-left"></i> Manager Transfers
+            <i class="fa-solid fa-arrow-right-arrow-left"></i> Manage Transfers
         </span>
     </a>
 
@@ -162,6 +162,9 @@
                                     @if (item.IsSplit) {
                                         <i class="fa-solid fa-arrows-split-up-and-left"></i>
                                     }
+                                    @if (item.ParentTransactionId.HasValue) {
+                                        <i class="fa-solid fa-sitemap"></i>
+                                    }
                                     @Html.DisplayFor(modelItem => item.MerchantName)
                                 </a>
                             </td>
@@ -205,6 +208,9 @@
                                     }
                                     @if (transaction.IsSplit) {
                                         <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                                    }
+                                    @if (transaction.ParentTransactionId.HasValue) {
+                                        <i class="fa-solid fa-sitemap"></i>
                                     }
                                     @transaction.MerchantName
                                 </div>
