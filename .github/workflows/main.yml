@@ -34,9 +34,9 @@ jobs:
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
           systemctl --user stop k9-koinz-camp.service
-          systemctl --user stop k9-koinz.rian.service
-          systemctl --user stop k9-koinz.skunk.service
-          systemctl --user stop k9-koinz.test.service
+          systemctl --user stop k9-koinz-rian.service
+          systemctl --user stop k9-koinz-skunk.service
+          systemctl --user stop k9-koinz-test.service
 
       # We will output publish files to the folder we previously created
       - name: Publish Camp
@@ -57,6 +57,6 @@ jobs:
           systemctl --user start k9-koinz-camp.service
           systemctl --user start k9-koinz-rian.service
           systemctl --user start k9-koinz-skunk.service
-          systemctl --user start k9-koinz.test.service
+          systemctl --user start k9-koinz-test.service
 
 
