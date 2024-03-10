@@ -37,6 +37,18 @@ namespace K9_Koinz {
                 app.UseMigrationsEndPoint();
             }
 
+            app.Use(async (context, next) => {
+                if (context.Request.Path.StartsWithSegments("/robots.txt")) {
+                    var robotsTxtPath = Path.Combine(app.Environment.ContentRootPath, "robots.txt");
+                    string output = "User-agent: * \nDisallow: /";
+                    if (File.Exists(robotsTxtPath)) {
+                        output = await File.ReadAllTextAsync(robotsTxtPath);
+                    }
+                    context.Response.ContentType = "text/plain";
+                    await context.Response.WriteAsync(output);
+                } else await next();
+            });
+
             app.UseDeveloperExceptionPage();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
