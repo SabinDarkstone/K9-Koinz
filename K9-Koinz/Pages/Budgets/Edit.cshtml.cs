@@ -20,7 +20,7 @@ namespace K9_Koinz.Pages.Budgets {
 
         protected override async Task<Budget> QueryRecordAsync(Guid id) {
             return await _context.Budgets
-                .Include(bud => bud.BudgetLines)
+                .Include(bud => bud.BudgetLines.OrderBy(line => line.BudgetCategoryName))
                     .ThenInclude(line => line.BudgetCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }

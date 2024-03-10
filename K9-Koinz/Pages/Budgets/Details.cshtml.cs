@@ -14,12 +14,11 @@ namespace K9_Koinz.Pages.Budgets {
         public List<BudgetLine> BudgetLines { get; set; }
 
         protected override async Task AdditionalActionsAsync() {
-            var unsortedLines = await _context.BudgetLines
+            BudgetLines = await _context.BudgetLines
                 .Where(line => line.BudgetId == Record.Id)
                 .Include(line => line.Periods)
+                .OrderBy(line => line.BudgetCategoryName)
                 .ToListAsync();
-
-            BudgetLines = unsortedLines.SortCategories();
 
             if (Record.DoNotUseCategories) {
                 Record.BudgetedAmount = BudgetLines.First().BudgetedAmount;

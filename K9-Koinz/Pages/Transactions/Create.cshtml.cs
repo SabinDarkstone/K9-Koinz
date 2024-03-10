@@ -24,6 +24,22 @@ namespace K9_Koinz.Pages.Transactions {
             return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
 
+        public async Task<JsonResult> OnGetAddMerchant(string text) {
+            var isExisting = await _context.Merchants.Where(merc => merc.Name == text).AnyAsync();
+            if (isExisting) {
+                return new JsonResult("DUPLICATE");
+            } else {
+                var newMerchant = new Merchant { Name = text };
+                try {
+                    _context.Merchants.Add(newMerchant);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult(newMerchant.Id.ToString());
+                } catch (Exception ex) {
+                    return new JsonResult("ERROR");
+                }
+            }
+        }
+
         protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 

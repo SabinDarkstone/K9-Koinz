@@ -36,6 +36,9 @@ namespace K9_Koinz.Pages.Budgets {
         public IList<Budget> Budgets { get; set; } = default!;
         public Budget SelectedBudget {
             get {
+                if (selectedBudget == null) {
+                    return null;
+                }
                 selectedBudget.BudgetLines = selectedBudget.BudgetLines.OrderBy(line => line.BudgetCategoryName).ToList();
                 return selectedBudget;
             }

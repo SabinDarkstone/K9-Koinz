@@ -29,7 +29,7 @@ namespace K9_Koinz.Services {
             var suggestions = (await _context.Merchants
                 .AsNoTracking()
                 .ToListAsync())
-                .Where(merch => merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
+                .Where(merch => merch.Name != null && merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
                 .Select(merch => new {
                     label = merch.Name,
                     val = merch.Id

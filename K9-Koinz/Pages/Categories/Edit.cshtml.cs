@@ -14,7 +14,7 @@ namespace K9_Koinz.Pages.Categories {
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
             return await _context.Categories
-                .Include(cat => cat.ChildCategories)
+                .Include(cat => cat.ChildCategories.OrderBy(cCat => cCat.Name))
                 .Include(cat => cat.ParentCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
