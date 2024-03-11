@@ -10,6 +10,11 @@
 
 <h4>Account</h4>
 <hr />
+
+@await Component.InvokeAsync(nameof(Components.PageInstructions), new {
+        topicName = "CreateAccount"
+    })
+
 <div class="row">
     <div class="col-md-4">
         <form method="post">

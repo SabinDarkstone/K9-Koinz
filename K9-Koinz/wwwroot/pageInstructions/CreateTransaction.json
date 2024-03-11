@@ -1,0 +1,17 @@
+{
+  "Title": "Creating a New Transaction",
+  "Body": [
+    {
+      "Heading": "About",
+      "Body": "Transactions in K9 Koinz are similar to transactions in real life.  They represent money entering or leaving an account.  Mostly commonly, you will create transactions to represent purchases and bills.  If you want to move money between two of your accounts, check out Transfers, instead!  Transactions will show up in your list of transactions and are the core of K9 Koinz.  They are referenced by budgets based on the Category that you assign them to."
+    },
+    {
+      "Heading": "Instructions",
+      "Body": "To create a new Transaction, first choose an Account money is either entering or leaving.  You will find your accounts organized by type and then in alphabetical order.  A Transaction needs to have an account.\n\nNext select the date you made the Transaction.  It's important to note that if you are using a credit card, the Transaction at your bank may post a different day than when you made the payment.  You can choose how you want to select a day--it's best to remain consistent once you decide.\n\nThe Merchant and Category boxes are special in that they require you to pick an item from the dropdowns.  For merchants, if you do not see one in a dropdown, you can click the Add New button once you type in the merchant's name.  You will see the button either change to Success or Duplicate.  If it says Duplicate, you may already have that merchant in the system!  Categories and Merchants can both be viewed, added, deleted, and edited by going to the navigation menu at the top and choosing \"More\", then choosing which option you want.  Categories can NOT be created on this page in the same way Merchants are.\n\nTags are optional and are useful for designating Transactions for a specific Budget.  Tags can also be created by visiting the \"More\" section of the navigation bar, too.\n\nThe Amount field is self explanatory: but be sure to add a negative sign if the money is leaving your account!\n\nFinally you can add your own notes.  These are not visible on the list page, but will show up in the details page."
+    },
+    {
+      "Heading": "Hiding Transactions",
+      "Body": "You can choose to hide a transaction from your budget and trends by clicking the checkbox at the bottom.  This means your transaction will impact your account balances but will not appear in the Budgets section and will not show up on the Spending Graph, either."
+    }
+  ]
+}
