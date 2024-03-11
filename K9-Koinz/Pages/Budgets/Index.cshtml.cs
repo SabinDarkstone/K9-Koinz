@@ -140,6 +140,8 @@ namespace K9_Koinz.Pages.Budgets {
                 }
             }
 
+            PeriodOptions.FirstOrDefault().IsDisabled = false;
+
             PeriodOptions.Reverse();
         }
 
