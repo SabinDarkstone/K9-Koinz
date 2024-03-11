@@ -1,0 +1,17 @@
+{
+  "Title": "Creating a New Account",
+  "Body": [
+    {
+      "Heading": "About",
+      "Body": "Accounts can be considered the same in K9 Koinz as they are in real life.  You can have as many accounts as you like for budgeting purposes.  Currently, they only serve to group transactions together and to track current balances."
+    },
+    {
+      "Heading": "Instructions",
+      "Body": "You can add an Account Description if you want to specify some notes about the Account in the details screen.\n\nThe Account Type dropdown is used to indicate what type of Account this is.  This information is used when identifying what Transactions should be considered for the Budget Screen and how Accounts are grouped in dropdowns elsewhere on the site.\n\nThe Initial Balance and Initial Balance Date fields are used to set a started balance in K9 Koinz, thus letting you skip entering in years worth of transactional data.  You are able to update these fields at any time if you need to reconcile your balance.\n\nThe Minimum Balance field is used to show you Minimum Balance alerts and warnings on the site's homepage."
+    },
+    {
+      "Heading": "Minimum Balance",
+      "Body": "You can specify if you want to receive minimum balance alerts and warnings on the homepage.  If your Current Balance falls below the specified value, you will receive a red alert on the homepage to indicate this.  If you Current Balance is above your Minimum Balance, but within 10% of it, you will get a Minimum Balance Warning message to indicate you are getting close to your Minimum Balance."
+    }
+  ]
+}
