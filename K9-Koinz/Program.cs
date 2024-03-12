@@ -32,10 +32,11 @@ namespace K9_Koinz {
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment()) {
                 app.UseHttpsRedirection();
-                app.UseHsts();
             } else {
                 app.UseMigrationsEndPoint();
             }
+
+            app.UseHsts();
 
             app.Use(async (context, next) => {
                 if (context.Request.Path.StartsWithSegments("/robots.txt")) {
