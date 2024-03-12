@@ -37,6 +37,8 @@ jobs:
           systemctl --user stop k9-koinz-rian.service
           systemctl --user stop k9-koinz-skunk.service
           systemctl --user stop k9-koinz-test.service
+          systemctl --user stop k9-koinz-ethan.service
+          systemctl --user stop k9-koinz-beason.service
 
       # We will output publish files to the folder we previously created
       - name: Publish Camp
@@ -51,6 +53,12 @@ jobs:
       - name: Publish Staging
         run: dotnet publish -c Release -o /var/www/k9-koinz-test
 
+      - name: Publish Beason
+        run: dotnet publish -c Release -o /var/www/k9-koinz-beason
+
+      - name: Publish Ethan
+        run: dotnet publish -c Release -o /var/www/k9-koinz-ethan
+
       - name: Restart the apps
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
@@ -58,5 +66,5 @@ jobs:
           systemctl --user start k9-koinz-rian.service
           systemctl --user start k9-koinz-skunk.service
           systemctl --user start k9-koinz-test.service
-
-
+          systemctl --user start k9-koinz-beason.service
+          systemctl --user start k9-koinz-ethan.service
