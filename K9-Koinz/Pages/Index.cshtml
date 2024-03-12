@@ -4,6 +4,15 @@
 @{
     ViewData["Title"] = "K9 Koinz";
 }
+
+<style>
+    .col-centered {
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
 <div>
     <div class="jumbotron">
         <div class="d-flex align-items-center">
@@ -20,21 +29,20 @@
     </div>
 </div>
 
-<div class="homepage-alerts">
-    @await Component.InvokeAsync(nameof(MinimumBalanceAlert))
-</div>
 
-<div class="homepage-alerts">
-    @await Component.InvokeAsync("UpcomingBills")
-</div>
-
-<div class="mt-6">
+<div class="container">
     <div class="row">
-        <div class="col-lg-6">
-            <div id="spendingChartContainer" style="height: 350px; width: 100%"></div>
-        </div>
-        <div class="col-lg-6">
-            <div id="spendingChartContainer2" style="height: 350px; width: 100%"></div>
+        @await Component.InvokeAsync(nameof(MinimumBalanceAlert))
+
+        @await Component.InvokeAsync("UpcomingBills")
+
+        <div class="col-lg-6 order-md-2">
+            <div class="alert alert-light">
+                <h4 class="alert-heading">
+                    Monthly Spending
+                </h4>
+                <div id="spendingChartContainer" style="height: 350px; width: 100%; background-color: transparent;"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -48,10 +56,8 @@
             var lastMonth = @Html.Raw(Model.LastMonthSpendingJson);
 
             var chart = new CanvasJS.Chart("spendingChartContainer", {
+                backgroundColor: "transparent",
                 animationEnabled: false,
-                title: {
-                    text: "Monthly Spending"
-                },
                 axisX: {
                     text: "Day"
                 },

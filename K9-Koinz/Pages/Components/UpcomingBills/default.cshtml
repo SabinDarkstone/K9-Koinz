@@ -2,44 +2,42 @@
 @using K9_Koinz.ViewComponents
 @model UpcomingBillsController;
 
-@{
-
-}
-
 @if (Model.Bills.Count > 0) {
-    <div class="alert alert-secondary mb-3" role="alert">
-        <h4 class="alert-heading">Upcoming Bills this Week</h4>
-        <table class="table table-sm table-secondary">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => Model.Bills.First().Account)</th>
-                    <th>@Html.DisplayNameFor(model => Model.Bills.First().Name)</th>
-                    <th>@Html.DisplayNameFor(model => Model.Bills.First().MerchantId)</th>
-                    <th>Due Date</th>
-                    <th>@Html.DisplayNameFor(model => Model.Bills.First().BillAmount)</th>
-                    <th>AutoPay?</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var bill in Model.Bills.OrderBy(bill => bill.RepeatConfig.NextFiring)) {
+    <div class="col-lg-6 order-lg-1">
+        <div class="alert alert-secondary mb-3" role="alert">
+            <h4 class="alert-heading">Upcoming Bills this Week</h4>
+            <table class="table table-sm table-secondary table-responsive" style="table-layout: fixed">
+                <thead>
                     <tr>
-                        <td>@Html.DisplayFor(model => bill.AccountName)</td>
-                        <td>@Html.DisplayFor(model => bill.Name)</td>
-                        <td>@Html.DisplayFor(model => bill.MerchantName)</td>
-                        <td>@Html.DisplayFor(model => bill.RepeatConfig.NextFiring)</td>
-                        <td>@bill.BillAmount.FormatCurrency(2)</td>
-                        <td>
-                            @if (bill.IsAutopay) {
-                                <text>Yes</text>
-                            }
-                        </td>
+                        <th>Due Date</th>
+                        <th style="width: 40%">@Html.DisplayNameFor(model => Model.Bills.First().Name)</th>
+                        <th style="width: 22%">@Html.DisplayNameFor(model => Model.Bills.First().BillAmount)</th>
+                        <th style="width: 10%">Auto</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-        <hr />
-        <p class="mb-0">
-            For more information, you can take a look at the <a asp-page="@PagePaths.BillIndex">Bills Screen</a>.
-        </p>
+                </thead>
+                <tbody>
+                    @foreach (var bill in Model.Bills.OrderBy(bill => bill.RepeatConfig.NextFiring)) {
+                        <tr>
+                            <td scope="col" class="text-truncate">
+                                @Html.DisplayFor(model => bill.RepeatConfig.NextFiring)
+                            </td>
+                            <td scope="col" class="text-truncate">
+                                @bill.Name
+                            </td>
+                            <td>@bill.BillAmount.FormatCurrency(2)</td>
+                            <td>
+                                @if (bill.IsAutopay) {
+                                    <i class="fa-solid fa-check"></i>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <hr />
+            <p class="mb-0">
+                For more information, you can take a look at the <a asp-page="@PagePaths.BillIndex">Bills Screen</a>.
+            </p>
+        </div>
     </div>
 }

@@ -9,67 +9,71 @@
 }
 
 @if (minBalanceAccounts.Count() > 0) {
-    if (accountsNearMinimum.Count() > 0) {
-        <div class="alert alert-warning mb-3" role="alert">
-            <h4 class="alert-heading">
-                Minimum Balance Warning
-            </h4>
+    <div class="col-12">
+        @if (accountsNearMinimum.Count() > 0) {
+            <div class="alert alert-warning mb-3" role="alert">
+                <h4 class="alert-heading">
+                    Minimum Balance Warning
+                </h4>
 
-            <p>One or more of your account are near your minimum balance!</p>
+                <p>One or more of your account are near your minimum balance!</p>
 
-            <hr />
+                <hr />
 
-            <table class="table table-sm mb-0 table-warning">
-                <thead>
-                    <tr>
-                        <th>Account Name</th>
-                        <th>Balance</th>
-                        <th>Minimum</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var account in accountsNearMinimum) {
+                <table class="table table-sm mb-0 table-warning">
+                    <thead>
                         <tr>
-                            <td>@account.Name</td>
-                            <td>@account.CurrentBalance.FormatCurrency(0)</td>
-                            <td>@account.MinimumBalance.Value.FormatCurrency(0)</td>
+                            <th>Account Name</th>
+                            <th>Balance</th>
+                            <th>Minimum</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                    </thead>
 
-    if (accountsBelowMinimum.Count() > 0) {
-        <div class="alert alert-danger">
-            <h4 class="alert-heading">
-                Minimum Balance Alert!
-            </h4>
+                    <tbody>
+                        @foreach (var account in accountsNearMinimum) {
+                            <tr>
+                                <td>@account.Name</td>
+                                <td>@account.CurrentBalance.FormatCurrency(0)</td>
+                                <td>@account.MinimumBalance.Value.FormatCurrency(0)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 
-            <p>One or more of your account are BELOW your minimum balance set!</p>
+    <div class="col-12">
+        @if (accountsBelowMinimum.Count() > 0) {
+            <div class="alert alert-danger">
+                <h4 class="alert-heading">
+                    Minimum Balance Alert!
+                </h4>
 
-            <hr />
+                <p>One or more of your account are BELOW your minimum balance set!</p>
 
-            <table class="table table-sm mb-0 table-danger">
-                <thead>
-                    <tr>
-                        <th>Account Name</th>
-                        <th>Balance</th>
-                        <th>Minimum</th>
-                    </tr>
-                </thead>
+                <hr />
 
-                <tbody>
-                    @foreach (var account in accountsBelowMinimum) {
+                <table class="table table-sm mb-0 table-danger">
+                    <thead>
                         <tr>
-                            <td>@account.Name</td>
-                            <td>@account.CurrentBalance.FormatCurrency(0)</td>
-                            <td>@account.MinimumBalance.Value.FormatCurrency(0)</td>
+                            <th>Account Name</th>
+                            <th>Balance</th>
+                            <th>Minimum</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                    </thead>
+
+                    <tbody>
+                        @foreach (var account in accountsBelowMinimum) {
+                            <tr>
+                                <td>@account.Name</td>
+                                <td>@account.CurrentBalance.FormatCurrency(0)</td>
+                                <td>@account.MinimumBalance.Value.FormatCurrency(0)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 }

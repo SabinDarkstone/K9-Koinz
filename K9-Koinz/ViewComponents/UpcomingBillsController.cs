@@ -19,6 +19,7 @@ namespace K9_Koinz.ViewComponents {
             var endDate = DateTime.Today.AddDays(7);
 
             Bills = (await _context.Bills
+                .AsNoTracking()
                 .Include(bill => bill.RepeatConfig)
                 .ToListAsync())
                 .Where(bill => bill.RepeatConfig.NextFiring >= startDate && bill.RepeatConfig.NextFiring <= endDate)
