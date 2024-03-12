@@ -51,7 +51,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override IActionResult NavigateOnSuccess() {
-            return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId });
+            return RedirectToPage(PagePaths.BudgetEdit, new { id = Record.BudgetId });
         }
 
         protected override async Task BeforeSaveActionsAsync() {

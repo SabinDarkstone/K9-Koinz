@@ -5,6 +5,7 @@ using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Microsoft.EntityFrameworkCore;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
@@ -68,9 +69,9 @@ namespace K9_Koinz.Pages.Transactions {
 
         protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingTransaction) {
-                return RedirectToPage("DuplicateFound", new { id = Record.Id });
+                return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = Record.Id });
             } else if (doHandleSavingsGoal) {
-                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = Record.Id });
+                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = Record.Id });
             } else {
                 return base.NavigateOnSuccess();
             }

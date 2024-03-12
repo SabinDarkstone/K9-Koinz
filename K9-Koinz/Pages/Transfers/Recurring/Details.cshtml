@@ -90,12 +90,12 @@
 </div>
 
 <div>
-    <a asp-page="/Tranfers/Recurring/Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
+    <a asp-page="@PagePaths.RecurringTransferEdit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
         <i class="fa-solid fa-pen-to-square"></i> Edit
     </a>
-    <a asp-page="/Transfers/Recurring/Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
+    <a asp-page="@PagePaths.RecurringTransferDelete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
         <i class="fa-solid fa-trash"></i> Delete
     </a>
 </div>
 
-<a asp-page="/Transfers/Manage">Back to List</a>
+<a asp-page="@PagePaths.TransferManage">Back to List</a>

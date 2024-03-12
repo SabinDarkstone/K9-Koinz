@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -49,17 +50,17 @@ namespace K9_Koinz.Pages.Transfers {
             if (mode == "cancel") {
                 _context.Transfers.Remove(transfer);
                 _context.SaveChanges();
-                return RedirectToPage("/Transfers/Manage");
+                return RedirectToPage(PagePaths.TransferManage);
             }
 
             var toAccount = _context.Accounts.Find(transfer.ToAccountId);
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage("/SavingsGoals/AllocateRecurring", new { relatedId = transfer.Id });
+                return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = transfer.Id });
             }
 
-            return RedirectToPage("/Transfers/Manage");
+            return RedirectToPage(PagePaths.TransferManage);
         }
     }
 }

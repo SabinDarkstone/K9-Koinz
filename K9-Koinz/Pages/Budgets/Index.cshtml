@@ -44,10 +44,10 @@
 @if (!Model.Budgets.Any()) {
     <div>
         <p>You do not have any budgets created yet.  Click the button below to make one!</p>
-        <a asp-page="./Create" class="btn btn-primary">New Budget</a>
+        <a asp-page="@PagePaths.BudgetCreate" class="btn btn-primary">New Budget</a>
     </div>
 } else {
-    <a asp-page="Create" class="no-underline-ever">
+    <a asp-page="@PagePaths.BudgetCreate" class="no-underline-ever">
         <span class="btn btn-success btn-sm mb-3">
             <i class="fa-solid fa-plus"></i> Create New
         </span>
@@ -65,7 +65,7 @@
                 }
 
                 <li class="nav-item col-md">
-                    <a style="text-align:center;" asp-page="./Index" asp-route-selectedBudget="@budget.Id" class="@navClassList">
+                    <a style="text-align:center;" asp-page="@PagePaths.BudgetIndex" asp-route-selectedBudget="@budget.Id" class="@navClassList">
                         @if (budget.BudgetTagId.HasValue) {
                             var style = "background-color: " + budget.BudgetTag.HexColor + "; text-decoration: none";
                             <span class="badge badge-primary" style="@style">@budget.BudgetTag.ShortForm</span>
@@ -93,7 +93,7 @@
                 classList += " disabled";
             }
             <div class="col-3 col-sm-4 col-md-3 col-xl-1 mb-2" style="text-align:center">
-                <a class="@classList" style="width:100%" asp-page="./Index" asp-route-budgetPeriod="@period.ValueString" asp-route-selectedBudget="@Model.SelectedBudget.Id">
+                <a class="@classList" style="width:100%" asp-page="@PagePaths.BudgetIndex" asp-route-budgetPeriod="@period.ValueString" asp-route-selectedBudget="@Model.SelectedBudget.Id">
                     <span>@period.Text</span>
                 </a>
             </div>
@@ -105,7 +105,7 @@
         }
     } else {
         <h2>
-            <a asp-page="./Details" asp-route-id="@Model.SelectedBudget.Id">@Model.SelectedBudget.Name</a>
+            <a asp-page="@PagePaths.BudgetDetails" asp-route-id="@Model.SelectedBudget.Id">@Model.SelectedBudget.Name</a>
         </h2>
 
         <p>@Model.SelectedBudget.Description</p>
@@ -166,7 +166,7 @@
                             var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
 
                             <li>
-                                <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                                <a style="color:black;" asp-page="@PagePaths.TransactionIndex" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
                             </li>
                         }
                     </ul>
@@ -212,7 +212,7 @@
                         var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 
                         <li>
-                            <a style="color:black;" asp-page="/Transactions/Index" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                            <a style="color:black;" asp-page="@PagePaths.TransactionIndex" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
                         </li>
                     }
                 </ul>

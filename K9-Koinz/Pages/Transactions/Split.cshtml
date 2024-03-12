@@ -19,7 +19,7 @@
         @Html.DisplayNameFor(model => model.ParentTransaction.Account)
     </dt>
     <dd class="col-sm-9">
-        <a asp-page="/Accounts/Details" asp-route-id="@Model.ParentTransaction.AccountId" class="link-unstyled">
+        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@Model.ParentTransaction.AccountId" class="link-unstyled">
             @Html.DisplayFor(model => model.ParentTransaction.AccountName)
         </a>
     </dd>
@@ -33,7 +33,7 @@
         @Html.DisplayNameFor(model => model.ParentTransaction.MerchantId)
     </dt>
     <dd class="col-sm-9">
-        <a asp-page="/Merchants/Details" asp-route-id="@Model.ParentTransaction.MerchantId" class="link-unstyled">
+        <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@Model.ParentTransaction.MerchantId" class="link-unstyled">
             @Html.DisplayFor(model => model.ParentTransaction.MerchantName)
         </a>
     </dd>
@@ -41,7 +41,7 @@
         @Html.DisplayNameFor(model => model.ParentTransaction.Category)
     </dt>
     <dd class="col-sm-9">
-        <a asp-page="/Categories/Details" asp-route-id="@Model.ParentTransaction.CategoryId" class="link-unstyled">
+        <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@Model.ParentTransaction.CategoryId" class="link-unstyled">
             @Html.DisplayFor(model => model.ParentTransaction.CategoryName)
         </a>
     </dd>

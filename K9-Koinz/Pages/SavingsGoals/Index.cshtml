@@ -40,11 +40,11 @@
 @if (!Model.SavingsGoalsDict.Values.SelectMany(x => x).Any()) {
     <div>
         <p>You do not have any savings goals created yet.  Click the button below to make one!</p>
-        <a asp-page="./Create" class="btn btn-primary">New Savings Goal</a>
+        <a asp-page="@PagePaths.SavingsGoalCreate" class="btn btn-primary">New Savings Goal</a>
     </div>
 } else {
     <p>
-        <a asp-page="Create" class="no-underline-ever">
+        <a asp-page="@PagePaths.SavingsGoalCreate" class="no-underline-ever">
             <span class="btn btn-success btn-sm">
                 <i class="fa-solid fa-plus"></i> New Goal
             </span>
@@ -60,7 +60,7 @@
             <li class="list-group-item">
 
                 <h4>
-                    <a asp-page="/SavingsGoals/Details" asp-route-id="@goal.Id" class="no-underline">@goal.Name</a>
+                    <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@goal.Id" class="no-underline">@goal.Name</a>
                 </h4>
                 <p>@goal.Description</p>
 

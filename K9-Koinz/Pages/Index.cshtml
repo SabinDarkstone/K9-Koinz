@@ -20,8 +20,12 @@
     </div>
 </div>
 
-<div class="homepage-alerts mb-2">
+<div class="homepage-alerts">
     @await Component.InvokeAsync(nameof(MinimumBalanceAlert))
+</div>
+
+<div class="homepage-alerts">
+    @await Component.InvokeAsync("UpcomingBills")
 </div>
 
 <div class="mt-6">

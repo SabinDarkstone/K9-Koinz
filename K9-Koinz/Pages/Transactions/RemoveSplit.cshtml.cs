@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace K9_Koinz.Pages.Transactions {
             _context.Transactions.Update(parent);
             _context.SaveChanges();
 
-            return RedirectToPage("/Transactions/Details", new { id = parentId });
+            return RedirectToPage(PagePaths.TransactionDetails, new { id = parentId });
         }
     }
 }

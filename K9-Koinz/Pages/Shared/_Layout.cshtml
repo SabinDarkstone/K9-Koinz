@@ -20,10 +20,10 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <environment names="Development">
-                    <a class="navbar-brand" asp-area="" asp-page="/Index">K9 Koinz Dev</a>
+                    <a class="navbar-brand" asp-area="" asp-page="@PagePaths.Homepgae">K9 Koinz Dev</a>
                 </environment>
                 <environment names="Production">
-                    <a class="navbar-brand" asp-area="" asp-page="/Index">K9 Koinz</a>
+                    <a class="navbar-brand" asp-area="" asp-page="@PagePaths.Homepgae">K9 Koinz</a>
                 </environment>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -33,19 +33,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/Accounts/Index"><i class="fa-solid fa-landmark"></i> Accounts</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="@PagePaths.AccountIndex"><i class="fa-solid fa-landmark"></i> Accounts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/Transactions/Index"><i class="fa-solid fa-scale-balanced"></i> Transactions</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="@PagePaths.TransactionIndex"><i class="fa-solid fa-scale-balanced"></i> Transactions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/Budgets/Index"><i class="fa-solid fa-file-invoice"></i> Budgets</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="@PagePaths.BudgetIndex"><i class="fa-solid fa-file-invoice"></i> Budgets</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/Bills/Index"><i class="fa-solid fa-money-bills"></i> Bills</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="@PagePaths.BillIndex"><i class="fa-solid fa-money-bills"></i> Bills</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/SavingsGoals/Index"><i class="fa-solid fa-piggy-bank"></i> Savings Goals</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="@PagePaths.SavingsGoalIndex"><i class="fa-solid fa-piggy-bank"></i> Savings Goals</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link nav-link-hover dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
@@ -53,13 +53,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="/Merchants/Index"><i class="fa-solid fa-cash-register"></i> Merchants</a>
+                                    <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="@PagePaths.MerchantIndex"><i class="fa-solid fa-cash-register"></i> Merchants</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="/Categories/Index"><i class="fa-solid fa-layer-group"></i> Categories</a>
+                                    <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="@PagePaths.CategoryIndex"><i class="fa-solid fa-layer-group"></i> Categories</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="/Tags/Index"><i class="fa-solid fa-tags"></i> Tags</a>
+                                    <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="@PagePaths.TagIndex"><i class="fa-solid fa-tags"></i> Tags</a>
                                 </li>
                                 @*
                                 <li><hr class="dropdown-divider"></li>
@@ -73,7 +73,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark nav-link-hover" asp-page="/Help"><i class="fa-solid fa-question"></i> Support</a>
+                            <a class="nav-link text-dark nav-link-hover" asp-page="@PagePaths.HelpForm"><i class="fa-solid fa-question"></i> Support</a>
                         </li>
                     </ul>
                 </div>

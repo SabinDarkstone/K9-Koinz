@@ -6,7 +6,7 @@
         <div class="col">
             <p>
                 <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
-                    <a class="no-underline" asp-page="/Transactions/Index"
+                    <a class="no-underline" asp-page="@PagePaths.TransactionIndex"
                        asp-route-minDate="@Model.StartDate.FormatForUrl()"
                        asp-route-maxDate="@Model.EndDate.FormatForUrl()"
                        asp-route-catFilter="@Model.CategoryId">

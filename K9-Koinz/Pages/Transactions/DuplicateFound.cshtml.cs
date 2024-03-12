@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ namespace K9_Koinz.Pages.Transactions {
 
                 _context.Transactions.RemoveRange(transactions);
                 _context.SaveChanges();
-                return RedirectToPage("/Transactions/Index");
+                return RedirectToPage(PagePaths.TransactionIndex);
             }
 
             var toTransaction = _context.Transactions
@@ -51,10 +52,10 @@ namespace K9_Koinz.Pages.Transactions {
                 .Where(trans => trans.Id == id)
                 .SingleOrDefault();
             if (toTransaction.Category.CategoryType == CategoryType.TRANSFER || toTransaction.Category.CategoryType == CategoryType.INCOME) {
-                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = id });
+                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = id });
             }
 
-            return RedirectToPage("/Transactions/Index");
+            return RedirectToPage(PagePaths.TransactionIndex);
         }
     }
 }

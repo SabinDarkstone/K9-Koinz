@@ -9,7 +9,7 @@
 
 <h1>Merchants</h1>
 
-<a asp-page="Create" class="no-underline-ever">
+<a asp-page="@PagePaths.MerchantCreate" class="no-underline-ever">
     <span class="btn btn-success btn-sm mb-3">
         <i class="fa-solid fa-plus"></i> Create New
     </span>
@@ -36,11 +36,11 @@
                     @item.Transactions.Count()
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
+                    <a asp-page="@PagePaths.MerchantEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                    <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
                     @if (!item.Transactions.Any()) {
                         <text>
-                            | <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            | <a asp-page="@PagePaths.MerchantDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                         </text>
                     }
                 </td>

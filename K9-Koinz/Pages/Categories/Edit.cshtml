@@ -50,7 +50,7 @@
                 <tr>
                     <th>Name</th>
                     <th>
-                        <a class="btn btn-outline-primary" asp-page="/Categories/Create" asp-route-relatedId="@Model.Record.Id">Add Child</a>
+                        <a class="btn btn-outline-primary" asp-page="@PagePaths.CategoryCreate" asp-route-relatedId="@Model.Record.Id">Add Child</a>
                     </th>
                 </tr>
             </thead>
@@ -62,8 +62,8 @@
                             @childCategory.Name
                         </td>
                         <td>
-                            <a asp-page="/BudgetLines/Edit" asp-route-id="@childCategory.Id">Edit</a> |
-                            <a asp-page="/BudgetLines/Delete" asp-route-id="@childCategory.Id">Delete</a>
+                            <a asp-page="@PagePaths.CategoryEdit" asp-route-id="@childCategory.Id">Edit</a> |
+                            <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@childCategory.Id">Delete</a>
                         </td>
                     </tr>
                 }
@@ -73,7 +73,7 @@
 }
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="@PagePaths.CategoryIndex">Back to List</a>
 </div>
 
 @section Scripts {

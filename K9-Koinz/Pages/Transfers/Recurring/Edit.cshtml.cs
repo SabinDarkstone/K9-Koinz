@@ -2,6 +2,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
         }
 
         protected override IActionResult NavigationOnSuccess() {
-            return RedirectToPage("/Transfers/Manage");
+            return RedirectToPage(PagePaths.TransferManage);
         }
     }
 }

@@ -54,17 +54,17 @@ namespace K9_Koinz.Pages.Transfers {
 
         protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingTransactions) {
-                return RedirectToPage("/Transactions/DuplicateFound", new { id = transactions[1].Id });
+                return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = transactions[1].Id });
             }
 
             var toAccount = _context.Accounts.Find(transactions[1].AccountId);
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = transactions[1].Id });
+                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = transactions[1].Id });
             }
 
-            return RedirectToPage("/Transactions/Index");
+            return RedirectToPage(PagePaths.TransactionIndex);
         }
 
         public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
