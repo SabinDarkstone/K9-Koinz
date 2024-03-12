@@ -63,7 +63,6 @@ namespace K9_Koinz {
                 context.Database.Migrate();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
