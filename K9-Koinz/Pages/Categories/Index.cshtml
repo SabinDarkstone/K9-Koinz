@@ -9,7 +9,7 @@
 
 <h1>Categories</h1>
 
-<a asp-page="Create" class="no-underline-ever">
+<a asp-page="@PagePaths.CategoryCreate" class="no-underline-ever">
     <span class="btn btn-success btn-sm mb-3">
         <i class="fa-solid fa-plus"></i> Create New
     </span>
@@ -48,11 +48,11 @@
                     }
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
+                    <a asp-page="@PagePaths.CategoryEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                    <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
                     @if (!item.Transactions.Any()) {
                         <text>
-                            | <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash text-danger"></i></a>
+                            | <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash text-danger"></i></a>
                         </text>
                     }
                 </td>
@@ -72,11 +72,11 @@
                             @Html.DisplayFor(modelItem => childCat.Transactions.Count)
                         </td>
                         <td>
-                            <a asp-page="./Edit" asp-route-id="@childCat.Id"><i class="fa-solid fa-pencil"></i></a> |
-                            <a asp-page="./Details" asp-route-id="@childCat.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
+                            <a asp-page="@PagePaths.CategoryEdit" asp-route-id="@childCat.Id"><i class="fa-solid fa-pencil"></i></a> |
+                            <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@childCat.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
                             @if (!childCat.Transactions.Any()) {
                                 <text>
-                                    | <a asp-page="./Delete" asp-route-id="@childCat.Id"><i class="fa-solid fa-trash text-danger"></i></a>
+                                    | <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@childCat.Id"><i class="fa-solid fa-trash text-danger"></i></a>
                                 </text>
                             }
                         </td>

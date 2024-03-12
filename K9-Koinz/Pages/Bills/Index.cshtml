@@ -14,7 +14,7 @@
 
 <h1>Bills</h1>
 
-<a asp-page="Create" class="no-underline-ever">
+<a asp-page="@PagePaths.BillCreate" class="no-underline-ever">
     <span class="btn btn-success btn-sm mb-3">
         <i class="fa-solid fa-plus"></i> New Bill
     </span>
@@ -92,9 +92,9 @@
                             }
                         </td>
                         <td>
-                            <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                            <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                            <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                            <a asp-page="@PagePaths.BillDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                            <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                         </td>
                     </tr>
                 }
@@ -114,7 +114,7 @@
                             @item.BillAmount.FormatCurrency(2)
                         </div>
                         <div class="col-1">
-                            <a asp-page="Edit" asp-route-id="@item.Id">
+                            <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id">
                                 <i class="fa-solid fa-pencil text-primary"></i>
                             </a>
                         </div>
@@ -145,7 +145,7 @@
                             }
                         </div>
                         <div class="col-1">
-                            <a asp-page="Delete" asp-route-id="@item.Id">
+                            <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id">
                                 <i class="fa-solid fa-trash text-danger"></i>
                             </a>
                         </div>

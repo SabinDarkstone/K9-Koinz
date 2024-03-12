@@ -3,6 +3,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.BudgetLines {
     public class DeleteModel : AbstractDeleteModel<BudgetLine> {
@@ -17,7 +18,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override IActionResult NavigateOnSuccess() {
-            return RedirectToPage("/Budgets/Edit", new { id = Record.BudgetId });
+            return RedirectToPage(PagePaths.BudgetEdit, new { id = Record.BudgetId });
         }
     }
 }

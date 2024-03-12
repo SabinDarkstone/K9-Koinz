@@ -8,13 +8,13 @@
 <h1>Manage Transfers</h1>
 
 <p class="mb-4">
-    <a asp-page="/Transfers/Create" class="no-underline-ever">
+    <a asp-page="@PagePaths.TransferCreate" class="no-underline-ever">
         <span class="btn btn-primary btn-sm">
             <i class="fa-solid fa-plus"></i> New Transfer
         </span>
     </a>
 
-    <a asp-page="/Transfers/Recurring/Create" class="no-underline-ever">
+    <a asp-page="@PagePaths.RecurringTransferCreate" class="no-underline-ever">
         <span class="btn btn-primary btn-sm">
             <i class="fa-solid fa-repeat"></i> Schedule New Recurring
         </span>
@@ -73,9 +73,9 @@
                     <td>@transfer.RepeatConfig.RepeatString</td>
                     <td>@transfer.Amount.FormatCurrency(0)</td>
                     <td>
-                        <a asp-page="/Transfers/Recurring/Edit" asp-route-id="@transfer.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="/Transfers/Recurring/Details" asp-route-id="@transfer.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="/Transfers/Recurring/Delete" asp-route-id="@transfer.Id"><i class="fa-solid fa-trash"></i></a>
+                        <a asp-page="@PagePaths.RecurringTransferEdit" asp-route-id="@transfer.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@transfer.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="@PagePaths.RecurringTransferDelete" asp-route-id="@transfer.Id"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             }

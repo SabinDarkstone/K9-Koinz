@@ -50,6 +50,12 @@
                 @Html.DisplayFor(model => model.Record.RepeatConfig.TerminationDate)
             </dd>
         }
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.IsAutopay)
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.Record.IsAutopay ? "Yes" : "No")
+        </dd>
     </dl>
 </div>
 
@@ -67,7 +73,7 @@
             @foreach (var transaction in Model.Record.Transactions.OrderByDescending(trans => trans.Date)) {
                 <tr>
                     <td>
-                        <a asp-page="/Transactions/Details" asp-route-id="@transaction.Id">
+                        <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@transaction.Id">
                             @Html.DisplayFor(trans => transaction.Date)
                         </a>
                     </td>
@@ -80,12 +86,12 @@
     </table>
 </div>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
+    <a asp-page="@PagePaths.BillEdit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
         <i class="fa-solid fa-pen-to-square"></i> Edit
     </a>
-    <a asp-page="Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
+    <a asp-page="@PagePaths.BillDelete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
         <i class="fa-solid fa-trash"></i> Delete
     </a>
 </div>
 
-<a asp-page="Index">Back to List</a>
+<a asp-page="@PagePaths.BillIndex">Back to List</a>

@@ -37,7 +37,7 @@
                 <input type="checkbox" asp-for="Record.DoRollover" /> Rollover Unspent Amount?
             </div>
             <div class="form-group">
-                <a asp-page="/Budgets/Edit" asp-route-id="@Model.Record.BudgetId" class="btn btn-secondary">Cancel</a>
+                <a asp-page="@PagePaths.BudgetEdit" asp-route-id="@Model.Record.BudgetId" class="btn btn-secondary">Cancel</a>
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

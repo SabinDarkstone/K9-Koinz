@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -65,7 +66,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
                 }
             }
 
-            return RedirectToPage("/Transactions/Index");
+            return RedirectToPage(PagePaths.TransactionIndex);
         }
 
         private bool TransactionExists(Guid id) {

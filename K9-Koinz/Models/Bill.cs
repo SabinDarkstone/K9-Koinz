@@ -40,6 +40,8 @@ namespace K9_Koinz.Models {
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? LastDueDate { get; set; }
+        [DisplayName("Mark as Autopay")]
+        public bool IsAutopay { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
     }

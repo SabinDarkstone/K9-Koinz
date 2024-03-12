@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -61,7 +62,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
                 }
             }
 
-            return RedirectToPage("/Transfers/Manage");
+            return RedirectToPage(PagePaths.TransferManage);
         }
 
         private bool TransferExists(Guid id) {

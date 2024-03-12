@@ -6,6 +6,7 @@ using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : AbstractEditModel<Transaction> {
@@ -90,10 +91,10 @@ namespace K9_Koinz.Pages.Transactions {
 
         protected override IActionResult NavigationOnSuccess() {
             if (Record.IsSavingsSpending && !Record.SavingsGoalId.HasValue) {
-                return RedirectToPage("/SavingsGoals/Allocate", new { relatedId = Record.Id });
+                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = Record.Id });
             }
 
-            return RedirectToPage("Index");
+            return RedirectToPage(PagePaths.TransactionIndex);
         }
 
         public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {

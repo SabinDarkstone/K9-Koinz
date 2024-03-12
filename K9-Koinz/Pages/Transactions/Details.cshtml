@@ -25,7 +25,7 @@
             @Html.DisplayNameFor(model => model.Record.Account)
         </dt>
         <dd class="col-sm-9">
-            <a asp-page="/Accounts/Details" asp-route-id="@Model.Record.AccountId" class="link-unstyled">
+            <a asp-page="@PagePaths.AccountDetails" asp-route-id="@Model.Record.AccountId" class="link-unstyled">
                 @Html.DisplayFor(model => model.Record.AccountName)
             </a>
         </dd>
@@ -39,7 +39,7 @@
             @Html.DisplayNameFor(model => model.Record.MerchantId)
         </dt>
         <dd class="col-sm-9">
-            <a asp-page="/Merchants/Details" asp-route-id="@Model.Record.MerchantId" class="link-unstyled">
+            <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@Model.Record.MerchantId" class="link-unstyled">
                 @Html.DisplayFor(model => model.Record.MerchantName)
             </a>
         </dd>
@@ -47,7 +47,7 @@
             @Html.DisplayNameFor(model => model.Record.Category)
         </dt>
         <dd class="col-sm-9">
-            <a asp-page="/Categories/Details" asp-route-id="@Model.Record.CategoryId" class="link-unstyled">
+            <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@Model.Record.CategoryId" class="link-unstyled">
                 @Html.DisplayFor(model => model.Record.CategoryName)
             </a>
         </dd>
@@ -66,7 +66,7 @@
                 @Html.DisplayNameFor(model => model.Record.BillId)
             </dt>
             <dd class="col-sm-9">
-                <a asp-page="/Bills/Details" asp-route-id="@Model.Record.BillId">
+                <a asp-page="@PagePaths.BillDetails" asp-route-id="@Model.Record.BillId">
                     @Html.DisplayFor(model => model.Record.Bill.Name)
                 </a>
             </dd>
@@ -127,11 +127,11 @@
 
 <div>
     @if (!Model.Record.ParentTransactionId.HasValue) {
-        <a asp-page="./Edit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
+        <a asp-page="@PagePaths.TransactionEdit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
             <i class="fa-solid fa-pen-to-square"></i> Edit
         </a>
         if (Model.Record.Category.CategoryType != Models.CategoryType.TRANSFER) {
-            <a class="btn btn-secondary mb-2" asp-page="/Transactions/Split" asp-route-parentId="@Model.Record.Id">
+            <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransactionSplit" asp-route-parentId="@Model.Record.Id">
                 <i class="fa-solid fa-arrows-split-up-and-left"></i>
                 @if (Model.Record.SplitTransactions.Any()) {
                     <text>Edit Split</text>
@@ -140,21 +140,21 @@
                 }
             </a>
             @if (Model.Record.IsSplit) {
-                <a class="btn btn-outline-secondary mb-2" asp-page="/Transactions/RemoveSplit" asp-route-parentId="@Model.Record.Id">
+                <a class="btn btn-outline-secondary mb-2" asp-page="@PagePaths.TransactionRemoveSplit" asp-route-parentId="@Model.Record.Id">
                     Remove Split
                 </a>
             }
         }
-        <a asp-page="Delete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
+        <a asp-page="@PagePaths.TransactionDelete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
             <i class="fa-solid fa-trash"></i> Delete
         </a>
     } else {
-        <a asp-page="Details" asp-route-id="@Model.Record.ParentTransactionId" class="btn btn-primary mb-2">
+        <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@Model.Record.ParentTransactionId" class="btn btn-primary mb-2">
             Go to Parent
         </a>
     }
 </div>
-<a asp-page="/Transactions/Index"
+<a asp-page="@PagePaths.TransactionIndex"
    asp-route-sortOrder="@payload.SortOrder"
    asp-route-catFilter="@payload.CatFilter"
    asp-route-pageIndex="@payload.PageIndex"

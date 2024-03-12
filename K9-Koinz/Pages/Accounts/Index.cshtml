@@ -1,6 +1,5 @@
 ﻿@page
 @using Models
-@using K9_Koinz.Utils
 @model K9_Koinz.Pages.Accounts.IndexModel
 
 @{
@@ -9,7 +8,7 @@
 
 <h1>Accounts</h1>
 
-<a asp-page="Create" class="no-underline-ever">
+<a asp-page="@PagePaths.AccountCreate" class="no-underline-ever">
     <span class="btn btn-success btn-sm mb-3">
         <i class="fa-solid fa-plus"></i> Create New
     </span>
@@ -48,9 +47,9 @@
                         @item.CurrentBalance.FormatCurrency()
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             }
@@ -88,9 +87,9 @@
                         @item.CurrentBalance.FormatCurrency()
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             }
@@ -128,9 +127,9 @@
                         @item.CurrentBalance.FormatCurrency()
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             }
@@ -168,9 +167,9 @@
                         @item.CurrentBalance.FormatCurrency()
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             }
@@ -208,9 +207,9 @@
                         @item.CurrentBalance.FormatCurrency()
                     </td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             }

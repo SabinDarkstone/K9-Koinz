@@ -29,19 +29,19 @@
 <h1>Your Transactions</h1>
 
 <p>
-    <a asp-page="Create" class="no-underline-ever">
+    <a asp-page="@PagePaths.TransactionCreate" class="no-underline-ever">
         <span class="btn btn-success btn-sm">
             <i class="fa-solid fa-plus"></i> Create New
         </span>
     </a>
 
-    <a asp-page="/Transfers/Manage" class="no-underline-ever">
+    <a asp-page="@PagePaths.TransferManage" class="no-underline-ever">
         <span class="btn btn-success btn-sm">
             <i class="fa-solid fa-arrow-right-arrow-left"></i> Manage Transfers
         </span>
     </a>
 
-    <a asp-page="Print" class="no-underline-ever">
+    <a asp-page="@PagePaths.TransactionPrint" class="no-underline-ever">
         <span class="btn btn-success btn-sm">
             <i class="fa-solid fa-print"></i> Print View
         </span>
@@ -50,7 +50,7 @@
 
 <div class="row">
     <div class="col-lg-2">
-        <form asp-page="./Index" method="get">
+        <form asp-page="@PagePaths.TransactionIndex" method="get">
             <div class="form-actions no-color">
                 <div class="form-group mb-3">
                     <label for="dteStart">Start Date</label>
@@ -92,7 +92,7 @@
                     </select>
                 </div>
 
-                <input type="submit" value="Go" class="btn btn-primary" /> | <a asp-page="./Index">Back to full list</a>
+                <input type="submit" value="Go" class="btn btn-primary" /> | <a asp-page="@PagePaths.TransactionIndex">Back to full list</a>
             </div>
         </form>
     </div>
@@ -106,7 +106,7 @@
                             @Html.DisplayNameFor(model => model.Transactions[0].Account)
                         </th>
                         <th>
-                            <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                            <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.DateSort"
                                asp-route-catFilter="@Model.SelectedCategory"
                                asp-route-accountFilter="@Model.SelectedAccount"
                                asp-route-minDate="@Model.MinDateString"
@@ -117,7 +117,7 @@
                             </a>
                         </th>
                         <th>
-                            <a asp-page="./Index" asp-route-sortOrder="@Model.MerchantSort"
+                            <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.MerchantSort"
                                asp-route-catFilter="@Model.SelectedCategory"
                                asp-route-accountFilter="@Model.SelectedAccount"
                                asp-route-minDate="@Model.MinDateString"
@@ -131,7 +131,7 @@
                             @Html.DisplayNameFor(model => model.Transactions[0].Category)
                         </th>
                         <th>
-                            <a asp-page="./Index" asp-route-sortOrder="@Model.AmountSort"
+                            <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.AmountSort"
                                asp-route-catFilter="@Model.SelectedCategory"
                                asp-route-accountFilter="@Model.SelectedAccount"
                                asp-route-minDate="@Model.MinDateString"
@@ -154,7 +154,7 @@
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
                             <td>
-                                <a asp-page="/Merchants/Details" asp-route-id="@item.MerchantId" class="link-unstyled">
+                                <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.MerchantId" class="link-unstyled">
                                     @if (item.TagId.HasValue) {
                                         var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
@@ -169,7 +169,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a asp-page="/Categories/Details" asp-route-id="@item.CategoryId" class="link-unstyled">
+                                <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@item.CategoryId" class="link-unstyled">
                                     @Html.DisplayFor(modelItem => item.CategoryName)
                                 </a>
                             </td>
@@ -185,9 +185,9 @@
                                 }
                             </td>
                             <td>
-                                <a asp-page="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a>
-                                <a asp-page="Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
-                                <a asp-page="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                                <a asp-page="@PagePaths.TransactionEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a>
+                                <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
+                                <a asp-page="@PagePaths.TransactionDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                     }
@@ -226,14 +226,14 @@
                                     }
                                 </div>
                                 <div class="col-1">
-                                    <a asp-page="./Edit" asp-route-id="@transaction.Id"><i class="fa-solid fa-pencil text-primary"></i></a>
+                                    <a asp-page="@PagePaths.TransactionEdit" asp-route-id="@transaction.Id"><i class="fa-solid fa-pencil text-primary"></i></a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-7 text-secondary transaction-item" data-id="@transaction.Id">@transaction.CategoryName</div>
                                 <div class="col-4 text-secondary text-end transaction-item" data-id="@transaction.Id">@transaction.Date.FormatShortString()</div>
                                 <div class="col-1">
-                                    <a asp-page="./Delete" asp-route-id="@transaction.Id"><i class="fa-solid fa-trash text-danger"></i></a>
+                                    <a asp-page="@PagePaths.TransactionDelete" asp-route-id="@transaction.Id"><i class="fa-solid fa-trash text-danger"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +251,7 @@
                 var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
             }
 
-            <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
+            <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
                asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
@@ -262,7 +262,7 @@
                 Previous
             </a>
 
-            <a asp-page="./Index" asp-route-sortOrder="@Model.CurrentSort"
+            <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
                asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"

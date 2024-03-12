@@ -63,17 +63,17 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingSchedule) {
-                return RedirectToPage("/Transfers/DuplicateFound", new { id = Record.Id });
+                return RedirectToPage(PagePaths.TransferDuplicateFound, new { id = Record.Id });
             }
 
             var toAccount = _context.Accounts.Find(Record.ToAccountId);
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == Record.ToAccountId);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage("/SavingsGoals/AllocateRecurring", new { relatedId = Record.Id });
+                return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = Record.Id });
             }
 
-            return RedirectToPage("/Transfers/Manage");
+            return RedirectToPage(PagePaths.TransferManage);
         }
 
         public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {

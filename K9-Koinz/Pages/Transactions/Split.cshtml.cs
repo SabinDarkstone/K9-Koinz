@@ -1,6 +1,7 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -68,7 +69,7 @@ namespace K9_Koinz.Pages.Transactions {
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Transactions/Details", new { id = parent.Id });
+            return RedirectToPage(PagePaths.TransactionDetails, new { id = parent.Id });
         }
     }
 }

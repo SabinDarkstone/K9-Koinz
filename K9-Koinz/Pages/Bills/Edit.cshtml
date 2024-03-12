@@ -16,6 +16,7 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.Id" />
+            <input type="hidden" asp-for="Record.RepeatConfig.LastFiring"/>
             <div class="form-group">
                 <label asp-for="Record.Name" class="control-label"></label>
                 <input asp-for="Record.Name" class="form-control" />
@@ -75,6 +76,11 @@
                     <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" />
                 }
                 <span asp-validation-for="Record.RepeatConfig.TerminationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Record.IsAutopay" />
+                <label asp-for="Record.IsAutopay" class="control-label"></label>
+                <span asp-validation-for="Record.IsAutopay" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">
