@@ -32,10 +32,8 @@ namespace K9_Koinz.Pages.Transfers {
             transactions = (await Record.CreateTransactions(_context, false)).ToArray();
 
             foundMatchingTransactions = _context.Transactions
-                .Where(trans =>
-                    (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[1].Amount) ||
-                    (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[0].Amount)
-                )
+                .Where(trans => trans.AccountId == transactions[0].AccountId)
+                .Where(trans => trans.Amount == transactions[0].Amount)
                 .ToList()
                 .Where(trans => Math.Abs((trans.Date - transactions[1].Date).TotalDays) <= 5)
                 .Any();

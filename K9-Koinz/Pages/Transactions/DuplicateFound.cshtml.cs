@@ -27,7 +27,6 @@ namespace K9_Koinz.Pages.Transactions {
             MatchingTransactions = _context.Transactions
                 .Where(trans => trans.AccountId == Transaction.AccountId)
                 .Where(trans => trans.Amount == Transaction.Amount || trans.Amount == -1 * Transaction.Amount)
-                .Where(trans => trans.MerchantId == Transaction.MerchantId)
                 .AsEnumerable()
                 .Where(trans => Math.Abs((trans.Date - Transaction.Date).TotalDays) <= 5)
                 .Where(trans => trans.Id != id.Value)
@@ -38,11 +37,25 @@ namespace K9_Koinz.Pages.Transactions {
 
         public IActionResult OnPost(Guid id, string mode) {
             if (mode == "cancel") {
-                var transactions = _context.Transactions
-                    .Where(trans => trans.Id == id)
-                    .ToList();
+                var transaction = _context.Transactions.Find(id);
 
-                _context.Transactions.RemoveRange(transactions);
+                _context.Transactions.Remove(transaction);
+
+                if (transaction.TransferId.HasValue) {
+                    var transfer = _context.Transfers
+                        .Where(fer => fer.Id == transaction.TransferId.Value)
+                        .FirstOrDefault();
+
+                    var otherTransaction = _context.Transactions
+                        .Where(trans => trans.TransferId == transfer.Id)
+                        .Where(trans => trans.Id != id)
+                        .FirstOrDefault();
+
+                    if (otherTransaction != null) {
+                        _context.Transactions.Remove(otherTransaction);
+                    }
+                }
+
                 _context.SaveChanges();
                 return RedirectToPage(PagePaths.TransactionIndex);
             }
