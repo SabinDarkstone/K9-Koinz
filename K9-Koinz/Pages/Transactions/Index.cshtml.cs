@@ -111,11 +111,11 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             if (MinDateFilter.HasValue) {
-                transactionsIQ = transactionsIQ.Where(trans => trans.Date >= MinDateFilter.Value);
+                transactionsIQ = transactionsIQ.Where(trans => trans.Date.Date >= MinDateFilter.Value.Date);
             }
 
             if (MaxDateFilter.HasValue) {
-                transactionsIQ = transactionsIQ.Where(trans => trans.Date <= MaxDateFilter.Value);
+                transactionsIQ = transactionsIQ.Where(trans => trans.Date.Date <= MaxDateFilter.Value.Date);
             }
 
             switch (sortOrder) {

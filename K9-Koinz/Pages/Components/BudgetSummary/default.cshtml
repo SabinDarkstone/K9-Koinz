@@ -14,6 +14,7 @@
                         @Model.IncomeTotal.FormatCurrency(0)
                     </div>
                 </div>
+                <hr class="mt-1 mb-1"/>
                 <div class="row">
                     <div class="col-7">
                         @Html.DisplayNameFor(model => Model.AllocatedExpenseTotal)
@@ -30,7 +31,15 @@
                         @Model.ExtraExpenseTotal.FormatCurrency(0)
                     </div>
                 </div>
-                <hr />
+                <div class="row">
+                    <div class="col-7">
+                        @Html.DisplayNameFor(model => Model.SavingsGoalTransferTotal)
+                    </div>
+                    <div class="col-5" style="text-align:right">
+                        @Model.SavingsGoalTransferTotal.FormatCurrency(0)
+                    </div>
+                </div>
+                <hr class="mt-1 mb-1" />
                 <div class="row">
                     <div class="col-7">
                         @Html.DisplayNameFor(model => Model.NetAmount)

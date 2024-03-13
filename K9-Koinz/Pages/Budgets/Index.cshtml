@@ -112,9 +112,9 @@
 
         @if (!Model.SelectedBudget.DoNotUseCategories) {
             @await Component.InvokeAsync(nameof(BudgetSummary), new {
-                    budget = Model.SelectedBudget
+                    budget = Model.SelectedBudget,
+                    referenceDate = Model.BudgetPeriod
                 })
-            ;
         }
 
         <hr />
@@ -124,7 +124,7 @@
                 @await Component.InvokeAsync(nameof(BudgetLineBar), new {
                         line = Model.SelectedBudget.BudgetLines.First(),
                         currentPeriod = Model.BudgetPeriod
-                    });
+                    })
             </ul>
         } else {
 
@@ -145,7 +145,6 @@
                                 line = budgetLine,
                                 currentPeriod = Model.BudgetPeriod
                             })
-                        ;
                     }
                 </ul>
 
@@ -191,7 +190,6 @@
                             line = budgetLine,
                             currentPeriod = Model.BudgetPeriod
                         })
-                    ;
                 }
             </ul>
 
