@@ -21,6 +21,13 @@ namespace K9_Koinz {
                 options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
             });
 
+            if (!builder.Environment.IsDevelopment()) {
+                builder.Services.AddHttpsRedirection(options => {
+                    options.RedirectStatusCode = 308;
+                    options.HttpsPort = 443;
+                });
+            }
+
             // Add K9 Koinz Services
             builder.Services.AddMyServices();
 
@@ -31,12 +38,12 @@ namespace K9_Koinz {
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment()) {
-                app.UseHttpsRedirection();
+                app.UseHsts();
             } else {
                 app.UseMigrationsEndPoint();
             }
 
-            app.UseHsts();
+            app.UseHttpsRedirection();
 
             app.Use(async (context, next) => {
                 if (context.Request.Path.StartsWithSegments("/robots.txt")) {
