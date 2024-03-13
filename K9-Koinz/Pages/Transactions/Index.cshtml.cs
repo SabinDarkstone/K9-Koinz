@@ -24,6 +24,8 @@ namespace K9_Koinz.Pages.Transactions {
             _autocompleteService = autocompleteService;
         }
 
+        private bool? _hideTransfers;
+
         public List<Guid> CategoryFilters { get; set; }
         public Guid MerchantFilter { get; set; }
         public Guid AccountFilter { get; set; }
@@ -44,6 +46,17 @@ namespace K9_Koinz.Pages.Transactions {
         public string SelectedMerchant { get; set; }
         public string SelectedAccount { get; set; }
         public string SelectedTag { get; set; }
+        public string SearchText { get; set; }
+
+        public bool HideTransfers {
+            get {
+                if (_hideTransfers.HasValue) {
+                    return _hideTransfers.Value;
+                } else {
+                    return false;
+                }
+            }
+        }
 
         public string MinDateString {
             get {
@@ -68,7 +81,7 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList CategoryOptions;
         public List<SelectListItem> AccountOptions;
 
-        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex) {
+        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex, string searchString, bool? hideTransfers) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
             AccountOptions = await _accountSerice.GetAccountListAsync(true);
 
@@ -79,6 +92,7 @@ namespace K9_Koinz.Pages.Transactions {
             SelectedCategory = catFilter;
             SelectedMerchant = merchFilter;
             SelectedAccount = accountFilter;
+            SearchText = searchString;
             SelectedTag = tagId;
             MinDateFilter = minDate;
             MaxDateFilter = maxDate;
@@ -118,6 +132,18 @@ namespace K9_Koinz.Pages.Transactions {
                 transactionsIQ = transactionsIQ.Where(trans => trans.Date.Date <= MaxDateFilter.Value.Date);
             }
 
+            if (!string.IsNullOrWhiteSpace(searchString)) {
+                var lcSearchString = searchString.ToLower();
+                transactionsIQ = transactionsIQ.Where(trans => trans.Notes.ToLower().Contains(lcSearchString) ||
+                    trans.AccountName.ToLower().Contains(lcSearchString) || trans.CategoryName.ToLower().Contains(lcSearchString) ||
+                    trans.MerchantName.ToLower().Contains(lcSearchString) || trans.SavingsGoalName.ToLower().Contains(lcSearchString));
+            }
+
+            if (hideTransfers.HasValue && hideTransfers.Value) {
+                transactionsIQ = transactionsIQ.Include(trans => trans.Category)
+                    .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER);
+            }
+
             switch (sortOrder) {
 
                 case "Merchant":
@@ -140,7 +166,7 @@ namespace K9_Koinz.Pages.Transactions {
                     transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.Date);
                     break;
             }
-
+            
             transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
 
             var pageSize = _configuration.GetValue("PageSize", 10);
