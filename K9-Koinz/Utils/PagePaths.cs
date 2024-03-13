@@ -17,7 +17,7 @@
 
         public const string BudgetLineCreate = "/BudgetLines/Create";
         public const string BudgetLineDelete = "/BudgetLines/Delete";
-        public const string BudgetLineEdit = "/BudgetLines/Details";
+        public const string BudgetLineEdit = "/BudgetLines/Edit";
 
         public const string BudgetCreate = "/Budgets/Create";
         public const string BudgetDelete = "/Budgets/Delete";
