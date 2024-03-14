@@ -31,7 +31,7 @@ namespace K9_Koinz {
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment()) {
-                // NO OP
+                app.UseHttpsRedirection();
             } else {
                 app.UseMigrationsEndPoint();
             }
