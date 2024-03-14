@@ -27,13 +27,17 @@ namespace K9_Koinz.Pages.Meta {
             _tagService = tagService;
         }
 
+        protected virtual async Task BeforePageLoadActions() {
+            AccountOptions = await _accountService.GetAccountListAsync(true);
+            TagOptions = await _tagService.GetTagListAsync();
+        }
+
         public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (!id.HasValue) {
                 return NotFound();
             }
 
-            AccountOptions = await _accountService.GetAccountListAsync(true);
-            TagOptions = await _tagService.GetTagListAsync();
+            await BeforePageLoadActions();
 
             await BeforeQueryActionsAsync();
             BeforeQueryActions();
@@ -51,6 +55,7 @@ namespace K9_Koinz.Pages.Meta {
 
         public async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
+                await BeforePageLoadActions();
                 return NavigationOnFailure();
             }
 

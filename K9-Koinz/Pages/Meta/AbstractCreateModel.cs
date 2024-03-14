@@ -41,6 +41,7 @@ namespace K9_Koinz.Pages.Meta {
 
         public virtual async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
+                await BeforePageLoadActions();
                 return NavigationOnFailure();
             }
 
