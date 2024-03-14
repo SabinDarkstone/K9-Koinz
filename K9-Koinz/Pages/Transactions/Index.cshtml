@@ -14,7 +14,9 @@
         MinDate = Model.MinDateString,
         MaxDate = Model.MaxDateString,
         MerchFilter = Model.SelectedMerchant,
-        PageIndex = Model.Transactions.PageIndex
+        PageIndex = Model.Transactions.PageIndex,
+        HideTransfers = Model.HideTransfers,
+        SearchString = Model.SearchText
     };
     var payloadString = JsonSerializer.Serialize(payload);
     Response.Cookies.Append("backToTransactions", payloadString);
@@ -53,6 +55,10 @@
         <form asp-page="@PagePaths.TransactionIndex" method="get">
             <div class="form-actions no-color">
                 <div class="form-group mb-3">
+                    <label for="searchString">Search</label>
+                    <input id="searchString" type="text" name="searchString" value="@Model.SearchText" class="form-control"/>
+                </div>
+                <div class="form-group mb-3">
                     <label for="dteStart">Start Date</label>
                     <input id="dteStart" type="date" name="minDate" value="@Model.MinDateString" class="form-control" />
                 </div>
@@ -90,6 +96,11 @@
                         <option value="Amount">Amount (Smallest First)</option>
                         <option value="amount_desc">Amount (Largest First)</option>
                     </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <input type="checkbox" name="hideTransfers" asp-for="HideTransfers" />
+                    <label>Hide Transfers</label>
                 </div>
 
                 <input type="submit" value="Go" class="btn btn-primary" /> | <a asp-page="@PagePaths.TransactionIndex">Back to full list</a>

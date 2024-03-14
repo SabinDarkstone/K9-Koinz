@@ -7,5 +7,7 @@
         public string MaxDate { get; set; }
         public string MerchFilter { get; set; }
         public int PageIndex { get; set; }
+        public string SearchString { get; set; }
+        public bool HideTransfers { get; set; }
     }
 }

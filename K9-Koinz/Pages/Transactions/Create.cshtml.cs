@@ -6,6 +6,7 @@ using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Utils;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
@@ -23,6 +24,24 @@ namespace K9_Koinz.Pages.Transactions {
 
         public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
             return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
+        }
+
+        public async Task<IActionResult> OnGetSuggestedCategory(string merchantId) {
+            var transactionsByCategory = (await _context.Transactions
+                .AsNoTracking()
+                .Where(trans => trans.MerchantId == Guid.Parse(merchantId))
+                .ToListAsync())
+                .GroupBy(x => x.CategoryId)
+                .FirstOrDefault();
+
+            // Get the most commonly used category
+            var category = await _context.Categories.FindAsync(transactionsByCategory.ToList().FirstOrDefault().CategoryId);
+
+            if (category != null) {
+                return new JsonResult(category);
+            } else {
+                return null;
+            }
         }
 
         public async Task<JsonResult> OnGetAddMerchant(string text) {

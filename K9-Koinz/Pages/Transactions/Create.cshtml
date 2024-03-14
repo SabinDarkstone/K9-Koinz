@@ -114,6 +114,23 @@
                 },
                 select: function (e, i) {
                     $("#hfMerchant").val(i.item.val);
+                    $.ajax({
+                        url: "/Transactions/Create?handler=SuggestedCategory",
+                        data: { merchantId: $("#hfMerchant").val() },
+                        type: "GET",
+                        success: function(data) {
+                            if (data != null) {
+                                $("#hfCategory").val(data.id);
+                                $("#txtCategory").val(data.name);
+                            }
+                        },
+                        error: function (data) {
+                            console.log(data);
+                        },
+                        failure: function (data) {
+                            console.log(data);
+                        }
+                    })
                 },
                 minLength: 1
             });
