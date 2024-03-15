@@ -23,6 +23,12 @@ namespace K9_Koinz.Pages {
         public List<Account> Accounts { get; set; } = default!;
 
         public async Task OnGetAsync() {
+            var badTransactions = _context.Transactions
+                .Where(trans => trans.Date.Date == DateTime.Parse("01/01/0001").Date)
+                .ToList();
+            _context.RemoveRange(badTransactions);
+            _context.SaveChanges();
+
             await _dbCleanupService.DateMigrateBillSchedules();
 
             var results = await _spendingGraph.CreateGraphData();
