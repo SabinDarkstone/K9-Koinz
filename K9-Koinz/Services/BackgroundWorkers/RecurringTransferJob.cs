@@ -33,6 +33,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
             foreach (var transfer in repeatingTransfers) {
                 var transferInstance = _context.GetInstanceOfRecurring(transfer);
                 transactions.AddRange(await _context.CreateTransactionsFromTransfer(transferInstance));
+                transfer.RepeatConfig.FireNow();
             }
 
             _context.Transactions.AddRange(transactions);
