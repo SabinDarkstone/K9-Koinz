@@ -4,6 +4,7 @@ using K9_Koinz.Utils;
 using K9_Koinz.Services;
 using K9_Koinz.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages {
 
@@ -22,7 +23,7 @@ namespace K9_Koinz.Pages {
         public string LastMonthSpendingJson { get; set; }
         public List<Account> Accounts { get; set; } = default!;
 
-        public async Task OnGetAsync() {
+        public async Task<IActionResult> OnGetAsync() {
             var badTransactions = _context.Transactions
                 .Where(trans => trans.Date.Date == DateTime.Parse("01/01/0001").Date)
                 .ToList();
@@ -41,6 +42,8 @@ namespace K9_Koinz.Pages {
             if (accounts.Count > 0) {
                 this.Accounts = accounts;
             }
+
+            return Page();
         }
     }
 }
