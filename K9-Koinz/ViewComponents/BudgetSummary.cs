@@ -17,6 +17,7 @@ namespace K9_Koinz.ViewComponents {
             _logger = logger;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate) {
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(referenceDate);
             IncomeTotal = budget.IncomeLines
@@ -34,6 +35,7 @@ namespace K9_Koinz.ViewComponents {
 
             return View(this);
         }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         [DisplayName("Estimated Income")]
         public double IncomeTotal { get; set; }

@@ -47,7 +47,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         protected override async Task AfterSaveActionsAsync() {
             if (Record.RepeatConfig.NeedsToFireImmediately) {
-                transactions = (await Record.CreateTransactions(_context, false)).ToArray();
+                transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
                 Record.RepeatConfig.FireNow();
 
                 foreach (var transaction in transactions) {

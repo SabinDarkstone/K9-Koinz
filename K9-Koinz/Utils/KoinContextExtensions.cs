@@ -2,8 +2,22 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
-    public static class TransferExtensions {
-        public static async Task<List<Transaction>> CreateTransactions(this Transfer transfer, KoinzContext context, bool trustSavingsGoals = true) {
+    public static class KoinContextExtensions {
+        public static Transfer GetInstanceOfRecurring(this KoinzContext context, Transfer recurringTransfer) {
+            return new Transfer {
+                Amount = recurringTransfer.Amount,
+                CategoryId = recurringTransfer.CategoryId,
+                Date = recurringTransfer.RepeatConfig.NextFiring.Value,
+                Notes = recurringTransfer.Notes,
+                MerchantId = recurringTransfer.MerchantId,
+                SavingsGoalId = recurringTransfer.SavingsGoalId,
+                TagId = recurringTransfer.TagId,
+                ToAccountId = recurringTransfer.ToAccountId,
+                FromAccountId = recurringTransfer.FromAccountId
+            };
+        }
+
+        public static async Task<Transaction[]> CreateTransactionsFromTransfer(this KoinzContext context, Transfer transfer, bool trustSavingsGoals = true) {
             Transaction[] transactons = new Transaction[2];
 
             var category = await context.Categories.FindAsync(transfer.CategoryId);

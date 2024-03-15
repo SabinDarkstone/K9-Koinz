@@ -139,6 +139,7 @@ namespace K9_Koinz.Pages.Transactions {
                     trans.MerchantName.ToLower().Contains(lcSearchString) || trans.SavingsGoalName.ToLower().Contains(lcSearchString));
             }
 
+            _hideTransfers = hideTransfers;
             if (hideTransfers.HasValue && hideTransfers.Value) {
                 transactionsIQ = transactionsIQ.Include(trans => trans.Category)
                     .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER);

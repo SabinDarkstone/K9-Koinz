@@ -31,7 +31,8 @@ namespace K9_Koinz.Services.BackgroundWorkers {
 
             var transactions = new List<Transaction>();
             foreach (var transfer in repeatingTransfers) {
-                transactions.AddRange(await transfer.CreateTransactions(_context));
+                var transferInstance = _context.GetInstanceOfRecurring(transfer);
+                transactions.AddRange(await _context.CreateTransactionsFromTransfer(transferInstance));
             }
 
             _context.Transactions.AddRange(transactions);

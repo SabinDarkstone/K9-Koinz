@@ -29,7 +29,7 @@ namespace K9_Koinz.Pages.Transfers {
         protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight() + DateTime.Now.TimeOfDay;
 
-            transactions = (await Record.CreateTransactions(_context, false)).ToArray();
+            transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
 
             foundMatchingTransactions = _context.Transactions
                 .Where(trans => trans.AccountId == transactions[0].AccountId)
