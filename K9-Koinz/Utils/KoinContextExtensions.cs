@@ -13,7 +13,8 @@ namespace K9_Koinz.Utils {
                 SavingsGoalId = recurringTransfer.SavingsGoalId,
                 TagId = recurringTransfer.TagId,
                 ToAccountId = recurringTransfer.ToAccountId,
-                FromAccountId = recurringTransfer.FromAccountId
+                FromAccountId = recurringTransfer.FromAccountId,
+                Id = recurringTransfer.Id
             };
         }
 
@@ -39,7 +40,8 @@ namespace K9_Koinz.Utils {
                 Amount = -1 * transfer.Amount,
                 Notes = transfer.Notes,
                 TagId = transfer.TagId,
-                Date = transfer.Date
+                Date = transfer.Date,
+                TransferId = transfer.Id
             };
             var toTransaction = new Transaction {
                 AccountId = transfer.ToAccountId,
@@ -51,10 +53,11 @@ namespace K9_Koinz.Utils {
                 Amount = transfer.Amount,
                 Notes = transfer.Notes,
                 TagId = transfer.TagId,
-                Date = transfer.Date
+                Date = transfer.Date,
+                TransferId = transfer.Id
             };
 
-            if (trustSavingsGoals && toTransaction.SavingsGoalId.HasValue) {
+            if (trustSavingsGoals && transfer.SavingsGoalId.HasValue) {
                 var savingsGoal = await context.SavingsGoals.FindAsync(transfer.SavingsGoalId);
                 toTransaction.SavingsGoalId = transfer.SavingsGoalId;
                 toTransaction.SavingsGoalName = savingsGoal.Name;
