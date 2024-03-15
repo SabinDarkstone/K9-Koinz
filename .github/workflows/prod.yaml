@@ -30,41 +30,46 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Stop the apps
+      # We will output publish files to the folder we previously created
+      
+      - name: Deploy Camp
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
           systemctl --user stop k9-koinz-camp.service
-          systemctl --user stop k9-koinz-rian.service
-          systemctl --user stop k9-koinz-skunk.service
-          systemctl --user stop k9-koinz-test.service
-          systemctl --user stop k9-koinz-ethan.service
-          systemctl --user stop k9-koinz-beason.service
+          dotnet publish -c Release -o /var/www/k9-koinz-camp
+          systemctl --user start k9-koinz-camp.service
 
-      # We will output publish files to the folder we previously created
-      - name: Publish Camp
-        run: dotnet publish -c Release -o /var/www/k9-koinz-camp
-
-      - name: Publish Rian
-        run: dotnet publish -c Release -o /var/www/k9-koinz-rian
-
-      - name: Publish Snowie
-        run: dotnet publish -c Release -o /var/www/k9-koinz-skunk
-
-      - name: Publish Staging
-        run: dotnet publish -c Release -o /var/www/k9-koinz-test
-
-      - name: Publish Beason
-        run: dotnet publish -c Release -o /var/www/k9-koinz-beason
-
-      - name: Publish Ethan
-        run: dotnet publish -c Release -o /var/www/k9-koinz-ethan
-
-      - name: Restart the apps
+      - name: Deploy Rian
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl --user start k9-koinz-camp.service
+          systemctl --user stop k9-koinz-rian.service
+          dotnet publish -c Release -o /var/www/k9-koinz-rian
           systemctl --user start k9-koinz-rian.service
+
+      - name: Deploy Snowie
+        run: |
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          systemctl --user stop k9-koinz-skunk.service
+          dotnet publish -c Release -o /var/www/k9-koinz-skunk
           systemctl --user start k9-koinz-skunk.service
+
+      - name: Deploy Staging
+        run: |
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          systemctl --user stop k9-koinz-test.service
+          dotnet publish -c Release -o /var/www/k9-koinz-test
           systemctl --user start k9-koinz-test.service
+
+      - name: Deploy Beason
+        run: |
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          systemctl --user stop k9-koinz-beason.service
+          dotnet publish -c Release -o /var/www/k9-koinz-beason
           systemctl --user start k9-koinz-beason.service
+          
+      - name: Deploy Ethan
+        run: |
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          systemctl --user stop k9-koinz-ethan.service
+          dotnet publish -c Release -o /var/www/k9-koinz-ethan
           systemctl --user start k9-koinz-ethan.service
