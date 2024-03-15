@@ -7,9 +7,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Accounts {
     public class CreateModel : AbstractCreateModel<Account> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+                : base(context, logger, accountService, tagService) { }
 
         protected override void BeforeSaveActions() {
             Record.InitialBalanceDate = Record.InitialBalanceDate.AtMidnight();

@@ -6,9 +6,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.SavingsGoals {
     public class EditModel : AbstractEditModel<SavingsGoal> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+                : base(context, logger, accountService, tagService) { }
 
         protected override async Task BeforeSaveActionsAsync() {
             var account = await _context.Accounts.FindAsync(Record.AccountId);

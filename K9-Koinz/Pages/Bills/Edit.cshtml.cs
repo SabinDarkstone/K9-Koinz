@@ -8,9 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Pages.Bills {
     public class EditModel : AbstractEditModel<Bill> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-            : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+            : base(context, logger, accountService, tagService) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
             return await _context.Bills
@@ -30,14 +29,6 @@ namespace K9_Koinz.Pages.Bills {
             if (Record.RepeatConfig.Mode == RepeatMode.SPECIFIC_DAY) {
                 Record.RepeatConfig.IntervalGap = null;
             }
-        }
-
-        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
-        }
-
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
     }
 }

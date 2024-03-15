@@ -7,15 +7,10 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Categories {
     public class CreateModel : AbstractCreateModel<Category> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+                : base(context, logger, accountService, tagService) { }
 
         public Category ParentCategory { get; set; }
-
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
-        }
 
         protected override async Task BeforePageLoadActions() {
             await base.BeforePageLoadActions();

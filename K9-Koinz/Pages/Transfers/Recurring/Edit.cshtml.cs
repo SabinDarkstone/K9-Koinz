@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers.Recurring {
     public class EditModel : AbstractEditModel<Transfer> {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, logger, accountService, autocompleteService, tagService) { }
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService, ITagService tagService)
+            : base(context, logger, accountService, tagService) { }
 
         public SelectList GoalOptions { get; set; } = default!;
 

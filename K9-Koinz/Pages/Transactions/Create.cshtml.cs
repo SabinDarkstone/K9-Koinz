@@ -10,55 +10,15 @@ using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
+        private readonly IDupeCheckerService<Transaction> _dupeChecker;
+
         private bool doHandleSavingsGoal;
         private bool foundMatchingTransaction;
 
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
-
-        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
-        }
-
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
-        }
-
-        public async Task<IActionResult> OnGetSuggestedCategory(string merchantId) {
-            var transactionsByCategory = (await _context.Transactions
-                .AsNoTracking()
-                .Where(trans => trans.MerchantId == Guid.Parse(merchantId))
-                .ToListAsync())
-                .GroupBy(x => x.CategoryId)
-                .OrderByDescending(x => x.ToList().Count)
-                .FirstOrDefault();
-
-            // Get the most commonly used category
-            var category = await _context.Categories.FindAsync(transactionsByCategory.ToList().FirstOrDefault().CategoryId);
-
-            if (category != null) {
-                return new JsonResult(category);
-            } else {
-                return null;
-            }
-        }
-
-        public async Task<JsonResult> OnGetAddMerchant(string text) {
-            var isExisting = await _context.Merchants.Where(merc => merc.Name == text).AnyAsync();
-            if (isExisting) {
-                return new JsonResult("DUPLICATE");
-            } else {
-                var newMerchant = new Merchant { Name = text };
-                try {
-                    _context.Merchants.Add(newMerchant);
-                    await _context.SaveChangesAsync();
-                    return new JsonResult(newMerchant.Id.ToString());
-                } catch (Exception) {
-                    return new JsonResult("ERROR");
-                }
-            }
+            IAccountService accountService, ITagService tagService, IDupeCheckerService<Transaction> dupeChecker)
+                : base(context, logger, accountService, tagService) {
+            _dupeChecker = dupeChecker;
         }
 
         protected override async Task BeforeSaveActionsAsync() {
@@ -75,12 +35,8 @@ namespace K9_Koinz.Pages.Transactions {
                 Record.TagId = null;
             }
 
-            foundMatchingTransaction = (await _context.Transactions
-                .Where(trans => trans.Amount == Record.Amount)
-                .Where(trans => trans.MerchantId == Record.MerchantId)
-                .ToListAsync())
-                .Where(trans => Math.Abs((trans.Date - Record.Date).TotalDays) <= 5)
-                .Any();
+            var matches = await _dupeChecker.FindPotentialDuplicates(Record);
+            foundMatchingTransaction = matches.Count > 0;
         }
 
         protected override async Task AfterSaveActionsAsync() {
