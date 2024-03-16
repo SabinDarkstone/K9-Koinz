@@ -1,4 +1,6 @@
 ﻿using K9_Koinz.Models;
+using System.Runtime.Serialization;
+using System.Text.Json;
 
 namespace K9_Koinz.Utils {
     public static class CategoriesCreator {
@@ -244,5 +246,33 @@ namespace K9_Koinz.Utils {
 
             return categories;
         }
+
+        public static List<Category> SetDefaultCategoryIcons(IWebHostEnvironment env, List<Category> categories, ILogger logger) {
+            var filePath = Path.Combine(env.WebRootPath, "categoryIcons.json");
+            var jsonString = File.ReadAllText(filePath);
+
+            var dto = JsonSerializer.Deserialize<DefaultIconList>(jsonString).DefaultIcons;
+            var updatedCategories = new List<Category>();
+            foreach (var defaultIcon in dto) {
+                var matchingCategory = categories.FirstOrDefault(cat => cat.Name == defaultIcon.Name && string.IsNullOrEmpty(cat.FontAwesomeIcon));
+                if (matchingCategory == null) {
+                    continue;
+                }
+
+                matchingCategory.FontAwesomeIcon = defaultIcon.Icon;
+                updatedCategories.Add(matchingCategory);
+            }
+
+            return updatedCategories;
+        }
+    }
+
+    public class DefaultIconList {
+        public List<DefaultIcon> DefaultIcons { get; set; }
+    }
+
+    public class DefaultIcon {
+        public string Name { get; set; }
+        public string Icon { get; set; }
     }
 }
