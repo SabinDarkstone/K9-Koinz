@@ -14,14 +14,12 @@ namespace K9_Koinz.Pages.Transactions {
         private readonly IConfiguration _configuration;
         private readonly ILogger<IndexModel> _logger;
         private readonly IAccountService _accountSerice;
-        private readonly IAutocompleteService _autocompleteService;
 
-        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService, IAutocompleteService autocompleteService) {
+        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService) {
             _context = context;
             _configuration = configuration;
             _logger = logger;
             _accountSerice = accountService;
-            _autocompleteService = autocompleteService;
         }
 
         private bool? _hideTransfers;
@@ -172,10 +170,6 @@ namespace K9_Koinz.Pages.Transactions {
 
             var pageSize = _configuration.GetValue("PageSize", 10);
             Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
-        }
-
-        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
         }
     }
 }

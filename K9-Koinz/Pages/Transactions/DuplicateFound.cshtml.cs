@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,29 +9,24 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Pages.Transactions {
     public class DuplicateFoundModel : PageModel {
 
-        private KoinzContext _context;
+        private readonly KoinzContext _context;
+        private readonly IDupeCheckerService<Transaction> _dupeChecker;
 
         public Transaction Transaction { get; set; }
         public List<Transaction> MatchingTransactions { get; set; }
 
-        public DuplicateFoundModel(KoinzContext context) {
+        public DuplicateFoundModel(KoinzContext context, IDupeCheckerService<Transaction> dupeChecker) {
             _context = context;
+            _dupeChecker = dupeChecker;
         }
 
-        public IActionResult OnGet(Guid? id) {
+        public async Task<IActionResult> OnGet(Guid? id) {
             if (!id.HasValue) {
                 return NotFound();
             }
 
             Transaction = _context.Transactions.Find(id.Value);
-
-            MatchingTransactions = _context.Transactions
-                .Where(trans => trans.AccountId == Transaction.AccountId)
-                .Where(trans => trans.Amount == Transaction.Amount || trans.Amount == -1 * Transaction.Amount)
-                .AsEnumerable()
-                .Where(trans => Math.Abs((trans.Date - Transaction.Date).TotalDays) <= 5)
-                .Where(trans => trans.Id != id.Value)
-                .ToList();
+            MatchingTransactions = await _dupeChecker.FindPotentialDuplicates(Transaction);
 
             return Page();
         }

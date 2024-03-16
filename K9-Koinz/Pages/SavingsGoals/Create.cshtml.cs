@@ -7,9 +7,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.SavingsGoals {
     public class CreateModel : AbstractCreateModel<SavingsGoal> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+                : base(context, logger, accountService, tagService) { }
 
         protected override void BeforeSaveActions() {
             var account = _context.Accounts.Find(Record.AccountId);

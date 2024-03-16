@@ -34,7 +34,7 @@
             @if (Model.ParentCategory == null) {
                 <div class="form-group">
                     <label asp-for="Record.ParentCategoryId" class="control-label"></label>
-                    <input id="txtParentCategory" class="form-control" />
+                    <input id="txtCategory" class="form-control" />
                     <input asp-for="Record.ParentCategoryId" type="hidden" id="hfCategory" />
                     <span asp-validation-for="Record.ParentCategoryId" class="text-danger"></span>
                 </div>
@@ -63,41 +63,7 @@
 </div>
 
 @section Scripts {
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-          rel="Stylesheet" type="text/css" />
-
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script type="text/javascript">
-        $(function () {
-            $("#txtParentCategory").autocomplete({
-                source: function (request, response) {
-                    $.ajax({
-                        url: "/Categories/Create?handler=CategoryAutoComplete",
-                        data: { text: request.term },
-                        type: "GET",
-                        success: function (data) {
-                            response($.map(data, function (item) {
-                                return item;
-                            }))
-                        },
-                        error: function (response) {
-                            alert(JSON.stringify(response));
-                        },
-                        failure: function (response) {
-                            alert(JSON.stringify(response));
-                        }
-                    });
-                },
-                select: function (e, i) {
-                    $("#hfCategory").val(i.item.val);
-                },
-                minLength: 1
-            });
-        });
-    </script>
 }

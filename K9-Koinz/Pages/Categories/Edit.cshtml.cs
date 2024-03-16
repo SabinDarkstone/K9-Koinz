@@ -8,9 +8,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Categories {
     public class EditModel : AbstractEditModel<Category> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+                : base(context, logger, accountService, tagService) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
             return await _context.Categories
@@ -72,20 +71,6 @@ namespace K9_Koinz.Pages.Categories {
             _context.Bills.UpdateRange(relatedBills);
             _context.BudgetLines.UpdateRange(relatedBudgetLines);
             await _context.SaveChangesAsync();
-        }
-
-        public IActionResult OnGetParentCategoryAutoComplete(string text) {
-            text = text.Trim();
-            var categories = _context.Categories
-                .Include(cat => !cat.IsChildCategory)
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(cat => cat.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-                .Select(cat => new {
-                    label = cat.Name,
-                    val = cat.Id
-                }).ToList();
-            return new JsonResult(categories);
         }
     }
 }

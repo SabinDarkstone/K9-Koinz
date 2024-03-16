@@ -11,8 +11,8 @@ namespace K9_Koinz.Pages.BudgetLines {
         private readonly IBudgetService _budgetService;
 
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService, IBudgetService budgetService)
-                : base(context, logger, accountService, autocompleteService, tagService) {
+            ITagService tagService, IBudgetService budgetService)
+                : base(context, logger, accountService, tagService) {
             _budgetService = budgetService;
         }
 
@@ -21,10 +21,6 @@ namespace K9_Koinz.Pages.BudgetLines {
         protected override async Task BeforePageLoadActions() {
             await base.BeforePageLoadActions();
             Budget = await _context.Budgets.FindAsync(RelatedId);
-        }
-
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
 
         private async Task CreateFirstBudgetLinePeriod() {

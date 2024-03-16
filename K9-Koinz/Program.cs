@@ -16,6 +16,7 @@ namespace K9_Koinz {
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddControllers();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddLogging(options => {
                 options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
@@ -67,9 +68,12 @@ namespace K9_Koinz {
 
             app.UseRouting();
 
+            app.MapRazorPages();
+            app.MapControllers();
+            app.MapControllerRoute("default", "api/{controller}/{action}/{id?}");
+
             app.UseAuthorization();
 
-            app.MapRazorPages();
 
             app.Run();
         }

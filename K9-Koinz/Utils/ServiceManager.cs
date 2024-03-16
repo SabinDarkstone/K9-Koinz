@@ -1,4 +1,5 @@
-﻿using K9_Koinz.Services;
+﻿using K9_Koinz.Models;
+using K9_Koinz.Services;
 using K9_Koinz.Services.BackgroundWorkers;
 
 namespace K9_Koinz.Utils {
@@ -7,9 +8,9 @@ namespace K9_Koinz.Utils {
             services.AddScoped<ISpendingGraphService, SpendingGraphService>();
             services.AddScoped<IDbCleanupService, DbCleanupService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IAutocompleteService, AutocompleteService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IBudgetService, BudgetService>();
+            services.AddTransient<IDupeCheckerService<Transaction>, TransactionDupeCheckerService>();
         }
 
         public static void AddScheduledJobs(this IServiceCollection services) {
