@@ -9,6 +9,11 @@
 
 <h4>Category</h4>
 <hr />
+
+<div class="alert alert-info">
+    For a list of available icons, click <a href="https://fontawesome.com/search?o=r&m=free" target="_blank">here</a> . You can search for icons and copy /paste the icon name to customize your category!
+</div>
+
 <div class="row">
     <div class="col-md-4">
         <form method="post">
@@ -18,6 +23,11 @@
                 <label asp-for="Record.Name" class="control-label"></label>
                 <input asp-for="Record.Name" class="form-control" />
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.FontAwesomeIcon" class="control-label"></label>
+                <input asp-for="Record.FontAwesomeIcon" class="form-control" />
+                <span asp-validation-for="Record.FontAwesomeIcon" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.CategoryType" class="control-label"></label>

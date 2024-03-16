@@ -34,6 +34,7 @@
         @foreach (var item in Model.Categories) {
             <tr style="background-color: #eee;">
                 <td style="font-weight: bold;">
+                    <i class="fa-solid @item.FontAwesomeIcon"></i>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td style="font-weight: bold;">

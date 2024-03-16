@@ -181,6 +181,9 @@
                             </td>
                             <td>
                                 <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@item.CategoryId" class="link-unstyled">
+                                    @if (!string.IsNullOrEmpty(item.CategoryIcon)) {
+                                        <i class="fa-solid @item.CategoryIcon"></i>
+                                    }
                                     @Html.DisplayFor(modelItem => item.CategoryName)
                                 </a>
                             </td>
@@ -241,7 +244,12 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-7 text-secondary transaction-item" data-id="@transaction.Id">@transaction.CategoryName</div>
+                                <div class="col-7 text-secondary transaction-item" data-id="@transaction.Id">
+                                    @transaction.CategoryName
+                                    @if (!string.IsNullOrEmpty(transaction.CategoryIcon)) {
+                                        <i class="fa-solid @transaction.CategoryIcon"></i>
+                                    }
+                                </div>
                                 <div class="col-4 text-secondary text-end transaction-item" data-id="@transaction.Id">@transaction.Date.FormatShortString()</div>
                                 <div class="col-1">
                                     <a asp-page="@PagePaths.TransactionDelete" asp-route-id="@transaction.Id"><i class="fa-solid fa-trash text-danger"></i></a>

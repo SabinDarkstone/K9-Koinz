@@ -17,6 +17,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Record.Name)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Record.FontAwesomeIcon)
+        </dt>
+        <dd class="col-sm-10">
+            @if (!string.IsNullOrEmpty(Model.Record.FontAwesomeIcon)) {
+                <i class="fa-solid @Model.Record.FontAwesomeIcon"></i>
+            } else {
+                <text>No icon selected</text>
+            }
+        </dd>
         @if (Model.Record.ChildCategories.Any()) {
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.Record.ChildCategories)
