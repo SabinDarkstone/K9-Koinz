@@ -26,11 +26,7 @@ namespace K9_Koinz.ViewComponents {
 
         public async Task<IViewComponentResult> InvokeAsync(string topicName) {
             var filePath = Path.Combine(_environment.WebRootPath, "pageInstructions", topicName + ".json");
-            _logger.LogInformation(filePath);
-
             var jsonString = await File.ReadAllTextAsync(filePath);
-            _logger.LogInformation(jsonString);
-
             var dto = JsonSerializer.Deserialize<PageInstructionDTO>(jsonString);
 
             return View(dto);
