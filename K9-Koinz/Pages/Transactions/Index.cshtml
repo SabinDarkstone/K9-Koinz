@@ -300,12 +300,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     
-    <script>
-        $(function () {
-            $(".transaction-item").click(function () {
-                window.location = "/Transactions/Details?id=" + $(this).data("id");
-                return false;
-            });
-        });
-    </script>  
+    <script src="~/js/mobileListInteraction.js"></script>
 }

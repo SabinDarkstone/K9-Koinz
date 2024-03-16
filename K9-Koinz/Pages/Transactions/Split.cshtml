@@ -78,7 +78,7 @@
                 <input type="hidden" asp-for="SplitTransactions[i].TagId" />
                 <input type="hidden" asp-for="SplitTransactions[i].Date" />
                 <input type="hidden" asp-for="SplitTransactions[i].ParentTransactionId" />
-                <tr>
+                <tr data-index="@i">
                     <td>
                         <input class="form-control txtMerchant" type="text" data-index="@i" id="txtMerchant-@i" value="@Model.SplitTransactions[i].MerchantName" />
                         <input asp-for="SplitTransactions[i].MerchantId" type="hidden" class="hfMerchant" data-index="@i" id="hfMerchant-@i" />
@@ -106,7 +106,7 @@
             </tr>
         </tbody>
     </table>
-    <button type="submit" class="btn btn-primary my-2">
+    <button type="submit" class="btn btn-primary my-2" id="btnSave">
         <i class="fa-solid fa-floppy-disk"></i> Confirm
     </button>
 </form>
@@ -116,42 +116,10 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script type="text/javascript">
-        var total = 0;
-        $(".txtAmount").change(function () {
-            total = 0;
-            $(".txtAmount").each((idx, item) => {
-                total += parseFloat(item.value);
-            });
-            $("#txtTotalAmount").val(total);
-        });
-
-        $(".txtMerchant").each((idx, item) => {
-            let dataIndex = item.dataset.index;
-            let txtId = "#txtMerchant-" + dataIndex;
-            let hfId = "#hfMerchant-" + dataIndex;
-
-            $(txtId).autocomplete({
-                source: (request, response) => autocompleteMerchants(request, response),
-                select: function (e, i) {
-                    $(hfId).val(i.item.val);
-                },
-                minLength: 1
-            });
-        })
-
-        $(".txtCategory").each((idx, item) => {
-            let dataIndex = item.dataset.index;
-            let txtId = "#txtCategory-" + dataIndex;
-            let hfId = "#hfCategory-" + dataIndex;
-
-            $(txtId).autocomplete({
-                source: (request, response) => autocompleteCategories(request, response),
-                select: function (e, i) {
-                    $(hfId).val(i.item.val);
-                },
-                minLength: 1
-            });
-        })
+    <script>
+        var parentTransaction = @Html.Raw(Model.ParentTransaction.ToJson());
     </script>
+
+    <script src="~/js/splitTransactionCalculator.js"></script>
+    <script src="~/js/splitTransactionAutocomplete.js"></script>
 }

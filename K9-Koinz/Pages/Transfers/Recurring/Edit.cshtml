@@ -107,20 +107,9 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/repeatConfigModeToggler.js"></script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script type="text/javascript">
-        $(function () {
-            $('#grpIntervalGap').hide();
-
-            $('#modeSelector').change(function () {
-                if (this.value == 1) {
-                    $('#grpIntervalGap').show();
-                } else {
-                    $('#grpIntervalGap').hide();
-                }
-            })
-    </script>
 }
