@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace K9_Koinz {
+namespace K9_Koinz.Utils {
     public class PaginatedList<T> : List<T> {
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
@@ -15,7 +15,7 @@ namespace K9_Koinz {
                 TotalPages = 1;
             }
 
-            this.AddRange(items);
+            AddRange(items);
         }
 
         public bool HasPreviousPage => PageIndex > 1;

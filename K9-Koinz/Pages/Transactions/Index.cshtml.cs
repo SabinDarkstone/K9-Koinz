@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
 using K9_Koinz.Services;
 
-namespace K9_Koinz.Pages.Transactions {
+namespace K9_Koinz.Pages.Transactions
+{
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly IConfiguration _configuration;
@@ -98,6 +99,9 @@ namespace K9_Koinz.Pages.Transactions {
             IQueryable<Transaction> transactionsIQ = from trans in _context.Transactions
                                                      select trans;
 
+            transactionsIQ = transactionsIQ.Include(trans => trans.Category)
+                .ThenInclude(cat => cat.ParentCategory);
+
             if (!string.IsNullOrWhiteSpace(catFilter)) {
                 CategoryFilters = [Guid.Parse(SelectedCategory)];
                 var childCategories = _context.Categories.Where(cat => cat.ParentCategoryId == Guid.Parse(SelectedCategory)).Include(cat => cat.ChildCategories).Select(cat => cat.Id).ToList();
@@ -168,8 +172,7 @@ namespace K9_Koinz.Pages.Transactions {
             
             transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
 
-            var pageSize = _configuration.GetValue("PageSize", 10);
-            Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
+            Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, 50);
         }
     }
 }

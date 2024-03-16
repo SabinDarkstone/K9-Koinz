@@ -1,0 +1,100 @@
+﻿{
+  "DefaultIcons": [
+    {
+      "Name": "Income",
+      "Icon": "fa-money-bill-wave"
+    },
+    {
+      "Name": "Auto & Transport",
+      "Icon": "fa-car-side"
+    },
+    {
+      "Name": "Bills & Utilities",
+      "Icon": "fa-bolt"
+    },
+    {
+      "Name": "Business Services",
+      "Icon": "fa-suitcase"
+    },
+    {
+      "Name": "Entertainment",
+      "Icon": "fa-film"
+    },
+    {
+      "Name": "Fees & Charges",
+      "Icon": "fa-credit-card"
+    },
+    {
+      "Name": "Financial",
+      "Icon": "fa-coins"
+    },
+    {
+      "Name": "Food & Dining",
+      "Icon": "fa-burger"
+    },
+    {
+      "Name": "Health & Fitness",
+      "Icon": "fa-bed-pulse"
+    },
+    {
+      "Name": "Home",
+      "Icon": "fa-house-chimney"
+    },
+    {
+      "Name": "Investments",
+      "Icon": "fa-arrow-trend-up"
+    },
+    {
+      "Name": "Loans",
+      "Icon": "fa-building-columns"
+    },
+    {
+      "Name": "Misc Expenses",
+      "Icon": "fa-table-cells"
+    },
+    {
+      "Name": "Personal Care",
+      "Icon": "fa-tooth"
+    },
+    {
+      "Name": "Shopping",
+      "Icon": "fa-cart-shopping"
+    },
+    {
+      "Name": "Taxes",
+      "Icon": "fa-file-invoice-dollar"
+    },
+    {
+      "Name": "Travel",
+      "Icon": "fa-plane"
+    },
+    {
+      "Name": "Uncategorized",
+      "Icon": "fa-list"
+    },
+    {
+      "Name": "Transfer",
+      "Icon": "fa-money-bill-transfer"
+    },
+    {
+      "Name": "From Savings",
+      "Icon": "fa-piggy-bank"
+    },
+    {
+      "Name": "Gifts & Donations",
+      "Icon": "fa-gift"
+    },
+    {
+      "Name": "Pets",
+      "Icon": "fa-dog"
+    },
+    {
+      "Name": "Liz Fun Money",
+      "Icon": "fa-dragon"
+    },
+    {
+      "Name": "Sabin Fun Money",
+      "Icon": "fa-paw"
+    }
+  ]
+}
