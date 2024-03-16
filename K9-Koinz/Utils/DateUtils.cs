@@ -100,6 +100,10 @@ namespace K9_Koinz.Utils {
             return MONTH_NAMES[month - 1];
         }
 
+        public static int GetMonthNumber(string monthName) {
+            return MONTH_NAMES.Select(m => m.ToLower()).ToList().IndexOf(monthName.ToLower());
+        }
+
         public static string FormatShortMonthAndYear(this DateTime dt) {
             return dt.GetMonthName().Substring(0, 3) + " '" + dt.Year.ToString().Substring(2, 2);
         }

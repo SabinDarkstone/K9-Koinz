@@ -54,8 +54,90 @@
     }
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Transactions List</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Account</th>
+                            <th>Merchant</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionListBody">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script type="text/javascript">
+        window.onload = () => {
+            var chart = new CanvasJS.Chart("trendChartContainer", {
+                animationEnabled: true,
+                theme: "light1",
+                title: {
+                    text: "@Html.Raw(Model.Record.BudgetCategoryName) Spending"
+                },
+                axisY: {
+                    title: "Amount"
+                },
+                data: [{
+                    color: "#007bff",
+                    type: "column",
+                    dataPoints: @Html.Raw(Model.SpendingHistory),
+                    click: function(evt) {
+                        console.log(evt);
+                        const columnLabelParts = evt.dataPoint.label.split("'");
+                        $.ajax({
+                            url: "/api/Transactions/GetTransactionsFromTrend",
+                            data: {
+                                categoryId: "@Model.Record.BudgetCategoryId",
+                                month: columnLabelParts[0].trim(),
+                                year: parseInt("20" + columnLabelParts[1].trim())
+                            },
+                            success: function (data) {
+                                console.log(data);
+                                $("#transactionListBody").empty();
+                                for (let i = 0; i < data.length; i++) {
+                                    const dynamicHtml = `
+                                        <tr>
+                                            <td>${data[i].formattedAmount}</td>
+                                            <td>${data[i].accountName}</td>
+                                            <td>${data[i].merchantName}</td>
+                                            <td>${data[i].formattedDate}</td>
+                                        </tr>
+                                    `;
+
+                                    $("#transactionListBody").append(dynamicHtml);
+                                }
+                                $("#exampleModal").modal("show");
+                            }
+                        });
+                    }
+                }]
+            });
+            chart.render();
+        };
+    </script>
 }

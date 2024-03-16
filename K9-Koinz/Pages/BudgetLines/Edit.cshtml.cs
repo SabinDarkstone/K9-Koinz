@@ -145,7 +145,7 @@ namespace K9_Koinz.Pages.BudgetLines {
                 }
 
                 output.Add(new DataPoint {
-                    Label = month,
+                    Label = month + " '" + currentYear.ToString().Substring(2),
                     Y = amount
                 });
             }
