@@ -20,7 +20,7 @@ namespace K9_Koinz.Controllers {
             var endDate = new DateTime(year, monthNumber, daysInSelectedMonth);
 
             var transactions = await _context.Transactions
-                .Where(trans => trans.CategoryId == Guid.Parse(categoryId))
+                .Where(trans => trans.CategoryId == Guid.Parse(categoryId) || (trans.Category.ParentCategoryId.HasValue && trans.Category.ParentCategoryId.Value == Guid.Parse(categoryId)))
                 .Where(trans => trans.Date.Date >= startDate && trans.Date.Date <= endDate)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
