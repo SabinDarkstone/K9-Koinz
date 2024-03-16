@@ -88,7 +88,7 @@
                         <input asp-for="SplitTransactions[i].CategoryId" type="hidden" class="hfCategory" data-index="@i" id="hfCategory-@i" />
                     </td>
                     <td>
-                        <input asp-for="SplitTransactions[i].Amount" class="form-control txtAmount" />
+                        <input asp-for="SplitTransactions[i].Amount" class="form-control txtAmount" data-index="@i" id="txtAmount-@i"/>
                     </td>
                     <td>
                         <input asp-for="SplitTransactions[i].Notes" rows="1" class="form-control" />
@@ -116,11 +116,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-          rel="Stylesheet" type="text/css" />
-
     <script type="text/javascript">
         var total = 0;
         $(".txtAmount").change(function () {
@@ -128,7 +123,6 @@
             $(".txtAmount").each((idx, item) => {
                 total += parseFloat(item.value);
             });
-            console.log(total);
             $("#txtTotalAmount").val(total);
         });
 
@@ -138,24 +132,7 @@
             let hfId = "#hfMerchant-" + dataIndex;
 
             $(txtId).autocomplete({
-                source: function (request, response) {
-                    $.ajax({
-                        url: "/Transactions/Create?handler=MerchantAutoComplete",
-                        data: { text: request.term },
-                        type: "GET",
-                        success: function (data) {
-                            response($.map(data, function (item) {
-                                return item;
-                            }))
-                        },
-                        error: function (response) {
-                            alert(JSON.stringify(response));
-                        },
-                        failure: function (response) {
-                            alert(JSON.stringify(response));
-                        }
-                    });
-                },
+                source: (request, response) => autocompleteMerchants(request, response),
                 select: function (e, i) {
                     $(hfId).val(i.item.val);
                 },
@@ -169,24 +146,7 @@
             let hfId = "#hfCategory-" + dataIndex;
 
             $(txtId).autocomplete({
-                source: function (request, response) {
-                    $.ajax({
-                        url: "/Transactions/Create?handler=CategoryAutoComplete",
-                        data: { text: request.term },
-                        type: "GET",
-                        success: function (data) {
-                            response($.map(data, function (item) {
-                                return item;
-                            }))
-                        },
-                        error: function (response) {
-                            alert(JSON.stringify(response));
-                        },
-                        failure: function (response) {
-                            alert(JSON.stringify(response));
-                        }
-                    });
-                },
+                source: (request, response) => autocompleteCategories(request, response),
                 select: function (e, i) {
                     $(hfId).val(i.item.val);
                 },
