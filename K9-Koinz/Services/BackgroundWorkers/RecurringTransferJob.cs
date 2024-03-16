@@ -26,12 +26,14 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 .Include(fer => fer.RepeatConfig)
                 .AsEnumerable()
                 .Where(fer => fer.RepeatConfig.NextFiring.HasValue)
-                .Where(fer => fer.RepeatConfig.NextFiring >= mark)
+                .Where(fer => fer.RepeatConfig.NextFiring.Value.Date <= mark.Date)
                 .ToList();
 
             var transactions = new List<Transaction>();
             foreach (var transfer in repeatingTransfers) {
-                transactions.AddRange(await transfer.CreateTransactions(_context));
+                var transferInstance = _context.GetInstanceOfRecurring(transfer);
+                transactions.AddRange(await _context.CreateTransactionsFromTransfer(transferInstance));
+                transfer.RepeatConfig.FireNow();
             }
 
             _context.Transactions.AddRange(transactions);

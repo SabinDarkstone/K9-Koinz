@@ -32,6 +32,7 @@ namespace K9_Koinz.Pages.Transactions {
                 .Where(trans => trans.MerchantId == Guid.Parse(merchantId))
                 .ToListAsync())
                 .GroupBy(x => x.CategoryId)
+                .OrderByDescending(x => x.ToList().Count)
                 .FirstOrDefault();
 
             // Get the most commonly used category
@@ -54,7 +55,7 @@ namespace K9_Koinz.Pages.Transactions {
                     _context.Merchants.Add(newMerchant);
                     await _context.SaveChangesAsync();
                     return new JsonResult(newMerchant.Id.ToString());
-                } catch (Exception ex) {
+                } catch (Exception) {
                     return new JsonResult("ERROR");
                 }
             }

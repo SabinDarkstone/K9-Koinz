@@ -2,8 +2,23 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
-    public static class TransferExtensions {
-        public static async Task<List<Transaction>> CreateTransactions(this Transfer transfer, KoinzContext context, bool trustSavingsGoals = true) {
+    public static class KoinContextExtensions {
+        public static Transfer GetInstanceOfRecurring(this KoinzContext context, Transfer recurringTransfer) {
+            return new Transfer {
+                Amount = recurringTransfer.Amount,
+                CategoryId = recurringTransfer.CategoryId,
+                Date = recurringTransfer.RepeatConfig.NextFiring.Value,
+                Notes = recurringTransfer.Notes,
+                MerchantId = recurringTransfer.MerchantId,
+                SavingsGoalId = recurringTransfer.SavingsGoalId,
+                TagId = recurringTransfer.TagId,
+                ToAccountId = recurringTransfer.ToAccountId,
+                FromAccountId = recurringTransfer.FromAccountId,
+                Id = recurringTransfer.Id
+            };
+        }
+
+        public static async Task<Transaction[]> CreateTransactionsFromTransfer(this KoinzContext context, Transfer transfer, bool trustSavingsGoals = true) {
             Transaction[] transactons = new Transaction[2];
 
             var category = await context.Categories.FindAsync(transfer.CategoryId);
@@ -25,7 +40,8 @@ namespace K9_Koinz.Utils {
                 Amount = -1 * transfer.Amount,
                 Notes = transfer.Notes,
                 TagId = transfer.TagId,
-                Date = transfer.Date
+                Date = transfer.Date,
+                TransferId = transfer.Id
             };
             var toTransaction = new Transaction {
                 AccountId = transfer.ToAccountId,
@@ -37,10 +53,11 @@ namespace K9_Koinz.Utils {
                 Amount = transfer.Amount,
                 Notes = transfer.Notes,
                 TagId = transfer.TagId,
-                Date = transfer.Date
+                Date = transfer.Date,
+                TransferId = transfer.Id
             };
 
-            if (trustSavingsGoals && toTransaction.SavingsGoalId.HasValue) {
+            if (trustSavingsGoals && transfer.SavingsGoalId.HasValue) {
                 var savingsGoal = await context.SavingsGoals.FindAsync(transfer.SavingsGoalId);
                 toTransaction.SavingsGoalId = transfer.SavingsGoalId;
                 toTransaction.SavingsGoalName = savingsGoal.Name;

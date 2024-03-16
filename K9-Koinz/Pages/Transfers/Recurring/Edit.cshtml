@@ -1,5 +1,4 @@
 ﻿@page
-@using K9_Koinz.Models
 @using K9_Koinz.Utils
 @model K9_Koinz.Pages.Transfers.Recurring.EditModel
 @{
@@ -84,6 +83,15 @@
             <div class="form-group" id="grpIntervalGap">
                 <label asp-for="Record.RepeatConfig.IntervalGap" class="control-label"></label>
                 <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.RepeatConfig.LastFiring" class="control-label"></label>
+                @if (Model.Record.RepeatConfig.LastFiring.HasValue) {
+                    <input asp-for="Record.RepeatConfig.LastFiring" class="form-control" value="@Model.Record.RepeatConfig.LastFiring.Value.FormatForUrl()" />
+                } else {
+                    <input asp-for="Record.RepeatConfig.LastFiring" class="form-control" />
+                }
+                <span asp-validation-for="Record.RepeatConfig.LastFiring" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.SavingsGoalId" class="control-label"></label>

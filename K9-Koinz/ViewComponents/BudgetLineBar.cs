@@ -140,6 +140,7 @@ namespace K9_Koinz.ViewComponents {
 
         public double TotalBarPercent { get; set; }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IViewComponentResult> InvokeAsync(BudgetLine line, DateTime currentPeriod) {
             this.line = line;
             this.CurrentPeriod = currentPeriod;
@@ -198,5 +199,6 @@ namespace K9_Koinz.ViewComponents {
 
             return View(this);
         }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }
