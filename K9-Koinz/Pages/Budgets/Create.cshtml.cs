@@ -10,8 +10,8 @@ namespace K9_Koinz.Pages.Budgets {
         private readonly IBudgetService _budgetService;
 
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService,
-            IAutocompleteService autocompleteService, ITagService tagService, IBudgetService budgetService)
-                : base(context, logger, accountService, autocompleteService, tagService) {
+            ITagService tagService, IBudgetService budgetService)
+                : base(context, logger, accountService, tagService) {
             _budgetService = budgetService;
         }
 

@@ -13,9 +13,8 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList GoalOptions { get; set; } = default!;
 
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-                : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+                : base(context, logger, accountService, tagService) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
             return await _context.Transactions
@@ -95,14 +94,6 @@ namespace K9_Koinz.Pages.Transactions {
             }
 
             return RedirectToPage(PagePaths.TransactionIndex);
-        }
-
-        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
-        }
-
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
     }
 }

@@ -6,8 +6,7 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Tags {
     public class CreateModel : AbstractCreateModel<Tag> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
-            : base(context, logger, accountService, autocompleteService, tagService) { }
+            IAccountService accountService, ITagService tagService)
+            : base(context, logger, accountService, tagService) { }
     }
 }

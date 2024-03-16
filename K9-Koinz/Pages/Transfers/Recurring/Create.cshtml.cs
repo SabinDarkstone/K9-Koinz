@@ -14,8 +14,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         public Category DefaultCategory { get; set; }
 
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService, IAutocompleteService autocompleteService, ITagService tagService)
-            : base(context, logger, accountService, autocompleteService, tagService) { }
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IAccountService accountService, ITagService tagService)
+            : base(context, logger, accountService, tagService) { }
 
         protected override Task BeforePageLoadActions() {
             DefaultCategory = _context.Categories
@@ -74,14 +74,6 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             }
 
             return RedirectToPage(PagePaths.TransferManage);
-        }
-
-        public async Task<IActionResult> OnGetMerchantAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteMerchantsAsync(text.Trim());
-        }
-
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
         }
     }
 }

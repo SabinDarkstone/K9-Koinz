@@ -8,7 +8,6 @@ using System.Text.Json;
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IAccountService _accountService;
-        protected readonly IAutocompleteService _autocompleteService;
         protected readonly ITagService _tagService;
 
         [BindProperty]
@@ -20,10 +19,8 @@ namespace K9_Koinz.Pages.Meta {
         public SelectList TagOptions;
 
         protected AbstractCreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService) : base(context, logger) {
+            IAccountService accountService, ITagService tagService) : base(context, logger) {
             _accountService = accountService;
-            _autocompleteService = autocompleteService;
             _tagService = tagService;
         }
 

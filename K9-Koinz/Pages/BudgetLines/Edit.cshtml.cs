@@ -28,9 +28,8 @@ namespace K9_Koinz.Pages.BudgetLines {
         public bool ChartError { get; set; }
 
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService, IBudgetService budgetService)
-                : base(context, logger, accountService, autocompleteService, tagService) {
+            IAccountService accountService, ITagService tagService, IBudgetService budgetService)
+                : base(context, logger, accountService, tagService) {
             _budgetService = budgetService;
         }
 
@@ -91,10 +90,6 @@ namespace K9_Koinz.Pages.BudgetLines {
             return RedirectToPage(PagePaths.BudgetEdit, new { id = Record.BudgetId });
         }
 
-        public async Task<IActionResult> OnGetCategoryAutoComplete(string text) {
-            return await _autocompleteService.AutocompleteCategoriesAsync(text.Trim());
-        }
-
         private async Task CreateFirstBudgetLinePeriod() {
             var parentBudget = await _context.Budgets.FindAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
@@ -150,7 +145,7 @@ namespace K9_Koinz.Pages.BudgetLines {
                 }
 
                 output.Add(new DataPoint {
-                    Label = month,
+                    Label = month + " '" + currentYear.ToString().Substring(2),
                     Y = amount
                 });
             }

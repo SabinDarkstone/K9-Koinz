@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
     public enum TransactionType {
@@ -78,6 +79,20 @@ namespace K9_Koinz.Models {
                 } else {
                     return TransactionType.MINUS;
                 }
+            }
+        }
+
+        [NotMapped]
+        public string FormattedAmount {
+            get {
+                return Amount.FormatCurrency(2);
+            }
+        }
+
+        [NotMapped]
+        public string FormattedDate {
+            get {
+                return Date.ToShortDateString();
             }
         }
     }

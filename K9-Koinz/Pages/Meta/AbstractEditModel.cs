@@ -9,7 +9,6 @@ using NuGet.Protocol;
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractEditModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IAccountService _accountService;
-        protected readonly IAutocompleteService _autocompleteService;
         protected readonly ITagService _tagService;
 
         [BindProperty]
@@ -19,11 +18,9 @@ namespace K9_Koinz.Pages.Meta {
         public SelectList TagOptions;
 
         protected AbstractEditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, IAutocompleteService autocompleteService,
-            ITagService tagService)
+            IAccountService accountService, ITagService tagService)
                 : base(context, logger) {
             _accountService = accountService;
-            _autocompleteService = autocompleteService;
             _tagService = tagService;
         }
 
