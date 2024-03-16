@@ -24,7 +24,7 @@ namespace K9_Koinz.Controllers {
                 .Where(trans => trans.Date.Date >= startDate && trans.Date.Date <= endDate)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
-                .OrderByDescending(trans => trans.Amount)
+                .OrderBy(trans => trans.Amount)
                 .ToListAsync();
 
             return new JsonResult(transactions);
