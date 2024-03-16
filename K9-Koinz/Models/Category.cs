@@ -27,6 +27,8 @@ namespace K9_Koinz.Models {
         public string ParentCategoryName { get; set; }
         [DisplayName("Category Type")]
         public CategoryType CategoryType { get; set; } = CategoryType.UNASSIGNED;
+        [DisplayName("Icon")]
+        public string FontAwesomeIcon { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BudgetLine> BudgetLines { get; set; }

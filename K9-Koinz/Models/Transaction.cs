@@ -83,6 +83,25 @@ namespace K9_Koinz.Models {
         }
 
         [NotMapped]
+        public string CategoryIcon {
+            get {
+                if (Category == null) {
+                    return "";
+                }
+
+                if (!string.IsNullOrEmpty(Category.FontAwesomeIcon)) {
+                    return Category.FontAwesomeIcon;
+                }
+
+                if (Category.ParentCategoryId.HasValue && Category.ParentCategory != null && !string.IsNullOrEmpty(Category.ParentCategory.FontAwesomeIcon)) {
+                    return Category.ParentCategory.FontAwesomeIcon;
+                }
+
+                return "";
+            }
+        }
+
+        [NotMapped]
         public string FormattedAmount {
             get {
                 return Amount.FormatCurrency(2);
