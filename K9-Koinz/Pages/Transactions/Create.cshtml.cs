@@ -4,9 +4,7 @@ using K9_Koinz.Models;
 using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
-using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Utils;
-using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
@@ -16,8 +14,8 @@ namespace K9_Koinz.Pages.Transactions {
         private bool foundMatchingTransaction;
 
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService, IDupeCheckerService<Transaction> dupeChecker)
-                : base(context, logger, accountService, tagService) {
+            IDropdownPopulatorService dropdownService, IDupeCheckerService<Transaction> dupeChecker)
+                : base(context, logger, dropdownService) {
             _dupeChecker = dupeChecker;
         }
 

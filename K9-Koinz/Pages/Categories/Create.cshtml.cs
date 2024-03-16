@@ -7,8 +7,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Categories {
     public class CreateModel : AbstractCreateModel<Category> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-                : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+                : base(context, logger, dropdownService) { }
 
         public Category ParentCategory { get; set; }
 

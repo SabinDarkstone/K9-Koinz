@@ -3,12 +3,10 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text.Json;
 
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
-        protected readonly IAccountService _accountService;
-        protected readonly ITagService _tagService;
+        protected readonly IDropdownPopulatorService _dropdownService;
 
         [BindProperty]
         public T Record { get; set; } = default!;
@@ -19,9 +17,8 @@ namespace K9_Koinz.Pages.Meta {
         public SelectList TagOptions;
 
         protected AbstractCreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService) : base(context, logger) {
-            _accountService = accountService;
-            _tagService = tagService;
+            IDropdownPopulatorService dropdownService) : base(context, logger) {
+            _dropdownService = dropdownService;
         }
 
         public virtual async Task<IActionResult> OnGetAsync(Guid? relatedId) {
@@ -32,8 +29,8 @@ namespace K9_Koinz.Pages.Meta {
         }
 
         protected virtual async Task BeforePageLoadActions() {
-            AccountOptions = await _accountService.GetAccountListAsync(true);
-            TagOptions = await _tagService.GetTagListAsync();
+            AccountOptions = await _dropdownService.GetAccountListAsync();
+            TagOptions = await _dropdownService.GetTagListAsync();
         }
 
         public virtual async Task<IActionResult> OnPostAsync() {

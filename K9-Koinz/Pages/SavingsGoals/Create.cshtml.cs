@@ -7,8 +7,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.SavingsGoals {
     public class CreateModel : AbstractCreateModel<SavingsGoal> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-                : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+                : base(context, logger, dropdownService) { }
 
         protected override void BeforeSaveActions() {
             var account = _context.Accounts.Find(Record.AccountId);

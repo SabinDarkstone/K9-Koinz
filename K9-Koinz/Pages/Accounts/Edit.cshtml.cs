@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Pages.Accounts {
     public class EditModel : AbstractEditModel<Account> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-                : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+                : base(context, logger, dropdownService) { }
 
         protected override void BeforeSaveActions() {
             Record.InitialBalanceDate = Record.InitialBalanceDate.AtMidnight();

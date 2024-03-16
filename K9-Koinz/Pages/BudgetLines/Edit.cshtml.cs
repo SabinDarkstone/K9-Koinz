@@ -7,7 +7,6 @@ using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
-using Humanizer.Localisation;
 
 namespace K9_Koinz.Pages.BudgetLines {
 
@@ -28,8 +27,8 @@ namespace K9_Koinz.Pages.BudgetLines {
         public bool ChartError { get; set; }
 
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService, IBudgetService budgetService)
-                : base(context, logger, accountService, tagService) {
+            IDropdownPopulatorService dropdownService, IBudgetService budgetService)
+                : base(context, logger, dropdownService) {
             _budgetService = budgetService;
         }
 

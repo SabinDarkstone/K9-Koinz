@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Pages.Bills {
     public class EditModel : AbstractEditModel<Bill> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-            : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+            : base(context, logger, dropdownService) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
             return await _context.Bills

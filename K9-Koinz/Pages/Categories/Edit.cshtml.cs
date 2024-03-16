@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
@@ -8,8 +7,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Categories {
     public class EditModel : AbstractEditModel<Category> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-                : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+                : base(context, logger, dropdownService) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
             return await _context.Categories

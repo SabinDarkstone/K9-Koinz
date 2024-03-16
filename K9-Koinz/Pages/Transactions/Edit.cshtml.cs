@@ -13,8 +13,8 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList GoalOptions { get; set; } = default!;
 
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-                : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+                : base(context, logger, dropdownService) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
             return await _context.Transactions

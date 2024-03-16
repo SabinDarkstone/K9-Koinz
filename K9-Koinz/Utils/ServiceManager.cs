@@ -7,9 +7,9 @@ namespace K9_Koinz.Utils {
         public static void AddMyServices(this IServiceCollection services) {
             services.AddScoped<ISpendingGraphService, SpendingGraphService>();
             services.AddScoped<IDbCleanupService, DbCleanupService>();
-            services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<ITagService, TagService>();
+            services.AddScoped<IDropdownPopulatorService, DropdownPopulatorService>();
             services.AddScoped<IBudgetService, BudgetService>();
+
             services.AddTransient<IDupeCheckerService<Transaction>, TransactionDupeCheckerService>();
         }
 

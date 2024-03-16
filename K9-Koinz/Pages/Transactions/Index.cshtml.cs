@@ -13,13 +13,13 @@ namespace K9_Koinz.Pages.Transactions {
         private readonly KoinzContext _context;
         private readonly IConfiguration _configuration;
         private readonly ILogger<IndexModel> _logger;
-        private readonly IAccountService _accountSerice;
+        private readonly IDropdownPopulatorService _dropdownService;
 
-        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IAccountService accountService) {
+        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService) {
             _context = context;
             _configuration = configuration;
             _logger = logger;
-            _accountSerice = accountService;
+            _dropdownService = dropdownService;
         }
 
         private bool? _hideTransfers;
@@ -81,7 +81,7 @@ namespace K9_Koinz.Pages.Transactions {
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex, string searchString, bool? hideTransfers) {
             CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
-            AccountOptions = await _accountSerice.GetAccountListAsync(true);
+            AccountOptions = await _dropdownService.GetAccountListAsync();
 
             DateSort = string.IsNullOrEmpty(sortOrder) || sortOrder == "Date" ? "date_desc" : "Date";
             MerchantSort = sortOrder == "Merchant" ? "merchant_desc" : "Merchant";

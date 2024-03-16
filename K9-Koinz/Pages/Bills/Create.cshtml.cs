@@ -6,8 +6,8 @@ using K9_Koinz.Services;
 namespace K9_Koinz.Pages.Bills {
     public class CreateModel : AbstractCreateModel<Bill> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IAccountService accountService, ITagService tagService)
-                : base(context, logger, accountService, tagService) { }
+            IDropdownPopulatorService dropdownService)
+                : base(context, logger, dropdownService) { }
 
         protected override async Task BeforeSaveActionsAsync() {
             var account = await _context.Accounts.FindAsync(Record.AccountId);
