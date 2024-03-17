@@ -52,12 +52,13 @@ namespace K9_Koinz.Pages.Transactions {
 
                 var account = _context.Accounts.Find(parent.AccountId);
                 var category = _context.Categories.Find(split.CategoryId);
-                var merchant = _context.Merchants.Find(split.MerchantId);
 
                 split.AccountName = account.Name;
                 split.CategoryName = category.Name;
-                split.MerchantName = merchant.Name;
                 split.Date = parent.Date;
+
+                split.MerchantId = parent.MerchantId;
+                split.MerchantName = parent.MerchantName;
             }
 
             var validSplits = SplitTransactions.Where(splt => splt.Amount != 0).ToList();

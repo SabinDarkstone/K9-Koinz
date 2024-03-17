@@ -64,10 +64,10 @@
     <table class="table" id="splitTransTable">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(row => Model.ParentTransaction.MerchantId)</th>
                 <th>@Html.DisplayNameFor(row => Model.ParentTransaction.CategoryId)</th>
                 <th>@Html.DisplayNameFor(row => Model.ParentTransaction.Amount)</th>
                 <th>@Html.DisplayNameFor(row => Model.ParentTransaction.Notes)</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -80,28 +80,37 @@
                 <input type="hidden" asp-for="SplitTransactions[i].ParentTransactionId" />
                 <tr data-index="@i">
                     <td>
-                        <input class="form-control txtMerchant" type="text" data-index="@i" id="txtMerchant-@i" value="@Model.SplitTransactions[i].MerchantName" />
-                        <input asp-for="SplitTransactions[i].MerchantId" type="hidden" class="hfMerchant" data-index="@i" id="hfMerchant-@i" />
-                    </td>
-                    <td>
                         <input class="form-control txtCategory" data-index="@i" id="txtCategory-@i" value="@Model.SplitTransactions[i].CategoryName" />
                         <input asp-for="SplitTransactions[i].CategoryId" type="hidden" class="hfCategory" data-index="@i" id="hfCategory-@i" />
                     </td>
                     <td>
-                        <input asp-for="SplitTransactions[i].Amount" class="form-control txtAmount" data-index="@i" id="txtAmount-@i"/>
+                        <input asp-for="SplitTransactions[i].Amount" class="form-control txtAmount" data-index="@i" id="txtAmount-@i" size="4"/>
                     </td>
                     <td>
                         <input asp-for="SplitTransactions[i].Notes" rows="1" class="form-control" />
+                    </td>
+                    <td>
+                        <div class="row">
+                            <a class="btn btn-success btnAddRow" data-index="@i" id="btnAddRow-@i" style="--bs-btn-padding-y: 0.1rem; --bs-btn-padding-x: 0.1rem; --bs-btn-font-size: 0.5rem">
+                                <i class="fa-solid fa-plus"></i>
+                            </a>
+                        </div>
+                        <div class="row mt-1">
+                            <a class="btn btn-danger btnRemoveRow" data-index="@i" id="btnRemoveRow-@i" style="--bs-btn-padding-y: 0.1rem; --bs-btn-padding-x: 0.1rem; --bs-btn-font-size: 0.5rem">
+                                <i class="fa-solid fa-minus"></i>
+                            </a>
+                        </div>
+
                     </td>
                 </tr>
             }
 
             <tr>
                 <td></td>
-                <td></td>
                 <td>
-                    <input type="text" disabled id="txtTotalAmount" class="form-control" />
+                    <input type="text" disabled id="txtTotalAmount" class="form-control" size="4" />
                 </td>
+                <td></td>
                 <td></td>
             </tr>
         </tbody>
