@@ -1,4 +1,0 @@
-﻿Add-Migration <migration name>
-Update-Database
-
-scp -r ".\publish\*" sabin@devpi:/home/sabin/k9-koinz
