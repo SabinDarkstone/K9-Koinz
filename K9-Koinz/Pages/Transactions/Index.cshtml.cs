@@ -136,9 +136,15 @@ namespace K9_Koinz.Pages.Transactions
 
             if (!string.IsNullOrWhiteSpace(searchString)) {
                 var lcSearchString = searchString.ToLower();
+                if (lcSearchString.EndsWith("00")) {
+                    lcSearchString = lcSearchString.Substring(0, lcSearchString.Length - 2);
+                } else if (lcSearchString.EndsWith("0")) {
+                    lcSearchString = lcSearchString.Substring(0, lcSearchString.Length - 1);
+                }
                 transactionsIQ = transactionsIQ.Where(trans => trans.Notes.ToLower().Contains(lcSearchString) ||
                     trans.AccountName.ToLower().Contains(lcSearchString) || trans.CategoryName.ToLower().Contains(lcSearchString) ||
-                    trans.MerchantName.ToLower().Contains(lcSearchString) || trans.SavingsGoalName.ToLower().Contains(lcSearchString));
+                    trans.MerchantName.ToLower().Contains(lcSearchString) || trans.SavingsGoalName.ToLower().Contains(lcSearchString) ||
+                    trans.Amount.ToString().Equals(lcSearchString) || (trans.Amount * -1).ToString().Equals(lcSearchString));
             }
 
             _hideTransfers = hideTransfers;
