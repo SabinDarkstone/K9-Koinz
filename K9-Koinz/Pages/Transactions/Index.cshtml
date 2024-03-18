@@ -8,16 +8,16 @@
     ViewData["Title"] = "Transactions List";
 
     var payload = new TransactionNavPayload {
-        SortOrder = Model.CurrentSort,
-        CatFilter = Model.SelectedCategory,
-        AccountFilter = Model.SelectedAccount,
-        MinDate = Model.MinDateString,
-        MaxDate = Model.MaxDateString,
-        MerchFilter = Model.SelectedMerchant,
-        PageIndex = Model.Transactions.PageIndex,
-        HideTransfers = Model.HideTransfers,
-        SearchString = Model.SearchText
-    };
+                SortOrder = Model.CurrentSort,
+                CatFilter = Model.SelectedCategory,
+                AccountFilter = Model.SelectedAccount,
+                MinDate = Model.MinDateString,
+                MaxDate = Model.MaxDateString,
+                MerchFilter = Model.SelectedMerchant,
+                PageIndex = Model.Transactions.PageIndex,
+                HideTransfers = Model.HideTransfers,
+                SearchString = Model.SearchText
+            };
     var payloadString = JsonSerializer.Serialize(payload);
     Response.Cookies.Append("backToTransactions", payloadString);
 }
@@ -51,64 +51,81 @@
 </p>
 
 <div class="row">
-    <div class="col-lg-2">
+    <div class="col-lg-3">
         <form asp-page="@PagePaths.TransactionIndex" method="get">
             <div class="form-actions no-color">
                 <div class="form-group mb-3">
                     <label for="searchString">Search</label>
-                    <input id="searchString" type="text" name="searchString" value="@Model.SearchText" class="form-control"/>
+                    <input id="searchString" type="text" name="searchString" value="@Model.SearchText" class="form-control" />
                 </div>
-                <div class="form-group mb-3">
-                    <label for="dteStart">Start Date</label>
-                    <input id="dteStart" type="date" name="minDate" value="@Model.MinDateString" class="form-control" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="dteEnd">End Date</label>
-                    <input id="dteEnd" type="date" name="maxDate" value="@Model.MaxDateString" class="form-control" />
-                </div>
+                <div class="accordion accordion-flush" id="advancedSearch">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                Advanced Search
+                            </button>
+                        </h2>
 
-                <div class="form-group mb-3">
-                    <label for="cbxAccounts">Account Filter</label>
-                    <select id="cbxAccounts" name="accountFilter" asp-for="AccountFilter" asp-items="Model.AccountOptions" class="form-control">
-                        <option value=" " selected>Select an Account...</option>
-                    </select>
-                </div>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#advancedSearch">
+                            <div class="accordion-body">
 
-                <div class="form-group mb-3">
-                    <label for="lbxCategories">Category Filter</label>
-                    <select id="lbxCategories" name="catFilter" asp-for="CategoryFilters" asp-items="Model.CategoryOptions" size="15" class="form-control"></select>
-                </div>
+                                <div class="form-group mb-3">
+                                    <label for="dteStart">Start Date</label>
+                                    <input id="dteStart" type="date" name="minDate" value="@Model.MinDateString" class="form-control" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="dteEnd">End Date</label>
+                                    <input id="dteEnd" type="date" name="maxDate" value="@Model.MaxDateString" class="form-control" />
+                                </div>
 
-                <div class="form-group mb-3">
-                    <label for="txtMerchant" class="control-label">Merchant Filter</label>
-                    <input id="txtMerchant" class="form-control" placeholder="Enter a Merchant" />
-                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value="" />
-                </div>
+                                <div class="form-group mb-3">
+                                    <label for="cbxAccounts">Account Filter</label>
+                                    <select id="cbxAccounts" name="accountFilter" asp-for="AccountFilter" asp-items="Model.AccountOptions" class="form-control">
+                                        <option value=" " selected>Select an Account...</option>
+                                    </select>
+                                </div>
 
-                <div class="form-group mb-3 d-block d-lg-none">
-                    <label for="cbxSort">Sort By</label>
-                    <select id="cbxSort" name="sortOrder" asp-for="CurrentSort" class="form-control">
-                        <option value="" selected disabled>Select a Sort Option...</option>
-                        <option value="Date">Date (Oldest First)</option>
-                        <option value="date_desc">Date (Newest First)</option>
-                        <option value="Merchant">Merchant (A-Z)</option>
-                        <option value="merchant_desc">Merchant (Z-A)</option>
-                        <option value="Amount">Amount (Smallest First)</option>
-                        <option value="amount_desc">Amount (Largest First)</option>
-                    </select>
-                </div>
+                                <div class="form-group mb-3">
+                                    <label for="lbxCategories">Category Filter</label>
+                                    <select id="lbxCategories" name="catFilter" asp-for="CategoryFilters" asp-items="Model.CategoryOptions" size="15" class="form-control"></select>
+                                </div>
 
-                <div class="form-group mb-3">
-                    <input type="checkbox" name="hideTransfers" asp-for="HideTransfers" />
-                    <label>Hide Transfers</label>
-                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtMerchant" class="control-label">Merchant Filter</label>
+                                    <input id="txtMerchant" class="form-control" placeholder="Enter a Merchant" />
+                                    <input asp-for="MerchantFilter" name="merchFilter" type="hidden" id="hfMerchant" value="" />
+                                </div>
 
-                <input type="submit" value="Go" class="btn btn-primary" /> | <a asp-page="@PagePaths.TransactionIndex">Back to full list</a>
+                                <div class="form-group mb-3 d-block d-lg-none">
+                                    <label for="cbxSort">Sort By</label>
+                                    <select id="cbxSort" name="sortOrder" asp-for="CurrentSort" class="form-control">
+                                        <option value="" selected disabled>Select a Sort Option...</option>
+                                        <option value="Date">Date (Oldest First)</option>
+                                        <option value="date_desc">Date (Newest First)</option>
+                                        <option value="Merchant">Merchant (A-Z)</option>
+                                        <option value="merchant_desc">Merchant (Z-A)</option>
+                                        <option value="Amount">Amount (Smallest First)</option>
+                                        <option value="amount_desc">Amount (Largest First)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="checkbox" name="hideTransfers" asp-for="HideTransfers" />
+                                    <label>Hide Transfers</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <input type="submit" value="Go" class="btn btn-primary" /> <a class="btn btn-secondary" asp-page="@PagePaths.TransactionIndex">Back to full list</a>
             </div>
         </form>
     </div>
 
-    <div class="col-lg-10">
+    <div class="col-lg-9">
         <div class="d-none d-lg-block">
             <table class="table">
                 <thead>
@@ -299,6 +316,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+
     <script src="~/js/mobileListInteraction.js"></script>
 }
