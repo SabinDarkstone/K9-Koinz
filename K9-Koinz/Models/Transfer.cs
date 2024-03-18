@@ -5,7 +5,7 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Data;
 
 namespace K9_Koinz.Models {
-    public class Transfer : BaseEntity {
+    public class Transfer : BaseEntity, IAmount {
         [Required]
         [DisplayName("From Account")]
         public Guid FromAccountId { get; set; }

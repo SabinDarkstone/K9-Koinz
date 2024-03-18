@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,12 +27,12 @@ namespace K9_Koinz.ViewComponents {
                 .Sum(line => line.BudgetedAmount) * -1;
             ExtraExpenseTotal = budget.UnallocatedExpenses
                 .SelectMany(line => line.Transactions)
-                .Sum(trans => trans.Amount);
+                .GetTotal();
             SavingsGoalTransferTotal = _context.Transactions
                 .AsNoTracking()
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
-                .Sum(trans => trans.Amount) * -1;
+                .GetTotal(true);
 
             return View(this);
         }

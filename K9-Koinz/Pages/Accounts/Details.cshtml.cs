@@ -2,6 +2,7 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Accounts {
     public class DetailsModel : AbstractDetailsModel<Account> {
@@ -25,8 +26,7 @@ namespace K9_Koinz.Pages.Accounts {
         protected override void AdditionalActions() {
             var newBalance = Transactions
                 .Where(trans => trans.Date > Record.InitialBalanceDate || (trans.Date.Date == Record.InitialBalanceDate.Date && trans.DoNotSkip))
-                .Where(trans => trans.AccountId == Record.Id)
-                .Sum(trans => trans.Amount);
+                .Where(trans => trans.AccountId == Record.Id).GetTotal();
             Record.CurrentBalance = Record.InitialBalance + newBalance;
         }
     }

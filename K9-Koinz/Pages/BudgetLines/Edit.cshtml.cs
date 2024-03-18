@@ -7,6 +7,7 @@ using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Pages.BudgetLines {
 
@@ -92,7 +93,8 @@ namespace K9_Koinz.Pages.BudgetLines {
         private async Task CreateFirstBudgetLinePeriod() {
             var parentBudget = await _context.Budgets.FindAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
-            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now)).Sum(trans => trans.Amount);
+            var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now))
+                .GetTotal();
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = Record.Id,
@@ -119,7 +121,7 @@ namespace K9_Koinz.Pages.BudgetLines {
 
             var groups = transactions
                 .GroupBy(trans => trans.Date.Month + "|" + trans.Date.Year)
-                .ToDictionary(grp => grp.Key, grp => grp.ToList().Sum(trans => trans.Amount));
+                .ToDictionary(grp => grp.Key, grp => grp.ToList().GetTotal());
 
             if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE) {
                 foreach (var key in groups.Keys) {

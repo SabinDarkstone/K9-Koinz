@@ -71,7 +71,7 @@ namespace K9_Koinz.Pages.Budgets {
         private async Task CreateFirstBudgetLinePeriodAsync(BudgetLine budgetLine) {
             var (startDate, endDate) = Record.Timespan.GetStartAndEndDate();
             var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, DateTime.Now))
-                .Sum(trans => trans.Amount);
+                .GetTotal();
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = budgetLine.Id,

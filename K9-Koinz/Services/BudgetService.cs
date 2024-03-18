@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +52,7 @@ namespace K9_Koinz.Services {
                 transactions = [.. transactions, .. childCategoryTransactions];
             }
 
-            line.SpentAmount = transactions.Sum(trans => trans.Amount);
+            line.SpentAmount = transactions.GetTotal();
             if ((line.BudgetCategory.CategoryType == CategoryType.EXPENSE || line.BudgetCategory.CategoryType == CategoryType.ALL) && line.SpentAmount != 0.0) {
                 line.SpentAmount *= -1;
             }
@@ -115,10 +116,10 @@ namespace K9_Koinz.Services {
             }
 
             foreach (var line in unallocatedBudgetLines.Values) {
-                line.SpentAmount = line.Transactions.Sum(trans => trans.Amount);
+                line.SpentAmount = line.Transactions.GetTotal();
             }
 
-            return unallocatedBudgetLines.Values.Where(line => line.Transactions.Sum(trans => trans.Amount) != 0).ToList();
+            return unallocatedBudgetLines.Values.Where(line => line.Transactions.GetTotal() != 0).ToList();
         }
 
         public async Task<List<Transaction>> GetTransactionsForCurrentBudgetLinePeriodAsync(BudgetLine budgetLine, DateTime refDate) {

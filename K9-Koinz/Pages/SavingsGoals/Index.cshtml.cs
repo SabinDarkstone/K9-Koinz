@@ -1,6 +1,7 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
             var goalsToFix = new List<SavingsGoal>();
             foreach (var goal in SavingsGoalsDict.Values.SelectMany(x => x)) {
                 var transactionsTotal = goal.Transactions
-                    .Sum(trans => trans.Amount);
+                    .GetTotal();
                 if (transactionsTotal != goal.SavedAmount) {
                     goal.SavedAmount = transactionsTotal;
                     goalsToFix.Add(goal);

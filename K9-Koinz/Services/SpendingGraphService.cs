@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -58,7 +59,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
                 .GroupBy(trans => trans.Date.Day)
-                .Select(group => new Point(group.Key, group.Sum(trans => -1 * trans.Amount)))
+                .Select(group => new Point(group.Key, group.ToList().GetTotal(true)))
                 .ToListAsync();
         }
     }

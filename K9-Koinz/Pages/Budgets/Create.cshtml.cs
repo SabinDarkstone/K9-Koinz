@@ -4,6 +4,7 @@ using K9_Koinz.Utils;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Microsoft.EntityFrameworkCore;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Pages.Budgets {
     public class CreateModel : AbstractCreateModel<Budget> {
@@ -56,7 +57,7 @@ namespace K9_Koinz.Pages.Budgets {
         private async Task CreateFirstBudgetLinePeriod(BudgetLine budgetLine) {
             var (startDate, endDate) = Record.Timespan.GetStartAndEndDate();
             var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, DateTime.Now))
-                .Sum(trans => trans.Amount);
+                .GetTotal();
 
             var firstPeriod = new BudgetLinePeriod {
                 BudgetLineId = budgetLine.Id,

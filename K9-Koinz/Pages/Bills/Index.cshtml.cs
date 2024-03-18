@@ -1,5 +1,6 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,7 +16,7 @@ namespace K9_Koinz.Pages.Bills {
             Name = account.Name;
             AmountDueThisMonth = bills
                 .Where(bill => bill.AccountId == account.Id)
-                .Sum(bill => bill.BillAmount);
+                .GetTotal();
         }
 
         public AccountSummary(Account account) {

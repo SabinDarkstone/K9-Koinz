@@ -1,4 +1,5 @@
 ﻿using K9_Koinz.Data;
+using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ namespace K9_Koinz.ViewComponents {
                 .AsNoTracking()
                 .ToListAsync();
 
-            accounts.ForEach(acct => acct.CurrentBalance = acct.Transactions.Sum(trans => trans.Amount) + acct.InitialBalance);
+            accounts.ForEach(acct => acct.CurrentBalance = acct.Transactions.GetTotal() + acct.InitialBalance);
             return View(accounts);
         }
     }

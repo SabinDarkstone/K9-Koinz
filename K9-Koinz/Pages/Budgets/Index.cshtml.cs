@@ -174,7 +174,8 @@ namespace K9_Koinz.Pages.Budgets {
 
                 // Set the spent amount for the period based on the sum of the amounts of transations.
                 // Multiply by -1 to make value positive
-                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotalSpent();
+                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, BudgetPeriod))
+                    .GetTotal(true);
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
 
                 // Update the starting amount based on rollover from the last period
@@ -215,7 +216,7 @@ namespace K9_Koinz.Pages.Budgets {
                     continue;
                 }
 
-                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotalSpent();
+                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotalSpent(true);
                 budgetLine.PreviousPeriod.BudgetLine = null;
                 periodsToUpdate.Add(budgetLine.PreviousPeriod);
             }

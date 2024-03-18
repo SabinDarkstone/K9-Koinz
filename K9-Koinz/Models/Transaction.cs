@@ -11,7 +11,7 @@ namespace K9_Koinz.Models {
         [Display(Name = "Credit")]
         PLUS
     }
-    public class Transaction : BaseEntity {
+    public class Transaction : BaseEntity, IAmount {
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;

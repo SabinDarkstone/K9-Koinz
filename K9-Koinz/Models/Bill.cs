@@ -4,7 +4,7 @@ using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Models {
 
-    public class Bill : BaseEntity, INameable {
+    public class Bill : BaseEntity, INameable, IAmount {
         public string Name { get; set; }
         [DisplayName("Account")]
         public Guid AccountId { get; set; }
@@ -33,8 +33,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Repeat Settings")]
         public Guid? RepeatConfigId { get; set; }
         public RepeatConfig RepeatConfig { get; set; }
-        [DisplayName("Amount")]
-        public double BillAmount { get; set; }
+        public double Amount { get; set; }
 
         [DisplayName("Last Due Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
