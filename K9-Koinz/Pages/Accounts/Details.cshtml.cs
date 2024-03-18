@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Pages.Meta;
-using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Accounts {
     public class DetailsModel : AbstractDetailsModel<Account> {

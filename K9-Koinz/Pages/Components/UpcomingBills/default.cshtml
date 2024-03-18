@@ -11,7 +11,7 @@
                     <tr>
                         <th>Due Date</th>
                         <th style="width: 40%">@Html.DisplayNameFor(model => Model.Bills.First().Name)</th>
-                        <th style="width: 22%">@Html.DisplayNameFor(model => Model.Bills.First().BillAmount)</th>
+                        <th style="width: 22%">@Html.DisplayNameFor(model => Model.Bills.First().Amount)</th>
                         <th style="width: 10%">Auto</th>
                     </tr>
                 </thead>
@@ -24,7 +24,7 @@
                             <td scope="col" class="text-truncate">
                                 @bill.Name
                             </td>
-                            <td>@bill.BillAmount.FormatCurrency(2)</td>
+                            <td>@bill.Amount.FormatCurrency(2)</td>
                             <td>
                                 @if (bill.IsAutopay) {
                                     <i class="fa-solid fa-check"></i>

@@ -69,7 +69,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                         MerchantName = bill.MerchantName,
                         CategoryId = bill.CategoryId.Value,
                         CategoryName = bill.CategoryName,
-                        Amount = bill.BillAmount * -1,
+                        Amount = bill.Amount * -1,
                         Date = bill.RepeatConfig.NextFiring.Value
                     };
                     transactionsToCreate.Add(newTransaction);

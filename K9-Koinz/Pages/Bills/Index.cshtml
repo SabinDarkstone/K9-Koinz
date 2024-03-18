@@ -47,7 +47,7 @@
                         @Html.DisplayNameFor(model => model.Bills[0].RepeatConfig.Frequency)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].BillAmount)
+                        @Html.DisplayNameFor(model => model.Bills[0].Amount)
                     </th>
                     <th>
                         Next Due Date
@@ -68,7 +68,7 @@
                             @item.RepeatConfig.RepeatString
                         </td>
                         <td>
-                            @item.BillAmount.FormatCurrency(2)
+                            @item.Amount.FormatCurrency(2)
                         </td>
                         <td>
                             @if (item.RepeatConfig.NextFiring.HasValue) {
@@ -111,7 +111,7 @@
                             @item.Name
                         </div>
                         <div class="col-4 text-end bill-item" data-id="@item.Id">
-                            @item.BillAmount.FormatCurrency(2)
+                            @item.Amount.FormatCurrency(2)
                         </div>
                         <div class="col-1">
                             <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id">

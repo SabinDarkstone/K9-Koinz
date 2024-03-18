@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
 using K9_Koinz.Services;
@@ -216,7 +217,7 @@ namespace K9_Koinz.Pages.Budgets {
                     continue;
                 }
 
-                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotalSpent(true);
+                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotal(true);
                 budgetLine.PreviousPeriod.BudgetLine = null;
                 periodsToUpdate.Add(budgetLine.PreviousPeriod);
             }

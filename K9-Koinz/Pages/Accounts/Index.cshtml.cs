@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using K9_Koinz.Utils;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Pages.Accounts {
     public class IndexModel : PageModel {
