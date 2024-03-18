@@ -5,6 +5,8 @@ using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
+using Newtonsoft.Json;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : AbstractCreateModel<Transfer> {
@@ -26,9 +28,15 @@ namespace K9_Koinz.Pages.Transfers {
             return base.BeforePageLoadActions();
         }
 
-        protected override async Task BeforeSaveActionsAsync() {
+        protected override void BeforeSaveActions() {
             Record.Date = Record.Date.AtMidnight() + DateTime.Now.TimeOfDay;
 
+            if (Record.TagId == Guid.Empty) {
+                Record.TagId = null;
+            }
+        }
+
+        protected override async Task AfterSaveActionsAsync() {
             transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
 
             foundMatchingTransactions = _context.Transactions
@@ -38,15 +46,11 @@ namespace K9_Koinz.Pages.Transfers {
                 .Where(trans => Math.Abs((trans.Date - transactions[1].Date).TotalDays) <= 5)
                 .Any();
 
-            _context.Transactions.AddRange(transactions);
-        }
-
-        protected override async Task AfterSaveActionsAsync() {
             foreach (var transaction in transactions) {
                 transaction.TransferId = Record.Id;
             }
 
-            _context.Transactions.UpdateRange(transactions);
+            _context.Transactions.AddRange(transactions);
             await _context.SaveChangesAsync();
         }
 
