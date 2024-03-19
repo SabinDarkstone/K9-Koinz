@@ -34,14 +34,13 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .GetTotal(true);
 
-            var categoriesInBudget = budget.BudgetLines.Select(line => line.BudgetCategoryId).ToList();
-            RemainingBillsTotal = SimulateBills(referenceDate, budget.Timespan, categoriesInBudget);
+            RemainingBillsTotal = SimulateBills(referenceDate, budget.Timespan);
 
             return View(this);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-        private double SimulateBills(DateTime referenceDate, BudgetTimeSpan timespan, List<Guid> categoryIds) {
+        private double SimulateBills(DateTime referenceDate, BudgetTimeSpan timespan) {
             var activeBills = _context.Bills
                 .AsNoTracking()
                 .Include(bill => bill.RepeatConfig)
@@ -54,14 +53,8 @@ namespace K9_Koinz.ViewComponents {
             for (var simDate = DateTime.Today; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
                 var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var bill in todaysBills) {
-                    bill.RepeatConfig.FireNow();
-
-                    // Skip bills that are already included in the budget bars
-                    if (bill.CategoryId.HasValue && categoryIds.Contains(bill.CategoryId.Value)) {
-                        continue;
-                    }
-
                     runningTotal += bill.Amount;
+                    bill.RepeatConfig.FireNow();
                 }
             }
 
