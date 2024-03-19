@@ -34,9 +34,40 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .GetTotal(true);
 
+            var categoriesInBudget = budget.BudgetLines.Select(line => line.BudgetCategoryId).ToList();
+            RemainingBillsTotal = SimulateBills(referenceDate, budget.Timespan, categoriesInBudget);
+
             return View(this);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
+        private double SimulateBills(DateTime referenceDate, BudgetTimeSpan timespan, List<Guid> categoryIds) {
+            var activeBills = _context.Bills
+                .AsNoTracking()
+                .Include(bill => bill.RepeatConfig)
+                .AsEnumerable()
+                .Where(bill => bill.RepeatConfig.IsActive)
+                .ToList();
+
+            var (_, endDate) = timespan.GetStartAndEndDate(referenceDate);
+            var runningTotal = 0d;
+            for (var simDate = DateTime.Today; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
+                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
+                foreach (var bill in todaysBills) {
+                    bill.RepeatConfig.FireNow();
+
+                    // Skip bills that are already included in the budget bars
+                    if (bill.CategoryId.HasValue && categoryIds.Contains(bill.CategoryId.Value)) {
+                        continue;
+                    }
+
+                    runningTotal += bill.Amount;
+                }
+            }
+
+            return runningTotal * -1;
+        }
+
 
         [DisplayName("Estimated Income")]
         public double IncomeTotal { get; set; }
@@ -49,11 +80,13 @@ namespace K9_Koinz.ViewComponents {
 
         [DisplayName("Savings Goals")]
         public double SavingsGoalTransferTotal { get; set; }
+        [DisplayName("Upcoming Bills")]
+        public double RemainingBillsTotal { get; set; }
 
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal;
+                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + RemainingBillsTotal;
             }
         }
 

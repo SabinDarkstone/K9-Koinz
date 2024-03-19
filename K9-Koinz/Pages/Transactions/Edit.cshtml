@@ -23,6 +23,7 @@
             <input type="hidden" asp-for="Record.Id" />
             <input type="hidden" asp-for="Record.TransferId" />
             <input type="hidden" asp-for="Record.IsSplit" />
+            <input type="hidden" asp-for="Record.BillId" />
             <div class="form-group">
                 <label asp-for="Record.AccountId" class="control-label"></label>
                 <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
