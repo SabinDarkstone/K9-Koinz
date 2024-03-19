@@ -50,6 +50,16 @@ namespace K9_Koinz.ViewComponents {
 
             var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
             var runningTotal = 0d;
+
+            // Get bills that have already been paid
+            for (var simDate = startDate; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
+                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.LastFiring.HasValue && bill.RepeatConfig.LastFiring.Value.Date == simDate.Date).ToList();
+                foreach (var bill in todaysBills) {
+                    runningTotal += bill.Amount;
+                }
+            }
+
+            // Get bills that have yet to be paid
             for (var simDate = startDate; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
                 var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var bill in todaysBills) {
