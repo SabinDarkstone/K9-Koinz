@@ -34,9 +34,33 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .GetTotal(true);
 
+            RemainingBillsTotal = SimulateBills(referenceDate, budget.Timespan);
+
             return View(this);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
+        private double SimulateBills(DateTime referenceDate, BudgetTimeSpan timespan) {
+            var activeBills = _context.Bills
+                .AsNoTracking()
+                .Include(bill => bill.RepeatConfig)
+                .AsEnumerable()
+                .Where(bill => bill.RepeatConfig.IsActive)
+                .ToList();
+
+            var (_, endDate) = timespan.GetStartAndEndDate(referenceDate);
+            var runningTotal = 0d;
+            for (var simDate = DateTime.Today; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
+                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
+                foreach (var bill in todaysBills) {
+                    runningTotal += bill.Amount;
+                    bill.RepeatConfig.FireNow();
+                }
+            }
+
+            return runningTotal * -1;
+        }
+
 
         [DisplayName("Estimated Income")]
         public double IncomeTotal { get; set; }
@@ -49,11 +73,13 @@ namespace K9_Koinz.ViewComponents {
 
         [DisplayName("Savings Goals")]
         public double SavingsGoalTransferTotal { get; set; }
+        [DisplayName("Upcoming Bills")]
+        public double RemainingBillsTotal { get; set; }
 
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal;
+                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + RemainingBillsTotal;
             }
         }
 
