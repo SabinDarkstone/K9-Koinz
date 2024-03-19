@@ -11,6 +11,7 @@ using K9_Koinz.Utils;
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : AbstractEditModel<Transaction> {
         public SelectList GoalOptions { get; set; } = default!;
+        public SelectList BillOptions { get; set; } = default!;
 
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
@@ -28,6 +29,13 @@ namespace K9_Koinz.Pages.Transactions {
                 GoalOptions = new SelectList(await _context.SavingsGoals
                     .Where(goal => goal.AccountId == Record.AccountId)
                     .ToListAsync(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+            }
+
+            if (Record.Category.CategoryType == CategoryType.EXPENSE) {
+                BillOptions = new SelectList(await _context.Bills
+                    .Where(bill => bill.AccountId == Record.AccountId)
+                    .OrderBy(bill => bill.Name)
+                    .ToListAsync(), nameof(Bill.Id), nameof(Bill.Name));
             }
         }
 
@@ -48,6 +56,9 @@ namespace K9_Koinz.Pages.Transactions {
 
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
+            }
+            if (Record.BillId == Guid.Empty) {
+                Record.BillId = null;
             }
             if (Record.SavingsGoalId.HasValue) {
                 if (Record.SavingsGoalId.Value == Guid.Empty) {

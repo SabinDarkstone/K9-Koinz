@@ -25,12 +25,14 @@ namespace K9_Koinz.Services {
                     .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER)
                     .Where(trans => !trans.IsSplit)
                     .Where(trans => !trans.IsSavingsSpending)
+                    .Where(trans => !trans.BillId.HasValue)
                     .ToList();
             }
 
             var transactionsIQ = line.BudgetCategory.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
-                .Where(trans => !trans.IsSavingsSpending);
+                .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => !trans.BillId.HasValue);
 
             if (line.Budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId.Value);
@@ -83,7 +85,8 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.CategoryId.HasValue && unallocatedCategories.Contains(trans.CategoryId.Value))
                 .Where(trans => !trans.IsSplit)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.CREDIT_CARD)
-                .Where(trans => !trans.IsSavingsSpending);
+                .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => !trans.BillId.HasValue);
 
             if (budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == budget.BudgetTagId.Value);
@@ -155,6 +158,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .Where(trans => !trans.IsSplit)
                 .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => !trans.BillId.HasValue)
                 .AsNoTracking();
 
             if (budgetLine.BudgetCategory.CategoryType != CategoryType.ALL) {
