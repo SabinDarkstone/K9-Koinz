@@ -14,209 +14,48 @@
     </span>
 </a>
 
-<h4>Checking & Savings</h4>
-@if (Model.Accounts.Any(acct => acct.Type == AccountType.CHECKING || acct.Type == AccountType.SAVINGS)) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="col-4">
-                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
-                </th>
-                <th class="col-3"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.CHECKING || acct.Type == AccountType.SAVINGS)) {
-                string rowClassList = "";
-                if (item.MinimumBalance.HasValue) {
-                    if (item.CurrentBalance < item.MinimumBalance.Value) {
-                        rowClassList = "table-danger";
-                    } else if (item.CurrentBalance >= item.MinimumBalance.Value && item.CurrentBalance < (item.MinimumBalance.Value * 1.1)) {
-                        rowClassList = "table-warning";
+@foreach (var accountType in Model.AccountDict.Keys.OrderBy(grp => grp).AsEnumerable()) {
+    <div class="mb-4">
+        <h4>@accountType</h4>
+        @{
+            var accountList = Model.AccountDict[accountType];
+        }
+        @if (accountList.Count > 0) {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Balance</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var account in accountList) {
+                        string rowClassList = "";
+                        if (account.MinimumBalance.HasValue) {
+                            if (account.CurrentBalance < account.MinimumBalance.Value) {
+                                rowClassList = "table-danger";
+                            } else if (account.CurrentBalance >= account.MinimumBalance.Value && account.CurrentBalance < (account.MinimumBalance.Value * 1.1)) {
+                                rowClassList = "table-warning";
+                            }
+                        }
+
+                        <tr class="@rowClassList">
+                            <td>
+                                @Html.DisplayFor(modelItem => account.Name)
+                            </td>
+                            <td>
+                                @account.CurrentBalance.FormatCurrency()
+                            </td>
+                            <td>
+                                <a asp-page="@PagePaths.AccountEdit" asp-route-id="@account.Id"><i class="fa-solid fa-pencil"></i></a> |
+                                <a asp-page="@PagePaths.AccountDetails" asp-route-id="@account.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                                <a asp-page="@PagePaths.AccountDelete" asp-route-id="@account.Id"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
                     }
-                }
-
-                <tr class="@rowClassList">
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @item.CurrentBalance.FormatCurrency()
-                    </td>
-                    <td>
-                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-} else {
-    <div class="align-content-center">
-        <p>You do not have any Checking or Savings accounts set up.</p>
-    </div>
-}
-
-<hr />
-
-<h4>Credit Cards</h4>
-@if (Model.Accounts.Any(acct => acct.Type == AccountType.CREDIT_CARD)) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="col-4">
-                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
-                </th>
-                <th class="col-3"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.CREDIT_CARD)) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @item.CurrentBalance.FormatCurrency()
-                    </td>
-                    <td>
-                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-} else {
-    <div class="align-content-center">
-        <p>You do not have any Credit Card accounts set up.</p>
-    </div>
-}
-
-<hr />
-
-<h4>Loans</h4>
-@if (Model.Accounts.Any(acct => acct.Type == AccountType.LOAN)) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="col-4">
-                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
-                </th>
-                <th class="col-3"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.LOAN)) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @item.CurrentBalance.FormatCurrency()
-                    </td>
-                    <td>
-                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-} else {
-    <div class="align-content-center">
-        <p>You do not have any Loan accounts set up.</p>
-    </div>
-}
-
-<hr />
-
-<h4>Property</h4>
-@if (Model.Accounts.Any(acct => acct.Type == AccountType.PROPERTY)) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="col-4">
-                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
-                </th>
-                <th class="col-3"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.PROPERTY)) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @item.CurrentBalance.FormatCurrency()
-                    </td>
-                    <td>
-                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-} else {
-    <div class="align-content-center">
-        <p>You do not have any Property accounts set up.</p>
-    </div>
-}
-
-<hr />
-
-<h4>Investments</h4>
-@if (Model.Accounts.Any(acct => acct.Type == AccountType.INVESTMENT)) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="col-4">
-                    @Html.DisplayNameFor(model => model.Accounts[0].Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].CurrentBalance)
-                </th>
-                <th class="col-3"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Accounts.Where(acct => acct.Type == AccountType.INVESTMENT)) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @item.CurrentBalance.FormatCurrency()
-                    </td>
-                    <td>
-                        <a asp-page="@PagePaths.AccountEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                        <a asp-page="@PagePaths.AccountDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                        <a asp-page="@PagePaths.AccountDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-} else {
-    <div class="align-content-center">
-        <p>You do not have any Investment accounts set up.</p>
+                </tbody>
+            </table>
+        }
     </div>
 }
