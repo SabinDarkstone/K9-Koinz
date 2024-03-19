@@ -34,7 +34,7 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .GetTotal(true);
 
-            RemainingBillsTotal = SimulateBills(referenceDate, budget.Timespan);
+            BillsTotal = SimulateBills(referenceDate, budget.Timespan);
 
             return View(this);
         }
@@ -48,9 +48,9 @@ namespace K9_Koinz.ViewComponents {
                 .Where(bill => bill.RepeatConfig.IsActive)
                 .ToList();
 
-            var (_, endDate) = timespan.GetStartAndEndDate(referenceDate);
+            var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
             var runningTotal = 0d;
-            for (var simDate = DateTime.Today; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
+            for (var simDate = startDate; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
                 var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var bill in todaysBills) {
                     runningTotal += bill.Amount;
@@ -73,13 +73,13 @@ namespace K9_Koinz.ViewComponents {
 
         [DisplayName("Savings Goals")]
         public double SavingsGoalTransferTotal { get; set; }
-        [DisplayName("Upcoming Bills")]
-        public double RemainingBillsTotal { get; set; }
+        [DisplayName("Planned Bills")]
+        public double BillsTotal { get; set; }
 
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + RemainingBillsTotal;
+                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
             }
         }
 
