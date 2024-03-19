@@ -4,7 +4,7 @@
 <div class="row justify-content-center">
     <div class="m-2 col-md-7 col-lg-5 col-xl-4 col-8">
         <div class="@Model.AlertClasses">
-            <h4 class="alert-heading">Overview</h4>
+            <h4 class="alert-heading">At a Glance</h4>
             <div class="p-2">
                 <div class="row justify-content-between">
                     <div class="col-7">
@@ -41,10 +41,10 @@
                 </div>
                 <div class="row">
                     <div class="col-7">
-                        @Html.DisplayNameFor(model => Model.RemainingBillsTotal)
+                        @Html.DisplayNameFor(model => Model.BillsTotal)
                     </div>
                     <div class="col-5" style="text-align:right">
-                        @Model.RemainingBillsTotal.FormatCurrency(0)
+                        @Model.BillsTotal.FormatCurrency(0)
                     </div>
                 </div>
                 <hr class="mt-1 mb-1" />
