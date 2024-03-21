@@ -50,8 +50,10 @@
                     <input asp-for="Record.BudgetedAmount" class="form-control" />
                 </div>
                 <div class="form-group">
-                    @Html.EditorFor(model => Model.Record.DoNoCategoryRollover)
-                    @Html.DisplayNameFor(model => Model.Record.DoNoCategoryRollover)
+                    <div class="form-check form-switch">
+                        @Html.EditorFor(x => x.Record.DoNoCategoryRollover, new { htmlAttributes = new { @class = "form-check-input" } })
+                        <label class="form-check-label" asp-for="Record.DoNoCategoryRollover"></label>
+                    </div>
                 </div>
             }
             <div class="form-group">

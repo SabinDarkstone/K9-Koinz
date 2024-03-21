@@ -89,9 +89,14 @@
                 </div>
             }
             <div class="form-group">
-                <input asp-for="Record.IsSavingsSpending" />
+                @*<input asp-for="Record.IsSavingsSpending" />
                 <label asp-for="Record.IsSavingsSpending" class="control-label"></label>
-                <span asp-validation-for="Record.IsSavingsSpending" class="text-danger"></span>
+                <span asp-validation-for="Record.IsSavingsSpending" class="text-danger"></span>*@
+
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Record.IsSavingsSpending, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Record.IsSavingsSpending"></label>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

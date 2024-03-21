@@ -110,8 +110,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="checkbox" name="hideTransfers" asp-for="HideTransfers" />
-                                    <label>Hide Transfers</label>
+                                    <div class="form-check form-switch">
+                                        @Html.EditorFor(x => x.HideTransfers, new { htmlAttributes = new { @class = "form-check-input" } })
+                                        <label class="form-check-label" asp-for="HideTransfers"></label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

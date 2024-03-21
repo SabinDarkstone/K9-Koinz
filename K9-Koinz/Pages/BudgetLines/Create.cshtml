@@ -11,7 +11,7 @@
 <h4>Budget Category</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -31,10 +31,18 @@
                 <span asp-validation-for="Record.BudgetedAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="checkbox" asp-for="Record.GreenBarAlways" /> Always Show Bar as Green?
+                @*<input type="checkbox" asp-for="Record.GreenBarAlways" /> Always Show Bar as Green?*@
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Record.GreenBarAlways, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Record.GreenBarAlways"></label>
+                </div>
             </div>
             <div class="form-group">
-                <input type="checkbox" asp-for="Record.DoRollover" /> Rollover Unspent Amount?
+                @*<input type="checkbox" asp-for="Record.DoRollover" /> Rollover Unspent Amount?*@
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Record.DoRollover, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Record.DoRollover"></label>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
