@@ -137,6 +137,8 @@ namespace K9_Koinz.Pages.Transactions
             if (!string.IsNullOrWhiteSpace(searchString)) {
                 if (float.TryParse(searchString, out float value)) {
                     transactionsIQ = transactionsIQ.Where(trans => trans.Amount == value || trans.Amount == -1 * value);
+                } else if (searchString.ToLower() == "hidden") {
+                    transactionsIQ = transactionsIQ.Where(trans => trans.IsSavingsSpending);
                 } else {
                     var lcSearchString = searchString.ToLower();
                     transactionsIQ = transactionsIQ.Where(trans => trans.Notes.ToLower().Contains(lcSearchString) ||

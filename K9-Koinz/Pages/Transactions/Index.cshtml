@@ -189,6 +189,9 @@
                                         var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
                                     }
+                                    @if (item.IsSavingsSpending) {
+                                        <i class="fa-solid fa-eye-slash"></i>
+                                    }
                                     @if (item.IsSplit) {
                                         <i class="fa-solid fa-arrows-split-up-and-left"></i>
                                     }
@@ -238,6 +241,9 @@
                                     @if (transaction.TagId.HasValue) {
                                         var style = "background-color: " + transaction.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@transaction.Tag.ShortForm</span>
+                                    }
+                                    @if (transaction.IsSavingsSpending) {
+                                        <i class="fa-solid fa-eye-slash"></i>
                                     }
                                     @if (transaction.IsSplit) {
                                         <i class="fa-solid fa-arrows-split-up-and-left"></i>
