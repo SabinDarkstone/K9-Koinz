@@ -5,8 +5,8 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DeleteModel : AbstractDeleteModel<Transaction> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
             return await _context.Transactions

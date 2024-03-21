@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers.Recurring {
     public class DeleteModel : AbstractDeleteModel<Transfer> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task<Transfer> QueryRecordAsync(Guid id) {
             return await _context.Transfers

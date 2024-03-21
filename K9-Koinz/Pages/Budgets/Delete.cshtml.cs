@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace K9_Koinz.Pages.Budgets {
     public class DeleteModel : AbstractDeleteModel<Budget> {
         public List<BudgetLine> BudgetLines { get; set; }
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task AfterQueryActionAsync() {
             BudgetLines = await _context.BudgetLines

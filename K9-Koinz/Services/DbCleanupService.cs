@@ -9,7 +9,7 @@ namespace K9_Koinz.Services {
     }
 
     public class DbCleanupService : AbstractService<DbCleanupService>, IDbCleanupService {
-        public DbCleanupService(KoinzContext context, ILogger<DbCleanupService> logger) : base(context, logger) { }
+        public DbCleanupService(RepositoryWrapper data, ILogger<DbCleanupService> logger) : base(data, logger) { }
 
         public async Task DateMigrateBillSchedules() {
             _logger.LogInformation("Checking for bills to migration schedules");

@@ -7,8 +7,8 @@ using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.BudgetLines {
     public class DeleteModel : AbstractDeleteModel<BudgetLine> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task<BudgetLine> QueryRecordAsync(Guid id) {
             return await _context.BudgetLines

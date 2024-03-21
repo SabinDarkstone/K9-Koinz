@@ -27,7 +27,7 @@ namespace K9_Koinz.Services {
     }
 
     public class SpendingGraphService : AbstractService<SpendingGraphService>, ISpendingGraphService {
-        public SpendingGraphService(KoinzContext context, ILogger<SpendingGraphService> logger) : base(context, logger) { }
+        public SpendingGraphService(RepositoryWrapper data, ILogger<SpendingGraphService> logger) : base(data, logger) { }
 
         public async Task<string[]> CreateGraphData() {
             var startOfThisMonth = DateTime.Now.StartOfMonth();

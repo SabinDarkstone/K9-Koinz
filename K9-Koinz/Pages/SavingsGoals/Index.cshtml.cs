@@ -3,26 +3,17 @@ using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.SavingsGoals {
     public class IndexModel : AbstractDbPage {
-        public IndexModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) {
+        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) {
         }
 
         public Dictionary<string, List<SavingsGoal>> SavingsGoalsDict { get; set; }
 
         public async Task<IActionResult> OnGetAsync() {
-            SavingsGoalsDict = await _context.SavingsGoals
-                .Include(goal => goal.Transactions)
-                .AsNoTracking()
-                .GroupBy(goal => goal.AccountName)
-                .ToDictionaryAsync(
-                    x => x.Key,
-                    x => x.AsEnumerable().OrderBy(goal => goal.Name).ToList()
-                );
-
+            SavingsGoalsDict = await _data.SavingsGoalRepository.GetAllGroupedByAccount();
             VerifyGoalAmountsWithTransactions();
 
             return Page();
@@ -31,8 +22,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
         private void VerifyGoalAmountsWithTransactions() {
             var goalsToFix = new List<SavingsGoal>();
             foreach (var goal in SavingsGoalsDict.Values.SelectMany(x => x)) {
-                var transactionsTotal = goal.Transactions
-                    .GetTotal();
+                var transactionsTotal = goal.Transactions.GetTotal();
                 if (transactionsTotal != goal.SavedAmount) {
                     goal.SavedAmount = transactionsTotal;
                     goalsToFix.Add(goal);
@@ -40,8 +30,8 @@ namespace K9_Koinz.Pages.SavingsGoals {
             }
 
             if (goalsToFix.Count > 0) {
-                _context.SavingsGoals.UpdateRange(goalsToFix);
-                _context.SaveChanges();
+                _data.SavingsGoalRepository.Update(goalsToFix);
+                _data.Save();
             }
         }
     }

@@ -6,19 +6,10 @@ using K9_Koinz.Utils;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Newtonsoft.Json;
-using System.Runtime.Serialization;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Pages.BudgetLines {
-
-    [DataContract]
-    public class DataPoint {
-        [DataMember(Name = "label")]
-        public string Label { get; set; }
-
-        [DataMember(Name = "y")]
-        public double? Y { get; set; }
-    }
 
     public class EditModel : AbstractEditModel<BudgetLine> {
         private readonly IBudgetService _budgetService;
@@ -27,17 +18,14 @@ namespace K9_Koinz.Pages.BudgetLines {
         public string BudgetedAmount { get; set; }
         public bool ChartError { get; set; }
 
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IBudgetService budgetService)
-                : base(context, logger, dropdownService) {
+                : base(data, logger, dropdownService) {
             _budgetService = budgetService;
         }
 
         protected override async Task<BudgetLine> QueryRecordAsync(Guid id) {
-            var budgetLine = await _context.BudgetLines
-                .Include(line => line.Budget)
-                .Include(line => line.BudgetCategory)
-                .FirstAsync(line => line.Id == id);
+            var budgetLine = await _data.BudgetLineRepository.GetByIdAsync(id);
 
             try {
                 if (budgetLine.Budget.Timespan == BudgetTimeSpan.MONTHLY) {
@@ -56,11 +44,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var oldRecord = await _context.BudgetLines
-                .Include(line => line.BudgetCategory)
-                .Include(line => line.Budget)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(line => line.Id == Record.Id);
+            var oldRecord = await _data.BudgetLineRepository.GetByIdAsync(Record.Id);
 
             Record.BudgetCategory = oldRecord.BudgetCategory;
             Record.Budget = oldRecord.Budget;
@@ -79,8 +63,8 @@ namespace K9_Koinz.Pages.BudgetLines {
             Record.BudgetCategory = null;
             Record.Budget = null;
 
-            var category = await _context.Categories.FindAsync(Record.BudgetCategoryId);
-            var budget = await _context.Budgets.FindAsync(Record.BudgetId);
+            var category = await _data.CategoryRepository.GetByIdAsync(Record.BudgetCategoryId); ;
+            var budget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
 
             Record.BudgetCategoryName = category.Name;
             Record.BudgetName = budget.Name;
@@ -91,7 +75,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         private async Task CreateFirstBudgetLinePeriod() {
-            var parentBudget = await _context.Budgets.FindAsync(Record.BudgetId);
+            var parentBudget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
             var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now))
                 .GetTotal();
@@ -104,20 +88,11 @@ namespace K9_Koinz.Pages.BudgetLines {
                 SpentAmount = totalSpentSoFar
             };
 
-            _context.BudgetLinePeriods.Add(firstPeriod);
+            _data.BudgetLinePeriodRepository.Add(firstPeriod);
         }
 
-        private async Task<List<DataPoint>> GetSpendingHistory(BudgetLine line) {
-            var transactions = await _context.Transactions
-                .Include(trans => trans.Category)
-                .AsNoTracking()
-                .Where(trans => trans.CategoryId == line.BudgetCategoryId || trans.Category.ParentCategoryId == line.BudgetCategoryId)
-                .Where(trans => !trans.IsSavingsSpending)
-                .Where(trans => !trans.IsSplit)
-                .Where(trans => trans.Date <= DateTime.Today.Date.Date && trans.Date.Date >= DateTime.Today.AddMonths(-11))
-                .ToListAsync();
-
-            transactions.ForEach(trans => _logger.LogInformation(trans.Id + " " + trans.Amount.ToString()));
+        private async Task<List<GraphDataPoint>> GetSpendingHistory(BudgetLine line) {
+            var transactions = await _data.TransactionRepository.GetForSpendingHistory(line.BudgetCategoryId);
 
             var groups = transactions
                 .GroupBy(trans => trans.Date.Month + "|" + trans.Date.Year)
@@ -125,12 +100,11 @@ namespace K9_Koinz.Pages.BudgetLines {
 
             if (line.BudgetCategory.CategoryType == CategoryType.EXPENSE) {
                 foreach (var key in groups.Keys) {
-                    _logger.LogInformation(key.ToString());
                     groups[key] *= -1;
                 }
             }
 
-            var output = new List<DataPoint>();
+            var output = new List<GraphDataPoint>();
 
             var startingKey = DateTime.Today.AddMonths(-11).Month + "|" + DateTime.Today.AddMonths(-11).Year;
             for (var i = 1; i < 12; i++) {
@@ -145,7 +119,7 @@ namespace K9_Koinz.Pages.BudgetLines {
                     amount = groups[currentMonth + "|" + currentYear];
                 }
 
-                output.Add(new DataPoint {
+                output.Add(new GraphDataPoint {
                     Label = month + " '" + currentYear.ToString().Substring(2),
                     Y = amount
                 });

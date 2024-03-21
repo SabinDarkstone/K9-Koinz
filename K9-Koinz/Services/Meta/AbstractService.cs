@@ -5,7 +5,7 @@ namespace K9_Koinz.Services.Meta {
         protected readonly KoinzContext _context;
         protected readonly ILogger<T> _logger;
 
-        protected AbstractService(KoinzContext context, ILogger<T> logger) {
+        protected AbstractService(RepositoryWrapper data, ILogger<T> logger) {
             _context = context;
             _logger = logger;
         }

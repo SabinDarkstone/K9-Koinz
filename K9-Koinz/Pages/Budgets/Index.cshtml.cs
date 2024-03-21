@@ -6,6 +6,7 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
 using K9_Koinz.Services;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Budgets {
 
@@ -21,20 +22,17 @@ namespace K9_Koinz.Pages.Budgets {
         public bool IsDisabled { get; set; }
     }
 
-    public class IndexModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly ILogger<IndexModel> _logger;
+    public class IndexModel : AbstractDbPage {
         private readonly IBudgetService _budgetService;
 
-        private Budget selectedBudget;
-
-        public IndexModel(KoinzContext context, ILogger<IndexModel> logger, IBudgetService budgetService) {
-            _context = context;
-            _logger = logger;
+        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IBudgetService budgetService)
+            : base(data, logger) {
             _budgetService = budgetService;
         }
 
-        public IList<Budget> Budgets { get; set; } = default!;
+
+        private Budget selectedBudget;
+        public IEnumerable<Budget> Budgets { get; set; } = default!;
         public Budget SelectedBudget {
             get {
                 if (selectedBudget == null) {
@@ -61,14 +59,9 @@ namespace K9_Koinz.Pages.Budgets {
                 BudgetPeriod = DateTime.Now;
             }
 
-            Budgets = await _context.Budgets
-                .Include(bud => bud.BudgetTag)
-                .OrderBy(bud => bud.SortOrder)
-                .AsNoTracking()
-                .ToListAsync();
+            Budgets = await _data.BudgetRepository.GetAllAsync();
 
-            SelectedBudget = GetBudgetDetails(selectedBudget);
-
+            SelectedBudget = await _data.BudgetRepository.GetBudgetDetails(selectedBudget);
             if (SelectedBudget == null) {
                 return;
             }
@@ -80,31 +73,7 @@ namespace K9_Koinz.Pages.Budgets {
             }
             await UpdatePreviousPeriodsAsync();
             await UpdateCurrentPeriodsAsync();
-            await _context.SaveChangesAsync();
-        }
-
-        // TODO: This needs to be cleaned up
-        private Budget GetBudgetDetails(string selectedBudget) {
-            var budgetQuery = _context.Budgets
-                .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.BudgetCategory)
-                        .ThenInclude(cat => cat.Transactions)
-                .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.BudgetCategory)
-                        .ThenInclude(cat => cat.ChildCategories)
-                            .ThenInclude(cCat => cCat.Transactions)
-                .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.Periods)
-                .Include(bud => bud.BudgetTag)
-                .OrderBy(bud => bud.Id)
-                .AsSplitQuery()
-                .AsNoTracking();
-
-            if (!string.IsNullOrEmpty(selectedBudget)) {
-                return budgetQuery.FirstOrDefault(bud => bud.Id == Guid.Parse(selectedBudget));
-            } else {
-                return budgetQuery.FirstOrDefault();
-            }
+            await _data.SaveAsync();
         }
 
         private void GenerateBudgetPeriodOptions() {
@@ -115,7 +84,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = optionDate.FormatShortMonthAndYear(),
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfMonth() && trans.Date <= optionDate.EndOfMonth())
+                        IsDisabled = !_data.TransactionRepository.AnyInMonth(optionDate.Date)
                     });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
@@ -126,7 +95,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = i == 0 ? "This Week" : "Week of " + weekStartDate.Month + "/" + weekStartDate.Day,
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfWeek() && trans.Date <= optionDate.EndOfWeek())
+                        IsDisabled = !_data.TransactionRepository.AnyInWeek(optionDate.Date)
                     });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.YEARLY) {
@@ -136,13 +105,12 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = i == 0 ? "This Year" : optionDate.Year.ToString(),
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_context.Transactions.AsNoTracking().Any(trans => trans.Date >= optionDate.StartOfYear() && trans.Date <= optionDate.EndOfYear())
+                        IsDisabled = !_data.TransactionRepository.AnyInYear(optionDate.Date)
                     });
                 }
             }
 
             PeriodOptions.FirstOrDefault().IsDisabled = false;
-
             PeriodOptions.Reverse();
         }
 
@@ -191,7 +159,7 @@ namespace K9_Koinz.Pages.Budgets {
                 per.BudgetLine = null;
             });
 
-            _context.BudgetLinePeriods.UpdateRange(periodsToUpdate);
+            _data.BudgetLinePeriodRepository.Update(periodsToUpdate);
         }
 
         private BudgetLinePeriod CreateNewCurrentPeriod(BudgetLine budgetLine) {
@@ -202,9 +170,8 @@ namespace K9_Koinz.Pages.Budgets {
                 EndDate = endDate
             };
 
-            _context.BudgetLinePeriods.Add(newPeriod);
-            _context.SaveChanges();
-            _context.ChangeTracker.Clear();
+            _data.BudgetLinePeriodRepository.Add(newPeriod);
+            _data.Save();
 
             return newPeriod;
         }
@@ -226,7 +193,7 @@ namespace K9_Koinz.Pages.Budgets {
                 per.BudgetLine = null;
             });
 
-            _context.BudgetLinePeriods.UpdateRange(periodsToUpdate);
+            _data.BudgetLinePeriodRepository.Update(periodsToUpdate);
         }
     }
 }

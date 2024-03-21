@@ -3,11 +3,11 @@ using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Meta {
-    public abstract class AbstractDetailsModel<T> : AbstractDbPage where T : BaseEntity {
-        protected AbstractDetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+    public abstract class AbstractDetailsModel<TEntity> : AbstractDbPage where TEntity : BaseEntity {
+        protected AbstractDetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
-        public T Record { get; set; } = default!;
+        public TEntity Record { get; set; } = default!;
         public string QueryParamsNav { get; set; }
 
         public async Task<IActionResult> OnGetAsync([FromQuery] Guid? id, [FromBody] string queryParams) {
@@ -29,8 +29,8 @@ namespace K9_Koinz.Pages.Meta {
             return Page();
         }
 
-        protected virtual async Task<T> QueryRecordAsync(Guid id) {
-            return await _context.Set<T>().FindAsync(id);
+        protected virtual async Task<TEntity> QueryRecordAsync(Guid id) {
+            return await _data.GetGenericRepository<TEntity>().GetByIdAsync(id);
         }
 
         protected virtual Task AdditionalActionsAsync() {

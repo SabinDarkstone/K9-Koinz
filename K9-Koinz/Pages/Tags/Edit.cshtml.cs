@@ -5,8 +5,8 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Tags {
     public class EditModel : AbstractEditModel<Tag> {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-            : base(context, logger, dropdownService) { }
+            : base(data, logger, dropdownService) { }
     }
 }

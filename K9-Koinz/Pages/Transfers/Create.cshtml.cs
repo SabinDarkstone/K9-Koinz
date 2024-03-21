@@ -13,8 +13,8 @@ namespace K9_Koinz.Pages.Transfers {
         private Transaction[] transactions = new Transaction[2];
         private bool foundMatchingTransactions;
 
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
-            : base(context, logger, dropdownService) { }
+        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+            : base(data, logger, dropdownService) { }
 
         protected override Task BeforePageLoadActions() {
             var defaultCategory = _context.Categories

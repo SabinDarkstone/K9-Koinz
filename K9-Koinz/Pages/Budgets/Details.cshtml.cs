@@ -8,8 +8,8 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Budgets {
     public class DetailsModel : AbstractDetailsModel<Budget> {
-        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         public List<BudgetLine> BudgetLines { get; set; }
 

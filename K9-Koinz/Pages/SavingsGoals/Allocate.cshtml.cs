@@ -1,37 +1,29 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.SavingsGoals {
-    public class AllocateModel : PageModel {
-
-        private readonly KoinzContext _context;
+    public class AllocateModel : AbstractDbPage {
 
         [BindProperty]
         public Transaction Transaction { get; set; }
 
         public SelectList GoalOptions { get; set; } = default!;
 
-        public AllocateModel(KoinzContext context) {
-            _context = context;
-        }
+        public AllocateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
-        public IActionResult OnGet(Guid relatedId) {
-            Transaction = _context.Transactions.Find(relatedId);
+        public async Task<IActionResult> OnGetAsync(Guid relatedId) {
+            Transaction = await _data.TransactionRepository.GetByIdAsync(relatedId);
 
             if (Transaction.IsSavingsSpending) {
-                GoalOptions = new SelectList(_context.SavingsGoals
-                    .OrderBy(goal => goal.Name)
-                    .ToList(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+                GoalOptions = _data.SavingsGoalRepository.GetForDropdown(null);
             } else {
-                GoalOptions = new SelectList(_context.SavingsGoals
-                    .Where(goal => goal.AccountId == Transaction.AccountId)
-                    .OrderBy(goals => goals.Name)
-                    .ToList(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+                GoalOptions = _data.SavingsGoalRepository.GetForDropdown(Transaction.AccountId);
             }
 
             return Page();
@@ -45,21 +37,21 @@ namespace K9_Koinz.Pages.SavingsGoals {
             if (Transaction.SavingsGoalId == Guid.Empty) {
                 Transaction.SavingsGoalId = null;
             } else {
-                var savingsGoal = await _context.SavingsGoals.FindAsync(Transaction.SavingsGoalId);
+                var savingsGoal = await _data.SavingsGoalRepository.GetByIdAsync(Transaction.SavingsGoalId);
                 Transaction.SavingsGoalName = savingsGoal.Name;
             }
 
             var savingsGoalId = Transaction.SavingsGoalId;
-            var oldTransaction = await _context.Transactions.FindAsync(Transaction.Id);
+            var oldTransaction = await _data.TransactionRepository.GetByIdAsync(Transaction.Id);
             Transaction = oldTransaction;
             Transaction.SavingsGoalId = savingsGoalId;
 
-            _context.Transactions.Update(Transaction);
+            _data.TransactionRepository.Update(Transaction);
 
             try {
-                await _context.SaveChangesAsync();
+                await _data.SaveAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!TransactionExists(Transaction.Id)) {
+                if (!await _data.TransactionRepository.DoesExistAsync(Transaction.Id)) {
                     return NotFound();
                 } else {
                     throw;
@@ -67,10 +59,6 @@ namespace K9_Koinz.Pages.SavingsGoals {
             }
 
             return RedirectToPage(PagePaths.TransactionIndex);
-        }
-
-        private bool TransactionExists(Guid id) {
-            return _context.Transactions.Any(trans => trans.Id == id);
         }
     }
 }

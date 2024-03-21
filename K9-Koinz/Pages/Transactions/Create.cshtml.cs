@@ -13,9 +13,9 @@ namespace K9_Koinz.Pages.Transactions {
         private bool doHandleSavingsGoal;
         private bool foundMatchingTransaction;
 
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IDupeCheckerService<Transaction> dupeChecker)
-                : base(context, logger, dropdownService) {
+                : base(data, logger, dropdownService) {
             _dupeChecker = dupeChecker;
         }
 

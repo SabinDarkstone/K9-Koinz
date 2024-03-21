@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Merchants {
     public class EditModel : AbstractEditModel<Merchant> {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-                : base(context, logger, dropdownService) { }
+                : base(data, logger, dropdownService) { }
 
         protected override async Task AfterSaveActionsAsync() {
             var relatedTransactions = await _context.Transactions

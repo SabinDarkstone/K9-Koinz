@@ -12,7 +12,7 @@ namespace K9_Koinz.Pages.Transfers {
         public Transfer Transfer {  get; set; }
         public List<Transfer> MatchingTransfers { get; set; }
 
-        public DuplicateFoundModel(KoinzContext context) {
+        public DuplicateFoundModel(RepositoryWrapper data) {
             _context = context;
         }
 

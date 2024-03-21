@@ -11,7 +11,7 @@ namespace K9_Koinz.Pages.Transactions {
         private readonly KoinzContext _context;
         private readonly ILogger<PrintModel> _logger;
 
-        public PrintModel(KoinzContext context, ILogger<PrintModel> logger) {
+        public PrintModel(RepositoryWrapper data, ILogger<PrintModel> logger) {
             _context = context;
             _logger = logger;
         }

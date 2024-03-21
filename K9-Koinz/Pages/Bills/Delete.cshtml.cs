@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Bills {
     public class DeleteModel : AbstractDeleteModel<Bill> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
             return await _context.Bills

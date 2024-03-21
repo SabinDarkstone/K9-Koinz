@@ -1,27 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using K9_Koinz.Data;
+﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Accounts {
-    public class IndexModel : PageModel {
-        private readonly KoinzContext _context;
-
-        public IndexModel(KoinzContext context) {
-            _context = context;
-        }
+    public class IndexModel : AbstractDbPage {
+        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         public Dictionary<string, List<Account>> AccountDict { get;set; } = default!;
 
         public async Task OnGetAsync() {
-            AccountDict = (await _context.Accounts
-                .AsNoTracking()
-                .ToListAsync())
-                .GroupBy(acct => acct.Type.GetAttribute<DisplayAttribute>().Name)
-                .ToDictionary(grp => grp.Key, grp => grp.OrderBy(acct => acct.Name).ToList());
+            AccountDict = await _data.AccountRepository.GetAllGroupedByType();
 
             var savingsAccountGroup = AccountDict[AccountType.SAVINGS.GetAttribute<DisplayAttribute>().Name];
             var checkingAndSavings = AccountDict[AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name].Concat(savingsAccountGroup).OrderBy(acct => acct.Name).ToList();
@@ -30,9 +21,7 @@ namespace K9_Koinz.Pages.Accounts {
             AccountDict.Remove(AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name);
 
             foreach (var acct in AccountDict.SelectMany(x => x.Value)) {
-                var newBalance = _context.Transactions
-                    .Where(trans => (trans.Date.Date > acct.InitialBalanceDate.Date || (trans.Date.Date == acct.InitialBalanceDate.Date && trans.DoNotSkip)) && trans.AccountId == acct.Id)
-                    .GetTotal();
+                var newBalance = _data.TransactionRepository.GetTransactionTotalSinceBalanceSet(acct);
                 acct.CurrentBalance = acct.InitialBalance + newBalance;
             }
         }

@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Meta {
-    public abstract class AbstractDeleteModel<T> : AbstractDbPage where T : BaseEntity {
-        protected AbstractDeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+    public abstract class AbstractDeleteModel<TEntity> : AbstractDbPage where TEntity : BaseEntity {
+        protected AbstractDeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         [BindProperty]
-        public T Record { get; set; }
+        public TEntity Record { get; set; }
         public string ErrorMessage { get; set; }
 
         public virtual async Task<IActionResult> OnGetAsync(Guid? id, bool? saveChangedError = false) {
@@ -39,7 +39,7 @@ namespace K9_Koinz.Pages.Meta {
                 return NotFound();
             }
 
-            var record = await _context.Set<T>().FindAsync(id);
+            var record = await _data.GetGenericRepository<TEntity>().GetByIdAsync(id);
             if (record == null) {
                 return NotFound();
             }
@@ -49,12 +49,12 @@ namespace K9_Koinz.Pages.Meta {
                 await BeforeDeleteActionsAsync();
                 BeforeDeleteActions();
 
-                _context.Set<T>().Remove(Record);
+                _data.GetGenericRepository<TEntity>().Remove(record);
 
                 await AdditionalDatabaseActionsAsync();
                 AdditioanlDatabaseActions();
 
-                await _context.SaveChangesAsync();
+                await _data.SaveAsync();
                 return NavigateOnSuccess();
             } catch (DbUpdateException ex) {
                 _logger.LogError(ex, ErrorMessage);
@@ -66,8 +66,8 @@ namespace K9_Koinz.Pages.Meta {
             return RedirectToPage("./Index");
         }
 
-        protected virtual async Task<T> QueryRecordAsync(Guid id) {
-            return await _context.Set<T>().FindAsync(id);
+        protected virtual async Task<TEntity> QueryRecordAsync(Guid id) {
+            return await _data.GetGenericRepository<TEntity>().GetByIdAsync(id);
         }
 
         protected virtual Task AfterQueryActionAsync() {

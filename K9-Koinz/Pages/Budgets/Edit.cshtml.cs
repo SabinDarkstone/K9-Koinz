@@ -12,9 +12,9 @@ namespace K9_Koinz.Pages.Budgets {
 
         private BudgetLine oldBudgetLineRecord;
 
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IBudgetService budgetService)
-                : base(context, logger, dropdownService) {
+                : base(data, logger, dropdownService) {
             _budgetService = budgetService;
         }
 

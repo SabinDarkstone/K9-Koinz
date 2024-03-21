@@ -1,25 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
 using K9_Koinz.Services;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions
 {
-    public class IndexModel : PageModel {
+    public class IndexModel : AbstractIndexModel<Transaction> {
         private readonly KoinzContext _context;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<IndexModel> _logger;
         private readonly IDropdownPopulatorService _dropdownService;
 
-        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService) {
-            _context = context;
-            _configuration = configuration;
-            _logger = logger;
+        public IndexModel(RepositoryWrapper data, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService)
+            :base(data, logger) {
             _dropdownService = dropdownService;
         }
 

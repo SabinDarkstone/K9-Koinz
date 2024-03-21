@@ -5,8 +5,8 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Merchants {
     public class CreateModel : AbstractCreateModel<Merchant> {
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-                : base(context, logger, dropdownService) { }
+                : base(data, logger, dropdownService) { }
     }
 }

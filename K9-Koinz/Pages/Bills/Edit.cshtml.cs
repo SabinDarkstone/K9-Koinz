@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Bills {
     public class EditModel : AbstractEditModel<Bill> {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-            : base(context, logger, dropdownService) { }
+            : base(data, logger, dropdownService) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
             return await _context.Bills

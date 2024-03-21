@@ -5,8 +5,8 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Tags {
     public class DetailsModel : AbstractDetailsModel<Tag> {
-        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task<Tag> QueryRecordAsync(Guid id) {
             return await _context.Tags

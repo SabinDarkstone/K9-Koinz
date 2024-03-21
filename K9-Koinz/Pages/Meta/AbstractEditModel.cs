@@ -6,18 +6,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Meta {
-    public abstract class AbstractEditModel<T> : AbstractDbPage where T : BaseEntity {
+    public abstract class AbstractEditModel<TEntity> : AbstractDbPage where TEntity : BaseEntity {
         protected readonly IDropdownPopulatorService _dropdownService;
 
         [BindProperty]
-        public T Record { get; set; } = default!;
+        public TEntity Record { get; set; } = default!;
 
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        protected AbstractEditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        protected AbstractEditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-                : base(context, logger) {
+                : base(data, logger) {
             _dropdownService = dropdownService;
         }
 
@@ -56,14 +56,14 @@ namespace K9_Koinz.Pages.Meta {
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
 
-            _context.Attach(Record).State = EntityState.Modified;
+            _data.GetGenericRepository<TEntity>().Update(Record);
 
             try {
-                await _context.SaveChangesAsync();
+                await _data.SaveAsync();
                 await AfterSaveActionsAsync();
                 AfterSaveActions();
             } catch (DbUpdateConcurrencyException) {
-                if (!RecordExists(Record.Id)) {
+                if (!await _data.GetGenericRepository<TEntity>().DoesExistAsync(Record.Id)) {
                     return NotFound();
                 } else {
                     throw;
@@ -73,12 +73,8 @@ namespace K9_Koinz.Pages.Meta {
             return NavigationOnSuccess();
         }
 
-        protected bool RecordExists(Guid id) {
-            return _context.Set<T>().Any(e => e.Id == id);
-        }
-
-        protected virtual async Task<T> QueryRecordAsync(Guid id) {
-            return await _context.Set<T>().FindAsync(id);
+        protected virtual async Task<TEntity> QueryRecordAsync(Guid id) {
+            return await _data.GetGenericRepository<TEntity>().GetByIdAsync(id);
         }
         
         protected virtual void BeforeQueryActions() { }

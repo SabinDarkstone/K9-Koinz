@@ -3,13 +3,11 @@ using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace K9_Koinz.Pages.Transactions {
     public class SplitModel : AbstractDbPage {
-        public SplitModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public SplitModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         public Transaction ParentTransaction { get; set; }
         public string ErrorMessage { get; set; }
@@ -17,17 +15,9 @@ namespace K9_Koinz.Pages.Transactions {
         [BindProperty]
         public List<Transaction> SplitTransactions { get; set; } = new List<Transaction>();
 
-        public IActionResult OnGet(Guid parentId) {
-            ParentTransaction = _context.Transactions
-                .AsNoTracking()
-                .Where(trans => trans.Id == parentId)
-                .SingleOrDefault();
-
-            SplitTransactions = _context.Transactions
-                .AsNoTracking()
-                .Where(splt => splt.ParentTransactionId == parentId)
-                .OrderBy(splt => splt.CategoryName)
-                .ToList();
+        public async Task<IActionResult> OnGetAsync(Guid parentId) {
+            ParentTransaction = await _data.TransactionRepository.GetSplitLines(parentId);
+            SplitTransactions = ParentTransaction.SplitTransactions;
 
             while (SplitTransactions.Count < 7) {
                 SplitTransactions.Add(new Transaction {
@@ -43,17 +33,17 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public async Task<IActionResult> OnPostAsync() {
-            var parent = _context.Transactions.Find(SplitTransactions[0].ParentTransactionId);
+            var parent = await _data.TransactionRepository
+                .GetByIdAsync(SplitTransactions.First().ParentTransactionId);
 
             foreach (var split in SplitTransactions) {
                 if (split.CategoryId == null || split.CategoryId == Guid.Empty) {
                     continue;
                 }
 
-                var account = _context.Accounts.Find(parent.AccountId);
-                var category = _context.Categories.Find(split.CategoryId);
+                var category = await _data.CategoryRepository.GetByIdAsync(split.CategoryId);
 
-                split.AccountName = account.Name;
+                split.AccountName = parent.AccountName;
                 split.CategoryName = category.Name;
                 split.Date = parent.Date;
 
@@ -68,7 +58,7 @@ namespace K9_Koinz.Pages.Transactions {
                 parent.SplitTransactions = validSplits;
             }
 
-            await _context.SaveChangesAsync();
+            await _data.SaveAsync();
 
             return RedirectToPage(PagePaths.TransactionDetails, new { id = parent.Id });
         }

@@ -1,37 +1,23 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.SavingsGoals {
-    public class AllocateRecurringModel : PageModel {
-        private readonly KoinzContext _context;
-
+    public class AllocateRecurringModel : AbstractDbPage {
         [BindProperty]
         public Transfer Transfer { get; set; }
         public SelectList GoalOptions { get; set; } = default!;
 
-        public AllocateRecurringModel(KoinzContext context) {
-            _context = context;
-        }
+        public AllocateRecurringModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
-        public IActionResult OnGet(Guid relatedId) {
-            Transfer = _context.Transfers
-                .Include(fer => fer.FromAccount)
-                .Include(fer => fer.ToAccount)
-                .Include(fer => fer.RepeatConfig)
-                .Include(fer => fer.Merchant)
-                .Include(fer => fer.Category)
-                .Include(fer => fer.SavingsGoal)
-                .FirstOrDefault(fer => fer.Id == relatedId);
-
-            GoalOptions = new SelectList(_context.SavingsGoals
-                .Where(goal => goal.AccountId == Transfer.ToAccountId)
-                .OrderBy(goals => goals.Name)
-                .ToList(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+        public async Task<IActionResult> OnGetAsync(Guid relatedId) {
+            Transfer = await _data.TransferRepository.GetDetails(relatedId);
+            GoalOptions = _data.SavingsGoalRepository.GetForDropdown(Transfer.ToAccountId);
 
             return Page();
         }
@@ -46,16 +32,16 @@ namespace K9_Koinz.Pages.SavingsGoals {
             }
 
             var savingsGoalId = Transfer.SavingsGoalId;
-            var oldTransfer = await _context.Transfers.FindAsync(Transfer.Id);
+            var oldTransfer = await _data.TransferRepository.GetByIdAsync(Transfer.Id);
             Transfer = oldTransfer;
             Transfer.SavingsGoalId = savingsGoalId;
 
-            _context.Transfers.Update(Transfer);
+            _data.TransferRepository.Update(Transfer);
 
             try {
-                await _context.SaveChangesAsync();
+                await _data.SaveAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!TransferExists(Transfer.Id)) {
+                if (!await _data.TransferRepository.DoesExistAsync(Transfer.Id)) {
                     return NotFound();
                 } else {
                     throw;
@@ -63,10 +49,6 @@ namespace K9_Koinz.Pages.SavingsGoals {
             }
 
             return RedirectToPage(PagePaths.TransferManage);
-        }
-
-        private bool TransferExists(Guid id) {
-            return _context.Transfers.Any(fer => fer.Id == id);
         }
     }
 }

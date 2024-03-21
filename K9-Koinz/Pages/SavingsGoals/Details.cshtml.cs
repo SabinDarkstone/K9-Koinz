@@ -5,8 +5,8 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.SavingsGoals {
     public class DetailsModel : AbstractDetailsModel<SavingsGoal> {
-        public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public DetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         protected override async Task<SavingsGoal> QueryRecordAsync(Guid id) {
             return await _context.SavingsGoals

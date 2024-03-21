@@ -13,8 +13,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         public Category DefaultCategory { get; set; }
 
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
-            : base(context, logger, dropdownService) { }
+        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+            : base(data, logger, dropdownService) { }
 
         protected override Task BeforePageLoadActions() {
             DefaultCategory = _context.Categories

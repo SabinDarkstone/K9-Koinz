@@ -5,19 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace K9_Koinz.Pages.Meta {
-    public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
+    public abstract class AbstractCreateModel<TEntity> : AbstractDbPage where TEntity : BaseEntity {
         protected readonly IDropdownPopulatorService _dropdownService;
 
         [BindProperty]
-        public T Record { get; set; } = default!;
+        public TEntity Record { get; set; } = default!;
 
         protected Guid? RelatedId { get; private set; }
 
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        protected AbstractCreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IDropdownPopulatorService dropdownService) : base(context, logger) {
+        protected AbstractCreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+            IDropdownPopulatorService dropdownService) : base(data, logger) {
             _dropdownService = dropdownService;
         }
 
@@ -42,8 +42,8 @@ namespace K9_Koinz.Pages.Meta {
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
 
-            _context.Set<T>().Add(Record);
-            await _context.SaveChangesAsync();
+            _data.GetGenericRepository<TEntity>().Add(Record);
+            await _data.SaveAsync();
 
             await AfterSaveActionsAsync();
             AfterSaveActions();

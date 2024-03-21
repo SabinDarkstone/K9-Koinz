@@ -6,9 +6,9 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
     public class EditModel : AbstractEditModel<Category> {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
+        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-                : base(context, logger, dropdownService) { }
+                : base(data, logger, dropdownService) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
             return await _context.Categories

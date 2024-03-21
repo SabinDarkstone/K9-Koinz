@@ -1,29 +1,16 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Categories {
-    public class IndexModel : PageModel {
-        private readonly KoinzContext _context;
-
-        public IndexModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public IList<Category> Categories { get; set; } = default!;
+    public class IndexModel : AbstractIndexModel<Category> {
+        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         public async Task OnGetAsync() {
-            var catList = await _context.Categories
-                .AsNoTracking()
-                .Include(cat => cat.ChildCategories)
-                    .ThenInclude(cCat => cCat.Transactions)
-                .Include(cat => cat.Transactions)
-                .OrderBy(cat => cat.CategoryType)
-                    .ThenBy(cat => cat.Name)
-                .ToListAsync();
+            var catList = await _data.CategoryRepository.GetAll();
 
-            Categories = catList
+            RecordList = catList
                 .Where(cat => !cat.IsChildCategory)
                 .ToList();
         }

@@ -1,10 +1,9 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Pages.Bills {
@@ -25,14 +24,11 @@ namespace K9_Koinz.Pages.Bills {
         }
     }
 
-    public class IndexModel : PageModel {
-        private readonly KoinzContext _context;
+    public class IndexModel : AbstractDbPage {
+        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
-        public IndexModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public List<Bill> Bills { get; set; } = default;
+        public IEnumerable<Bill> Bills { get; set; } = default;
         public Dictionary<Guid, AccountSummary> AccountsWithBills { get; set; } = new();
 
         [Display(Name = "Show All Bills")]
@@ -47,24 +43,9 @@ namespace K9_Koinz.Pages.Bills {
             }
 
             if (showAllBills.HasValue && showAllBills.Value) {
-                Bills = (await _context.Bills
-                    .AsNoTracking()
-                    .Include(bill => bill.Account)
-                    .Include(bill => bill.RepeatConfig)
-                    .ToListAsync())
-                    .OrderBy(bill => bill.RepeatConfig.NextFiring)
-                    .ToList();
+                Bills = await _data.BillRepository.GetAllBillsAsync();
             } else {
-                Bills = (await _context.Bills
-                    .AsNoTracking()
-                    .Include(bill => bill.Account)
-                    .Include(bill => bill.RepeatConfig)
-                    .ToListAsync())
-                    .Where(bill => bill.RepeatConfig.NextFiring.HasValue)
-                    .Where(bill => bill.RepeatConfig.NextFiring >= startDate)
-                    .Where(bill => bill.RepeatConfig.NextFiring <= endDate)
-                    .OrderBy(bill => bill.RepeatConfig.NextFiring)
-                    .ToList();
+                Bills = await _data.BillRepository.GetBillsWithinDateRangeAsync(startDate, endDate);
             }
 
             List<Account> accounts = Bills.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();

@@ -1,4 +1,5 @@
-﻿using K9_Koinz.Models;
+﻿using K9_Koinz.Data;
+using K9_Koinz.Models;
 using K9_Koinz.Services;
 using K9_Koinz.Services.BackgroundWorkers;
 
@@ -9,6 +10,7 @@ namespace K9_Koinz.Utils {
             services.AddScoped<IDbCleanupService, DbCleanupService>();
             services.AddScoped<IDropdownPopulatorService, DropdownPopulatorService>();
             services.AddScoped<IBudgetService, BudgetService>();
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
             services.AddTransient<IDupeCheckerService<Transaction>, TransactionDupeCheckerService>();
         }

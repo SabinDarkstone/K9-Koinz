@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transactions {
     public class RemoveSplitModel : AbstractDbPage {
-        public RemoveSplitModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        public RemoveSplitModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
         public IActionResult OnGet(Guid parentId) {
             var parent = _context.Transactions

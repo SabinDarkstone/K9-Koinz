@@ -10,8 +10,8 @@ namespace K9_Koinz.Pages.Budgets {
     public class CreateModel : AbstractCreateModel<Budget> {
         private readonly IBudgetService _budgetService;
 
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService, IBudgetService budgetService)
-                : base(context, logger, dropdownService) {
+        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService, IBudgetService budgetService)
+                : base(data, logger, dropdownService) {
             _budgetService = budgetService;
         }
 

@@ -13,7 +13,7 @@ namespace K9_Koinz.ViewComponents {
         private readonly KoinzContext _context;
         private ILogger<BudgetSummary> _logger;
 
-        public BudgetSummary(KoinzContext context, ILogger<BudgetSummary> logger) {
+        public BudgetSummary(RepositoryWrapper data, ILogger<BudgetSummary> logger) {
             _context = context;
             _logger = logger;
         }
