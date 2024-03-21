@@ -1,7 +1,9 @@
 ﻿using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace K9_Koinz.Data {
     public class TransactionRepository : GenericRepository<Transaction> {
@@ -74,6 +76,85 @@ namespace K9_Koinz.Data {
                 .SingleOrDefault();
         }
 
-        public 
+        public async Task<PaginatedList<Transaction>> GetFiltered(TransactionFilterSetting filters) {
+            IQueryable<Transaction> transIQ = _context.Transactions
+                .Include(trans => trans.Tag)
+                .AsNoTracking();
+
+            // CATEGORY FILTER LOGIC
+            if (filters.CategoryFilters != null && filters.CategoryFilters.Count > 0) {
+                // Apply categories filter to the query
+                transIQ = transIQ.Where(trans => trans.CategoryId.HasValue && filters.CategoryFilters.Contains(trans.CategoryId.Value));
+            } else {
+                // If no category is selected, do not show split transactions
+                transIQ = transIQ.Where(trans => !trans.ParentTransactionId.HasValue);
+            }
+
+            // MERCHANT FILTER LOGIC
+            if (filters.MerchantFilter.Value != Guid.Empty) {
+                transIQ = transIQ.Where(trans => trans.MerchantId == filters.MerchantFilter);
+            }
+
+            // ACCOUNT FILTER LOGIC
+            if (filters.AccountFilter.Value != Guid.Empty) {
+                transIQ = transIQ.Where(trans => trans.AccountId == filters.AccountFilter);
+            }
+
+            // TAG FILTER LOGIC
+            if (filters.TagFilter.Value != Guid.Empty) {
+                transIQ = transIQ.Where(trans => trans.TagId == filters.TagFilter);
+            }
+
+            // DATE RANGE FILTERS
+            if (filters.DateRangeStart.HasValue) {
+                transIQ = transIQ.Where(trans => trans.Date.Date >= filters.DateRangeStart.Value.Date);
+            }
+            if (filters.DateRangeEnd.HasValue) {
+                transIQ = transIQ.Where(trans => trans.Date.Date <= filters.DateRangeEnd.Value.Date);
+            }
+
+            // BASIC TEXT SEARCH LOGIC
+            if (!string.IsNullOrWhiteSpace(filters.SearchString)) {
+                if (float.TryParse(filters.SearchString, out float value)) {
+                    transIQ = transIQ.Where(trans => trans.Amount == value || trans.Amount == -1 * value);
+                } else {
+                    var lcSearchString = filters.SearchString.ToLower();
+                    transIQ = transIQ.Where(trans => trans.Notes.ToLower().Contains(lcSearchString) ||
+                        trans.AccountName.ToLower().Contains(lcSearchString) || trans.CategoryName.ToLower().Contains(lcSearchString) ||
+                        trans.MerchantName.ToLower().Contains(lcSearchString) || trans.SavingsGoalName.ToLower().Contains(lcSearchString));
+                }
+            }
+
+            // TRANSFER FILTER LOGIC
+            if (filters.HideTransfers.HasValue && filters.HideTransfers.Value) {
+                transIQ = transIQ.Include(trans => trans.Category)
+                    .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER);
+            }
+
+            // SORT ORDER LOGIC
+            switch (filters.SortOrder) {
+                case "Merchant":
+                    transIQ = transIQ.OrderBy(trans => trans.MerchantName);
+                    break;
+                case "merchant_desc":
+                    transIQ = transIQ.OrderByDescending(trans => trans.MerchantName);
+                    break;
+                case "Amount":
+                    transIQ = transIQ.OrderBy(trans => Math.Abs(trans.Amount));
+                    break;
+                case "amount_desc":
+                    transIQ = transIQ.OrderByDescending(trans => Math.Abs(trans.Amount));
+                    break;
+                case "Date":
+                    transIQ = transIQ.OrderBy(trans => trans.Date);
+                    break;
+                case "date_desc":
+                default:
+                    transIQ = transIQ.OrderByDescending(trans => trans.Date);
+                    break;
+            }
+
+            return await PaginatedList<Transaction>.CreateAsync(transIQ, filters.PageIndex ?? 1, 50);
+        }
     }
 }

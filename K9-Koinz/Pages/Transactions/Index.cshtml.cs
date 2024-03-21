@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Pages.Transactions
 {
@@ -76,13 +77,16 @@ namespace K9_Koinz.Pages.Transactions
         public List<SelectListItem> AccountOptions;
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex, string searchString, bool? hideTransfers) {
-            CategoryOptions = new SelectList(_context.Categories.OrderBy(cat => cat.Name).ToList(), nameof(Category.Id), nameof(Category.Name));
+            CategoryOptions = await _data.CategoryRepository.GetDropdown();
             AccountOptions = await _dropdownService.GetAccountListAsync();
 
+            // Sort parameters
             DateSort = string.IsNullOrEmpty(sortOrder) || sortOrder == "Date" ? "date_desc" : "Date";
             MerchantSort = sortOrder == "Merchant" ? "merchant_desc" : "Merchant";
             AmountSort = sortOrder == "Amount" ? "amount_desc" : "Amount";
             CurrentSort = sortOrder;
+
+            // Make a copy of incomeing filters
             SelectedCategory = catFilter;
             SelectedMerchant = merchFilter;
             SelectedAccount = accountFilter;
@@ -91,89 +95,23 @@ namespace K9_Koinz.Pages.Transactions
             MinDateFilter = minDate;
             MaxDateFilter = maxDate;
 
-            IQueryable<Transaction> transactionsIQ = from trans in _context.Transactions
-                                                     select trans;
+            // Parse selected filters
+            if (!string.IsNullOrWhiteSpace(SelectedCategory)) {
+                var selectedCateogryId = Guid.Parse(SelectedCategory);
+                // Filter transactions by the selected category
+                CategoryFilters = [selectedCateogryId];
 
-            transactionsIQ = transactionsIQ.Include(trans => trans.Category)
-                .ThenInclude(cat => cat.ParentCategory);
-
-            if (!string.IsNullOrWhiteSpace(catFilter)) {
-                CategoryFilters = [Guid.Parse(SelectedCategory)];
-                var childCategories = _context.Categories.Where(cat => cat.ParentCategoryId == Guid.Parse(SelectedCategory)).Include(cat => cat.ChildCategories).Select(cat => cat.Id).ToList();
-                CategoryFilters.AddRange(childCategories);
-                transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId.HasValue && CategoryFilters.Contains(trans.CategoryId.Value));
-            } else {
-                transactionsIQ = transactionsIQ.Where(trans => !trans.ParentTransactionId.HasValue);
+                // Add the child categories to the list
+                CategoryFilters.AddRange((await _data.CategoryRepository.GetChildrenAsync(selectedCateogryId))
+                    .Select(x => x.Id));
             }
 
-            if (!string.IsNullOrWhiteSpace(merchFilter)) {
-                MerchantFilter = Guid.Parse(SelectedMerchant);
-                transactionsIQ = transactionsIQ.Where(trans => trans.MerchantId == MerchantFilter);
-            }
+            MerchantFilter = SelectedMerchant.ToGuid().Value;
+            AccountFilter = SelectedAccount.ToGuid().Value;
+            TagFilter = SelectedTag.ToGuid().Value;
 
-            if (!string.IsNullOrWhiteSpace(accountFilter)) {
-                AccountFilter = Guid.Parse(SelectedAccount);
-                transactionsIQ = transactionsIQ.Where(trans => trans.AccountId == AccountFilter);
-            }
-
-            if (!string.IsNullOrWhiteSpace(tagId)) {
-                TagFilter = Guid.Parse(SelectedTag);
-                transactionsIQ = transactionsIQ.Where(trans => trans.TagId == TagFilter);
-            }
-
-            if (MinDateFilter.HasValue) {
-                transactionsIQ = transactionsIQ.Where(trans => trans.Date.Date >= MinDateFilter.Value.Date);
-            }
-
-            if (MaxDateFilter.HasValue) {
-                transactionsIQ = transactionsIQ.Where(trans => trans.Date.Date <= MaxDateFilter.Value.Date);
-            }
-
-            if (!string.IsNullOrWhiteSpace(searchString)) {
-                if (float.TryParse(searchString, out float value)) {
-                    transactionsIQ = transactionsIQ.Where(trans => trans.Amount == value || trans.Amount == -1 * value);
-                } else if (searchString.ToLower() == "hidden") {
-                    transactionsIQ = transactionsIQ.Where(trans => trans.IsSavingsSpending);
-                } else {
-                    var lcSearchString = searchString.ToLower();
-                    transactionsIQ = transactionsIQ.Where(trans => trans.Notes.ToLower().Contains(lcSearchString) ||
-                        trans.AccountName.ToLower().Contains(lcSearchString) || trans.CategoryName.ToLower().Contains(lcSearchString) ||
-                        trans.MerchantName.ToLower().Contains(lcSearchString) || trans.SavingsGoalName.ToLower().Contains(lcSearchString));
-                }
-            }
-
-            _hideTransfers = hideTransfers;
-            if (hideTransfers.HasValue && hideTransfers.Value) {
-                transactionsIQ = transactionsIQ.Include(trans => trans.Category)
-                    .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER);
-            }
-
-            switch (sortOrder) {
-
-                case "Merchant":
-                    transactionsIQ = transactionsIQ.OrderBy(trans => trans.MerchantName);
-                    break;
-                case "merchant_desc":
-                    transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.MerchantName);
-                    break;
-                case "Amount":
-                    transactionsIQ = transactionsIQ.OrderBy(trans => Math.Abs(trans.Amount));
-                    break;
-                case "amount_desc":
-                    transactionsIQ = transactionsIQ.OrderByDescending(trans => Math.Abs(trans.Amount));
-                    break;
-                case "Date":
-                    transactionsIQ = transactionsIQ.OrderBy(trans => trans.Date);
-                    break;
-                case "date_desc":
-                default:
-                    transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.Date);
-                    break;
-            }
-            
-            transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
-
-            Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, 50);
+            var filters = new TransactionFilterSetting(sortOrder, CategoryFilters, MerchantFilter, AccountFilter, TagFilter, MinDateFilter, MaxDateFilter, pageIndex, searchString, hideTransfers);
+            RecordList = await _data.TransactionRepository.GetFiltered(filters);
         }
     }
 }
