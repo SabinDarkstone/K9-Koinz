@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class BudgetLineRepository : GenericRepository<BudgetLine> {
+    public class BudgetLineRepository : GenericRepository<BudgetLine>, IBudgetLineRepository {
         public BudgetLineRepository(KoinzContext context) : base(context) { }
 
         public override async Task<BudgetLine> GetByIdAsync(Guid? id) {

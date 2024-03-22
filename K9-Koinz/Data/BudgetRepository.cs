@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class BudgetRepository : GenericRepository<Budget> {
+    public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository {
         public BudgetRepository(KoinzContext context) : base(context) { }
 
         public async Task<IEnumerable<Budget>> GetAllAsync() {
-             return await DbSet
-                .Include(bud => bud.BudgetTag)
-                .OrderBy(bud => bud.SortOrder)
-                .AsNoTracking()
-                .ToListAsync();
+            return await DbSet
+               .Include(bud => bud.BudgetTag)
+               .OrderBy(bud => bud.SortOrder)
+               .AsNoTracking()
+               .ToListAsync();
         }
 
         public Budget GetBudgetDetails(string budgetId) {

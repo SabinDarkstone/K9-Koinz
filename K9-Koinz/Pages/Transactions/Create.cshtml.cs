@@ -22,9 +22,9 @@ namespace K9_Koinz.Pages.Transactions {
         protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
-            var category = await _data.CategoryRepository.GetByIdAsync(Record.CategoryId);
-            var merchant = await _data.MerchantRepository.GetByIdAsync(Record.MerchantId);
-            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
+            var category = await _data.Categories.GetByIdAsync(Record.CategoryId);
+            var merchant = await _data.Merchants.GetByIdAsync(Record.MerchantId);
+            var account = await _data.Accounts.GetByIdAsync(Record.AccountId);
             Record.CategoryName = category.Name;
             Record.MerchantName = merchant.Name;
             Record.AccountName = account.Name;
@@ -56,12 +56,12 @@ namespace K9_Koinz.Pages.Transactions {
                 return false;
             }
 
-            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
+            var account = await _data.Accounts.GetByIdAsync(Record.AccountId);
             if (account.Type != AccountType.SAVINGS && account.Type != AccountType.CHECKING) {
                 return false;
             }
 
-            var accountHasGoals = _data.SavingsGoalRepository.ExistsByAccountId(Record.AccountId);
+            var accountHasGoals = _data.SavingsGoals.ExistsByAccountId(Record.AccountId);
             return accountHasGoals;
         }
     }

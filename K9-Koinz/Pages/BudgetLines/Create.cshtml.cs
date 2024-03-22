@@ -20,11 +20,11 @@ namespace K9_Koinz.Pages.BudgetLines {
 
         protected override async Task BeforePageLoadActions() {
             await base.BeforePageLoadActions();
-            Budget = await _data.BudgetRepository.GetByIdAsync(RelatedId);
+            Budget = await _data.Budgets.GetByIdAsync(RelatedId);
         }
 
         private async Task CreateFirstBudgetLinePeriod() {
-            var parentBudget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
+            var parentBudget = await _data.Budgets.GetByIdAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
             var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now)).GetTotal();
 
@@ -36,7 +36,7 @@ namespace K9_Koinz.Pages.BudgetLines {
                 SpentAmount = totalSpentSoFar
             };
 
-            _data.BudgetLinePeriodRepository.Add(firstPeriod);
+            _data.BudgetLinePeriods.Add(firstPeriod);
         }
 
         protected override async Task AfterSaveActionsAsync() {
@@ -51,8 +51,8 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var category = await _data.CategoryRepository.GetByIdAsync(Record.BudgetCategoryId);
-            var budget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
+            var category = await _data.Categories.GetByIdAsync(Record.BudgetCategoryId);
+            var budget = await _data.Budgets.GetByIdAsync(Record.BudgetId);
 
             Record.BudgetCategoryName = category.Name;
             Record.BudgetName = budget.Name;

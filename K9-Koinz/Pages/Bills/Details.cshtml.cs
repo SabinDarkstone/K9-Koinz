@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Bills {
             : base(data, logger) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
-            return await _data.BillRepository.GetDetails(id);
+            return await _data.Bills.GetDetails(id);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override async Task<BudgetLine> QueryRecordAsync(Guid id) {
-            var budgetLine = await _data.BudgetLineRepository.GetByIdAsync(id);
+            var budgetLine = await _data.BudgetLines.GetByIdAsync(id);
 
             try {
                 if (budgetLine.Budget.Timespan == BudgetTimeSpan.MONTHLY) {
@@ -43,7 +43,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var oldRecord = await _data.BudgetLineRepository.GetByIdAsync(Record.Id);
+            var oldRecord = await _data.BudgetLines.GetByIdAsync(Record.Id);
 
             Record.BudgetCategory = oldRecord.BudgetCategory;
             Record.Budget = oldRecord.Budget;
@@ -62,8 +62,8 @@ namespace K9_Koinz.Pages.BudgetLines {
             Record.BudgetCategory = null;
             Record.Budget = null;
 
-            var category = await _data.CategoryRepository.GetByIdAsync(Record.BudgetCategoryId); ;
-            var budget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
+            var category = await _data.Categories.GetByIdAsync(Record.BudgetCategoryId); ;
+            var budget = await _data.Budgets.GetByIdAsync(Record.BudgetId);
 
             Record.BudgetCategoryName = category.Name;
             Record.BudgetName = budget.Name;
@@ -74,7 +74,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         private async Task CreateFirstBudgetLinePeriod() {
-            var parentBudget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
+            var parentBudget = await _data.Budgets.GetByIdAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
             var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now))
                 .GetTotal();
@@ -87,11 +87,11 @@ namespace K9_Koinz.Pages.BudgetLines {
                 SpentAmount = totalSpentSoFar
             };
 
-            _data.BudgetLinePeriodRepository.Add(firstPeriod);
+            _data.BudgetLinePeriods.Add(firstPeriod);
         }
 
         private async Task<List<GraphDataPoint>> GetSpendingHistory(BudgetLine line) {
-            var transactions = await _data.TransactionRepository.GetForSpendingHistory(line.BudgetCategoryId);
+            var transactions = await _data.Transactions.GetForSpendingHistory(line.BudgetCategoryId);
 
             var groups = transactions
                 .GroupBy(trans => trans.Date.Month + "|" + trans.Date.Year)

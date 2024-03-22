@@ -59,9 +59,9 @@ namespace K9_Koinz.Pages.Budgets {
                 BudgetPeriod = DateTime.Now;
             }
 
-            Budgets = await _data.BudgetRepository.GetAllAsync();
+            Budgets = await _data.Budgets.GetAllAsync();
 
-            SelectedBudget = _data.BudgetRepository.GetBudgetDetails(selectedBudget);
+            SelectedBudget = _data.Budgets.GetBudgetDetails(selectedBudget);
             if (SelectedBudget == null) {
                 return;
             }
@@ -84,7 +84,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = optionDate.FormatShortMonthAndYear(),
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_data.TransactionRepository.AnyInMonth(optionDate.Date)
+                        IsDisabled = !_data.Transactions.AnyInMonth(optionDate.Date)
                     });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.WEEKLY) {
@@ -95,7 +95,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = i == 0 ? "This Week" : "Week of " + weekStartDate.Month + "/" + weekStartDate.Day,
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_data.TransactionRepository.AnyInWeek(optionDate.Date)
+                        IsDisabled = !_data.Transactions.AnyInWeek(optionDate.Date)
                     });
                 }
             } else if (SelectedBudget.Timespan == BudgetTimeSpan.YEARLY) {
@@ -105,7 +105,7 @@ namespace K9_Koinz.Pages.Budgets {
                         Value = optionDate,
                         Text = i == 0 ? "This Year" : optionDate.Year.ToString(),
                         IsSelected = optionDate.Date == BudgetPeriod.Date,
-                        IsDisabled = !_data.TransactionRepository.AnyInYear(optionDate.Date)
+                        IsDisabled = !_data.Transactions.AnyInYear(optionDate.Date)
                     });
                 }
             }
@@ -159,7 +159,7 @@ namespace K9_Koinz.Pages.Budgets {
                 per.BudgetLine = null;
             });
 
-            _data.BudgetLinePeriodRepository.Update(periodsToUpdate);
+            _data.BudgetLinePeriods.Update(periodsToUpdate);
         }
 
         private BudgetLinePeriod CreateNewCurrentPeriod(BudgetLine budgetLine) {
@@ -170,7 +170,7 @@ namespace K9_Koinz.Pages.Budgets {
                 EndDate = endDate
             };
 
-            _data.BudgetLinePeriodRepository.Add(newPeriod);
+            _data.BudgetLinePeriods.Add(newPeriod);
             _data.Save();
 
             return newPeriod;
@@ -193,7 +193,7 @@ namespace K9_Koinz.Pages.Budgets {
                 per.BudgetLine = null;
             });
 
-            _data.BudgetLinePeriodRepository.Update(periodsToUpdate);
+            _data.BudgetLinePeriods.Update(periodsToUpdate);
         }
     }
 }

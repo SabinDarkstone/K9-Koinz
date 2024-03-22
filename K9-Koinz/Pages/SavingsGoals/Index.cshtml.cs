@@ -13,7 +13,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
         public Dictionary<string, List<SavingsGoal>> SavingsGoalsDict { get; set; }
 
         public async Task<IActionResult> OnGetAsync() {
-            SavingsGoalsDict = await _data.SavingsGoalRepository.GetAllGroupedByAccount();
+            SavingsGoalsDict = await _data.SavingsGoals.GetAllGroupedByAccount();
             VerifyGoalAmountsWithTransactions();
 
             return Page();
@@ -30,7 +30,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
             }
 
             if (goalsToFix.Count > 0) {
-                _data.SavingsGoalRepository.Update(goalsToFix);
+                _data.SavingsGoals.Update(goalsToFix);
                 _data.Save();
             }
         }

@@ -17,7 +17,7 @@ namespace K9_Koinz.Pages.Budgets {
         protected override async Task AfterSaveActionsAsync() {
             if (Record.DoNotUseCategories) {
                 BudgetLine allowanceLine;
-                var allCategory = _data.CategoryRepository.GetByName("All");
+                var allCategory = _data.Categories.GetByName("All");
                 if (allCategory == null) {
                     var newAllCategory = new Category {
                         Name = "All",
@@ -25,7 +25,7 @@ namespace K9_Koinz.Pages.Budgets {
                         CategoryType = CategoryType.ALL
                     };
 
-                    _data.CategoryRepository.Add(newAllCategory);
+                    _data.Categories.Add(newAllCategory);
                     await _data.SaveAsync();
                     allCategory = newAllCategory;
                 }
@@ -35,7 +35,7 @@ namespace K9_Koinz.Pages.Budgets {
                     BudgetCategoryId = allCategory.Id,
                     DoRollover = Record.DoNoCategoryRollover
                 };
-                _data.BudgetLineRepository.Add(allowanceLine);
+                _data.BudgetLines.Add(allowanceLine);
                 await _data.SaveAsync();
 
                 if (Record.DoNoCategoryRollover) {
@@ -49,7 +49,7 @@ namespace K9_Koinz.Pages.Budgets {
             if (Record.BudgetTagId == Guid.Empty) {
                 Record.BudgetTagId = null;
             } else {
-                var tag = await _data.TagRepository.GetByIdAsync(Record.BudgetTagId);
+                var tag = await _data.Tags.GetByIdAsync(Record.BudgetTagId);
                 Record.BudgetTagName = tag.Name;
             }
         }
@@ -67,7 +67,7 @@ namespace K9_Koinz.Pages.Budgets {
                 SpentAmount = totalSpentSoFar
             };
 
-            _data.BudgetLinePeriodRepository.Add(firstPeriod);
+            _data.BudgetLinePeriods.Add(firstPeriod);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace K9_Koinz.Pages.Transactions {
                 return NotFound();
             }
 
-            Transaction = await _data.TransactionRepository.GetByIdAsync(id);
+            Transaction = await _data.Transactions.GetByIdAsync(id);
             MatchingTransactions = await _dupeChecker.FindPotentialDuplicates(Transaction);
 
             return Page();
@@ -31,16 +31,16 @@ namespace K9_Koinz.Pages.Transactions {
 
         public async Task<IActionResult> OnPost(Guid id, string mode) {
             if (mode == "cancel") {
-                var transaction = await _data.TransactionRepository.GetByIdAsync(id);
+                var transaction = await _data.Transactions.GetByIdAsync(id);
 
-                _data.TransactionRepository.Remove(transaction);
+                _data.Transactions.Remove(transaction);
 
                 if (transaction.TransferId.HasValue) {
-                    var transfer = await _data.TransferRepository.GetByIdAsync(transaction.TransferId);
-                    var otherTransaction = _data.TransactionRepository.GetMatchingFromTransferPair(transfer.Id, id);
+                    var transfer = await _data.Transfers.GetByIdAsync(transaction.TransferId);
+                    var otherTransaction = _data.Transactions.GetMatchingFromTransferPair(transfer.Id, id);
 
                     if (otherTransaction != null) {
-                        _data.TransactionRepository.Remove(otherTransaction);
+                        _data.Transactions.Remove(otherTransaction);
                     }
                 }
 
@@ -48,7 +48,7 @@ namespace K9_Koinz.Pages.Transactions {
                 return RedirectToPage(PagePaths.TransactionIndex);
             }
 
-            var toTransaction = _data.TransactionRepository.GetWithCategory(id);
+            var toTransaction = _data.Transactions.GetWithCategory(id);
             if (toTransaction.Category.CategoryType == CategoryType.TRANSFER || toTransaction.Category.CategoryType == CategoryType.INCOME) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = id });
             }

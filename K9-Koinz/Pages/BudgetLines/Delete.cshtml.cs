@@ -10,7 +10,7 @@ namespace K9_Koinz.Pages.BudgetLines {
             : base(data, logger) { }
 
         protected override async Task<BudgetLine> QueryRecordAsync(Guid id) {
-            return await _data.BudgetLineRepository.GetByIdAsync(id);
+            return await _data.BudgetLines.GetByIdAsync(id);
         }
 
         protected override IActionResult NavigateOnSuccess() {

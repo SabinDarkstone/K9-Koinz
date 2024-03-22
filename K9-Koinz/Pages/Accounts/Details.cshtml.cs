@@ -8,11 +8,11 @@ namespace K9_Koinz.Pages.Accounts {
             : base(data, logger) { }
 
         protected override async Task<Account> QueryRecordAsync(Guid id) {
-            return await _data.AccountRepository.GetAccountDetails(id);
+            return await _data.Accounts.GetAccountDetails(id);
         }
 
         protected override void AdditionalActions() {
-            var newBalance = _data.TransactionRepository.GetTransactionTotalSinceBalanceSet(Record);
+            var newBalance = _data.Transactions.GetTransactionTotalSinceBalanceSet(Record);
             Record.CurrentBalance = Record.InitialBalance + newBalance;
         }
     }

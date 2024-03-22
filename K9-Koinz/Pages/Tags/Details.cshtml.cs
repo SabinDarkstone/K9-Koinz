@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Tags {
             : base(data, logger) { }
 
         protected override async Task<Tag> QueryRecordAsync(Guid id) {
-            return await _data.TagRepository.GetDetails(id);
+            return await _data.Tags.GetDetails(id);
         }
     }
 }

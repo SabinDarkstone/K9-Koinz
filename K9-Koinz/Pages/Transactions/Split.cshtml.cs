@@ -16,7 +16,7 @@ namespace K9_Koinz.Pages.Transactions {
         public List<Transaction> SplitTransactions { get; set; } = new List<Transaction>();
 
         public async Task<IActionResult> OnGetAsync(Guid parentId) {
-            ParentTransaction = await _data.TransactionRepository.GetSplitLines(parentId);
+            ParentTransaction = await _data.Transactions.GetSplitLines(parentId);
             SplitTransactions = new List<Transaction>(ParentTransaction.SplitTransactions);
 
             ParentTransaction.Category = null;
@@ -35,7 +35,7 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public async Task<IActionResult> OnPostAsync() {
-            var parent = await _data.TransactionRepository
+            var parent = await _data.Transactions
                 .GetByIdAsync(SplitTransactions.First().ParentTransactionId);
 
             foreach (var split in SplitTransactions) {
@@ -43,7 +43,7 @@ namespace K9_Koinz.Pages.Transactions {
                     continue;
                 }
 
-                var category = await _data.CategoryRepository.GetByIdAsync(split.CategoryId);
+                var category = await _data.Categories.GetByIdAsync(split.CategoryId);
 
                 split.AccountName = parent.AccountName;
                 split.CategoryName = category.Name;

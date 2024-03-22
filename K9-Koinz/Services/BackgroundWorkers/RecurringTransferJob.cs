@@ -20,7 +20,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
         }
 
         private async Task<List<Transaction>> CreateTransfers(DateTime mark) {
-            var repeatingTransfers = _data.TransferRepository.GetRecurringBeforeDate(mark);
+            var repeatingTransfers = _data.Transfers.GetRecurringBeforeDate(mark);
 
             var transactions = new List<Transaction>();
             foreach (var transfer in repeatingTransfers) {
@@ -29,7 +29,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 transfer.RepeatConfig.FireNow();
             }
 
-            _data.TransactionRepository.Add(transactions);
+            _data.Transactions.Add(transactions);
             await _data.SaveAsync();
             return transactions;
         }

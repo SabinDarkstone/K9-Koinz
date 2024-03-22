@@ -15,8 +15,8 @@ namespace K9_Koinz.Pages.Accounts {
         }
 
         protected override async Task AfterSaveActionsAsync() {
-            var relatedTransactions = await _data.TransactionRepository.GetByAccountId(Record.Id);
-            var relatedBills = await _data.BillRepository.GetByAccountId(Record.Id);
+            var relatedTransactions = await _data.Transactions.GetByAccountId(Record.Id);
+            var relatedBills = await _data.Bills.GetByAccountId(Record.Id);
 
             foreach (var trans in relatedTransactions) {
                 trans.AccountName = Record.Name;
@@ -26,8 +26,8 @@ namespace K9_Koinz.Pages.Accounts {
                 bill.AccountName = Record.Name;
             }
 
-            _data.TransactionRepository.Update(relatedTransactions);
-            _data.BillRepository.Update(relatedBills);
+            _data.Transactions.Update(relatedTransactions);
+            _data.Bills.Update(relatedBills);
             await _data.SaveAsync();
         }
     }

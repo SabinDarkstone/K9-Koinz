@@ -18,23 +18,23 @@ namespace K9_Koinz.Pages.Transfers {
                 return NotFound();
             }
 
-            Transfer = await _data.TransferRepository.GetDetails(id.Value);
-            MatchingTransfers = await _data.TransferRepository.FindDuplicates(Transfer);
+            Transfer = await _data.Transfers.GetDetails(id.Value);
+            MatchingTransfers = await _data.Transfers.FindDuplicates(Transfer);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(Guid id, string mode) {
-            var transfer = await _data.TransferRepository.GetByIdAsync(id);
+            var transfer = await _data.Transfers.GetByIdAsync(id);
 
             if (mode == "cancel") {
-                _data.TransferRepository.Remove(transfer);
+                _data.Transfers.Remove(transfer);
                 await _data.SaveAsync();
                 return RedirectToPage(PagePaths.TransferManage);
             }
 
-            var toAccount = await _data.AccountRepository.GetByIdAsync(transfer.ToAccountId);
-            var accountHasGoals = _data.SavingsGoalRepository.ExistsByAccountId(transfer.ToAccountId);
+            var toAccount = await _data.Accounts.GetByIdAsync(transfer.ToAccountId);
+            var accountHasGoals = _data.SavingsGoals.ExistsByAccountId(transfer.ToAccountId);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = transfer.Id });

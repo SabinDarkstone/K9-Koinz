@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class TagRepository : GenericRepository<Tag> {
+    public class TagRepository : GenericRepository<Tag>, ITagRepository {
         public TagRepository(KoinzContext context) : base(context) { }
 
         public async Task<Tag> GetDetails(Guid id) {

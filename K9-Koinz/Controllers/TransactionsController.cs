@@ -13,7 +13,7 @@ namespace K9_Koinz.Controllers {
             var startDate = new DateTime(year, monthNumber, 1);
             var endDate = new DateTime(year, monthNumber, daysInSelectedMonth);
 
-            var transactions = await _data.TransactionRepository.GetForTrendGraph(
+            var transactions = await _data.Transactions.GetForTrendGraph(
                 Guid.Parse(categoryId), startDate, endDate
             );
 

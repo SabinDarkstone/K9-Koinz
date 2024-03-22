@@ -18,12 +18,12 @@ namespace K9_Koinz.Pages.SavingsGoals {
             : base(data, logger) { }
 
         public async Task<IActionResult> OnGetAsync(Guid relatedId) {
-            Transaction = await _data.TransactionRepository.GetByIdAsync(relatedId);
+            Transaction = await _data.Transactions.GetByIdAsync(relatedId);
 
             if (Transaction.IsSavingsSpending) {
-                GoalOptions = _data.SavingsGoalRepository.GetForDropdown(null);
+                GoalOptions = _data.SavingsGoals.GetForDropdown(null);
             } else {
-                GoalOptions = _data.SavingsGoalRepository.GetForDropdown(Transaction.AccountId);
+                GoalOptions = _data.SavingsGoals.GetForDropdown(Transaction.AccountId);
             }
 
             return Page();
@@ -37,21 +37,21 @@ namespace K9_Koinz.Pages.SavingsGoals {
             if (Transaction.SavingsGoalId == Guid.Empty) {
                 Transaction.SavingsGoalId = null;
             } else {
-                var savingsGoal = await _data.SavingsGoalRepository.GetByIdAsync(Transaction.SavingsGoalId);
+                var savingsGoal = await _data.SavingsGoals.GetByIdAsync(Transaction.SavingsGoalId);
                 Transaction.SavingsGoalName = savingsGoal.Name;
             }
 
             var savingsGoalId = Transaction.SavingsGoalId;
-            var oldTransaction = await _data.TransactionRepository.GetByIdAsync(Transaction.Id);
+            var oldTransaction = await _data.Transactions.GetByIdAsync(Transaction.Id);
             Transaction = oldTransaction;
             Transaction.SavingsGoalId = savingsGoalId;
 
-            _data.TransactionRepository.Update(Transaction);
+            _data.Transactions.Update(Transaction);
 
             try {
                 await _data.SaveAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!await _data.TransactionRepository.DoesExistAsync(Transaction.Id)) {
+                if (!await _data.Transactions.DoesExistAsync(Transaction.Id)) {
                     return NotFound();
                 } else {
                     throw;

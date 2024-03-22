@@ -10,7 +10,7 @@ namespace K9_Koinz.Pages.Budgets {
         public IEnumerable<BudgetLine> BudgetLines { get; set; }
 
         protected override async Task AdditionalActionsAsync() {
-            BudgetLines = await _data.BudgetLineRepository.GetByBudget(Record.Id);
+            BudgetLines = await _data.BudgetLines.GetByBudget(Record.Id);
 
             if (Record.DoNotUseCategories) {
                 Record.BudgetedAmount = BudgetLines.First().BudgetedAmount;

@@ -9,13 +9,13 @@ namespace K9_Koinz.Controllers {
 
         [HttpPost]
         public async Task<JsonResult> OnPostAddMerchant(string merchantName) {
-            var isExisting = await _data.MerchantRepository.DoesExistsByName(merchantName);
+            var isExisting = await _data.Merchants.DoesExistsByName(merchantName);
             if (isExisting) {
                 return new JsonResult("DUPLICATE");
             } else {
                 var newMerchant = new Merchant { Name = merchantName };
                 try {
-                    _data.MerchantRepository.Add(newMerchant);
+                    _data.Merchants.Add(newMerchant);
                     await _data.SaveAsync();
                     return new JsonResult(newMerchant.Id.ToString());
                 } catch (Exception) {

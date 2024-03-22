@@ -18,7 +18,7 @@ namespace K9_Koinz.Pages.Budgets {
         }
 
         protected override async Task<Budget> QueryRecordAsync(Guid id) {
-            return await _data.BudgetRepository.GetBudgetDetailsShorter(id);
+            return await _data.Budgets.GetBudgetDetailsShorter(id);
         }
 
         protected override void AfterQueryActions() {
@@ -32,12 +32,12 @@ namespace K9_Koinz.Pages.Budgets {
             if (Record.BudgetTagId == Guid.Empty) {
                 Record.BudgetTagId = null;
             } else {
-                var tag = await _data.TagRepository.GetByIdAsync(Record.BudgetTagId);
+                var tag = await _data.Tags.GetByIdAsync(Record.BudgetTagId);
                 Record.BudgetTagName = tag.Name;
             }
 
             if (Record.DoNotUseCategories) {
-                oldBudgetLineRecord = (await _data.BudgetLineRepository
+                oldBudgetLineRecord = (await _data.BudgetLines
                     .GetByBudget(Record.Id)).SingleOrDefault();
             }
         }
@@ -48,11 +48,11 @@ namespace K9_Koinz.Pages.Budgets {
 
         protected override async Task AfterSaveActionsAsync() {
             if (Record.DoNotUseCategories) {
-                var allowanceLine = (await _data.BudgetLineRepository.GetByBudget(Record.Id)).SingleOrDefault();
+                var allowanceLine = (await _data.BudgetLines.GetByBudget(Record.Id)).SingleOrDefault();
                 allowanceLine.BudgetedAmount = Record.BudgetedAmount.Value;
                 allowanceLine.DoRollover = Record.DoNoCategoryRollover;
 
-                _data.BudgetLineRepository.Update(allowanceLine);
+                _data.BudgetLines.Update(allowanceLine);
                 await _data.SaveAsync();
 
                 if (!oldBudgetLineRecord.DoRollover && Record.DoNoCategoryRollover) {
@@ -79,7 +79,7 @@ namespace K9_Koinz.Pages.Budgets {
                 SpentAmount = totalSpentSoFar
             };
 
-            _data.BudgetLinePeriodRepository.Add(firstPeriod);
+            _data.BudgetLinePeriods.Add(firstPeriod);
             await _data.SaveAsync();
         }
     }

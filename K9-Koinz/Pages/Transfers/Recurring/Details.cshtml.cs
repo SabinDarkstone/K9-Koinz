@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             : base(data, logger) { }
 
         protected override async Task<Transfer> QueryRecordAsync(Guid id) {
-            return await _data.TransferRepository.GetDetails(id);
+            return await _data.Transfers.GetDetails(id);
         }
     }
 }

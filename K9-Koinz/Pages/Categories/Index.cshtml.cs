@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Categories {
             : base(data, logger) { }
 
         public async Task OnGetAsync() {
-            var catList = await _data.CategoryRepository.GetAll();
+            var catList = await _data.Categories.GetAll();
 
             RecordList = catList
                 .Where(cat => !cat.IsChildCategory)

@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Tags {
             : base(data, logger) { }
 
         public async Task OnGetAsync() {
-            RecordList = await _data.TagRepository.GetAll();
+            RecordList = await _data.Tags.GetAll();
         }
     }
 }

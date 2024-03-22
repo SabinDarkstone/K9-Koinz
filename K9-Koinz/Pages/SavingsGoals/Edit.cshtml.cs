@@ -10,7 +10,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
                 : base(data, logger, dropdownService) { }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
+            var account = await _data.Accounts.GetByIdAsync(Record.AccountId);
             Record.AccountName = account.Name;
         }
     }

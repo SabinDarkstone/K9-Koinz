@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class BillRepository : GenericRepository<Bill> {
+    public class BillRepository : GenericRepository<Bill>, IBillRepository {
         public BillRepository(KoinzContext context) : base(context) { }
 
         public async Task<IEnumerable<Bill>> GetByAccountId(Guid accountId) {

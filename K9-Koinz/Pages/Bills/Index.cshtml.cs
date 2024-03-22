@@ -42,9 +42,9 @@ namespace K9_Koinz.Pages.Bills {
             }
 
             if (showAllBills.HasValue && showAllBills.Value) {
-                RecordList = await _data.BillRepository.GetAllBillsAsync();
+                RecordList = await _data.Bills.GetAllBillsAsync();
             } else {
-                RecordList = await _data.BillRepository.GetBillsWithinDateRangeAsync(startDate, endDate);
+                RecordList = await _data.Bills.GetBillsWithinDateRangeAsync(startDate, endDate);
             }
 
             List<Account> accounts = RecordList.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();

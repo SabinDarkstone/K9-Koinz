@@ -58,7 +58,7 @@ namespace K9_Koinz.Pages.Transactions {
             MaxDateFilter = maxDate;
             AccountFilter = accountId;
 
-            RecordList = await _data.TransactionRepository.GetFiltered(
+            RecordList = await _data.Transactions.GetFiltered(
                 new Models.Helpers.TransactionFilterSetting {
                     AccountFilter = AccountFilter,
                     DateRangeStart = MinDateFilter,

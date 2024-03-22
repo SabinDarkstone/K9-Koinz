@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.JobStatuses {
             : base(data, logger) { }
 
         public async Task OnGetAsync() {
-            RecordList = await _data.JobStatusRepository.GetAllAsync();
+            RecordList = await _data.JobStatuses.GetAllAsync();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace K9_Koinz.Pages.Merchants {
         public List<Transaction> Transactions { get; set; }
 
         protected override async Task<Merchant> QueryRecordAsync(Guid id) {
-            var merchant = await _data.MerchantRepository.GetDetailsAsync(id);
+            var merchant = await _data.Merchants.GetDetailsAsync(id);
             Transactions = merchant.Transactions.ToList();
 
             return merchant;

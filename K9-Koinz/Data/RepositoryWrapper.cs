@@ -2,23 +2,23 @@
 
 namespace K9_Koinz.Data {
     public interface IRepositoryWrapper {
-        AccountRepository AccountRepository { get; }
-        BillRepository BillRepository { get; }
-        BudgetLineRepository BudgetLineRepository { get; }
-        BudgetLinePeriodRepository BudgetLinePeriodRepository { get; }
-        BudgetRepository BudgetRepository { get; }
-        CategoryRepository CategoryRepository { get; }
-        JobStatusRepository JobStatusRepository { get; }
-        MerchantRepository MerchantRepository { get; }
-        SavingsGoalRepository SavingsGoalRepository { get; }
-        TagRepository TagRepository { get; }
-        TransactionRepository TransactionRepository { get; }
-        TransferRepository TransferRepository { get; }
+        IAccountRepository Accounts { get; }
+        IBillRepository Bills { get; }
+        IBudgetLineRepository BudgetLines { get; }
+        IBudgetLinePeriodRepository BudgetLinePeriods { get; }
+        IBudgetRepository Budgets { get; }
+        ICategoryRepository Categories { get; }
+        IJobStatusRepository JobStatuses { get; }
+        IMerchantRepository Merchants { get; }
+        ISavingsGoalRepository SavingsGoals { get; }
+        ITagRepository Tags { get; }
+        ITransactionRepository Transactions { get; }
+        ITransferRepository Transfers { get; }
 
         void Save();
         Task SaveAsync();
 
-        GenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : BaseEntity;
+        IGenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : BaseEntity;
     }
 
     public class RepositoryWrapper : IRepositoryWrapper {
@@ -40,90 +40,90 @@ namespace K9_Koinz.Data {
         public RepositoryWrapper(KoinzContext context) {
             _context = context;
         }
-        public virtual AccountRepository AccountRepository {
+        public virtual IAccountRepository Accounts {
             get {
                 accountRepository ??= new AccountRepository(_context);
                 return accountRepository;
             }
         }
 
-        public virtual TransactionRepository TransactionRepository {
+        public virtual ITransactionRepository Transactions {
             get {
                 transactionRepository ??= new TransactionRepository(_context);
                 return transactionRepository;
             }
         }
 
-        public virtual BillRepository BillRepository {
+        public virtual IBillRepository Bills {
             get {
                 billRepository ??= new BillRepository(_context);
                 return billRepository;
             }
         }
 
-        public virtual BudgetLineRepository BudgetLineRepository {
+        public virtual IBudgetLineRepository BudgetLines {
             get {
                 budgetLineRepository ??= new BudgetLineRepository(_context);
                 return budgetLineRepository;
             }
         }
 
-        public virtual BudgetRepository BudgetRepository {
+        public virtual IBudgetRepository Budgets {
             get {
                 budgetRepository ??= new BudgetRepository(_context);
                 return budgetRepository;
             }
         }
 
-        public virtual CategoryRepository CategoryRepository {
+        public virtual ICategoryRepository Categories {
             get {
                 categoryRepository ??= new CategoryRepository(_context);
                 return categoryRepository;
             }
         }
 
-        public virtual JobStatusRepository JobStatusRepository {
+        public virtual IJobStatusRepository JobStatuses {
             get {
                 jobStatusRepository ??= new JobStatusRepository(_context);
                 return jobStatusRepository;
             }
         }
 
-        public virtual MerchantRepository MerchantRepository {
+        public virtual IMerchantRepository Merchants {
             get {
                 merchantRepository ??= new MerchantRepository(_context);
                 return merchantRepository;
             }
         }
 
-        public virtual SavingsGoalRepository SavingsGoalRepository {
+        public virtual ISavingsGoalRepository SavingsGoals {
             get {
                 savingsGoalRepository ??= new SavingsGoalRepository(_context);
                 return savingsGoalRepository;
             }
         }
 
-        public virtual TagRepository TagRepository {
+        public virtual ITagRepository Tags {
             get {
                 tagRepository ??= new TagRepository(_context);
                 return tagRepository;
             }
         }
 
-        public virtual TransferRepository TransferRepository {
+        public virtual ITransferRepository Transfers {
             get {
                 transferRepository ??= new TransferRepository(_context);
                 return transferRepository;
             }
         }
-        public virtual BudgetLinePeriodRepository BudgetLinePeriodRepository {
+        public virtual IBudgetLinePeriodRepository BudgetLinePeriods {
             get {
                 budgetLinePeriodRepository ??= new BudgetLinePeriodRepository(_context);
                 return budgetLinePeriodRepository;
             }
         }
 
-        public virtual GenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : BaseEntity {
+        public virtual IGenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : BaseEntity {
             return new GenericRepository<TEntity>(_context);
         }
 

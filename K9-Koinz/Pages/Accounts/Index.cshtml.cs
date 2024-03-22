@@ -12,7 +12,7 @@ namespace K9_Koinz.Pages.Accounts {
         public Dictionary<string, List<Account>> AccountDict { get;set; } = default!;
 
         public async Task OnGetAsync() {
-            AccountDict = await _data.AccountRepository.GetAllGroupedByType();
+            AccountDict = await _data.Accounts.GetAllGroupedByType();
 
             var savingsAccountGroup = AccountDict[AccountType.SAVINGS.GetAttribute<DisplayAttribute>().Name];
             var checkingAndSavings = AccountDict[AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name].Concat(savingsAccountGroup).OrderBy(acct => acct.Name).ToList();
@@ -21,7 +21,7 @@ namespace K9_Koinz.Pages.Accounts {
             AccountDict.Remove(AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name);
 
             foreach (var acct in AccountDict.SelectMany(x => x.Value)) {
-                var newBalance = _data.TransactionRepository.GetTransactionTotalSinceBalanceSet(acct);
+                var newBalance = _data.Transactions.GetTransactionTotalSinceBalanceSet(acct);
                 acct.CurrentBalance = acct.InitialBalance + newBalance;
             }
         }

@@ -16,8 +16,8 @@ namespace K9_Koinz.Pages.SavingsGoals {
             : base(data, logger) { }
 
         public async Task<IActionResult> OnGetAsync(Guid relatedId) {
-            Transfer = await _data.TransferRepository.GetDetails(relatedId);
-            GoalOptions = _data.SavingsGoalRepository.GetForDropdown(Transfer.ToAccountId);
+            Transfer = await _data.Transfers.GetDetails(relatedId);
+            GoalOptions = _data.SavingsGoals.GetForDropdown(Transfer.ToAccountId);
 
             return Page();
         }
@@ -32,16 +32,16 @@ namespace K9_Koinz.Pages.SavingsGoals {
             }
 
             var savingsGoalId = Transfer.SavingsGoalId;
-            var oldTransfer = await _data.TransferRepository.GetByIdAsync(Transfer.Id);
+            var oldTransfer = await _data.Transfers.GetByIdAsync(Transfer.Id);
             Transfer = oldTransfer;
             Transfer.SavingsGoalId = savingsGoalId;
 
-            _data.TransferRepository.Update(Transfer);
+            _data.Transfers.Update(Transfer);
 
             try {
                 await _data.SaveAsync();
             } catch (DbUpdateConcurrencyException) {
-                if (!await _data.TransferRepository.DoesExistAsync(Transfer.Id)) {
+                if (!await _data.Transfers.DoesExistAsync(Transfer.Id)) {
                     return NotFound();
                 } else {
                     throw;

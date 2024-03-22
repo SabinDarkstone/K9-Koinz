@@ -24,7 +24,7 @@ namespace K9_Koinz.Pages {
             ThisMonthSpendingJson = results[0];
             LastMonthSpendingJson = results[1];
 
-            var accounts = await _data.AccountRepository.GetAll();
+            var accounts = await _data.Accounts.GetAll();
             if (accounts.Count() > 0) {
                 this.Accounts = accounts;
             }

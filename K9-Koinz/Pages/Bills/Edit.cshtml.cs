@@ -10,13 +10,13 @@ namespace K9_Koinz.Pages.Bills {
             : base(data, logger, dropdownService) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
-            return await _data.BillRepository.GetDetails(id);
+            return await _data.Bills.GetDetails(id);
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
-            var merchant = await _data.MerchantRepository.GetByIdAsync(Record.MerchantId);
-            var category = await _data.CategoryRepository.GetByIdAsync(Record.CategoryId.Value);
+            var account = await _data.Accounts.GetByIdAsync(Record.AccountId);
+            var merchant = await _data.Merchants.GetByIdAsync(Record.MerchantId);
+            var category = await _data.Categories.GetByIdAsync(Record.CategoryId.Value);
 
             Record.AccountName = account.Name;
             Record.MerchantName = merchant.Name;

@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Merchants {
             : base(data, logger) { }
 
         protected override async Task<Merchant> QueryRecordAsync(Guid id) {
-            return await _data.MerchantRepository.GetDetailsAsync(id);
+            return await _data.Merchants.GetDetailsAsync(id);
         }
     }
 }

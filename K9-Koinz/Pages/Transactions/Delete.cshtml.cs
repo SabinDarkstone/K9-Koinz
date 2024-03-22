@@ -8,36 +8,36 @@ namespace K9_Koinz.Pages.Transactions {
             : base(data, logger) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
-            return await _data.TransactionRepository.GetDetailsAsync(id);
+            return await _data.Transactions.GetDetailsAsync(id);
         }
 
         protected override async Task BeforeDeleteActionsAsync() {
-            var splitTransactions = (await _data.TransactionRepository
+            var splitTransactions = (await _data.Transactions
                 .GetSplitLines(Record.Id))
                 .SplitTransactions;
 
             if (splitTransactions.Count > 0) {
-                _data.TransactionRepository.Remove(splitTransactions);
+                _data.Transactions.Remove(splitTransactions);
             }
         }
 
         protected override async Task AdditionalDatabaseActionsAsync() {
             if (Record.SavingsGoalId.HasValue) {
-                var goal = await _data.SavingsGoalRepository.GetByIdAsync(Record.SavingsGoalId.Value);
+                var goal = await _data.SavingsGoals.GetByIdAsync(Record.SavingsGoalId.Value);
                 goal.SavedAmount -= Record.Amount;
             }
 
             if (Record.TransferId.HasValue) {
-                var otherTransaction = _data.TransactionRepository
+                var otherTransaction = _data.Transactions
                     .GetMatchingFromTransferPair(Record.TransferId.Value, Record.Id);
 
                 if (otherTransaction != null) {
-                    _data.TransactionRepository.Remove(otherTransaction);
+                    _data.Transactions.Remove(otherTransaction);
                 }
 
-                var transfer = await _data.TransferRepository.GetByIdAsync(Record.TransferId);
+                var transfer = await _data.Transfers.GetByIdAsync(Record.TransferId);
                 if (!transfer.RepeatConfigId.HasValue) {
-                    _data.TransferRepository.Remove(transfer);
+                    _data.Transfers.Remove(transfer);
                 }
             }
         }

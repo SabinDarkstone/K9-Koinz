@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
             : base(data, logger) { }
 
         protected override async Task<SavingsGoal> QueryRecordAsync(Guid id) {
-            return await _data.SavingsGoalRepository.GetDetailsAsync(id);
+            return await _data.SavingsGoals.GetDetailsAsync(id);
         }
     }
 }

@@ -15,13 +15,13 @@ namespace K9_Koinz.Pages.Categories {
             await base.BeforePageLoadActions();
 
             if (RelatedId.HasValue) {
-                ParentCategory = await _data.CategoryRepository.GetByIdAsync(RelatedId.Value);
+                ParentCategory = await _data.Categories.GetByIdAsync(RelatedId.Value);
             }
         }
 
         protected override async Task BeforeSaveActionsAsync() {
             if (Record.ParentCategoryId.HasValue) {
-                var parentCategory = await _data.CategoryRepository.GetByIdAsync(Record.ParentCategoryId.Value);
+                var parentCategory = await _data.Categories.GetByIdAsync(Record.ParentCategoryId.Value);
                 Record.ParentCategoryName = parentCategory.Name;
             }
         }

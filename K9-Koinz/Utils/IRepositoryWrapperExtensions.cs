@@ -4,10 +4,10 @@ using K9_Koinz.Models;
 namespace K9_Koinz.Utils {
     public static class IRepositoryWrapperExtensions {
         public static async Task<Transaction[]> CreateTransactionsFromTransfer(this IRepositoryWrapper data, Transfer transfer, bool trustSavingsGoals = true) {
-            var category = await data.CategoryRepository.GetByIdAsync(transfer.CategoryId);
-            var merchant = await data.MerchantRepository.GetByIdAsync(transfer.MerchantId);
-            var fromAccount = await data.AccountRepository.GetByIdAsync(transfer.FromAccountId);
-            var toAccount = await data.AccountRepository.GetByIdAsync(transfer.ToAccountId);
+            var category = await data.Categories.GetByIdAsync(transfer.CategoryId);
+            var merchant = await data.Merchants.GetByIdAsync(transfer.MerchantId);
+            var fromAccount = await data.Accounts.GetByIdAsync(transfer.FromAccountId);
+            var toAccount = await data.Accounts.GetByIdAsync(transfer.ToAccountId);
 
             if (transfer.TagId == Guid.Empty) {
                 transfer.TagId = null;
@@ -41,7 +41,7 @@ namespace K9_Koinz.Utils {
             };
 
             if (trustSavingsGoals && transfer.SavingsGoalId.HasValue) {
-                var savingsGoal = await data.SavingsGoalRepository.GetByIdAsync(transfer.SavingsGoalId.Value);
+                var savingsGoal = await data.SavingsGoals.GetByIdAsync(transfer.SavingsGoalId.Value);
                 toTransaction.SavingsGoalId = transfer.SavingsGoalId;
                 toTransaction.SavingsGoalName = savingsGoal.Name;
             }

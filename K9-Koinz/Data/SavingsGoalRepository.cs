@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class SavingsGoalRepository : GenericRepository<SavingsGoal> {
+    public class SavingsGoalRepository : GenericRepository<SavingsGoal>, ISavingsGoalRepository {
         public SavingsGoalRepository(KoinzContext context) : base(context) { }
 
         public async Task<SavingsGoal> GetDetailsAsync(Guid id) {

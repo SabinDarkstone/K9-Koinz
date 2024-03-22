@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Merchants {
             : base(data, logger) { }
 
         public async Task OnGetAsync() {
-            RecordList = await _data.MerchantRepository.GetAll();
+            RecordList = await _data.Merchants.GetAll();
         }
     }
 }

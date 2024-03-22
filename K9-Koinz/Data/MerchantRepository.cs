@@ -1,11 +1,9 @@
 ﻿using K9_Koinz.Models;
 using K9_Koinz.Models.Helpers;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace K9_Koinz.Data {
-    public class MerchantRepository : GenericRepository<Merchant> {
+    public class MerchantRepository : GenericRepository<Merchant>, IMerchantRepository {
         public MerchantRepository(KoinzContext context) : base(context) { }
 
         public async Task<Merchant> GetDetailsAsync(Guid id) {

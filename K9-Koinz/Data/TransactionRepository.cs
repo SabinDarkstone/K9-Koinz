@@ -5,7 +5,7 @@ using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class TransactionRepository : GenericRepository<Transaction> {
+    public class TransactionRepository : GenericRepository<Transaction>, ITransactionRepository {
         public TransactionRepository(KoinzContext context)
             : base(context) { }
 

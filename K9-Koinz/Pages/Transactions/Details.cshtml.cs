@@ -8,7 +8,7 @@ namespace K9_Koinz.Pages.Transactions {
             : base(data, logger) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
-            return await _data.TransactionRepository.GetDetailsAsync(id);
+            return await _data.Transactions.GetDetailsAsync(id);
         }
     }
 }

@@ -10,8 +10,8 @@ namespace K9_Koinz.Pages.Merchants {
                 : base(data, logger, dropdownService) { }
 
         protected override async Task AfterSaveActionsAsync() {
-            var relatedTransactions = await _data.TransactionRepository.GetByMerchant(Record.Id);
-            var relatedBills = await _data.BillRepository.GetByMerchant(Record.Id);
+            var relatedTransactions = await _data.Transactions.GetByMerchant(Record.Id);
+            var relatedBills = await _data.Bills.GetByMerchant(Record.Id);
 
             foreach (var trans in relatedTransactions) {
                 trans.MerchantName = Record.Name;
@@ -21,8 +21,8 @@ namespace K9_Koinz.Pages.Merchants {
                 bill.MerchantName = Record.Name;
             }
 
-            _data.TransactionRepository.Update(relatedTransactions);
-            _data.BillRepository.Update(relatedBills);
+            _data.Transactions.Update(relatedTransactions);
+            _data.Bills.Update(relatedBills);
             await _data.SaveAsync();
         }
     }

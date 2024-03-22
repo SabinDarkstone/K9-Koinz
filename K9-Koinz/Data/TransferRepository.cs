@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class TransferRepository : GenericRepository<Transfer> {
+    public class TransferRepository : GenericRepository<Transfer>, ITransferRepository {
         public TransferRepository(KoinzContext context) : base(context) { }
 
         public async Task<Dictionary<string, List<Transfer>>> GetRecurringGroupedByAccount() {

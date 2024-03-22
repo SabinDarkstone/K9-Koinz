@@ -75,13 +75,13 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 }
 
                 if (transactionsToCreate.Count > 0) {
-                    _data.TransactionRepository.Add(transactionsToCreate);
+                    _data.Transactions.Add(transactionsToCreate);
 
                     foreach (var bill in bills) {
                         bill.RepeatConfig.FireNow();
                     }
 
-                    _data.BillRepository.Update(bills);
+                    _data.Bills.Update(bills);
                     _data.Save();
 
                     transactionsCreated.AddRange(transactionsToCreate);
@@ -94,7 +94,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
         }
 
         private List<Bill> getBillsForTimePeriod(DateTime startDate, DateTime endDate) {
-            return _data.BillRepository.GetBillsWithinDateRangeAsync(startDate, endDate).Result.ToList();
+            return _data.Bills.GetBillsWithinDateRangeAsync(startDate, endDate).Result.ToList();
         }
     }
 }

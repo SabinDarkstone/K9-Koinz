@@ -11,7 +11,7 @@ namespace K9_Koinz.Pages.Transfers {
         public Dictionary<string, List<Transfer>> RecurringTransfersDict;
 
         public async Task<IActionResult> OnGetAsync() {
-            RecurringTransfersDict = await _data.TransferRepository.GetRecurringGroupedByAccount();
+            RecurringTransfersDict = await _data.Transfers.GetRecurringGroupedByAccount();
 
             return Page();
         }

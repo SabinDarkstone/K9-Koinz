@@ -15,7 +15,7 @@ namespace K9_Koinz.Pages.Transfers {
             : base(data, logger, dropdownService) { }
 
         protected override Task BeforePageLoadActions() {
-            var defaultCategory = _data.CategoryRepository.GetByName("Transfer");
+            var defaultCategory = _data.Categories.GetByName("Transfer");
             Record = new Transfer {
                 Category = defaultCategory,
                 CategoryId = defaultCategory.Id,
@@ -34,13 +34,13 @@ namespace K9_Koinz.Pages.Transfers {
 
         protected override async Task AfterSaveActionsAsync() {
             transactions = (await _data.CreateTransactionsFromTransfer(Record, false)).ToArray();
-            foundMatchingTransactions = (await _data.TransactionRepository.FindDuplicatesFromTransfer(transactions)).Any();
+            foundMatchingTransactions = (await _data.Transactions.FindDuplicatesFromTransfer(transactions)).Any();
 
             foreach (var transaction in transactions) {
                 transaction.TransferId = Record.Id;
             }
 
-            _data.TransactionRepository.Add(transactions);
+            _data.Transactions.Add(transactions);
             await _data.SaveAsync();
         }
 
@@ -49,8 +49,8 @@ namespace K9_Koinz.Pages.Transfers {
                 return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = transactions[1].Id });
             }
 
-            var toAccount = _data.AccountRepository.GetByIdAsync(transactions[1].AccountId).Result;
-            var accountHasGoals = _data.SavingsGoalRepository.ExistsByAccountId(toAccount.Id);
+            var toAccount = _data.Accounts.GetByIdAsync(transactions[1].AccountId).Result;
+            var accountHasGoals = _data.SavingsGoals.ExistsByAccountId(toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = transactions[1].Id });

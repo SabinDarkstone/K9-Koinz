@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class JobStatusRepository : GenericRepository<ScheduledJobStatus> {
+    public class JobStatusRepository : GenericRepository<ScheduledJobStatus>, IJobStatusRepository {
         public JobStatusRepository(KoinzContext context) : base(context) { }
 
         public async Task<IEnumerable<ScheduledJobStatus>> GetAllAsync() {

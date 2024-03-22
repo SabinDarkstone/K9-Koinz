@@ -103,7 +103,7 @@ namespace K9_Koinz.Services.Meta {
             var scope = _scopeFactory.CreateScope();
             _data = scope.ServiceProvider.GetRequiredService<IRepositoryWrapper>();
 
-            _data.JobStatusRepository.Add(statusRecord);
+            _data.JobStatuses.Add(statusRecord);
             _data.Save();
 
             CreateAdditionalScope(scope);
@@ -124,7 +124,7 @@ namespace K9_Koinz.Services.Meta {
         private void FinalizeJob() {
             statusRecord.NextRunTime = statusRecord.StartTime + repeat;
 
-            _data.JobStatusRepository.Update(statusRecord);
+            _data.JobStatuses.Update(statusRecord);
             _data.Save();
         }
 

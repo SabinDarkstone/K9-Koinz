@@ -77,7 +77,7 @@ namespace K9_Koinz.Pages.Transactions
         public List<SelectListItem> AccountOptions;
 
         public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex, string searchString, bool? hideTransfers) {
-            CategoryOptions = await _data.CategoryRepository.GetDropdown();
+            CategoryOptions = await _data.Categories.GetDropdown();
             AccountOptions = await _dropdownService.GetAccountListAsync();
 
             // Sort parameters
@@ -102,7 +102,7 @@ namespace K9_Koinz.Pages.Transactions
                 CategoryFilters = [selectedCateogryId];
 
                 // Add the child categories to the list
-                CategoryFilters.AddRange((await _data.CategoryRepository.GetChildrenAsync(selectedCateogryId))
+                CategoryFilters.AddRange((await _data.Categories.GetChildrenAsync(selectedCateogryId))
                     .Select(x => x.Id));
             }
 
@@ -111,7 +111,7 @@ namespace K9_Koinz.Pages.Transactions
             TagFilter = SelectedTag.ToGuid();
 
             var filters = new TransactionFilterSetting(sortOrder, CategoryFilters, MerchantFilter, AccountFilter, TagFilter, MinDateFilter, MaxDateFilter, pageIndex, searchString, hideTransfers);
-            RecordList = await _data.TransactionRepository.GetFiltered(filters);
+            RecordList = await _data.Transactions.GetFiltered(filters);
         }
     }
 }

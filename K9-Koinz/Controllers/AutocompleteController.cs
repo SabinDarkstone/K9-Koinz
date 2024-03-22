@@ -7,19 +7,19 @@ namespace K9_Koinz.Controllers {
             : base(data) { }
 
         public async Task<JsonResult> GetAutocompleteCategoriesAsync(string text) {
-            var suggestions = await _data.CategoryRepository.GetForAutocomplete(text);
+            var suggestions = await _data.Categories.GetForAutocomplete(text);
             return new JsonResult(suggestions);
         }
 
         public async Task<JsonResult> GetAutocompleteMerchantsAsync(string text) {
-            var suggestions = await _data.MerchantRepository.GetForAutocomplete(text);
+            var suggestions = await _data.Merchants.GetForAutocomplete(text);
             return new JsonResult(suggestions);
         }
 
         public async Task<JsonResult> GetSuggestedCategoryAsync(string merchantId) {
-            var transaction = await _data.TransactionRepository
+            var transaction = await _data.Transactions
                 .GetTransFromMostPopularCategoryByMerchant(merchantId);
-            var category = await _data.CategoryRepository.GetByIdAsync(transaction.CategoryId);
+            var category = await _data.Categories.GetByIdAsync(transaction.CategoryId);
 
             if (category != null) {
                 return new JsonResult(category);
@@ -29,7 +29,7 @@ namespace K9_Koinz.Controllers {
         }
 
         public async Task<JsonResult> OnGetParentCategoryAutoComplete(string text) {
-            var categories = await _data.CategoryRepository.GetParentCategoryAutocomplete(text);
+            var categories = await _data.Categories.GetParentCategoryAutocomplete(text);
             return new JsonResult(categories);
         }
     }

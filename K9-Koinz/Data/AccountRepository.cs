@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Data {
-    public class AccountRepository : GenericRepository<Account> {
+    public class AccountRepository : GenericRepository<Account>, IAccountRepository {
         public AccountRepository(KoinzContext context) : base(context) { }
 
         public async Task<Account> GetAccountDetails(Guid accountId) {

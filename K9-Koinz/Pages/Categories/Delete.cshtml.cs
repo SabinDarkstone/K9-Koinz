@@ -8,11 +8,11 @@ namespace K9_Koinz.Pages.Categories {
             : base(data, logger) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
-            return await _data.CategoryRepository.GetCategoryDetails(id);
+            return await _data.Categories.GetCategoryDetails(id);
         }
 
         protected override void AdditioanlDatabaseActions() {
-            _data.CategoryRepository.Remove(Record.ChildCategories);
+            _data.Categories.Remove(Record.ChildCategories);
         }
     }
 }

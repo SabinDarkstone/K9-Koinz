@@ -2,10 +2,9 @@
 using K9_Koinz.Models.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace K9_Koinz.Data {
-    public class CategoryRepository : GenericRepository<Category> {
+    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository {
         public CategoryRepository(KoinzContext context) : base(context) { }
 
         public async Task<Category> GetCategoryDetails(Guid id) {

@@ -17,7 +17,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             : base(data, logger, dropdownService) { }
 
         protected override Task BeforePageLoadActions() {
-            DefaultCategory = _data.CategoryRepository.GetByName("Transfer");
+            DefaultCategory = _data.Categories.GetByName("Transfer");
             Record = new Transfer();
             Record.CategoryId = DefaultCategory.Id;
 
@@ -25,7 +25,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            foundMatchingSchedule = (await _data.TransferRepository.FindDuplicates(Record)).Any();
+            foundMatchingSchedule = (await _data.Transfers.FindDuplicates(Record)).Any();
 
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
@@ -41,8 +41,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                     transaction.TransferId = Record.Id;
                 }
 
-                _data.TransferRepository.Update(Record);
-                _data.TransactionRepository.Add(transactions);
+                _data.Transfers.Update(Record);
+                _data.Transactions.Add(transactions);
 
                 await _data.SaveAsync();
             }
@@ -53,8 +53,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                 return RedirectToPage(PagePaths.TransferDuplicateFound, new { id = Record.Id });
             }
 
-            var toAccount = _data.AccountRepository.GetByIdAsync(Record.ToAccountId).Result;
-            var accountHasGoals = _data.SavingsGoalRepository.DoesExistAsync(Record.ToAccountId).Result;
+            var toAccount = _data.Accounts.GetByIdAsync(Record.ToAccountId).Result;
+            var accountHasGoals = _data.SavingsGoals.DoesExistAsync(Record.ToAccountId).Result;
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = Record.Id });

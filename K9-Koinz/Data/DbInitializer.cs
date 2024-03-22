@@ -151,7 +151,7 @@ namespace K9_Koinz.Data {
             }
         }
 
-        private static List<Account> CreateAccounts() {
+        public static List<Account> CreateAccounts() {
 
             return [
                 new Account { Id = CHECKING, Name = "Chase Checking", Description = "My primary checking account", Type = AccountType.CHECKING, InitialBalance = 4476.66d, InitialBalanceDate = DateTime.Parse("1/9/2024") },
@@ -162,7 +162,7 @@ namespace K9_Koinz.Data {
             ];
         }
 
-        private static List<Merchant> CreateMerchants() {
+        public static List<Merchant> CreateMerchants() {
             return [
                 new Merchant { Id = PUBLIX, Name = "Publix" },
                 new Merchant { Id = SPOTIFY, Name = "Paypal - Spotify USA" },
@@ -198,7 +198,7 @@ namespace K9_Koinz.Data {
             ];
         }
 
-        private static List<Category> CreateCategories() {
+        public static List<Category> CreateCategories() {
             return [
                 new Category { Id = AUTO_AND_TRANSPORT, Name = "Auto & Transport", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
                 new Category { Id = BILLS_AND_UTILITIES, Name = "Bills & Utilities", CategoryType = CategoryType.EXPENSE, ParentCategoryId = null },
@@ -216,7 +216,7 @@ namespace K9_Koinz.Data {
             ];
         }
 
-        private static List<Category> CreateChildCategories() {
+        public static List<Category> CreateChildCategories() {
             return [
                 // Auto and Transport
                 new Category { Id = AUTO_INSURANCE, Name = "Auto Insurance", ParentCategoryId = AUTO_AND_TRANSPORT },
@@ -291,7 +291,7 @@ namespace K9_Koinz.Data {
             ];
         }
 
-        private static List<Transaction> CreateTransactions() {
+        public static List<Transaction> CreateTransactions() {
             return [
                 new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/7/2024"), AccountId = CREDIT_CART, MerchantId = PUBLIX, CategoryId = GROCERIES, Amount = -27.27d },
                 new Transaction { Id = Guid.NewGuid(), Date = DateTime.Parse("1/6/2024"), AccountId = CREDIT_CART, MerchantId = SPOTIFY, CategoryId = MUSIC, Amount = -16.04d },
@@ -325,7 +325,7 @@ namespace K9_Koinz.Data {
             ];
         }
 
-        private static List<Budget> CreateBudgets() {
+        public static List<Budget> CreateBudgets() {
             return [
                 new Budget { Id = MAIN_BUDGET, Name = "Main Budget", Description = "This is a test of the budget table", SortOrder = 1, Timespan = BudgetTimeSpan.MONTHLY },
                 new Budget { Id = WEEKLY_SHOPPING_BUDGET, Name = "Weekly Shopping", Description = "Weekly version of the main budget with more focused categories", SortOrder = 2, Timespan = BudgetTimeSpan.WEEKLY },
@@ -333,7 +333,7 @@ namespace K9_Koinz.Data {
             ];
         }
 
-        private static List<BudgetLine> CreateBudgetLines() {
+        public static List<BudgetLine> CreateBudgetLines() {
             return [
                 // Main budget
                 BudgetLineFactory.NewBudgetLine(MAIN_BUDGET, INCOME, 5674),
