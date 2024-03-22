@@ -13,7 +13,7 @@ namespace K9_Koinz.Models.Meta {
         }
 
         public virtual string ToJson() {
-            return JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings { MaxDepth = 6 });
+            return JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings { MaxDepth = 2 });
         }
     }
 }

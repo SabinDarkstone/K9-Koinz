@@ -36,5 +36,9 @@ namespace K9_Koinz.Data {
                     Id = merch.Id
                 }).ToList();
         }
+
+        public async Task<bool> DoesExistsByName(string name) {
+            return await DbSet.AnyAsync(merch => merch.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+        }
     }
 }

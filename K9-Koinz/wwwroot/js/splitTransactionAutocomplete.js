@@ -6,7 +6,7 @@
     $(txtId).autocomplete({
         source: (request, response) => autocompleteMerchants(request, response),
         select: function (e, i) {
-            $(hfId).val(i.item.val);
+            $(hfId).val(i.item.id);
         },
         minLength: 1
     });
@@ -20,7 +20,7 @@ $(".txtCategory").each((idx, item) => {
     $(txtId).autocomplete({
         source: (request, response) => autocompleteCategories(request, response),
         select: function (e, i) {
-            $(hfId).val(i.item.val);
+            $(hfId).val(i.item.id);
         },
         minLength: 1
     });

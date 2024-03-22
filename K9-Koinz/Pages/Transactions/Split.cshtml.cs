@@ -17,7 +17,9 @@ namespace K9_Koinz.Pages.Transactions {
 
         public async Task<IActionResult> OnGetAsync(Guid parentId) {
             ParentTransaction = await _data.TransactionRepository.GetSplitLines(parentId);
-            SplitTransactions = ParentTransaction.SplitTransactions;
+            SplitTransactions = new List<Transaction>(ParentTransaction.SplitTransactions);
+
+            ParentTransaction.Category = null;
 
             while (SplitTransactions.Count < 7) {
                 SplitTransactions.Add(new Transaction {
