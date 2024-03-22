@@ -15,7 +15,7 @@ namespace K9_Koinz.Pages.Meta {
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        protected AbstractEditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        protected AbstractEditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger) {
             _dropdownService = dropdownService;

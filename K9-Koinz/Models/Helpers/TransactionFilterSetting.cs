@@ -1,15 +1,15 @@
 ﻿namespace K9_Koinz.Models.Helpers {
     public struct TransactionFilterSetting {
-        public string SortOrder { get; }
-        public List<Guid> CategoryFilters { get; }
-        public Guid? MerchantFilter { get; }
-        public Guid? AccountFilter { get; }
-        public Guid? TagFilter { get; }
-        public DateTime? DateRangeStart { get; }
-        public DateTime? DateRangeEnd { get; }
-        public int? PageIndex { get; }
-        public string SearchString { get; }
-        public bool? HideTransfers { get; }
+        public string SortOrder { get; set; }
+        public List<Guid> CategoryFilters { get; set; }
+        public Guid? MerchantFilter { get; set; }
+        public Guid? AccountFilter { get; set; }
+        public Guid? TagFilter { get; set;  }
+        public DateTime? DateRangeStart { get; set; }
+        public DateTime? DateRangeEnd { get; set; }
+        public int? PageIndex { get; set; }
+        public string SearchString { get; set; }
+        public bool? HideTransfers { get; set; }
 
         public List<Guid> CategoryIds { get; set; }
 

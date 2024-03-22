@@ -3,7 +3,6 @@ using Humanizer;
 using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services.BackgroundWorkers {
     public class DailyBillToTransactionJob : AbstractWorker<DailyBillToTransactionJob> {
@@ -76,14 +75,14 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 }
 
                 if (transactionsToCreate.Count > 0) {
-                    _context.Transactions.AddRange(transactionsToCreate);
+                    _data.TransactionRepository.Add(transactionsToCreate);
 
                     foreach (var bill in bills) {
                         bill.RepeatConfig.FireNow();
                     }
 
-                    _context.Bills.UpdateRange(bills);
-                    _context.SaveChanges();
+                    _data.BillRepository.Update(bills);
+                    _data.Save();
 
                     transactionsCreated.AddRange(transactionsToCreate);
                 }
@@ -95,13 +94,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
         }
 
         private List<Bill> getBillsForTimePeriod(DateTime startDate, DateTime endDate) {
-            return _context.Bills
-                .Include(bill => bill.RepeatConfig)
-                .AsEnumerable()
-                .Where(bill => bill.RepeatConfigId != null)
-                .Where(bill => bill.RepeatConfig.NextFiring.HasValue)
-                .Where(bill => bill.RepeatConfig.NextFiring >= startDate && bill.RepeatConfig.NextFiring <= endDate)
-                .ToList();
+            return _data.BillRepository.GetBillsWithinDateRangeAsync(startDate, endDate).Result.ToList();
         }
     }
 }

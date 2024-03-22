@@ -5,32 +5,20 @@ using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers.Recurring {
     public class EditModel : AbstractEditModel<Transfer> {
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
             : base(data, logger, dropdownService) { }
 
         public SelectList GoalOptions { get; set; } = default!;
 
         protected override async Task<Transfer> QueryRecordAsync(Guid id) {
-            return await _context.Transfers
-                .Include(fer => fer.Tag)
-                .Include(fer => fer.Category)
-                .Include(fer => fer.FromAccount)
-                .Include(fer => fer.ToAccount)
-                .Include(fer => fer.Merchant)
-                .Include(fer => fer.RepeatConfig)
-                .Include(fer => fer.SavingsGoal)
-                .Include(fer => fer.Transactions)
-                .FirstOrDefaultAsync(fer => fer.Id == id);
+            return await _data.TransferRepository.GetDetails(id);
         }
 
-        protected override async Task AfterQueryActionsAsync() {
-            GoalOptions = new SelectList(await _context.SavingsGoals
-                .Where(goal => goal.AccountId == Record.ToAccountId)
-                .ToListAsync(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+        protected override void AfterQueryActions() {
+            GoalOptions = _data.SavingsGoalRepository.GetForDropdown(Record.ToAccountId);
         }
 
         protected override void BeforeSaveActions() {

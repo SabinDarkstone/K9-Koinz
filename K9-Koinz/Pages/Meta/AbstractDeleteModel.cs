@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractDeleteModel<TEntity> : AbstractDbPage where TEntity : BaseEntity {
-        protected AbstractDeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        protected AbstractDeleteModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         [BindProperty]

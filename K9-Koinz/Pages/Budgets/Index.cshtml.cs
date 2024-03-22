@@ -25,7 +25,7 @@ namespace K9_Koinz.Pages.Budgets {
     public class IndexModel : AbstractDbPage {
         private readonly IBudgetService _budgetService;
 
-        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IBudgetService budgetService)
+        public IndexModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger, IBudgetService budgetService)
             : base(data, logger) {
             _budgetService = budgetService;
         }
@@ -61,7 +61,7 @@ namespace K9_Koinz.Pages.Budgets {
 
             Budgets = await _data.BudgetRepository.GetAllAsync();
 
-            SelectedBudget = await _data.BudgetRepository.GetBudgetDetails(selectedBudget);
+            SelectedBudget = _data.BudgetRepository.GetBudgetDetails(selectedBudget);
             if (SelectedBudget == null) {
                 return;
             }

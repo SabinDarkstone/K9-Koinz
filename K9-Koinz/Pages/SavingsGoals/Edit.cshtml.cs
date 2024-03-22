@@ -5,13 +5,12 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.SavingsGoals {
     public class EditModel : AbstractEditModel<SavingsGoal> {
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger, dropdownService) { }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
-
+            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
             Record.AccountName = account.Name;
         }
     }

@@ -18,7 +18,7 @@
     <thead>
         <tr>
             <th class="col-4">
-                @Html.DisplayNameFor(model => model.Merchants[0].Name)
+                @Html.DisplayNameFor(model => model.RecordList.First().Name)
             </th>
             <th>
                Transaction Count
@@ -27,7 +27,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Merchants) {
+        @foreach (var item in Model.RecordList) {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)

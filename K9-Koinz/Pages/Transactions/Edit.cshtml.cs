@@ -13,29 +13,21 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList GoalOptions { get; set; } = default!;
         public SelectList BillOptions { get; set; } = default!;
 
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger, dropdownService) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
-            return await _context.Transactions
-                .Include(trans => trans.Category)
-                .Include(trans => trans.SplitTransactions)
-                .SingleOrDefaultAsync(trans => trans.Id == id);
+            return await _data.TransactionRepository.GetDetailsAsync(id);
         }
 
         protected override async Task AfterQueryActionsAsync() {
             if (Record.SavingsGoalId.HasValue || Record.IsSavingsSpending || Record.Category.CategoryType == CategoryType.TRANSFER) {
-                GoalOptions = new SelectList(await _context.SavingsGoals
-                    .Where(goal => goal.AccountId == Record.AccountId)
-                    .ToListAsync(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+                GoalOptions = _data.SavingsGoalRepository.GetForDropdown(Record.AccountId);
             }
 
             if (Record.Category.CategoryType == CategoryType.EXPENSE) {
-                BillOptions = new SelectList(await _context.Bills
-                    .Where(bill => bill.AccountId == Record.AccountId)
-                    .OrderBy(bill => bill.Name)
-                    .ToListAsync(), nameof(Bill.Id), nameof(Bill.Name));
+                BillOptions = await _data.BillRepository.GetForDropdown(Record.AccountId);
             }
         }
 
@@ -43,9 +35,10 @@ namespace K9_Koinz.Pages.Transactions {
             Record.Date = Record.Date.AtMidnight()
                 .Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
-            var category = await _context.Categories.FindAsync(Record.CategoryId);
-            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            var category = await _data.CategoryRepository.GetByIdAsync(Record.CategoryId);
+            var merchant = await _data.MerchantRepository.GetByIdAsync(Record.MerchantId);
+            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
+
             if (!Record.IsSplit) {
                 Record.CategoryName = category.Name;
             } else {
@@ -64,29 +57,26 @@ namespace K9_Koinz.Pages.Transactions {
                 if (Record.SavingsGoalId.Value == Guid.Empty) {
                     Record.SavingsGoalId = null;
                 } else {
-                    var savingsGoal = await _context.SavingsGoals.FindAsync(Record.SavingsGoalId);
+                    var savingsGoal = await _data.SavingsGoalRepository.GetByIdAsync(Record.SavingsGoalId);
                     Record.SavingsGoalName = savingsGoal.Name;
                 }
             }
 
             if (Record.TransferId.HasValue) {
-                var otherTransaction = await _context.Transactions
-                    .Where(trans => trans.TransferId == Record.TransferId)
-                    .Where(trans => trans.Id != Record.Id)
-                    .SingleOrDefaultAsync();
+                var otherTransaction = _data.TransactionRepository
+                    .GetMatchingFromTransferPair(Record.TransferId.Value, Record.Id);
 
                 otherTransaction.Amount = -1 * Record.Amount;
                 otherTransaction.Date = Record.Date;
                 otherTransaction.Notes = Record.Notes;
                 otherTransaction.TagId = Record.TagId;
 
-                _context.Transactions.Update(otherTransaction);
+                _data.TransactionRepository.Update(otherTransaction);
             }
 
             if (Record.IsSplit) {
-                var childTransactions = _context.Transactions
-                    .Where(trans => trans.ParentTransactionId == Record.Id)
-                    .ToList();
+                var childTransactions = (await _data.TransactionRepository
+                    .GetSplitLines(Record.Id)).SplitTransactions;
 
                 if (childTransactions.All(splt => splt.MerchantId == childTransactions[0].MerchantId)) {
                     childTransactions.ForEach(splt => {
@@ -94,7 +84,7 @@ namespace K9_Koinz.Pages.Transactions {
                         splt.MerchantName = Record.MerchantName;
                     });
 
-                    _context.Transactions.UpdateRange(childTransactions);
+                    _data.TransactionRepository.Update(childTransactions);
                 }
             }
         }

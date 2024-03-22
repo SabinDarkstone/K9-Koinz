@@ -22,6 +22,7 @@
 
 <form method="get" name="form1">
     <div class="mb-4">
+        @* TODO: Make this a toggle switch *@
         <input type="checkbox" asp-for="@Model.ShowAllBills" onclick="document.form1.submit()" /> Show All Bills
     </div>
 </form>
@@ -38,16 +39,16 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].Name)
+                        @Html.DisplayNameFor(model => model.RecordList.First().Name)
                     </th>
                     <th class="d-none d-xl-block">
-                        @Html.DisplayNameFor(model => model.Bills[0].MerchantId)
+                        @Html.DisplayNameFor(model => model.RecordList.First().MerchantId)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].RepeatConfig.Frequency)
+                        @Html.DisplayNameFor(model => model.RecordList.First().RepeatConfig.Frequency)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].Amount)
+                        @Html.DisplayNameFor(model => model.RecordList.First().Amount)
                     </th>
                     <th>
                         Next Due Date
@@ -56,7 +57,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+                @foreach (var item in Model.RecordList.Where(bill => bill.AccountId == accountEntry.Key)) {
                     <tr>
                         <td>
                             @item.Name
@@ -104,7 +105,7 @@
 
     <div class="card mt-1 mb-4 d-block d-lg-none">
         <ul class="list-group list-group-flush">
-            @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+            @foreach (var item in Model.RecordList.Where(bill => bill.AccountId == accountEntry.Key)) {
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-7 text-truncate bill-item" data-id="@item.Id">
@@ -154,67 +155,4 @@
             }
         </ul>
     </div>
-}
-
-@section Scripts {
-    <style>
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-            .switch input {
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-            .slider:before {
-                position: absolute;
-                content: "";
-                height: 26px;
-                width: 26px;
-                left: 4px;
-                bottom: 4px;
-                background-color: white;
-                -webkit-transition: .4s;
-                transition: .4s;
-            }
-
-        input:checked + .slider {
-            background-color: #2196F3;
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        .slider.round {
-            border-radius: 34px;
-        }
-
-            .slider.round:before {
-                border-radius: 50%;
-            }
-    </style>
 }

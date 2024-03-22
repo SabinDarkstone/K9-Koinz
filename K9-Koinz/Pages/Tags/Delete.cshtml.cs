@@ -4,7 +4,7 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Tags {
     public class DeleteModel : AbstractDeleteModel<Tag> {
-        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public DeleteModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
     }
 }

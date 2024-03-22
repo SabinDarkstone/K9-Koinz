@@ -33,7 +33,35 @@ namespace K9_Koinz.Data {
                 .Include(fer => fer.Merchant)
                 .Include(fer => fer.Category)
                 .Include(fer => fer.SavingsGoal)
+                .Include(fer => fer.Tag)
+                .Include(fer => fer.Transactions
+                    .OrderByDescending(trans => trans.Date)
+                    .Take(100))
                 .SingleOrDefaultAsync(fer => fer.Id == id);
+        }
+
+        public async Task<IEnumerable<Transfer>> FindDuplicates(Transfer original) {
+            return (await _context.Transfers
+                .Where(fer => fer.ToAccountId == original.ToAccountId && fer.FromAccountId == original.FromAccountId)
+                .Where(fer => fer.Amount == original.Amount)
+                .Where(fer => fer.RepeatConfig.FirstFiring == original.RepeatConfig.FirstFiring)
+                .Where(fer => fer.RepeatConfig.Mode == original.RepeatConfig.Mode)
+                .Where(fer => fer.RepeatConfig.IntervalGap == original.RepeatConfig.IntervalGap)
+                .Where(fer => fer.RepeatConfig.Frequency == original.RepeatConfig.Frequency)
+                .Where(fer => fer.Id != original.Id)
+                .ToListAsync())
+                .Where(fer => Math.Abs((fer.Date - original.Date).TotalDays) <= 5)
+                .ToList();
+        }
+
+        public IEnumerable<Transfer> GetRecurringBeforeDate(DateTime mark) {
+            return _context.Transfers
+                .Where(fer => fer.RepeatConfigId.HasValue)
+                .Include(fer => fer.RepeatConfig)
+                .AsEnumerable()
+                .Where(fer => fer.RepeatConfig.NextFiring.HasValue)
+                .Where(fer => fer.RepeatConfig.NextFiring.Value.Date <= mark.Date)
+                .ToList();
         }
     }
 }

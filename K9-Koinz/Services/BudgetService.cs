@@ -15,7 +15,7 @@ namespace K9_Koinz.Services {
     }
 
     public class BudgetService : AbstractService<BudgetService>, IBudgetService {
-        public BudgetService(RepositoryWrapper data, ILogger<BudgetService> logger) : base(data, logger) { }
+        public BudgetService(KoinzContext context, ILogger<BudgetService> logger) : base(context, logger) { }
 
         public List<Transaction> GetTransactions(BudgetLine line, DateTime period) {
             var (startDate, endDate) = line.Budget.Timespan.GetStartAndEndDate(period);

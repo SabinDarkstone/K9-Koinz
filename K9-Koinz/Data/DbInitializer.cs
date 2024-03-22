@@ -112,7 +112,7 @@ namespace K9_Koinz.Data {
         public static readonly Guid WEEKLY_SHOPPING_BUDGET = Guid.Parse("3E9692BC-5AA1-4D42-A486-6824075B9A6E");
         public static readonly Guid CCFF_BUDGET = Guid.Parse("93d0c1e2-c42f-42aa-9d98-fc99745963c3");
 
-        public static void Initialize(RepositoryWrapper data) {
+        public static void Initialize(KoinzContext context) {
             if (context.Accounts.Any()) {
                 return;
             }

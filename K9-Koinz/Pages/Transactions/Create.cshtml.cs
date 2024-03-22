@@ -13,7 +13,7 @@ namespace K9_Koinz.Pages.Transactions {
         private bool doHandleSavingsGoal;
         private bool foundMatchingTransaction;
 
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IDupeCheckerService<Transaction> dupeChecker)
                 : base(data, logger, dropdownService) {
             _dupeChecker = dupeChecker;
@@ -22,9 +22,9 @@ namespace K9_Koinz.Pages.Transactions {
         protected override async Task BeforeSaveActionsAsync() {
             Record.Date = Record.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 
-            var category = await _context.Categories.FindAsync(Record.CategoryId);
-            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            var category = await _data.CategoryRepository.GetByIdAsync(Record.CategoryId);
+            var merchant = await _data.MerchantRepository.GetByIdAsync(Record.MerchantId);
+            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
             Record.CategoryName = category.Name;
             Record.MerchantName = merchant.Name;
             Record.AccountName = account.Name;
@@ -56,12 +56,12 @@ namespace K9_Koinz.Pages.Transactions {
                 return false;
             }
 
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
+            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
             if (account.Type != AccountType.SAVINGS && account.Type != AccountType.CHECKING) {
                 return false;
             }
 
-            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == Record.AccountId);
+            var accountHasGoals = _data.SavingsGoalRepository.ExistsByAccountId(Record.AccountId);
             return accountHasGoals;
         }
     }

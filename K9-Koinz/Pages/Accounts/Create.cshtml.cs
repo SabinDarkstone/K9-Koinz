@@ -6,7 +6,7 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Accounts {
     public class CreateModel : AbstractCreateModel<Account> {
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger, dropdownService) { }
 

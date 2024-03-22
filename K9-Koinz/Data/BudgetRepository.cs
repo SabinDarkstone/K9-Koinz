@@ -13,7 +13,7 @@ namespace K9_Koinz.Data {
                 .ToListAsync();
         }
 
-        public async Task<Budget> GetBudgetDetails(string budgetId) {
+        public Budget GetBudgetDetails(string budgetId) {
             var budgetIQ = _context.Budgets
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.BudgetCategory)
@@ -34,6 +34,14 @@ namespace K9_Koinz.Data {
             } else {
                 return budgetIQ.FirstOrDefault();
             }
+        }
+
+        public async Task<Budget> GetBudgetDetailsShorter(Guid budgetId) {
+            return await _context.Budgets
+                .Include(bud => bud.BudgetLines
+                    .OrderBy(line => line.BudgetCategoryName))
+                    .ThenInclude(line => line.BudgetCategory)
+                .FirstOrDefaultAsync(m => m.Id == budgetId);
         }
     }
 }

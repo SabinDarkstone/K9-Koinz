@@ -1,7 +1,6 @@
 ﻿using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services.BackgroundWorkers {
     public class RecurringTransferJob : AbstractWorker<RecurringTransferJob> {
@@ -21,23 +20,17 @@ namespace K9_Koinz.Services.BackgroundWorkers {
         }
 
         private async Task<List<Transaction>> CreateTransfers(DateTime mark) {
-            var repeatingTransfers = _context.Transfers
-                .Where(fer => fer.RepeatConfigId.HasValue)
-                .Include(fer => fer.RepeatConfig)
-                .AsEnumerable()
-                .Where(fer => fer.RepeatConfig.NextFiring.HasValue)
-                .Where(fer => fer.RepeatConfig.NextFiring.Value.Date <= mark.Date)
-                .ToList();
+            var repeatingTransfers = _data.TransferRepository.GetRecurringBeforeDate(mark);
 
             var transactions = new List<Transaction>();
             foreach (var transfer in repeatingTransfers) {
-                var transferInstance = _context.GetInstanceOfRecurring(transfer);
-                transactions.AddRange(await _context.CreateTransactionsFromTransfer(transferInstance));
+                var transferInstance = transfer.GetInstanceOfRecurring();
+                transactions.AddRange(await _data.CreateTransactionsFromTransfer(transferInstance));
                 transfer.RepeatConfig.FireNow();
             }
 
-            _context.Transactions.AddRange(transactions);
-            await _context.SaveChangesAsync();
+            _data.TransactionRepository.Add(transactions);
+            await _data.SaveAsync();
             return transactions;
         }
     }

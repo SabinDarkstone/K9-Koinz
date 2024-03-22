@@ -14,19 +14,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Tags[0].Name)
+                @Html.DisplayNameFor(model => model.RecordList.First().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tags[0].ShortForm)
+                @Html.DisplayNameFor(model => model.RecordList.First().ShortForm)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tags[0].HexColor)
+                @Html.DisplayNameFor(model => model.RecordList.First().HexColor)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Tags) {
+        @foreach (var item in Model.RecordList) {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)

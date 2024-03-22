@@ -1,21 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using K9_Koinz.Data;
+﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
-using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Budgets {
     public class DeleteModel : AbstractDeleteModel<Budget> {
-        public List<BudgetLine> BudgetLines { get; set; }
-        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public IEnumerable<BudgetLine> BudgetLines { get; set; }
+        public DeleteModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         protected override async Task AfterQueryActionAsync() {
-            BudgetLines = await _context.BudgetLines
-                .Where(line => line.BudgetId == Record.Id)
-                .OrderBy(line => line.BudgetCategoryName)
-                .ToListAsync();
+            BudgetLines = await _data.BudgetLineRepository.GetByBudget(Record.Id);
 
             if (Record.DoNotUseCategories) {
                 Record.BudgetedAmount = BudgetLines.First().BudgetedAmount;

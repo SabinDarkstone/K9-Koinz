@@ -4,7 +4,7 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Categories {
     public class DetailsModel : AbstractDetailsModel<Category> {
-        public DetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public DetailsModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {

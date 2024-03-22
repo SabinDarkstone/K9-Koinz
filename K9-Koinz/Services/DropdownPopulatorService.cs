@@ -14,8 +14,8 @@ namespace K9_Koinz.Services {
     }
 
     public class DropdownPopulatorService : AbstractService<DropdownPopulatorService>, IDropdownPopulatorService {
-        public DropdownPopulatorService(RepositoryWrapper data, ILogger<DropdownPopulatorService> logger)
-            : base(data, logger) { }
+        public DropdownPopulatorService(KoinzContext context, ILogger<DropdownPopulatorService> logger)
+            : base(context, logger) { }
 
         public async Task<List<SelectListItem>> GetAccountListAsync() {
             var result = new List<SelectListItem>();

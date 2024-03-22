@@ -1,50 +1,43 @@
-﻿using Microsoft.EntityFrameworkCore;
-using K9_Koinz.Data;
+﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DeleteModel : AbstractDeleteModel<Transaction> {
-        public DeleteModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public DeleteModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
-            return await _context.Transactions
-                .Include(trans => trans.Tag)
-                .Include(trans => trans.Transfer)
-                    .ThenInclude(fer => fer.Transactions)
-                .Include(trans => trans.SplitTransactions)
-                .FirstOrDefaultAsync(trans => trans.Id == id);
+            return await _data.TransactionRepository.GetDetailsAsync(id);
         }
 
-        protected override void BeforeDeleteActions() {
-            var splitTransactions = _context.Transactions
-                .Where(trans => trans.ParentTransactionId == Record.Id);
+        protected override async Task BeforeDeleteActionsAsync() {
+            var splitTransactions = (await _data.TransactionRepository
+                .GetSplitLines(Record.Id))
+                .SplitTransactions;
 
-            if (splitTransactions.Any()) {
-                _context.Transactions.RemoveRange(splitTransactions);
+            if (splitTransactions.Count > 0) {
+                _data.TransactionRepository.Remove(splitTransactions);
             }
         }
 
-        protected override void AdditioanlDatabaseActions() {
+        protected override async Task AdditionalDatabaseActionsAsync() {
             if (Record.SavingsGoalId.HasValue) {
-                var goal = _context.SavingsGoals.Find(Record.SavingsGoalId);
+                var goal = await _data.SavingsGoalRepository.GetByIdAsync(Record.SavingsGoalId.Value);
                 goal.SavedAmount -= Record.Amount;
             }
 
             if (Record.TransferId.HasValue) {
-                var otherTransaction = _context.Transactions
-                    .Where(trans => trans.TransferId == Record.TransferId)
-                    .Where(trans => trans.Id != Record.Id)
-                    .SingleOrDefault();
+                var otherTransaction = _data.TransactionRepository
+                    .GetMatchingFromTransferPair(Record.TransferId.Value, Record.Id);
 
                 if (otherTransaction != null) {
-                    _context.Transactions.Remove(otherTransaction);
+                    _data.TransactionRepository.Remove(otherTransaction);
                 }
 
-                var tranfer = _context.Transfers.Find(Record.TransferId);
-                if (!tranfer.RepeatConfigId.HasValue) {
-                    _context.Transfers.Remove(tranfer);
+                var transfer = await _data.TransferRepository.GetByIdAsync(Record.TransferId);
+                if (!transfer.RepeatConfigId.HasValue) {
+                    _data.TransferRepository.Remove(transfer);
                 }
             }
         }

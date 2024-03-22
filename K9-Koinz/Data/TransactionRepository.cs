@@ -3,12 +3,24 @@ using K9_Koinz.Models.Helpers;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace K9_Koinz.Data {
     public class TransactionRepository : GenericRepository<Transaction> {
         public TransactionRepository(KoinzContext context)
             : base(context) { }
+
+        public async Task<Transaction> GetDetailsAsync(Guid id) {
+            return await _context.Transactions
+                .Include(trans => trans.Bill)
+                .Include(trans => trans.Tag)
+                .Include(trans => trans.Category)
+                .Include(trans => trans.Transfer)
+                    .ThenInclude(fer => fer.Transactions
+                        .OrderByDescending(trans => trans.Date))
+                .Include(trans => trans.SplitTransactions
+                    .OrderBy(trans => trans.CategoryName))
+                .SingleOrDefaultAsync(trans => trans.Id == id);
+        }
 
         public double GetTransactionTotalSinceBalanceSet(Account account) {
             var runningTotal = _context.Transactions
@@ -37,6 +49,7 @@ namespace K9_Koinz.Data {
 
         public async Task<Transaction> GetSplitLines(Guid parentId) {
             return await _context.Transactions
+                .Include(trans => trans.Category)
                 .Include(trans => trans.SplitTransactions
                     .OrderBy(splt => splt.CategoryName))
                 .Where(trans => trans.Id == parentId)
@@ -155,6 +168,29 @@ namespace K9_Koinz.Data {
             }
 
             return await PaginatedList<Transaction>.CreateAsync(transIQ, filters.PageIndex ?? 1, 50);
+        }
+
+        public async Task<IEnumerable<Transaction>> GetByCategory(Guid categoryId) {
+            return await _context.Transactions
+                .Where(trans => trans.CategoryId == categoryId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Transaction>> GetByMerchant(Guid merchantId) {
+            return await _context.Transactions
+                .Where(trans => trans.MerchantId == merchantId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Transaction>> FindDuplicatesFromTransfer(Transaction[] pair) {
+            var startDate = pair[1].Date.AddDays(-5);
+            var endDate = pair[1].Date.AddDays(5);
+
+            return await _context.Transactions
+                .Where(trans => trans.AccountId == pair[0].AccountId)
+                .Where(trans => trans.Amount == pair[0].Amount)
+                .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
+                .ToListAsync();
         }
     }
 }

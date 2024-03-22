@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Transfers {
     public class ManageModel : AbstractDbPage {
-        public ManageModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public ManageModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public Dictionary<string, List<Transfer>> RecurringTransfersDict;

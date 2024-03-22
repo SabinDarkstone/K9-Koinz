@@ -4,7 +4,7 @@ using K9_Koinz.Data;
 
 namespace K9_Koinz.Pages.Merchants {
     public class DetailsModel : AbstractDetailsModel<Merchant> {
-        public DetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public DetailsModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public List<Transaction> Transactions { get; set; }

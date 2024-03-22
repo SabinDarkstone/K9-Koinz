@@ -1,60 +1,40 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers {
-    public class DuplicateFoundModel : PageModel {
-        private KoinzContext _context;
-
+    public class DuplicateFoundModel : AbstractDbPage {
         public Transfer Transfer {  get; set; }
-        public List<Transfer> MatchingTransfers { get; set; }
+        public IEnumerable<Transfer> MatchingTransfers { get; set; }
 
-        public DuplicateFoundModel(RepositoryWrapper data) {
-            _context = context;
-        }
+        public DuplicateFoundModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
+            : base(data, logger) { }
 
-        public IActionResult OnGet(Guid? id) {
+        public async Task<IActionResult> OnGetAsync(Guid? id) {
             if (!id.HasValue) {
                 return NotFound();
             }
 
-            Transfer = _context.Transfers
-                .Include(fer => fer.FromAccount)
-                .Include(fer => fer.ToAccount)
-                .Include(fer => fer.Category)
-                .Include(fer => fer.Merchant)
-                .Include(fer => fer.RepeatConfig)
-                .FirstOrDefault(fer => fer.Id == id.Value);
-
-            MatchingTransfers = _context.Transfers
-                .Where(fer => fer.ToAccountId == Transfer.ToAccountId && fer.FromAccountId == Transfer.FromAccountId)
-                .Where(fer => fer.Amount == Transfer.Amount)
-                .Where(fer => fer.RepeatConfig.FirstFiring == Transfer.RepeatConfig.FirstFiring)
-                .Where(fer => fer.RepeatConfig.Mode == Transfer.RepeatConfig.Mode)
-                .Where(fer => fer.RepeatConfig.IntervalGap == Transfer.RepeatConfig.IntervalGap)
-                .Where(fer => fer.RepeatConfig.Frequency == Transfer.RepeatConfig.Frequency)
-                .Where(fer => fer.Id != Transfer.Id)
-                .AsEnumerable()
-                .Where(fer => Math.Abs((fer.Date - Transfer.Date).TotalDays) <= 5)
-                .ToList();
+            Transfer = await _data.TransferRepository.GetDetails(id.Value);
+            MatchingTransfers = await _data.TransferRepository.FindDuplicates(Transfer);
 
             return Page();
         }
 
-        public IActionResult OnPost(Guid id, string mode) {
-            var transfer = _context.Transfers.Find(id);
+        public async Task<IActionResult> OnPostAsync(Guid id, string mode) {
+            var transfer = await _data.TransferRepository.GetByIdAsync(id);
 
             if (mode == "cancel") {
-                _context.Transfers.Remove(transfer);
-                _context.SaveChanges();
+                _data.TransferRepository.Remove(transfer);
+                await _data.SaveAsync();
                 return RedirectToPage(PagePaths.TransferManage);
             }
 
-            var toAccount = _context.Accounts.Find(transfer.ToAccountId);
-            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
+            var toAccount = await _data.AccountRepository.GetByIdAsync(transfer.ToAccountId);
+            var accountHasGoals = _data.SavingsGoalRepository.ExistsByAccountId(transfer.ToAccountId);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = transfer.Id });

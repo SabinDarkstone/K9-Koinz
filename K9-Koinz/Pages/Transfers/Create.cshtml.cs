@@ -5,21 +5,17 @@ using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
-using Newtonsoft.Json;
-using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : AbstractCreateModel<Transfer> {
         private Transaction[] transactions = new Transaction[2];
         private bool foundMatchingTransactions;
 
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
             : base(data, logger, dropdownService) { }
 
         protected override Task BeforePageLoadActions() {
-            var defaultCategory = _context.Categories
-                .Where(cat => cat.Name == "Transfer")
-                .FirstOrDefault();
+            var defaultCategory = _data.CategoryRepository.GetByName("Transfer");
             Record = new Transfer {
                 Category = defaultCategory,
                 CategoryId = defaultCategory.Id,
@@ -37,21 +33,15 @@ namespace K9_Koinz.Pages.Transfers {
         }
 
         protected override async Task AfterSaveActionsAsync() {
-            transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
-
-            foundMatchingTransactions = _context.Transactions
-                .Where(trans => trans.AccountId == transactions[0].AccountId)
-                .Where(trans => trans.Amount == transactions[0].Amount)
-                .ToList()
-                .Where(trans => Math.Abs((trans.Date - transactions[1].Date).TotalDays) <= 5)
-                .Any();
+            transactions = (await _data.CreateTransactionsFromTransfer(Record, false)).ToArray();
+            foundMatchingTransactions = (await _data.TransactionRepository.FindDuplicatesFromTransfer(transactions)).Any();
 
             foreach (var transaction in transactions) {
                 transaction.TransferId = Record.Id;
             }
 
-            _context.Transactions.AddRange(transactions);
-            await _context.SaveChangesAsync();
+            _data.TransactionRepository.Add(transactions);
+            await _data.SaveAsync();
         }
 
         protected override IActionResult NavigateOnSuccess() {
@@ -59,8 +49,8 @@ namespace K9_Koinz.Pages.Transfers {
                 return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = transactions[1].Id });
             }
 
-            var toAccount = _context.Accounts.Find(transactions[1].AccountId);
-            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
+            var toAccount = _data.AccountRepository.GetByIdAsync(transactions[1].AccountId).Result;
+            var accountHasGoals = _data.SavingsGoalRepository.ExistsByAccountId(toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = transactions[1].Id });

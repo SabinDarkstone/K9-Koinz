@@ -6,6 +6,14 @@ namespace K9_Koinz.Data {
     public class SavingsGoalRepository : GenericRepository<SavingsGoal> {
         public SavingsGoalRepository(KoinzContext context) : base(context) { }
 
+        public async Task<SavingsGoal> GetDetailsAsync(Guid id) {
+            return await _context.SavingsGoals
+                .Include(goal => goal.Transactions)
+                .Where(goal => goal.Id == id)
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<Dictionary<string, List<SavingsGoal>>> GetAllGroupedByAccount() {
             return await _context.SavingsGoals
                 .Include(goal => goal.Transactions)
@@ -28,6 +36,11 @@ namespace K9_Koinz.Data {
                     .OrderBy(goal => goal.Name)
                     .ToList(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
             }
+        }
+
+        public bool ExistsByAccountId(Guid accountId) {
+            return _context.SavingsGoals
+                .Any(goal => goal.AccountId == accountId);
         }
     }
 }

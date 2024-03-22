@@ -14,7 +14,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
 
         public SelectList GoalOptions { get; set; } = default!;
 
-        public AllocateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public AllocateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public async Task<IActionResult> OnGetAsync(Guid relatedId) {

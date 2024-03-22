@@ -19,10 +19,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => Model.Categories.FirstOrDefault().Name)
+                @Html.DisplayNameFor(model => Model.RecordList.First().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => Model.Categories.FirstOrDefault().CategoryType)
+                @Html.DisplayNameFor(model => Model.RecordList.First().CategoryType)
                 </th>
             <th>
                 Transaction Count
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Categories) {
+        @foreach (var item in Model.RecordList) {
             <tr style="background-color: #eee;">
                 <td style="font-weight: bold;">
                     <i class="fa-solid @item.FontAwesomeIcon"></i>

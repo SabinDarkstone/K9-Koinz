@@ -14,7 +14,7 @@ namespace K9_Koinz.Pages.Transactions
         private readonly KoinzContext _context;
         private readonly IDropdownPopulatorService _dropdownService;
 
-        public IndexModel(RepositoryWrapper data, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService)
+        public IndexModel(IRepositoryWrapper data, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService)
             :base(data, logger) {
             _dropdownService = dropdownService;
         }

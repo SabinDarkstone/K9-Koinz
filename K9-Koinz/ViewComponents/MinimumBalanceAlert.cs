@@ -8,7 +8,7 @@ namespace K9_Koinz.ViewComponents {
     public class MinimumBalanceAlert : ViewComponent {
         private readonly KoinzContext _context;
 
-        public MinimumBalanceAlert(RepositoryWrapper data) {
+        public MinimumBalanceAlert(KoinzContext context) {
             _context = context;
         }
 

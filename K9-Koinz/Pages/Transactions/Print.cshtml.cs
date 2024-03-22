@@ -1,22 +1,21 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
+using K9_Koinz.Pages.Meta;
+using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Transactions {
-    public class PrintModel : PageModel {
-        private readonly KoinzContext _context;
-        private readonly ILogger<PrintModel> _logger;
+    public class PrintModel : AbstractIndexModel<Transaction> {
+        private readonly IDropdownPopulatorService _dropdownService;
 
-        public PrintModel(RepositoryWrapper data, ILogger<PrintModel> logger) {
-            _context = context;
-            _logger = logger;
+        public List<SelectListItem> AccountOptions;
+
+        public PrintModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+            : base(data, logger) {
+            _dropdownService = dropdownService;
         }
-
-        public SelectList AccountOptions;
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
@@ -45,12 +44,8 @@ namespace K9_Koinz.Pages.Transactions {
             }
         }
 
-        public List<Transaction> Transactions { get; set; }
-
         public async Task OnGetAsync(DateTime? minDate, DateTime? maxDate, Guid? accountId) {
-            AccountOptions = new SelectList(_context.Accounts
-                .Where(acct => acct.Type == AccountType.CHECKING || acct.Type == AccountType.CREDIT_CARD || acct.Type == AccountType.SAVINGS)
-                .OrderBy(acct => acct.Name), nameof(Account.Id), nameof(Account.Name));
+            AccountOptions = await _dropdownService.GetAccountListAsync();
 
             if (minDate == null) {
                 minDate = DateTime.Now.StartOfMonth();
@@ -63,15 +58,12 @@ namespace K9_Koinz.Pages.Transactions {
             MaxDateFilter = maxDate;
             AccountFilter = accountId;
 
-            var transactions = _context.Transactions
-                .Where(trans => !trans.ParentTransactionId.HasValue)
-                .Where(trans => trans.Date >= MinDateFilter.Value && trans.Date <= MaxDateFilter);
-
-            if (accountId != null) {
-                transactions = transactions.Where(trans => trans.AccountId == accountId);
-            }
-
-            Transactions = await transactions.OrderBy(trans => trans.Date).ToListAsync();
+            RecordList = await _data.TransactionRepository.GetFiltered(
+                new Models.Helpers.TransactionFilterSetting {
+                    AccountFilter = AccountFilter,
+                    DateRangeStart = MinDateFilter,
+                    DateRangeEnd = MaxDateFilter
+                });
         }
     }
 }

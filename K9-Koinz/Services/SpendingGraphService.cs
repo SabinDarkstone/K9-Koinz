@@ -1,33 +1,19 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Runtime.Serialization;
 
 namespace K9_Koinz.Services {
-
-    [DataContract]
-    public class Point {
-        [DataMember(Name = "x")]
-        public double X { get; set; }
-        [DataMember(Name = "y")]
-        public double Y { get; set; }
-
-        public Point(double x, double y) {
-            X = x;
-            Y = y;
-        }
-    }
-
     public interface ISpendingGraphService : ICustomService {
         public abstract Task<string[]> CreateGraphData();
     }
 
     public class SpendingGraphService : AbstractService<SpendingGraphService>, ISpendingGraphService {
-        public SpendingGraphService(RepositoryWrapper data, ILogger<SpendingGraphService> logger) : base(data, logger) { }
+        public SpendingGraphService(KoinzContext context, ILogger<SpendingGraphService> logger) : base(context, logger) { }
 
         public async Task<string[]> CreateGraphData() {
             var startOfThisMonth = DateTime.Now.StartOfMonth();
@@ -50,7 +36,7 @@ namespace K9_Koinz.Services {
             return [thisMonthSpendingJson, lastMonthSpendingJson];
         }
 
-        private async Task<List<Point>> getTransactionsForGraph(DateTime startDate, DateTime endDate) {
+        private async Task<List<GraphDataPoint>> getTransactionsForGraph(DateTime startDate, DateTime endDate) {
             return await _context.Transactions
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
@@ -59,7 +45,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
                 .GroupBy(trans => trans.Date.Day)
-                .Select(group => new Point(group.Key, group.ToList().GetTotal(true)))
+                .Select(group => new GraphDataPoint(group.Key.ToString(), group.ToList().GetTotal(true)))
                 .ToListAsync();
         }
     }

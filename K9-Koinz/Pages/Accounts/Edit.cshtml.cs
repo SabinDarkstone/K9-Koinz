@@ -6,7 +6,7 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Accounts {
     public class EditModel : AbstractEditModel<Account> {
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger, dropdownService) { }
 

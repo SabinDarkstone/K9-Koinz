@@ -5,7 +5,7 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Tags {
     public class CreateModel : AbstractCreateModel<Tag> {
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
             : base(data, logger, dropdownService) { }
     }

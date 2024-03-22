@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
@@ -6,7 +5,7 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
     public class CreateModel : AbstractCreateModel<Category> {
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger, dropdownService) { }
 
@@ -16,13 +15,13 @@ namespace K9_Koinz.Pages.Categories {
             await base.BeforePageLoadActions();
 
             if (RelatedId.HasValue) {
-                ParentCategory = await _context.Categories.FindAsync(RelatedId);
+                ParentCategory = await _data.CategoryRepository.GetByIdAsync(RelatedId.Value);
             }
         }
 
         protected override async Task BeforeSaveActionsAsync() {
             if (Record.ParentCategoryId.HasValue) {
-                var parentCategory = await _context.Categories.FindAsync(Record.ParentCategoryId);
+                var parentCategory = await _data.CategoryRepository.GetByIdAsync(Record.ParentCategoryId.Value);
                 Record.ParentCategoryName = parentCategory.Name;
             }
         }

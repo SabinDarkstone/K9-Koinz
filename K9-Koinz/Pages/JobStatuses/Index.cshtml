@@ -11,30 +11,30 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].JobName)
+                @Html.DisplayNameFor(model => model.RecordList.First().JobName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].StartTime)
+                @Html.DisplayNameFor(model => model.RecordList.First().StartTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].EndTime)
+                @Html.DisplayNameFor(model => model.RecordList.First().EndTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].Status)
+                @Html.DisplayNameFor(model => model.RecordList.First().Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].StackTrace)
+                @Html.DisplayNameFor(model => model.RecordList.First().StackTrace)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].ErrorMessages)
+                @Html.DisplayNameFor(model => model.RecordList.First().ErrorMessages)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ScheduledJobStatus[0].NextRunTime)
+                @Html.DisplayNameFor(model => model.RecordList.First().NextRunTime)
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ScheduledJobStatus) {
+        @foreach (var item in Model.RecordList) {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.JobName)

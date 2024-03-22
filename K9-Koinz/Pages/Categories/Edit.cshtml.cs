@@ -6,48 +6,33 @@ using K9_Koinz.Services;
 
 namespace K9_Koinz.Pages.Categories {
     public class EditModel : AbstractEditModel<Category> {
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(data, logger, dropdownService) { }
 
         protected override async Task<Category> QueryRecordAsync(Guid id) {
-            return await _context.Categories
-                .Include(cat => cat.ChildCategories.OrderBy(cCat => cCat.Name))
-                .Include(cat => cat.ParentCategory)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return await _data.CategoryRepository.GetCategoryDetails(id);
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var childCategories = await _context.Categories
-                .Where(cat => cat.ParentCategoryId == Record.Id)
-                .ToListAsync();
+            var childCategories = await _data.CategoryRepository.GetChildrenAsync(Record.Id);
+
             foreach (var childCat in childCategories) {
                 childCat.CategoryType = Record.CategoryType;
-                _context.Attach(childCat).State = EntityState.Modified;
             }
+            _data.CategoryRepository.Update(childCategories);
 
             if (Record.ParentCategoryId.HasValue) {
-                var parentCategory = await _context.Categories.FindAsync(Record.ParentCategoryId);
+                var parentCategory = await _data.CategoryRepository.GetByIdAsync(Record.ParentCategoryId);
                 Record.ParentCategoryName = parentCategory.Name;
             }
         }
 
         protected override async Task AfterSaveActionsAsync() {
-            var childCategories = await _context.Categories
-                .Where(cat => cat.ParentCategoryId == Record.Id)
-                .ToListAsync();
-
-            var relatedTransactions = await _context.Transactions
-                .Where(trans => trans.CategoryId == Record.Id)
-                .ToListAsync();
-
-            var relatedBills = await _context.Bills
-                .Where(bill => bill.CategoryId == Record.Id)
-                .ToListAsync();
-
-            var relatedBudgetLines = await _context.BudgetLines
-                .Where(line => line.BudgetCategoryId == Record.Id)
-                .ToListAsync();
+            var childCategories = await _data.CategoryRepository.GetChildrenAsync(Record.ParentCategoryId.Value);
+            var relatedTransactions = await _data.TransactionRepository.GetByCategory(Record.Id);
+            var relatedBills = await _data.BillRepository.GetByCategory(Record.Id);
+            var relatedBudgetLines = await _data.BudgetLineRepository.GetByCategory(Record.Id);
 
             foreach (var cat in childCategories) {
                 cat.ParentCategoryName = Record.Name;
@@ -65,11 +50,11 @@ namespace K9_Koinz.Pages.Categories {
                 budgetLine.BudgetCategoryName = Record.Name;
             }
 
-            _context.Categories.UpdateRange(childCategories);
-            _context.Transactions.UpdateRange(relatedTransactions);
-            _context.Bills.UpdateRange(relatedBills);
-            _context.BudgetLines.UpdateRange(relatedBudgetLines);
-            await _context.SaveChangesAsync();
+            _data.CategoryRepository.Update(childCategories);
+            _data.TransactionRepository.Update(relatedTransactions);
+            _data.BillRepository.Update(relatedBills);
+            _data.BudgetLineRepository.Update(relatedBudgetLines);
+            await _data.SaveAsync();
         }
     }
 }

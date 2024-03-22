@@ -10,7 +10,7 @@ namespace K9_Koinz.ViewComponents {
 
         public List<Bill> Bills { get; set; }
 
-        public UpcomingBillsController(RepositoryWrapper data) {
+        public UpcomingBillsController(KoinzContext context) {
             _context = context;
         }
 

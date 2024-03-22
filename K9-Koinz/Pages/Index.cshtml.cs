@@ -9,7 +9,7 @@ namespace K9_Koinz.Pages {
     public class IndexModel : AbstractDbPage {
         private readonly ISpendingGraphService _spendingGraph;
 
-        public IndexModel(RepositoryWrapper data, ISpendingGraphService spendingGraph, ILogger<IndexModel> logger)
+        public IndexModel(IRepositoryWrapper data, ISpendingGraphService spendingGraph, ILogger<IndexModel> logger)
             : base(data, logger) {
             _spendingGraph = spendingGraph;
             _logger = logger;

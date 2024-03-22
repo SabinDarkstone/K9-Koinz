@@ -12,7 +12,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
         public Transfer Transfer { get; set; }
         public SelectList GoalOptions { get; set; } = default!;
 
-        public AllocateRecurringModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public AllocateRecurringModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public async Task<IActionResult> OnGetAsync(Guid relatedId) {

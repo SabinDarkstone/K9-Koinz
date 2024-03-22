@@ -9,5 +9,10 @@ namespace K9_Koinz.Models.Helpers {
 
         [DataMember(Name = "y")]
         public double? Y { get; set; }
+
+        public GraphDataPoint(string label, double? y) {
+            Label = label;
+            Y = y;
+        }
     }
 }

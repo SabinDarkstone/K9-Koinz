@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using K9_Koinz.Data;
+﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
@@ -12,17 +11,14 @@ namespace K9_Koinz.Pages.Budgets {
 
         private BudgetLine oldBudgetLineRecord;
 
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IBudgetService budgetService)
                 : base(data, logger, dropdownService) {
             _budgetService = budgetService;
         }
 
         protected override async Task<Budget> QueryRecordAsync(Guid id) {
-            return await _context.Budgets
-                .Include(bud => bud.BudgetLines.OrderBy(line => line.BudgetCategoryName))
-                    .ThenInclude(line => line.BudgetCategory)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return await _data.BudgetRepository.GetBudgetDetailsShorter(id);
         }
 
         protected override void AfterQueryActions() {
@@ -36,13 +32,13 @@ namespace K9_Koinz.Pages.Budgets {
             if (Record.BudgetTagId == Guid.Empty) {
                 Record.BudgetTagId = null;
             } else {
-                var tag = await _context.Tags.FindAsync(Record.BudgetTagId);
+                var tag = await _data.TagRepository.GetByIdAsync(Record.BudgetTagId);
                 Record.BudgetTagName = tag.Name;
             }
 
             if (Record.DoNotUseCategories) {
-                oldBudgetLineRecord = await _context.BudgetLines
-                    .SingleOrDefaultAsync(line => line.BudgetId == Record.Id);
+                oldBudgetLineRecord = (await _data.BudgetLineRepository
+                    .GetByBudget(Record.Id)).SingleOrDefault();
             }
         }
 
@@ -52,11 +48,12 @@ namespace K9_Koinz.Pages.Budgets {
 
         protected override async Task AfterSaveActionsAsync() {
             if (Record.DoNotUseCategories) {
-                var allowanceLine = await _context.BudgetLines.SingleOrDefaultAsync(line => line.BudgetId == Record.Id);
+                var allowanceLine = (await _data.BudgetLineRepository.GetByBudget(Record.Id)).SingleOrDefault();
                 allowanceLine.BudgetedAmount = Record.BudgetedAmount.Value;
                 allowanceLine.DoRollover = Record.DoNoCategoryRollover;
-                _context.BudgetLines.Update(allowanceLine);
-                _context.SaveChanges();
+
+                _data.BudgetLineRepository.Update(allowanceLine);
+                await _data.SaveAsync();
 
                 if (!oldBudgetLineRecord.DoRollover && Record.DoNoCategoryRollover) {
                     _budgetService.DeleteOldBudgetLinePeriods(allowanceLine);
@@ -82,8 +79,8 @@ namespace K9_Koinz.Pages.Budgets {
                 SpentAmount = totalSpentSoFar
             };
 
-            _context.BudgetLinePeriods.Add(firstPeriod);
-            await _context.SaveChangesAsync();
+            _data.BudgetLinePeriodRepository.Add(firstPeriod);
+            await _data.SaveAsync();
         }
     }
 }

@@ -4,7 +4,7 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Categories {
     public class IndexModel : AbstractIndexModel<Category> {
-        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public IndexModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public async Task OnGetAsync() {

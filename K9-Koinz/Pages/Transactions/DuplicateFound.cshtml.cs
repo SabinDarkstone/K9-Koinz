@@ -14,7 +14,7 @@ namespace K9_Koinz.Pages.Transactions {
         public Transaction Transaction { get; set; }
         public List<Transaction> MatchingTransactions { get; set; }
 
-        public DuplicateFoundModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public DuplicateFoundModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public async Task<IActionResult> OnGet(Guid? id) {

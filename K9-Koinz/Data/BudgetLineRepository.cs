@@ -12,5 +12,19 @@ namespace K9_Koinz.Data {
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<BudgetLine>> GetByCategory(Guid categoryId) {
+            return await _context.BudgetLines
+                .Where(line => line.BudgetCategoryId == categoryId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<BudgetLine>> GetByBudget(Guid budgetId) {
+            return await _context.BudgetLines
+                .Include(line => line.Periods)
+                .Where(line => line.BudgetId == budgetId)
+                .OrderBy(line => line.BudgetCategoryName)
+                .ToListAsync();
+        }
     }
 }

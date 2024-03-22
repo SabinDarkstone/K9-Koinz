@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractDetailsModel<TEntity> : AbstractDbPage where TEntity : BaseEntity {
-        protected AbstractDetailsModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        protected AbstractDetailsModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public TEntity Record { get; set; } = default!;

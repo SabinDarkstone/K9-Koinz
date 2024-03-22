@@ -1,7 +1,5 @@
-﻿
-using K9_Koinz.Data;
+﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace K9_Koinz.Services.Meta {
 
@@ -24,7 +22,7 @@ namespace K9_Koinz.Services.Meta {
     public abstract class AbstractWorker<T> : IHostedService, IDisposable {
         protected readonly Timer _timer;
         protected readonly IServiceScopeFactory _scopeFactory;
-        protected KoinzContext _context;
+        protected IRepositoryWrapper _data;
         protected readonly ILogger<T> _logger;
 
         private ScheduledJobStatus statusRecord;
@@ -103,10 +101,10 @@ namespace K9_Koinz.Services.Meta {
             };
 
             var scope = _scopeFactory.CreateScope();
-            _context = scope.ServiceProvider.GetRequiredService<KoinzContext>();
+            _data = scope.ServiceProvider.GetRequiredService<IRepositoryWrapper>();
 
-            _context.JobStatuses.Add(statusRecord);
-            _context.SaveChanges();
+            _data.JobStatusRepository.Add(statusRecord);
+            _data.Save();
 
             CreateAdditionalScope(scope);
         }
@@ -126,13 +124,13 @@ namespace K9_Koinz.Services.Meta {
         private void FinalizeJob() {
             statusRecord.NextRunTime = statusRecord.StartTime + repeat;
 
-            _context.Update(statusRecord);
-            _context.SaveChanges();
+            _data.JobStatusRepository.Update(statusRecord);
+            _data.Save();
         }
 
         public virtual void Dispose() {
             _timer.Dispose();
-            _context = null;
+            _data = null;
         }
     }
 }

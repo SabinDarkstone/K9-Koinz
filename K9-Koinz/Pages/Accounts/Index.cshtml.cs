@@ -6,7 +6,7 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Accounts {
     public class IndexModel : AbstractDbPage {
-        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public IndexModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public Dictionary<string, List<Account>> AccountDict { get;set; } = default!;

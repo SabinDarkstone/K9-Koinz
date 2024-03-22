@@ -24,11 +24,10 @@ namespace K9_Koinz.Pages.Bills {
         }
     }
 
-    public class IndexModel : AbstractDbPage {
-        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+    public class IndexModel : AbstractIndexModel<Bill> {
+        public IndexModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
-        public IEnumerable<Bill> Bills { get; set; } = default;
         public Dictionary<Guid, AccountSummary> AccountsWithBills { get; set; } = new();
 
         [Display(Name = "Show All Bills")]
@@ -43,15 +42,15 @@ namespace K9_Koinz.Pages.Bills {
             }
 
             if (showAllBills.HasValue && showAllBills.Value) {
-                Bills = await _data.BillRepository.GetAllBillsAsync();
+                RecordList = await _data.BillRepository.GetAllBillsAsync();
             } else {
-                Bills = await _data.BillRepository.GetBillsWithinDateRangeAsync(startDate, endDate);
+                RecordList = await _data.BillRepository.GetBillsWithinDateRangeAsync(startDate, endDate);
             }
 
-            List<Account> accounts = Bills.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();
+            List<Account> accounts = RecordList.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();
 
             foreach (var account in accounts) {
-                var billsForAccount = Bills.Where(Bill => Bill.AccountId == account.Id).ToList();
+                var billsForAccount = RecordList.Where(Bill => Bill.AccountId == account.Id).ToList();
                 AccountsWithBills.Add(
                     account.Id,
                     new AccountSummary(account, billsForAccount)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;
@@ -18,7 +17,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         public string BudgetedAmount { get; set; }
         public bool ChartError { get; set; }
 
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IBudgetService budgetService)
                 : base(data, logger, dropdownService) {
             _budgetService = budgetService;
@@ -119,10 +118,10 @@ namespace K9_Koinz.Pages.BudgetLines {
                     amount = groups[currentMonth + "|" + currentYear];
                 }
 
-                output.Add(new GraphDataPoint {
-                    Label = month + " '" + currentYear.ToString().Substring(2),
-                    Y = amount
-                });
+                output.Add(new GraphDataPoint(
+                    month + " '" + currentYear.ToString().Substring(2),
+                    amount
+                ));
             }
 
             return output;

@@ -13,13 +13,11 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         public Category DefaultCategory { get; set; }
 
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
             : base(data, logger, dropdownService) { }
 
         protected override Task BeforePageLoadActions() {
-            DefaultCategory = _context.Categories
-                .Where(cat => cat.Name == "Transfer")
-                .FirstOrDefault();
+            DefaultCategory = _data.CategoryRepository.GetByName("Transfer");
             Record = new Transfer();
             Record.CategoryId = DefaultCategory.Id;
 
@@ -27,17 +25,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            foundMatchingSchedule = (await _context.Transfers
-                .Where(fer => fer.ToAccountId == Record.ToAccountId && fer.FromAccountId == Record.FromAccountId)
-                .Where(fer => fer.Amount == Record.Amount)
-                .Where(fer => fer.RepeatConfigId.HasValue)
-                .Where(fer => fer.RepeatConfig.FirstFiring == Record.RepeatConfig.FirstFiring)
-                .Where(fer => fer.RepeatConfig.Mode == Record.RepeatConfig.Mode)
-                .Where(fer => fer.RepeatConfig.IntervalGap == Record.RepeatConfig.IntervalGap)
-                .Where(fer => fer.RepeatConfig.Frequency == Record.RepeatConfig.Frequency)
-                .ToListAsync())
-                .Where(fer => Math.Abs((fer.Date - Record.Date).TotalDays) <= 5)
-                .Any();
+            foundMatchingSchedule = (await _data.TransferRepository.FindDuplicates(Record)).Any();
 
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
@@ -46,17 +34,17 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         protected override async Task AfterSaveActionsAsync() {
             if (Record.RepeatConfig.NeedsToFireImmediately) {
-                transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
+                transactions = (await _data.CreateTransactionsFromTransfer(Record)).ToArray();
                 Record.RepeatConfig.FireNow();
 
                 foreach (var transaction in transactions) {
                     transaction.TransferId = Record.Id;
                 }
 
-                _context.Transfers.Update(Record);
-                _context.Transactions.AddRange(transactions);
+                _data.TransferRepository.Update(Record);
+                _data.TransactionRepository.Add(transactions);
 
-                await _context.SaveChangesAsync();
+                await _data.SaveAsync();
             }
         }
 
@@ -65,8 +53,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                 return RedirectToPage(PagePaths.TransferDuplicateFound, new { id = Record.Id });
             }
 
-            var toAccount = _context.Accounts.Find(Record.ToAccountId);
-            var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == Record.ToAccountId);
+            var toAccount = _data.AccountRepository.GetByIdAsync(Record.ToAccountId).Result;
+            var accountHasGoals = _data.SavingsGoalRepository.DoesExistAsync(Record.ToAccountId).Result;
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = Record.Id });

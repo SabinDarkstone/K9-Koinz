@@ -2,29 +2,12 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
-    public static class KoinContextExtensions {
-        public static Transfer GetInstanceOfRecurring(this KoinzContext context, Transfer recurringTransfer) {
-            return new Transfer {
-                Amount = recurringTransfer.Amount,
-                CategoryId = recurringTransfer.CategoryId,
-                Date = recurringTransfer.RepeatConfig.NextFiring.Value,
-                Notes = recurringTransfer.Notes,
-                MerchantId = recurringTransfer.MerchantId,
-                SavingsGoalId = recurringTransfer.SavingsGoalId,
-                TagId = recurringTransfer.TagId,
-                ToAccountId = recurringTransfer.ToAccountId,
-                FromAccountId = recurringTransfer.FromAccountId,
-                Id = recurringTransfer.Id
-            };
-        }
-
-        public static async Task<Transaction[]> CreateTransactionsFromTransfer(this KoinzContext context, Transfer transfer, bool trustSavingsGoals = true) {
-            Transaction[] transactons = new Transaction[2];
-
-            var category = await context.Categories.FindAsync(transfer.CategoryId);
-            var merchant = await context.Merchants.FindAsync(transfer.MerchantId);
-            var fromAccount = await context.Accounts.FindAsync(transfer.FromAccountId);
-            var toAccount = await context.Accounts.FindAsync(transfer.ToAccountId);
+    public static class IRepositoryWrapperExtensions {
+        public static async Task<Transaction[]> CreateTransactionsFromTransfer(this IRepositoryWrapper data, Transfer transfer, bool trustSavingsGoals = true) {
+            var category = await data.CategoryRepository.GetByIdAsync(transfer.CategoryId);
+            var merchant = await data.MerchantRepository.GetByIdAsync(transfer.MerchantId);
+            var fromAccount = await data.AccountRepository.GetByIdAsync(transfer.FromAccountId);
+            var toAccount = await data.AccountRepository.GetByIdAsync(transfer.ToAccountId);
 
             if (transfer.TagId == Guid.Empty) {
                 transfer.TagId = null;
@@ -58,7 +41,7 @@ namespace K9_Koinz.Utils {
             };
 
             if (trustSavingsGoals && transfer.SavingsGoalId.HasValue) {
-                var savingsGoal = await context.SavingsGoals.FindAsync(transfer.SavingsGoalId);
+                var savingsGoal = await data.SavingsGoalRepository.GetByIdAsync(transfer.SavingsGoalId.Value);
                 toTransaction.SavingsGoalId = transfer.SavingsGoalId;
                 toTransaction.SavingsGoalName = savingsGoal.Name;
             }

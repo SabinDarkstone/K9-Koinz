@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.SavingsGoals {
     public class IndexModel : AbstractDbPage {
-        public IndexModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public IndexModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) {
         }
 

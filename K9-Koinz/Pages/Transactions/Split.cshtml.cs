@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Transactions {
     public class SplitModel : AbstractDbPage {
-        public SplitModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger)
+        public SplitModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
             : base(data, logger) { }
 
         public Transaction ParentTransaction { get; set; }

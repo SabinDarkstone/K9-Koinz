@@ -10,7 +10,7 @@ namespace K9_Koinz.Pages.BudgetLines {
     public class CreateModel : AbstractCreateModel<BudgetLine> {
         private readonly IBudgetService _budgetService;
 
-        public CreateModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public CreateModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService, IBudgetService budgetService)
                 : base(data, logger, dropdownService) {
             _budgetService = budgetService;
@@ -20,11 +20,11 @@ namespace K9_Koinz.Pages.BudgetLines {
 
         protected override async Task BeforePageLoadActions() {
             await base.BeforePageLoadActions();
-            Budget = await _context.Budgets.FindAsync(RelatedId);
+            Budget = await _data.BudgetRepository.GetByIdAsync(RelatedId);
         }
 
         private async Task CreateFirstBudgetLinePeriod() {
-            var parentBudget = await _context.Budgets.FindAsync(Record.BudgetId);
+            var parentBudget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
             var (startDate, endDate) = parentBudget.Timespan.GetStartAndEndDate();
             var totalSpentSoFar = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(Record, DateTime.Now)).GetTotal();
 
@@ -36,13 +36,13 @@ namespace K9_Koinz.Pages.BudgetLines {
                 SpentAmount = totalSpentSoFar
             };
 
-            _context.BudgetLinePeriods.Add(firstPeriod);
+            _data.BudgetLinePeriodRepository.Add(firstPeriod);
         }
 
         protected override async Task AfterSaveActionsAsync() {
             if (Record.DoRollover) {
                 await CreateFirstBudgetLinePeriod();
-                await _context.SaveChangesAsync();
+                await _data.SaveAsync();
             }
         }
 
@@ -51,9 +51,9 @@ namespace K9_Koinz.Pages.BudgetLines {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var category = await _context.Categories.FindAsync(Record.BudgetCategoryId);
-            var budget = await _context.Budgets.FindAsync(Record.BudgetId);
-            
+            var category = await _data.CategoryRepository.GetByIdAsync(Record.BudgetCategoryId);
+            var budget = await _data.BudgetRepository.GetByIdAsync(Record.BudgetId);
+
             Record.BudgetCategoryName = category.Name;
             Record.BudgetName = budget.Name;
         }

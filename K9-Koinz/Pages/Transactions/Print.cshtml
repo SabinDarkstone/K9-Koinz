@@ -33,11 +33,11 @@
     </div>
 </div>
 
-@if (!Model.Transactions.Any()) {
+@if (!Model.RecordList.Any()) {
     <p>You do not have any transactions meeting those filters.</p>
 } else {
     <h1>Transactions</h1>
-    <h3>@Model.Transactions[0].Account.Name</h3>
+    <h3>@Model.RecordList.First().Account.Name</h3>
     <h6>From @Html.DisplayFor(model => Model.MinDateFilter) To @Html.DisplayFor(model => Model.MaxDateFilter)</h6>
 
     <hr />
@@ -52,7 +52,7 @@
         </thead>
 
         <tbody>
-            @foreach (var transaction in Model.Transactions) {
+            @foreach (var transaction in Model.RecordList) {
                 <tr>
                     <td class="col-2">@Html.DisplayFor(model => transaction.Date)</td>
                     <td class="col-8">@transaction.MerchantName</td>

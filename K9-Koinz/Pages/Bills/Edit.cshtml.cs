@@ -2,25 +2,21 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Bills {
     public class EditModel : AbstractEditModel<Bill> {
-        public EditModel(RepositoryWrapper data, ILogger<AbstractDbPage> logger,
+        public EditModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
             : base(data, logger, dropdownService) { }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {
-            return await _context.Bills
-                .Include(bill => bill.RepeatConfig)
-                .SingleOrDefaultAsync(bill => bill.Id == id);
+            return await _data.BillRepository.GetDetails(id);
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
-            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
-            var category = await _context.Categories.FindAsync(Record.CategoryId);
+            var account = await _data.AccountRepository.GetByIdAsync(Record.AccountId);
+            var merchant = await _data.MerchantRepository.GetByIdAsync(Record.MerchantId);
+            var category = await _data.CategoryRepository.GetByIdAsync(Record.CategoryId.Value);
 
             Record.AccountName = account.Name;
             Record.MerchantName = merchant.Name;

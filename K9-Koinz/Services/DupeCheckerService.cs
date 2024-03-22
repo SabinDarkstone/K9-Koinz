@@ -11,8 +11,8 @@ namespace K9_Koinz.Services {
 
     public class TransactionDupeCheckerService : AbstractService<TransactionDupeCheckerService>,
         IDupeCheckerService<Transaction> {
-        public TransactionDupeCheckerService(RepositoryWrapper data, ILogger<TransactionDupeCheckerService> logger)
-            : base(data, logger) { }
+        public TransactionDupeCheckerService(KoinzContext context, ILogger<TransactionDupeCheckerService> logger)
+            : base(context, logger) { }
 
         public async Task<List<Transaction>> FindPotentialDuplicates(Transaction record) {
             var minDate = record.Date.AddDays(-5);
