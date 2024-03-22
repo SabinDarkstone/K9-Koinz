@@ -6,7 +6,7 @@ namespace K9_Koinz.Data {
         public BudgetLineRepository(KoinzContext context) : base(context) { }
 
         public override async Task<BudgetLine> GetByIdAsync(Guid? id) {
-            return await _context.BudgetLines
+            return await DbSet
                 .Include(line => line.Budget)
                 .Include(line => line.BudgetCategory)
                 .AsNoTracking()
@@ -14,13 +14,13 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<BudgetLine>> GetByCategory(Guid categoryId) {
-            return await _context.BudgetLines
+            return await DbSet
                 .Where(line => line.BudgetCategoryId == categoryId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<BudgetLine>> GetByBudget(Guid budgetId) {
-            return await _context.BudgetLines
+            return await DbSet
                 .Include(line => line.Periods)
                 .Where(line => line.BudgetId == budgetId)
                 .OrderBy(line => line.BudgetCategoryName)

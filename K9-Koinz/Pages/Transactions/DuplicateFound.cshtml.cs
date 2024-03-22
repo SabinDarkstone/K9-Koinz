@@ -4,7 +4,6 @@ using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DuplicateFoundModel : AbstractDbPage {
@@ -14,8 +13,10 @@ namespace K9_Koinz.Pages.Transactions {
         public Transaction Transaction { get; set; }
         public List<Transaction> MatchingTransactions { get; set; }
 
-        public DuplicateFoundModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger)
-            : base(data, logger) { }
+        public DuplicateFoundModel(IRepositoryWrapper data, ILogger<AbstractDbPage> logger, IDupeCheckerService<Transaction> dupeChecker)
+            : base(data, logger) {
+            _dupeChecker = dupeChecker;
+        }
 
         public async Task<IActionResult> OnGet(Guid? id) {
             if (!id.HasValue) {

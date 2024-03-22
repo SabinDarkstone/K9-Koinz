@@ -1,8 +1,11 @@
 ﻿$("#txtMerchant").autocomplete({
     source: (request, response) => autocompleteMerchants(request, response),
     select: function (e, i) {
-        $("#hfMerchant").val(i.item.val);
+        $("#hfMerchant").val(i.item.id);
+        console.log("e", e);
+        console.log("i", i);
         getSuggestedCategory($("#hfMerchant").val(), (data) => {
+            console.log("data", data);
             $("#hfCategory").val(data.id);
             $("#txtCategory").val(data.name);
         });
@@ -19,6 +22,7 @@ $("#txtCategory").autocomplete({
 });
 
 function getSuggestedCategory(merchantId, callback) {
+    console.log("merchantId", merchantId);
     $.ajax({
         url: "/api/Autocomplete/GetSuggestedCategory",
         data: { merchantId: merchantId },

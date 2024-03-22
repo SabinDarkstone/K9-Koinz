@@ -6,7 +6,7 @@ namespace K9_Koinz.Data {
         public TransferRepository(KoinzContext context) : base(context) { }
 
         public async Task<Dictionary<string, List<Transfer>>> GetRecurringGroupedByAccount() {
-            return await _context.Transfers
+            return await DbSet
                 .Include(fer => fer.FromAccount)
                 .Include(fer => fer.ToAccount)
                 .Include(fer => fer.RepeatConfig)
@@ -26,7 +26,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<Transfer> GetDetails(Guid id) {
-            return await _context.Transfers
+            return await DbSet
                 .Include(fer => fer.FromAccount)
                 .Include(fer => fer.ToAccount)
                 .Include(fer => fer.RepeatConfig)
@@ -41,7 +41,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Transfer>> FindDuplicates(Transfer original) {
-            return (await _context.Transfers
+            return (await DbSet
                 .Where(fer => fer.ToAccountId == original.ToAccountId && fer.FromAccountId == original.FromAccountId)
                 .Where(fer => fer.Amount == original.Amount)
                 .Where(fer => fer.RepeatConfig.FirstFiring == original.RepeatConfig.FirstFiring)
@@ -55,7 +55,7 @@ namespace K9_Koinz.Data {
         }
 
         public IEnumerable<Transfer> GetRecurringBeforeDate(DateTime mark) {
-            return _context.Transfers
+            return DbSet
                 .Where(fer => fer.RepeatConfigId.HasValue)
                 .Include(fer => fer.RepeatConfig)
                 .AsEnumerable()

@@ -6,7 +6,7 @@ namespace K9_Koinz.Data {
         public BudgetRepository(KoinzContext context) : base(context) { }
 
         public async Task<IEnumerable<Budget>> GetAllAsync() {
-             return await _context.Budgets
+             return await DbSet
                 .Include(bud => bud.BudgetTag)
                 .OrderBy(bud => bud.SortOrder)
                 .AsNoTracking()
@@ -14,7 +14,7 @@ namespace K9_Koinz.Data {
         }
 
         public Budget GetBudgetDetails(string budgetId) {
-            var budgetIQ = _context.Budgets
+            var budgetIQ = DbSet
                 .Include(bud => bud.BudgetLines)
                     .ThenInclude(line => line.BudgetCategory)
                         .ThenInclude(cat => cat.Transactions)
@@ -37,7 +37,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<Budget> GetBudgetDetailsShorter(Guid budgetId) {
-            return await _context.Budgets
+            return await DbSet
                 .Include(bud => bud.BudgetLines
                     .OrderBy(line => line.BudgetCategoryName))
                     .ThenInclude(line => line.BudgetCategory)

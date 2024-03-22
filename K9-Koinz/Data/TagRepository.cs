@@ -6,7 +6,7 @@ namespace K9_Koinz.Data {
         public TagRepository(KoinzContext context) : base(context) { }
 
         public async Task<Tag> GetDetails(Guid id) {
-            return await _context.Tags
+            return await DbSet
                 .Include(tag => tag.Transactions
                     .OrderByDescending(trans => trans.Date)
                     .Take(100))
@@ -14,7 +14,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Tag>> GetAll() {
-            return await _context.Tags
+            return await DbSet
                 .OrderBy(tag => tag.Name)
                 .AsNoTracking()
                 .ToListAsync();

@@ -7,20 +7,20 @@ namespace K9_Koinz.Data {
         public BillRepository(KoinzContext context) : base(context) { }
 
         public async Task<IEnumerable<Bill>> GetByAccountId(Guid accountId) {
-            return await _context.Bills
+            return await DbSet
                 .Where(bill => bill.AccountId == accountId)
                 .ToListAsync();
         }
 
         public async Task<Bill> GetDetails(Guid id) {
-            return await _context.Bills
+            return await DbSet
                 .Include(bill => bill.Transactions)
                 .Include(bill => bill.RepeatConfig)
                 .FirstOrDefaultAsync(trans => trans.Id == id);
         }
 
         public async Task<IEnumerable<Bill>> GetAllBillsAsync() {
-            return (await _context.Bills
+            return (await DbSet
                 .AsNoTracking()
                 .Include(bill => bill.Account)
                 .Include(bill => bill.RepeatConfig)
@@ -30,7 +30,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Bill>> GetBillsWithinDateRangeAsync(DateTime start, DateTime end) {
-            return (await _context.Bills
+            return (await DbSet
                 .AsNoTracking()
                 .Include(bill => bill.Account)
                 .Include(bill => bill.RepeatConfig)
@@ -44,19 +44,19 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Bill>> GetByCategory(Guid categoryId) {
-            return await _context.Bills
+            return await DbSet
                 .Where(bill => bill.CategoryId == categoryId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Bill>> GetByMerchant(Guid merchantId) {
-            return await _context.Bills
+            return await DbSet
                 .Where(bill => bill.MerchantId == merchantId)
                 .ToListAsync();
         }
 
         public async Task<SelectList> GetForDropdown(Guid accountId) {
-            return new SelectList(await _context.Bills
+            return new SelectList(await DbSet
                 .Where(bill => bill.AccountId == accountId)
                 .OrderBy(bill => bill.Name)
                 .ToListAsync(), nameof(Bill.Id), nameof(Bill.Name));

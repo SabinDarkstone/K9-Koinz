@@ -15,11 +15,13 @@ namespace K9_Koinz.Data {
     }
 
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity {
-        protected readonly KoinzContext _context;
+        private readonly KoinzContext _context;
 
         public GenericRepository(KoinzContext context) {
             _context = context;
         }
+
+        public DbSet<TEntity> DbSet => _context.Set<TEntity>();
 
         public virtual async Task<TEntity> GetByIdAsync(Guid? id) {
             return await _context.Set<TEntity>().FindAsync(id);

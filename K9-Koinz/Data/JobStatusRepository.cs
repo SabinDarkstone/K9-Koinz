@@ -6,7 +6,7 @@ namespace K9_Koinz.Data {
         public JobStatusRepository(KoinzContext context) : base(context) { }
 
         public async Task<IEnumerable<ScheduledJobStatus>> GetAllAsync() {
-            return await _context.JobStatuses
+            return await DbSet
                 .AsNoTracking()
                 .OrderByDescending(job => job.StartTime)
                 .ToListAsync();

@@ -8,7 +8,7 @@ namespace K9_Koinz.Data {
         public AccountRepository(KoinzContext context) : base(context) { }
 
         public async Task<Account> GetAccountDetails(Guid accountId) {
-            var account = await _context.Accounts
+            var account = await DbSet
                 .Include(acct => acct.Transactions
                     .Take(100)
                     .OrderByDescending(trans => trans.Date))
@@ -19,7 +19,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<Dictionary<string, List<Account>>> GetAllGroupedByType() {
-            return (await _context.Accounts
+            return (await DbSet
                 .AsNoTracking()
                 .ToListAsync())
                 .GroupBy(acct => acct.Type.GetAttribute<DisplayAttribute>().Name)
@@ -27,7 +27,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Account>> GetAll() {
-            return await _context.Accounts
+            return await DbSet
                 .AsNoTracking()
                 .ToListAsync();
         }

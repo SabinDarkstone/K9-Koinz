@@ -10,7 +10,7 @@ namespace K9_Koinz.Data {
             : base(context) { }
 
         public async Task<Transaction> GetDetailsAsync(Guid id) {
-            return await _context.Transactions
+            return await DbSet
                 .Include(trans => trans.Bill)
                 .Include(trans => trans.Tag)
                 .Include(trans => trans.Category)
@@ -23,7 +23,7 @@ namespace K9_Koinz.Data {
         }
 
         public double GetTransactionTotalSinceBalanceSet(Account account) {
-            var runningTotal = _context.Transactions
+            var runningTotal = DbSet
                 .Where(trans => trans.Date > account.InitialBalanceDate || (trans.Date.Date == account.InitialBalanceDate.Date && trans.DoNotSkip))
                 .Where(trans => trans.AccountId == account.Id).GetTotal();
 
@@ -31,13 +31,13 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Transaction>> GetByAccountId(Guid accountId) {
-            return await _context.Transactions
+            return await DbSet
                 .Where(trans => trans.AccountId == accountId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Transaction>> GetForSpendingHistory(Guid categoryId) {
-            return await _context.Transactions
+            return await DbSet
                 .Include(trans => trans.Category)
                 .AsNoTracking()
                 .Where(trans => trans.CategoryId == categoryId || trans.Category.ParentCategoryId == categoryId)
@@ -48,7 +48,7 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<Transaction> GetSplitLines(Guid parentId) {
-            return await _context.Transactions
+            return await DbSet
                 .Include(trans => trans.Category)
                 .Include(trans => trans.SplitTransactions
                     .OrderBy(splt => splt.CategoryName))
@@ -58,39 +58,39 @@ namespace K9_Koinz.Data {
         }
 
         public bool AnyInMonth(DateTime refDate) {
-            return _context.Transactions
+            return DbSet
                 .AsNoTracking()
                 .Any(trans => trans.Date >= refDate.StartOfMonth() && trans.Date <= refDate.EndOfMonth());
         }
 
         public bool AnyInWeek(DateTime refDate) {
-            return _context.Transactions
+            return DbSet
                 .AsNoTracking()
                 .Any(trans => trans.Date >= refDate.StartOfWeek() && trans.Date <= refDate.EndOfWeek());
         }
 
         public bool AnyInYear(DateTime refDate) {
-            return _context.Transactions
+            return DbSet
                 .AsNoTracking()
                 .Any(trans => trans.Date >= refDate.StartOfYear() && trans.Date <= refDate.EndOfYear());
         }
 
         public Transaction GetMatchingFromTransferPair(Guid transferId, Guid transactionId) {
-            return _context.Transactions
+            return DbSet
                 .Where(trans => trans.TransferId == transferId)
                 .Where(trans => trans.Id != transactionId)
                 .SingleOrDefault();
         }
 
         public Transaction GetWithCategory(Guid id) {
-            return _context.Transactions
+            return DbSet
                 .Include(trans => trans.Category)
                 .Where(trans => trans.Id == id)
                 .SingleOrDefault();
         }
 
         public async Task<PaginatedList<Transaction>> GetFiltered(TransactionFilterSetting filters) {
-            IQueryable<Transaction> transIQ = _context.Transactions
+            IQueryable<Transaction> transIQ = DbSet
                 .Include(trans => trans.Tag)
                 .AsNoTracking();
 
@@ -171,13 +171,13 @@ namespace K9_Koinz.Data {
         }
 
         public async Task<IEnumerable<Transaction>> GetByCategory(Guid categoryId) {
-            return await _context.Transactions
+            return await DbSet
                 .Where(trans => trans.CategoryId == categoryId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Transaction>> GetByMerchant(Guid merchantId) {
-            return await _context.Transactions
+            return await DbSet
                 .Where(trans => trans.MerchantId == merchantId)
                 .ToListAsync();
         }
@@ -186,11 +186,23 @@ namespace K9_Koinz.Data {
             var startDate = pair[1].Date.AddDays(-5);
             var endDate = pair[1].Date.AddDays(5);
 
-            return await _context.Transactions
+            return await DbSet
                 .Where(trans => trans.AccountId == pair[0].AccountId)
                 .Where(trans => trans.Amount == pair[0].Amount)
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .ToListAsync();
+        }
+
+        public async Task<Transaction> GetTransFromMostPopularCategoryByMerchant(string merchantId) {
+            var queryResults = (await DbSet
+                .AsNoTracking()
+                .Where(trans => trans.MerchantId == Guid.Parse(merchantId))
+                .ToListAsync())
+                .GroupBy(x => x.CategoryId)
+                .OrderByDescending(x => x.ToList().Count)
+                .FirstOrDefault();
+
+            return queryResults.ToList().FirstOrDefault();
         }
     }
 }
