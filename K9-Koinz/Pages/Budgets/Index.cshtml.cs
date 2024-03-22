@@ -7,21 +7,9 @@ using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Pages.Budgets {
-
-    public class BudgetPeriodOption {
-        public DateTime Value { get; set; }
-        public string ValueString {
-            get {
-                return Value.FormatForUrl();
-            }
-        }
-        public string Text { get; set; }
-        public bool IsSelected { get; set; }
-        public bool IsDisabled { get; set; }
-    }
-
     public class IndexModel : AbstractDbPage {
         private readonly IBudgetService _budgetService;
 
