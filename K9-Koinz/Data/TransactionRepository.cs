@@ -204,5 +204,15 @@ namespace K9_Koinz.Data {
 
             return queryResults.ToList().FirstOrDefault();
         }
+
+        public async Task<IEnumerable<Transaction>> GetForTrendGraph(Guid categoryId, DateTime startDate, DateTime endDate) {
+            return await DbSet
+                .Where(trans => trans.CategoryId == categoryId || (trans.Category.ParentCategoryId.HasValue && trans.Category.ParentCategoryId.Value == categoryId))
+                .Where(trans => trans.Date.Date >= startDate && trans.Date.Date <= endDate)
+                .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => !trans.IsSplit)
+                .OrderBy(trans => trans.Amount)
+                .ToListAsync();
+        }
     }
 }
