@@ -14,7 +14,7 @@
                 MinDate = Model.MinDateString,
                 MaxDate = Model.MaxDateString,
                 MerchFilter = Model.SelectedMerchant,
-                PageIndex = Model.Transactions.PageIndex,
+                PageIndex = Model.RecordList.PageIndex,
                 HideTransfers = Model.HideTransfers,
                 SearchString = Model.SearchText
             };
@@ -133,7 +133,7 @@
                 <thead>
                     <tr>
                         <th class="d-none d-xl-block">
-                            @Html.DisplayNameFor(model => model.Transactions[0].Account)
+                            @Html.DisplayNameFor(model => model.RecordList.First().Account)
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.DateSort"
@@ -142,8 +142,8 @@
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Transactions.PageIndex">
-                                @Html.DisplayNameFor(model => model.Transactions[0].Date)
+                               asp-route-pageIndex="@Model.RecordList.PageIndex">
+                                @Html.DisplayNameFor(model => model.RecordList.First().Date)
                             </a>
                         </th>
                         <th>
@@ -153,12 +153,12 @@
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Transactions.PageIndex">
-                                @Html.DisplayNameFor(model => model.Transactions[0].MerchantId)
+                               asp-route-pageIndex="@Model.RecordList.PageIndex">
+                                @Html.DisplayNameFor(model => model.RecordList.First().MerchantId)
                             </a>
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Transactions[0].Category)
+                            @Html.DisplayNameFor(model => model.RecordList.First().Category)
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.AmountSort"
@@ -167,15 +167,15 @@
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Transactions.PageIndex">
-                                @Html.DisplayNameFor(model => model.Transactions[0].Amount)
+                               asp-route-pageIndex="@Model.RecordList.PageIndex">
+                                @Html.DisplayNameFor(model => model.RecordList.First().Amount)
                             </a>
                         </th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Transactions) {
+                    @foreach (var item in Model.RecordList) {
                         <tr>
                             <td class="d-none d-xl-block">
                                 @Html.DisplayFor(modelItem => item.AccountName)
@@ -233,7 +233,7 @@
 
         <div class="card mt-4 d-block d-lg-none">
             <ul class="list-group list-group-flush">
-                @foreach (var transaction in Model.Transactions) {
+                @foreach (var transaction in Model.RecordList) {
                     <li class="list-group-item">
                         <div>
                             <div class="row">
@@ -288,17 +288,17 @@
 
         <div class="mt-4">
             <p>
-                @Model.Transactions.TotalCount <text>Items - </text> Page @Model.Transactions.PageIndex of @Model.Transactions.TotalPages
+                @Model.RecordList.TotalCount <text>Items - </text> Page @Model.RecordList.PageIndex of @Model.RecordList.TotalPages
             </p>
             @{
-                var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
+                var prevDisabled = !Model.RecordList.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.RecordList.HasNextPage ? "disabled" : "";
             }
 
             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
-               asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
+               asp-route-pageIndex="@(Model.RecordList.PageIndex - 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
                asp-route-merchFilter="@Model.SelectedMerchant"
@@ -309,7 +309,7 @@
             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
-               asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
+               asp-route-pageIndex="@(Model.RecordList.PageIndex + 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
                asp-route-merchFilter="@Model.SelectedMerchant"

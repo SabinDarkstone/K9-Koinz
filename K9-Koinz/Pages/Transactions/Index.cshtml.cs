@@ -10,9 +10,10 @@ using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Pages.Transactions
 {
-    public class IndexModel : AbstractIndexModel<Transaction> {
-        private readonly KoinzContext _context;
+    public class IndexModel : AbstractDbPage {
         private readonly IDropdownPopulatorService _dropdownService;
+
+        public PaginatedList<Transaction> RecordList;
 
         public IndexModel(IRepositoryWrapper data, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService)
             :base(data, logger) {
@@ -72,7 +73,6 @@ namespace K9_Koinz.Pages.Transactions
             }
         }
 
-        public PaginatedList<Transaction> Transactions { get; set; }
         public SelectList CategoryOptions;
         public List<SelectListItem> AccountOptions;
 
@@ -106,9 +106,9 @@ namespace K9_Koinz.Pages.Transactions
                     .Select(x => x.Id));
             }
 
-            MerchantFilter = SelectedMerchant.ToGuid().Value;
-            AccountFilter = SelectedAccount.ToGuid().Value;
-            TagFilter = SelectedTag.ToGuid().Value;
+            MerchantFilter = SelectedMerchant.ToGuid();
+            AccountFilter = SelectedAccount.ToGuid();
+            TagFilter = SelectedTag.ToGuid();
 
             var filters = new TransactionFilterSetting(sortOrder, CategoryFilters, MerchantFilter, AccountFilter, TagFilter, MinDateFilter, MaxDateFilter, pageIndex, searchString, hideTransfers);
             RecordList = await _data.TransactionRepository.GetFiltered(filters);

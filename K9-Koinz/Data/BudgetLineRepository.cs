@@ -10,7 +10,7 @@ namespace K9_Koinz.Data {
                 .Include(line => line.Budget)
                 .Include(line => line.BudgetCategory)
                 .AsNoTracking()
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(line => line.Id == id);
         }
 
         public async Task<IEnumerable<BudgetLine>> GetByCategory(Guid categoryId) {
