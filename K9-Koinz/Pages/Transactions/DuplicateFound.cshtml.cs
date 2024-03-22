@@ -1,10 +1,12 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DuplicateFoundModel : PageModel {
@@ -32,6 +34,8 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public IActionResult OnPost(Guid id, string mode) {
+            var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
+
             if (mode == "cancel") {
                 var transaction = _context.Transactions.Find(id);
 
@@ -53,7 +57,15 @@ namespace K9_Koinz.Pages.Transactions {
                 }
 
                 _context.SaveChanges();
-                return RedirectToPage(PagePaths.TransactionIndex);
+                return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                    sortOrder = transactionFilterCookie.SortOrder,
+                    catFilter = transactionFilterCookie.CatFilter,
+                    pageIndex = transactionFilterCookie.PageIndex,
+                    accountFilter = transactionFilterCookie.AccountFilter,
+                    minDate = transactionFilterCookie.MinDate,
+                    maxDate = transactionFilterCookie.MaxDate,
+                    merchFilter = transactionFilterCookie.MerchFilter
+                });
             }
 
             var toTransaction = _context.Transactions
@@ -64,7 +76,15 @@ namespace K9_Koinz.Pages.Transactions {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = id });
             }
 
-            return RedirectToPage(PagePaths.TransactionIndex);
+            return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                sortOrder = transactionFilterCookie.SortOrder,
+                catFilter = transactionFilterCookie.CatFilter,
+                pageIndex = transactionFilterCookie.PageIndex,
+                accountFilter = transactionFilterCookie.AccountFilter,
+                minDate = transactionFilterCookie.MinDate,
+                maxDate = transactionFilterCookie.MaxDate,
+                merchFilter = transactionFilterCookie.MerchFilter
+            });
         }
     }
 }

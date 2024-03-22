@@ -7,6 +7,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
 using K9_Koinz.Services;
+using Microsoft.Extensions.Caching.Memory;
+using K9_Koinz.Models.Helpers;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions
 {
@@ -15,12 +18,14 @@ namespace K9_Koinz.Pages.Transactions
         private readonly IConfiguration _configuration;
         private readonly ILogger<IndexModel> _logger;
         private readonly IDropdownPopulatorService _dropdownService;
+        private readonly IMemoryCache _cache;
 
-        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService) {
+        public IndexModel(KoinzContext context, IConfiguration configuration, ILogger<IndexModel> logger, IDropdownPopulatorService dropdownService, IMemoryCache cache) {
             _context = context;
             _configuration = configuration;
             _logger = logger;
             _dropdownService = dropdownService;
+            _cache = cache;
         }
 
         private bool? _hideTransfers;
@@ -177,6 +182,18 @@ namespace K9_Koinz.Pages.Transactions
             }
             
             transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
+
+            Response.Cookies.Append("backToTransactions", new TransactionNavPayload {
+                AccountFilter = SelectedAccount,
+                CatFilter = SelectedCategory,
+                HideTransfers = HideTransfers,
+                MaxDate = MaxDateString,
+                MinDate = MinDateString,
+                MerchFilter = SelectedMerchant,
+                PageIndex = pageIndex ?? 1,
+                SearchString = SearchText,
+                SortOrder = CurrentSort
+            }.ToJson());
 
             Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, 50);
         }

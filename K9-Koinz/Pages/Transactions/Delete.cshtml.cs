@@ -2,6 +2,10 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using Microsoft.AspNetCore.Mvc;
+using K9_Koinz.Models.Helpers;
+using K9_Koinz.Utils;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DeleteModel : AbstractDeleteModel<Transaction> {
@@ -47,6 +51,19 @@ namespace K9_Koinz.Pages.Transactions {
                     _context.Transfers.Remove(tranfer);
                 }
             }
+        }
+
+        protected override IActionResult NavigateOnSuccess() {
+            var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
+            return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                sortOrder = transactionFilterCookie.SortOrder,
+                catFilter = transactionFilterCookie.CatFilter,
+                pageIndex = transactionFilterCookie.PageIndex,
+                accountFilter = transactionFilterCookie.AccountFilter,
+                minDate = transactionFilterCookie.MinDate,
+                maxDate = transactionFilterCookie.MaxDate,
+                merchFilter = transactionFilterCookie.MerchFilter
+            });
         }
     }
 }

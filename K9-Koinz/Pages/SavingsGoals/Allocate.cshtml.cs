@@ -1,10 +1,12 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.SavingsGoals {
     public class AllocateModel : PageModel {
@@ -66,7 +68,16 @@ namespace K9_Koinz.Pages.SavingsGoals {
                 }
             }
 
-            return RedirectToPage(PagePaths.TransactionIndex);
+            var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
+            return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                sortOrder = transactionFilterCookie.SortOrder,
+                catFilter = transactionFilterCookie.CatFilter,
+                pageIndex = transactionFilterCookie.PageIndex,
+                accountFilter = transactionFilterCookie.AccountFilter,
+                minDate = transactionFilterCookie.MinDate,
+                maxDate = transactionFilterCookie.MaxDate,
+                merchFilter = transactionFilterCookie.MerchFilter
+            });
         }
 
         private bool TransactionExists(Guid id) {

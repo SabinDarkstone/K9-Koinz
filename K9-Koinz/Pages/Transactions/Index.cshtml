@@ -6,20 +6,6 @@
 
 @{
     ViewData["Title"] = "Transactions List";
-
-    var payload = new TransactionNavPayload {
-                SortOrder = Model.CurrentSort,
-                CatFilter = Model.SelectedCategory,
-                AccountFilter = Model.SelectedAccount,
-                MinDate = Model.MinDateString,
-                MaxDate = Model.MaxDateString,
-                MerchFilter = Model.SelectedMerchant,
-                PageIndex = Model.Transactions.PageIndex,
-                HideTransfers = Model.HideTransfers,
-                SearchString = Model.SearchText
-            };
-    var payloadString = JsonSerializer.Serialize(payload);
-    Response.Cookies.Append("backToTransactions", payloadString);
 }
 
 <style>

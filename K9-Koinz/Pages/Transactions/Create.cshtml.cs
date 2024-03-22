@@ -5,6 +5,8 @@ using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
+using K9_Koinz.Models.Helpers;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
@@ -47,7 +49,16 @@ namespace K9_Koinz.Pages.Transactions {
             } else if (doHandleSavingsGoal) {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = Record.Id });
             } else {
-                return base.NavigateOnSuccess();
+                var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
+                return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                    sortOrder = transactionFilterCookie.SortOrder,
+                    catFilter = transactionFilterCookie.CatFilter,
+                    pageIndex = transactionFilterCookie.PageIndex,
+                    accountFilter = transactionFilterCookie.AccountFilter,
+                    minDate = transactionFilterCookie.MinDate,
+                    maxDate = transactionFilterCookie.MaxDate,
+                    merchFilter = transactionFilterCookie.MerchFilter
+                });
             }
         }
 

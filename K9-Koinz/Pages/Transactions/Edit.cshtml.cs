@@ -7,6 +7,8 @@ using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Utils;
+using NuGet.Protocol;
+using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : AbstractEditModel<Transaction> {
@@ -104,7 +106,16 @@ namespace K9_Koinz.Pages.Transactions {
                 return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = Record.Id });
             }
 
-            return RedirectToPage(PagePaths.TransactionIndex);
+            var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
+            return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                sortOrder = transactionFilterCookie.SortOrder,
+                catFilter = transactionFilterCookie.CatFilter,
+                pageIndex = transactionFilterCookie.PageIndex,
+                accountFilter = transactionFilterCookie.AccountFilter,
+                minDate = transactionFilterCookie.MinDate,
+                maxDate = transactionFilterCookie.MaxDate,
+                merchFilter = transactionFilterCookie.MerchFilter
+            });
         }
     }
 }
