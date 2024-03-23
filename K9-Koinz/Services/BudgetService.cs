@@ -32,6 +32,7 @@ namespace K9_Koinz.Services {
             var transactionsIQ = line.BudgetCategory.Transactions
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => !trana.IsSplit)
                 .Where(trans => !trans.BillId.HasValue);
 
             if (line.Budget.BudgetTagId.HasValue) {
