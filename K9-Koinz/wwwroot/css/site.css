@@ -60,3 +60,8 @@ body {
 .form-group {
     margin-bottom: 0.5em;
 }
+
+/* Fixes floating labels sitting on top of autocomplete options */
+.form-floating > label {
+    z-index: 1 !important;
+}
