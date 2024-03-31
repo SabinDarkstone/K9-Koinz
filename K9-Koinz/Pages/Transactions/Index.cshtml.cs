@@ -112,6 +112,7 @@ namespace K9_Koinz.Pages.Transactions
                 var childCategories = _context.Categories.Where(cat => cat.ParentCategoryId == Guid.Parse(SelectedCategory)).Include(cat => cat.ChildCategories).Select(cat => cat.Id).ToList();
                 CategoryFilters.AddRange(childCategories);
                 transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId.HasValue && CategoryFilters.Contains(trans.CategoryId.Value));
+                transactionsIQ = transactionsIQ.Where(trans => !trans.IsSplit); 
             } else {
                 transactionsIQ = transactionsIQ.Where(trans => !trans.ParentTransactionId.HasValue);
             }
