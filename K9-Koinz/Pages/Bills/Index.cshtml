@@ -22,138 +22,149 @@
 
 <form method="get" name="form1">
     <div class="mb-4">
-        <input type="checkbox" asp-for="@Model.ShowAllBills" onclick="document.form1.submit()" /> Show All Bills
+        @*<input type="checkbox" asp-for="@Model.ShowAllBills" onclick="document.form1.submit()" /> Show All Bills*@
+        <div class="form-check form-switch">
+            @Html.EditorFor(x => x.ShowAllBills, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
+            <label class="form-check-label" asp-for="ShowAllBills"></label>
+        </div>
     </div>
 </form>
 
-@foreach (var accountEntry in Model.AccountsWithBills.OrderBy(acct => acct.Value.Name)) {
-    <h4>@accountEntry.Value.Name</h4>
-    @if (!Model.ShowAllBills) {
-        <p>
-            Total Due This Month: @accountEntry.Value.AmountDueThisMonth.FormatCurrency(0)
-        </p>
-    }
-    <div class="d-none d-lg-block">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].Name)
-                    </th>
-                    <th class="d-none d-xl-block">
-                        @Html.DisplayNameFor(model => model.Bills[0].MerchantId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].RepeatConfig.Frequency)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Bills[0].Amount)
-                    </th>
-                    <th>
-                        Next Due Date
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+@if (Model.Bills.Count == 0) {
+    <div class="alert alert-primary">
+        You don't have any bills scheduled for the rest of the month.<br />
+        Select "Show All Bills" to see all of your bills.
+    </div>
+} else {
+    @foreach (var accountEntry in Model.AccountsWithBills.OrderBy(acct => acct.Value.Name)) {
+        <h4>@accountEntry.Value.Name</h4>
+        @if (!Model.ShowAllBills) {
+            <p>
+                Total Due This Month: @accountEntry.Value.AmountDueThisMonth.FormatCurrency(0)
+            </p>
+        }
+        <div class="d-none d-lg-block">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>
-                            @item.Name
-                        </td>
-                        <td class="d-none d-xl-block">
-                            @item.MerchantName
-                        </td>
-                        <td>
-                            @item.RepeatConfig.RepeatString
-                        </td>
-                        <td>
-                            @item.Amount.FormatCurrency(2)
-                        </td>
-                        <td>
-                            @if (item.RepeatConfig.NextFiring.HasValue) {
-                                @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
-                                <span style="font-weight:lighter;">
-                                    @{
-                                        var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
-                                        if (daysRemaining < 0) {
-                                            <text>&nbsp;</text>
-                                        } else if (daysRemaining >= 0 && daysRemaining < 1) {
-                                            <text>(Today)</text>
-                                        } else if (daysRemaining == 1) {
-                                            <text>(Tomorrow)</text>
-                                        } else {
-                                            <text>(@daysRemaining Days)</text>
-                                        }
-                                    }
-                                </span>
-                            } else {
-                                <span class="text-danger">Expired</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                            <a asp-page="@PagePaths.BillDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
-                            <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                        </td>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Bills[0].Name)
+                        </th>
+                        <th class="d-none d-xl-block">
+                            @Html.DisplayNameFor(model => model.Bills[0].MerchantId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Bills[0].RepeatConfig.Frequency)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Bills[0].Amount)
+                        </th>
+                        <th>
+                            Next Due Date
+                        </th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <div class="card mt-1 mb-4 d-block d-lg-none">
-        <ul class="list-group list-group-flush">
-            @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col-7 text-truncate bill-item" data-id="@item.Id">
-                            @item.Name
-                        </div>
-                        <div class="col-4 text-end bill-item" data-id="@item.Id">
-                            @item.Amount.FormatCurrency(2)
-                        </div>
-                        <div class="col-1">
-                            <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id">
-                                <i class="fa-solid fa-pencil text-primary"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4 text-secondary bill-item" data-id="@item.Id">
-                            @item.RepeatConfig.RepeatString
-                        </div>
-                        <div class="col-7 text-secondary text-end bill-item" data-id="@item.Id">
-                            @if (item.RepeatConfig.NextFiring.HasValue) {
-                                @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
-                                <span style="font-weight:lighter;">
-                                    @{
-                                        var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
-                                        if (daysRemaining < 0) {
-                                            <text>&nbsp;</text>
-                                        } else if (daysRemaining >= 0 && daysRemaining < 1) {
-                                            <text>(Today)</text>
-                                        } else if (daysRemaining == 1) {
-                                            <text>(Tomorrow)</text>
-                                        } else {
-                                            <text>(@daysRemaining Days)</text>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+                        <tr>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td class="d-none d-xl-block">
+                                @item.MerchantName
+                            </td>
+                            <td>
+                                @item.RepeatConfig.RepeatString
+                            </td>
+                            <td>
+                                @item.Amount.FormatCurrency(2)
+                            </td>
+                            <td>
+                                @if (item.RepeatConfig.NextFiring.HasValue) {
+                                    @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
+                                    <span style="font-weight:lighter;">
+                                        @{
+                                            var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                            if (daysRemaining < 0) {
+                                                <text>&nbsp;</text>
+                                            } else if (daysRemaining >= 0 && daysRemaining < 1) {
+                                                <text>(Today)</text>
+                                            } else if (daysRemaining == 1) {
+                                                <text>(Tomorrow)</text>
+                                            } else {
+                                                <text>(@daysRemaining Days)</text>
+                                            }
                                         }
-                                    }
-                                </span>
-                            } else {
-                                <span class="text-danger">Expired</span>
-                            }
+                                    </span>
+                                } else {
+                                    <span class="text-danger">Expired</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
+                                <a asp-page="@PagePaths.BillDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                                <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card mt-1 mb-4 d-block d-lg-none">
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-7 text-truncate bill-item" data-id="@item.Id">
+                                @item.Name
+                            </div>
+                            <div class="col-4 text-end bill-item" data-id="@item.Id">
+                                @item.Amount.FormatCurrency(2)
+                            </div>
+                            <div class="col-1">
+                                <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id">
+                                    <i class="fa-solid fa-pencil text-primary"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class="col-1">
-                            <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id">
-                                <i class="fa-solid fa-trash text-danger"></i>
-                            </a>
+                        <div class="row">
+                            <div class="col-4 text-secondary bill-item" data-id="@item.Id">
+                                @item.RepeatConfig.RepeatString
+                            </div>
+                            <div class="col-7 text-secondary text-end bill-item" data-id="@item.Id">
+                                @if (item.RepeatConfig.NextFiring.HasValue) {
+                                    @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
+                                    <span style="font-weight:lighter;">
+                                        @{
+                                            var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                            if (daysRemaining < 0) {
+                                                <text>&nbsp;</text>
+                                            } else if (daysRemaining >= 0 && daysRemaining < 1) {
+                                                <text>(Today)</text>
+                                            } else if (daysRemaining == 1) {
+                                                <text>(Tomorrow)</text>
+                                            } else {
+                                                <text>(@daysRemaining Days)</text>
+                                            }
+                                        }
+                                    </span>
+                                } else {
+                                    <span class="text-danger">Expired</span>
+                                }
+                            </div>
+                            <div class="col-1">
+                                <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                </li>
-            }
-        </ul>
-    </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
 }
 
 @section Scripts {
