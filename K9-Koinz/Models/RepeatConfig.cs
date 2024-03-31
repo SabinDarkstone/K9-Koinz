@@ -32,12 +32,12 @@ namespace K9_Koinz.Models {
         [DisplayName("Repeat Gap")]
         public int? IntervalGap { get; set; }
 
-        [DisplayName("First Date")]
+        [DisplayName("Start Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FirstFiring { get; set; }
 
-        [DisplayName("Final Date")]
+        [DisplayName("End Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? TerminationDate { get; set; }

@@ -5,8 +5,6 @@ using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
-using Newtonsoft.Json;
-using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : AbstractCreateModel<Transfer> {
