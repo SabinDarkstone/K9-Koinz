@@ -4,7 +4,6 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 
 namespace K9_Koinz.ViewComponents {
@@ -21,8 +20,11 @@ namespace K9_Koinz.ViewComponents {
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate) {
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(referenceDate);
-            IncomeTotal = budget.IncomeLines
+            BudgetedIncome = budget.IncomeLines
                 .Sum(line => line.BudgetedAmount);
+            ExtraIncome = budget.UnallocatedIncomes
+                .SelectMany(line => line.Transactions)
+                .GetTotal();
             AllocatedExpenseTotal = budget.ExpenseLines
                 .Sum(line => line.BudgetedAmount) * -1;
             ExtraExpenseTotal = budget.UnallocatedExpenses
@@ -72,8 +74,10 @@ namespace K9_Koinz.ViewComponents {
         }
 
 
-        [DisplayName("Estimated Income")]
-        public double IncomeTotal { get; set; }
+        [DisplayName("Budgeted Income")]
+        public double BudgetedIncome { get; set; }
+        [DisplayName("Extra Income")]
+        public double ExtraIncome { get; set; }
 
         [DisplayName("Budgeted Expenses")]
         public double AllocatedExpenseTotal { get; set; }
@@ -89,7 +93,7 @@ namespace K9_Koinz.ViewComponents {
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return IncomeTotal + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                return BudgetedIncome + ExtraIncome + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
             }
         }
 

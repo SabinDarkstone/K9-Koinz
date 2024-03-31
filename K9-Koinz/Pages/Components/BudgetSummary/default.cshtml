@@ -8,13 +8,26 @@
             <div class="p-2">
                 <div class="row justify-content-between">
                     <div class="col-7">
-                        @Html.DisplayNameFor(model => Model.IncomeTotal)
+                        @Html.DisplayNameFor(model => Model.BudgetedIncome)
                     </div>
                     <div class="col-5" style="text-align:right">
-                        @Model.IncomeTotal.FormatCurrency(0)
+                        @Model.BudgetedIncome.FormatCurrency(0)
                     </div>
                 </div>
-                <hr class="mt-1 mb-1"/>
+
+                @if (Math.Abs(Model.ExtraIncome) > 0) {
+                    <div class="row justify-content-between">
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.ExtraIncome)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.ExtraIncome.FormatCurrency(0)
+                        </div>
+                    </div>
+                }
+
+                <hr class="mt-1 mb-1" />
+
                 <div class="row">
                     <div class="col-7">
                         @Html.DisplayNameFor(model => Model.AllocatedExpenseTotal)
@@ -23,31 +36,42 @@
                         @Model.AllocatedExpenseTotal.FormatCurrency(0)
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-7">
-                        @Html.DisplayNameFor(model => Model.ExtraExpenseTotal)
+
+                @if (Math.Abs(Model.ExtraExpenseTotal) > 0) {
+                    <div class="row">
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.ExtraExpenseTotal)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.ExtraExpenseTotal.FormatCurrency(0)
+                        </div>
                     </div>
-                    <div class="col-5" style="text-align:right">
-                        @Model.ExtraExpenseTotal.FormatCurrency(0)
+                }
+
+                @if (Math.Abs(Model.SavingsGoalTransferTotal) > 0) {
+                    <div class="row">
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.SavingsGoalTransferTotal)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.SavingsGoalTransferTotal.FormatCurrency(0)
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-7">
-                        @Html.DisplayNameFor(model => Model.SavingsGoalTransferTotal)
+                }
+
+                @if (Math.Abs(Model.BillsTotal) > 0) {
+                    <div class="row">
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.BillsTotal)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.BillsTotal.FormatCurrency(0)
+                        </div>
                     </div>
-                    <div class="col-5" style="text-align:right">
-                        @Model.SavingsGoalTransferTotal.FormatCurrency(0)
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-7">
-                        @Html.DisplayNameFor(model => Model.BillsTotal)
-                    </div>
-                    <div class="col-5" style="text-align:right">
-                        @Model.BillsTotal.FormatCurrency(0)
-                    </div>
-                </div>
+                }
+
                 <hr class="mt-1 mb-1" />
+
                 <div class="row">
                     <div class="col-7">
                         @Html.DisplayNameFor(model => Model.NetAmount)
