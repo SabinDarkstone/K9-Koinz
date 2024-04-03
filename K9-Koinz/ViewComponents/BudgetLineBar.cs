@@ -127,6 +127,25 @@ namespace K9_Koinz.ViewComponents {
             }
         }
 
+        public List<double> SundayPercentLines {
+            get {
+                if (!line.ShowWeeklyLines) {
+                    return new List<double>();
+                }
+
+                var dates = new List<double>();
+                var daysInMonth = DateTime.DaysInMonth(CurrentPeriod.Year, CurrentPeriod.Month);
+                for (int day = 1; day <= daysInMonth; day++) {
+                    var date = new DateTime(CurrentPeriod.Year, CurrentPeriod.Month, day);
+                    if (date.DayOfWeek == DayOfWeek.Sunday) {
+                        dates.Add(100 * (float)date.Day / daysInMonth);
+                    }
+                }
+
+                return dates;
+            }
+        }
+
         public double BudgetedAmount => line.BudgetedAmount;
         public double SpentAmount => line.SpentAmount;
 

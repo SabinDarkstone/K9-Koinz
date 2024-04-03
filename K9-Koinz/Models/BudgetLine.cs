@@ -34,6 +34,8 @@ namespace K9_Koinz.Models {
         public bool DoRollover { get; set; }
         [DisplayName("Always Green")]
         public bool GreenBarAlways { get; set; }
+        [DisplayName("Show Week Dividers in Bar")]
+        public bool ShowWeeklyLines { get; set; }
 
         public List<BudgetLinePeriod> Periods { get; set; } = new();
 

@@ -24,11 +24,17 @@
             <div class="col">
                 <div class="progress" style="height: 20px;">
                     <div class="@Model.SolidProgressBarClassList" role="progressbar" style="@Model.SolidWidthString">
-                        @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
-                            <ul class="marker-list">
+                        <ul class="marker-list">
+                            @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
                                 <li class="marker" style="@Model.TodayLineStyle"></li>
-                            </ul>
-                        }
+                            }
+
+                            @if (Model.SundayPercentLines.Count > 0) {
+                                foreach (var line in Model.SundayPercentLines) {
+                                    <li class="marker2" style="left:@line%"></li>
+                                }
+                            }
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -39,21 +45,33 @@
                 <div class="progress" style="height: 20px;">
                     @if (Model.HadExtraMoneyLastPeriod) {
                         <div class="@Model.StripedProgressBarClassList" role="progressbar" style="@Model.StripedWidthString">
-                            @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
-                                <ul class="marker-list">
+                            <ul class="marker-list">
+                                @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
                                     <li class="marker" style="@Model.TodayLineStyle"></li>
-                                </ul>
-                            }
+                                }
+
+                                @if (Model.SundayPercentLines.Count > 0) {
+                                    foreach (var line in Model.SundayPercentLines) {
+                                        <li class="marker2" style="left:@line%"></li>
+                                    }
+                                }
+                            </ul>
                         </div>
                         <div class="@Model.SolidProgressBarClassList" role="progressbar" style="@Model.SolidWidthString">
                         </div>
                     } else if (Model.WentOverBudgetLastPeriod) {
                         <div class="@Model.SolidProgressBarClassList" role="progressbar" style="@Model.SolidWidthString">
-                            @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
-                                <ul class="marker-list">
+                            <ul class="marker-list">
+                                @if (Model.CurrentPeriod.Date == DateTime.Now.Date) {
                                     <li class="marker" style="@Model.TodayLineStyle"></li>
-                                </ul>
-                            }
+                                }
+
+                                @if (Model.SundayPercentLines.Count > 0) {
+                                    foreach (var line in Model.SundayPercentLines) {
+                                        <li class="marker2" style="left:@line%"></li>
+                                    }
+                                }
+                            </ul>
                         </div>
                         <div class="@Model.StripedProgressBarClassList" role="progressbar" style="@Model.StripedWidthString">
                         </div>
