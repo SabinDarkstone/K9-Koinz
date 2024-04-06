@@ -4,7 +4,7 @@
         let amount = parseFloat($(this).val()) || 0;
         runningTotal += amount;
     });
-    console.log("running total", runningTotal);
+    //console.log("running total", runningTotal);
     $("#txtTotalAmount").val(runningTotal.toFixed(2));
     return runningTotal;
 }
@@ -14,7 +14,7 @@ function checkDisableSaveButton() {
 
     // Determine if the save button should be disabled
     if (runningTotal.toFixed(2) != parentTransaction.Amount.toFixed(2)) {
-        console.log('disabling button because', runningTotal.toFixed(2), parentTransaction.Amount.toFixed(2));
+        //console.log('disabling button because', runningTotal.toFixed(2), parentTransaction.Amount.toFixed(2));
         $("#btnSave").prop("disabled", true);
     } else {
         $("#btnSave").prop("disabled", false);
@@ -22,8 +22,7 @@ function checkDisableSaveButton() {
     $(".txtAmount").each(function (idx) {
         const hfCategoryValue = $("#hfCategory-" + idx).val();
 
-        console.log(idx, "hfcategoryvalue", hfCategoryValue, $(this).val() && $(this).val() != 0 && $(this).val() != "");
-
+        //console.log(idx, "hfcategoryvalue", hfCategoryValue, $(this).val() && $(this).val() != 0 && $(this).val() != "");
 
         if ($(this).val() && $(this).val() != 0 && $(this).val() != "") {
             if (!hfCategoryValue) {
@@ -62,7 +61,7 @@ $(".txtAmount").keyup(function () {
 
     // Determine if the save button should be disabled
     if (runningTotal.toFixed(2) != parentTransaction.Amount.toFixed(2)) {
-        console.log('disabling button because', runningTotal.toFixed(2), parentTransaction.Amount.toFixed(2));
+        //console.log('disabling button because', runningTotal.toFixed(2), parentTransaction.Amount.toFixed(2));
         $("#btnSave").prop("disabled", true);
     } else {
         $("#btnSave").prop("disabled", false);
@@ -71,9 +70,17 @@ $(".txtAmount").keyup(function () {
     checkDisableSaveButton();
 });
 
-$(".txtCategory").change(function () {
+$("input").keyup(function () {
     checkDisableSaveButton();
 })
+
+$("input").blur(function () {
+    checkDisableSaveButton();
+})
+
+$("input").change(function () {
+    console.log($(this).val());
+});
 
 $(".btnAddRow").click(function() {
     const rowIndex = $(this).data("index");
@@ -100,7 +107,7 @@ $(".btnRemoveRow").click(function () {
     currentRow.hide();
 
     currentRow.find("input").each(function () {
-        console.log("clearing value from " + $(this));
+        //console.log("clearing value from " + $(this));
         $(this).val("");
     });
 
