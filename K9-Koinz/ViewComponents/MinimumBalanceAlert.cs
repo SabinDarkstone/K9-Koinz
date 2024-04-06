@@ -14,11 +14,15 @@ namespace K9_Koinz.ViewComponents {
 
         public async Task<IViewComponentResult> InvokeAsync() {
             var accounts = await _context.Accounts
-                .Include(acct => acct.Transactions.Where(trans => trans.Date >= trans.Account.InitialBalanceDate))
-                .AsNoTracking()
-                .ToListAsync();
+                .Include(acct => acct.Transactions.Where(trans => trans.Date.Date >= trans.Account.InitialBalanceDate))
+            .AsNoTracking()
+            .ToListAsync();
 
-            accounts.ForEach(acct => acct.CurrentBalance = acct.Transactions.GetTotal() + acct.InitialBalance);
+            foreach (var acct in accounts) {
+                acct.Transactions = acct.Transactions.Where(trans => trans.Date.Date > acct.InitialBalanceDate || trans.Date.Date == acct.InitialBalanceDate && trans.DoNotSkip).ToList();
+                acct.CurrentBalance = acct.Transactions.GetTotal() + acct.InitialBalance;
+            }
+
             return View(accounts);
         }
     }
