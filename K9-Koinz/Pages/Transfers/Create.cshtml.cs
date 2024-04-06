@@ -5,6 +5,8 @@ using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : AbstractCreateModel<Transfer> {
@@ -37,12 +39,13 @@ namespace K9_Koinz.Pages.Transfers {
         protected override async Task AfterSaveActionsAsync() {
             transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
 
-            foundMatchingTransactions = _context.Transactions
-                .Where(trans => trans.AccountId == transactions[0].AccountId)
-                .Where(trans => trans.Amount == transactions[0].Amount)
-                .ToList()
-                .Where(trans => Math.Abs((trans.Date - transactions[1].Date).TotalDays) <= 5)
-                .Any();
+            var startDate = Record.Date.AddDays(-3);
+            var endDate = Record.Date.AddDays(3);
+
+            foundMatchingTransactions = await _context.Transactions
+                .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
+                .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date.Date)
+                .AnyAsync();
 
             foreach (var transaction in transactions) {
                 transaction.TransferId = Record.Id;
@@ -54,6 +57,18 @@ namespace K9_Koinz.Pages.Transfers {
 
         protected override IActionResult NavigateOnSuccess() {
             if (foundMatchingTransactions) {
+                var startDate = Record.Date.AddDays(-3);
+                var endDate = Record.Date.AddDays(3);
+
+                _logger.LogInformation(
+                    JsonConvert.SerializeObject(
+                        _context.Transactions
+                            .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
+                            .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date.Date)
+                            .ToList()
+                        , new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects, Formatting = Formatting.Indented }
+                    )
+                );
                 return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = transactions[1].Id });
             }
 

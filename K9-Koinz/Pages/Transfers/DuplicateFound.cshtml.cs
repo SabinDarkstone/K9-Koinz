@@ -29,6 +29,9 @@ namespace K9_Koinz.Pages.Transfers {
                 .Include(fer => fer.RepeatConfig)
                 .FirstOrDefault(fer => fer.Id == id.Value);
 
+            var startDate = Transfer.Date.AddDays(-5);
+            var endDate = Transfer.Date.AddDays(5);
+
             MatchingTransfers = _context.Transfers
                 .Where(fer => fer.ToAccountId == Transfer.ToAccountId && fer.FromAccountId == Transfer.FromAccountId)
                 .Where(fer => fer.Amount == Transfer.Amount)
@@ -37,8 +40,7 @@ namespace K9_Koinz.Pages.Transfers {
                 .Where(fer => fer.RepeatConfig.IntervalGap == Transfer.RepeatConfig.IntervalGap)
                 .Where(fer => fer.RepeatConfig.Frequency == Transfer.RepeatConfig.Frequency)
                 .Where(fer => fer.Id != Transfer.Id)
-                .AsEnumerable()
-                .Where(fer => Math.Abs((fer.Date - Transfer.Date).TotalDays) <= 5)
+                .Where(fer => fer.Date >= startDate && fer.Date <= endDate)
                 .ToList();
 
             return Page();
