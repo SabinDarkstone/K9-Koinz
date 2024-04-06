@@ -2,7 +2,6 @@
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace K9_Koinz.Controllers {
     public class TransactionsController : Controller {

@@ -7,6 +7,7 @@
         source: (request, response) => autocompleteMerchants(request, response),
         select: function (e, i) {
             $(hfId).val(i.item.val);
+            checkDisableSaveButton();
         },
         minLength: 1
     });
@@ -21,6 +22,7 @@ $(".txtCategory").each((idx, item) => {
         source: (request, response) => autocompleteCategories(request, response),
         select: function (e, i) {
             $(hfId).val(i.item.val);
+            checkDisableSaveButton();
         },
         minLength: 1
     });

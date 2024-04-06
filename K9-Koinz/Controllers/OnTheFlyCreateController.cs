@@ -12,7 +12,7 @@ namespace K9_Koinz.Controllers {
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostAddMerchant(string merchantName) {
+        public async Task<JsonResult> AddMerchantAsync(string merchantName) {
             var isExisting = await _context.Merchants.Where(merc => merc.Name == merchantName).AnyAsync();
             if (isExisting) {
                 return new JsonResult("DUPLICATE");
