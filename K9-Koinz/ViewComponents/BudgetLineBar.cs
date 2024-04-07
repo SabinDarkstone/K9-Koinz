@@ -138,7 +138,7 @@ namespace K9_Koinz.ViewComponents {
                 for (int day = 1; day <= daysInMonth; day++) {
                     var date = new DateTime(CurrentPeriod.Year, CurrentPeriod.Month, day);
                     if (date.DayOfWeek == DayOfWeek.Sunday) {
-                        dates.Add(100 * (float)date.Day / daysInMonth);
+                        dates.Add(100 * (float)day / daysInMonth);
                     }
                 }
 
