@@ -2,6 +2,8 @@
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
+using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Savings.Goals {
     public class CreateModel : AbstractCreateModel<SavingsGoal> {
@@ -15,6 +17,10 @@ namespace K9_Koinz.Pages.Savings.Goals {
             Record.SavingsType = SavingsType.GOAL;
 
             Record.SavedAmount = 0d;
+        }
+
+        protected override IActionResult NavigateOnSuccess() {
+            return RedirectToPage(PagePaths.SavingsIndex, new { view = "goals" });
         }
     }
 }
