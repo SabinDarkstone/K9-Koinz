@@ -39,13 +39,19 @@
         public const string MerchantEdit = "/Merchants/Edit";
         public const string MerchantIndex = "/Merchants/Index";
 
-        public const string SavingsGoalsAllocate = "/SavingsGoals/Allocate";
-        public const string SavingsGoalsAllocateRecurring = "/SavingsGoals/AllocateRecurring";
-        public const string SavingsGoalCreate = "/SavingsGoals/Create";
-        public const string SavingsGoalDelete = "/SavingsGoals/Delete";
-        public const string SavingsGoalDetails = "/SavingsGoals/Details";
-        public const string SavingsGoalEdit = "/SavingsGoals/Edit";
-        public const string SavingsGoalIndex = "/SavingsGoals/Index";
+        public const string SavingsAllocate = "/Savings/Allocate";
+        public const string SavingsAllocateRecurring = "/Savings/AllocateRecurring";
+        public const string SavingsIndex = "/Savings/Index";
+
+        public const string SavingsGoalCreate = "/Savings/Goals/Create";
+        public const string SavingsGoalDelete = "/Savings/Goals/Delete";
+        public const string SavingsGoalDetails = "/Savings/Goals/Details";
+        public const string SavingsGoalEdit = "/Savings/Goals/Edit";
+
+        public const string SavingsBucketCreate = "/Savings/Buckets/Create";
+        public const string SavingsBucketDelete = "/Savings/Buckets/Delete";
+        public const string SavingsBucketDetails = "/Savings/Buckets/Details";
+        public const string SavingsBucketEdit = "/Savings/Buckets/Edit";
 
         public const string TagCreate = "/Tags/Create";
         public const string TagDelete = "/Tags/Delete";

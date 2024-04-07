@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
-namespace K9_Koinz.Pages.SavingsGoals {
+namespace K9_Koinz.Pages.Savings {
     public class AllocateModel : PageModel {
 
         private readonly KoinzContext _context;

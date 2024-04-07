@@ -47,7 +47,7 @@ namespace K9_Koinz.Pages.Transactions {
             if (foundMatchingTransaction) {
                 return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = Record.Id });
             } else if (doHandleSavingsGoal) {
-                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = Record.Id });
+                return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = Record.Id });
             } else {
                 var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
                 return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
