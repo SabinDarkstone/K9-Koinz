@@ -22,6 +22,7 @@ namespace K9_Koinz.Services {
 
             if (line.Budget.DoNotUseCategories) {
                 line.BudgetCategory.Transactions = _context.Transactions
+                    .AsNoTracking()
                     .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER)
                     .Where(trans => !trans.IsSplit)
                     .Where(trans => !trans.IsSavingsSpending)
@@ -46,6 +47,7 @@ namespace K9_Koinz.Services {
                     .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                     .Where(trans => !trans.IsSavingsSpending)
                     .Where(trans => !trans.IsSplit)
+                    .Where(trans => !trans.BillId.HasValue)
                     .AsEnumerable();
 
                 if (line.Budget.BudgetTagId.HasValue) {
