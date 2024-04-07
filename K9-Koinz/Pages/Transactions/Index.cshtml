@@ -184,6 +184,9 @@
                                     @if (item.ParentTransactionId.HasValue) {
                                         <i class="fa-solid fa-sitemap"></i>
                                     }
+                                    @if (item.BillId.HasValue) {
+                                        <i class="fa-regular fa-money-bill-1"></i>
+                                    }
                                     @Html.DisplayFor(modelItem => item.MerchantName)
                                 </a>
                             </td>
@@ -236,6 +239,9 @@
                                     }
                                     @if (transaction.ParentTransactionId.HasValue) {
                                         <i class="fa-solid fa-sitemap"></i>
+                                    }
+                                    @if (transaction.BillId.HasValue) {
+                                        <i class="fa-regular fa-money-bill-1"></i>
                                     }
                                     @transaction.MerchantName
                                 </div>
