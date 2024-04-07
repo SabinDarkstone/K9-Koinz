@@ -1,0 +1,54 @@
+﻿@page
+@using K9_Koinz.Utils
+@using Models
+@model K9_Koinz.Pages.Savings.Buckets.CreateModel
+
+@{
+    ViewData["Title"] = "Create New Savings Bucket";
+}
+
+<h1>Create</h1>
+
+<h4>Savings Bucket</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.Description" class="control-label"></label>
+                <input asp-for="Record.Description" class="form-control" />
+                <span asp-validation-for="Record.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.AccountId" class="control-label"></label>
+                <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
+                    <option value="" selected disabled>Select an Account...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.StartingAmount" class="control-label"></label>
+                <input asp-for="Record.StartingAmount" class="form-control" />
+                <span asp-validation-for="Record.StartingAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="@PagePaths.SavingsIndex">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

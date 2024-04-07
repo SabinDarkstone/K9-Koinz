@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace K9_Koinz.Pages.SavingsGoals {
+namespace K9_Koinz.Pages.Savings {
     public class AllocateRecurringModel : PageModel {
         private readonly KoinzContext _context;
 

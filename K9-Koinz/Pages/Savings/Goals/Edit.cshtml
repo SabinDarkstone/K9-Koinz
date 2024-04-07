@@ -1,13 +1,12 @@
 ﻿@page
 @using K9_Koinz.Utils
-@using Models
-@model K9_Koinz.Pages.SavingsGoals.CreateModel
+@model K9_Koinz.Pages.Savings.Goals.EditModel
 
 @{
-    ViewData["Title"] = "Create New Savings Goal";
+    ViewData["Title"] = "Edit Savings Goal";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>Savings Goal</h4>
 <hr />
@@ -15,6 +14,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Record.Id" />
             <div class="form-group">
                 <label asp-for="Record.Name" class="control-label"></label>
                 <input asp-for="Record.Name" class="form-control" />
@@ -38,12 +38,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.StartDate" class="control-label"></label>
-                <input asp-for="Record.StartDate" class="form-control" value="@DateTime.Today.FormatForUrl()"/>
+                <input asp-for="Record.StartDate" class="form-control" value="@Model.Record.StartDate.FormatForUrl()" />
                 <span asp-validation-for="Record.StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.TargetDate" class="control-label"></label>
-                <input asp-for="Record.TargetDate" class="form-control" />
+                @if (Model.Record.TargetDate.HasValue) {
+                    <input asp-for="Record.TargetDate" class="form-control" value="@Model.Record.TargetDate.Value.FormatForUrl()" />
+                } else {
+                    <input asp-for="Record.TargetDate" class="form-control" />
+
+                }
                 <span asp-validation-for="Record.TargetDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -52,14 +57,16 @@
                 <span asp-validation-for="Record.StartingAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary my-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Save
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-page="@PagePaths.SavingsGoalIndex">Back to List</a>
+    <a asp-page="@PagePaths.SavingsIndex">Back to List</a>
 </div>
 
 @section Scripts {

@@ -73,7 +73,7 @@ namespace K9_Koinz.Pages.Transactions {
                 .Where(trans => trans.Id == id)
                 .SingleOrDefault();
             if (toTransaction.Category.CategoryType == CategoryType.TRANSFER || toTransaction.Category.CategoryType == CategoryType.INCOME) {
-                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = id });
+                return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = id });
             }
 
             return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {

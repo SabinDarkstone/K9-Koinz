@@ -69,7 +69,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == Record.ToAccountId);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = Record.Id });
+                return RedirectToPage(PagePaths.SavingsAllocateRecurring, new { relatedId = Record.Id });
             }
 
             return RedirectToPage(PagePaths.TransferManage);

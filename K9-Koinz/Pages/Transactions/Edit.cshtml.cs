@@ -103,7 +103,7 @@ namespace K9_Koinz.Pages.Transactions {
 
         protected override IActionResult NavigationOnSuccess() {
             if (Record.IsSavingsSpending && !Record.SavingsGoalId.HasValue) {
-                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = Record.Id });
+                return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = Record.Id });
             }
 
             var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();

@@ -1,14 +1,14 @@
 ﻿@page
 @using K9_Koinz.Utils
-@model K9_Koinz.Pages.SavingsGoals.EditModel
+@model K9_Koinz.Pages.Savings.Buckets.EditModel
 
 @{
-    ViewData["Title"] = "Edit Savings Goal";
+    ViewData["Title"] = "Edit Savings Bucket";
 }
 
 <h1>Edit</h1>
 
-<h4>Savings Goal</h4>
+<h4>Savings Bucket</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,26 +32,6 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Record.TargetAmount" class="control-label"></label>
-                <input asp-for="Record.TargetAmount" class="form-control" />
-                <span asp-validation-for="Record.TargetAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Record.StartDate" class="control-label"></label>
-                <input asp-for="Record.StartDate" class="form-control" value="@Model.Record.StartDate.FormatForUrl()" />
-                <span asp-validation-for="Record.StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Record.TargetDate" class="control-label"></label>
-                @if (Model.Record.TargetDate.HasValue) {
-                    <input asp-for="Record.TargetDate" class="form-control" value="@Model.Record.TargetDate.Value.FormatForUrl()" />
-                } else {
-                    <input asp-for="Record.TargetDate" class="form-control" />
-
-                }
-                <span asp-validation-for="Record.TargetDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Record.StartingAmount" class="control-label"></label>
                 <input asp-for="Record.StartingAmount" class="form-control" />
                 <span asp-validation-for="Record.StartingAmount" class="text-danger"></span>
@@ -66,7 +46,7 @@
 </div>
 
 <div>
-    <a asp-page="@PagePaths.SavingsGoalIndex">Back to List</a>
+    <a asp-page="@PagePaths.SavingsIndex">Back to List</a>
 </div>
 
 @section Scripts {

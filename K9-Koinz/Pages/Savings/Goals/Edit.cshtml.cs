@@ -3,7 +3,7 @@ using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 
-namespace K9_Koinz.Pages.SavingsGoals {
+namespace K9_Koinz.Pages.Savings.Goals {
     public class EditModel : AbstractEditModel<SavingsGoal> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)

@@ -1,0 +1,236 @@
+﻿@page
+@using K9_Koinz.Utils
+@model K9_Koinz.Pages.Savings.IndexModel
+@{
+    ViewData["Title"] = "Savings List";
+}
+
+<style>
+    .marker-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+        .marker-list .marker {
+            position: absolute;
+            width: 1px;
+            height: 20px;
+            background-color: black;
+        }
+
+    .list-group-item {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 0.25rem !important;
+        margin-top: 0.25rem !important;
+        border: none !important;
+    }
+
+    .list-group {
+        margin-left: 1rem !important;
+        margin-right: 1rem !important;
+    }
+</style>
+
+<h1>Savings</h1>
+
+<ul class="nav nav-pills nav-fill mb-4">
+    <li class="nav-item" id="tab-goals">
+        @if (@Model.ActiveTab == SavingsType.GOAL) {
+            <a class="nav-link active" href="#"><i class="fa-solid fa-bullseye"></i> Goals</a>
+        } else {
+            <a class="nav-link" asp-page="@PagePaths.SavingsIndex" asp-route-view="goals"><i class="fa-solid fa-bullseye"></i> Goals</a>
+        }
+    </li>
+
+    <li class="nav-item" id="tab-buckets">
+        @if (@Model.ActiveTab == SavingsType.BUCKET) {
+            <a class="nav-link active" href="#"><i class="fa-solid fa-bucket"></i> Buckets</a>
+        } else {
+            <a class="nav-link" asp-page="@PagePaths.SavingsIndex" asp-route-view="buckets"><i class="fa-solid fa-bucket"></i> Buckets</a>
+        }
+    </li>
+</ul>
+
+@if (Model.ActiveTab == SavingsType.GOAL) {
+    @if (!Model.SavingsDict.Values.SelectMany(x => x).Any()) {
+        <div>
+            <p>You do not have any savings goals created yet.  Click the button below to make one!</p>
+            <a asp-page="@PagePaths.SavingsGoalCreate" class="btn btn-primary">New Savings Goal</a>
+        </div>
+    } else {
+        <p>
+            <a asp-page="@PagePaths.SavingsGoalCreate" class="no-underline-ever">
+                <span class="btn btn-success btn-sm">
+                    <i class="fa-solid fa-plus"></i> New Goal
+                </span>
+            </a>
+        </p>
+    }
+
+    @foreach (var goalGroups in Model.SavingsDict.OrderBy(x => x.Key)) {
+        <h2>@goalGroups.Key</h2>
+
+        <ul class="list-group">
+            @foreach (var goal in goalGroups.Value) {
+                <li class="list-group-item">
+
+                    <h4>
+                        <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@goal.Id" class="no-underline">@goal.Name</a>
+                    </h4>
+                    <p>@goal.Description</p>
+
+                    @{
+                        var todayLine = "left: " + goal.TimePercent + "%;";
+                        var savedWidth = "width: " + goal.SavingsPercent + "%;";
+                        var progressBarClasses = "progress-bar ";
+
+                        if (goal.TotalContributed >= goal.TargetAmount) {
+                            progressBarClasses += "bg-success";
+                        }
+                    }
+
+                    <div class="row" style="margin-bottom:-5px">
+                        <div class="col">
+                            <p>Started: @goal.StartDate.FormatShortString()</p>
+                        </div>
+                        <div class="col">
+                            <p style="text-align: right">
+                                @if (goal.TargetDate.HasValue) {
+                                    <span style="font-weight:lighter;">
+                                        @{
+                                            var daysLeft = (goal.TargetDate.Value - DateTime.Now).Days;
+                                            if (daysLeft > 14) {
+                                                <text>
+                                                    (@(daysLeft / 7) Weeks Left)
+                                                </text>
+                                            } else {
+                                                <text>
+                                                    (@daysLeft Days Left)
+                                                </text>
+                                            }
+                                        }
+                                        &nbsp;
+                                    </span>
+                                    <text>@goal.TargetDate.Value.FormatShortString()</text>
+                                } else {
+                                    <text>No end date specified</text>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom:5px;">
+                        <div class="col">
+                            <div class="progress" style="height: 20px;">
+                                <div class="@progressBarClasses" style="@savedWidth">
+                                    @if (goal.TargetDate.HasValue) {
+                                        <ul class="marker-list">
+                                            <li class="marker" style="@todayLine"></li>
+                                        </ul>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                Saved So Far: @goal.TotalContributed.FormatCurrency(0)
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p style="text-align: right;">
+                                <text>Goal: @goal.TargetAmount.Value.FormatCurrency(0)</text>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            @if (goal.TargetDate.HasValue && goal.SavedAmount < goal.TargetAmount) {
+                                var daysLeft = (goal.TargetDate.Value - DateTime.Now).Days;
+                                var differenceInMoney = goal.TargetAmount - goal.TotalContributed;
+                                var dailyAmount = differenceInMoney / daysLeft;
+
+                                if (daysLeft <= 31) {
+                                    var weeklyAmount = dailyAmount * 7;
+                                    <text>
+                                        You will need to save: @weeklyAmount.Value.FormatCurrency(0) per week to meet your goal.
+                                    </text>
+                                } else if (daysLeft > 31) {
+                                    var monthlyAmount = dailyAmount * 30;
+                                    <text>
+                                        You will need to save: @monthlyAmount.Value.FormatCurrency(0) per month to meet your goal.
+                                    </text>
+                                }
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+} else if (Model.ActiveTab == SavingsType.BUCKET) {
+    @if (!Model.SavingsDict.Values.SelectMany(x => x).Any()) {
+        <div>
+            <p>You do not have any savings buckets created yet.  Click the button below to make one!</p>
+            <a asp-page="@PagePaths.SavingsBucketCreate" class="btn btn-primary">New Savings Bucket</a>
+        </div>
+    } else {
+        <p>
+            <a asp-page="@PagePaths.SavingsBucketCreate" class="no-underline-ever">
+                <span class="btn btn-success btn-sm">
+                    <i class="fa-solid fa-plus"></i> New Bucket
+                </span>
+            </a>
+        </p>
+    }
+
+    @foreach (var goalGroups in Model.SavingsDict.OrderBy(x => x.Key)) {
+        <h2>@goalGroups.Key</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>Total Saved</th>
+                    <th>Last Contribution</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var goal in goalGroups.Value) {
+                    <tr>
+                        <td>@goal.Name</td>
+                        <td>@Html.DisplayFor(m => goal.StartDate)</td>
+                        <td>@goal.TotalContributed.FormatCurrency(0)</td>
+                        <td>
+                            @if (goal.Transactions.Count > 0) {
+                                var lastTrans = goal.Transactions.First();
+
+                                <a class="no-underline" asp-page="@PagePaths.TransactionDetails" asp-route-id="@lastTrans.Id">
+                                    @Html.DisplayFor(m => lastTrans.Date) - @lastTrans.Amount.FormatCurrency(0)
+                                </a>
+                            } else {
+                                <text>None</text>
+                            }
+                        </td>
+                        <td>
+                            <a asp-page="@PagePaths.SavingsBucketEdit" asp-route-id="@goal.Id"><i class="fa-solid fa-pencil"></i></a> |
+                            <a asp-page="@PagePaths.SavingsBucketDetails" asp-route-id="@goal.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                            <a asp-page="@PagePaths.SavingsBucketDelete" asp-route-id="@goal.Id"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+}

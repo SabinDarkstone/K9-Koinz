@@ -29,9 +29,6 @@ namespace K9_Koinz.Pages.Transfers {
                 .Include(fer => fer.RepeatConfig)
                 .FirstOrDefault(fer => fer.Id == id.Value);
 
-            var startDate = Transfer.Date.AddDays(-5);
-            var endDate = Transfer.Date.AddDays(5);
-
             MatchingTransfers = _context.Transfers
                 .Where(fer => fer.ToAccountId == Transfer.ToAccountId && fer.FromAccountId == Transfer.FromAccountId)
                 .Where(fer => fer.Amount == Transfer.Amount)
@@ -40,7 +37,8 @@ namespace K9_Koinz.Pages.Transfers {
                 .Where(fer => fer.RepeatConfig.IntervalGap == Transfer.RepeatConfig.IntervalGap)
                 .Where(fer => fer.RepeatConfig.Frequency == Transfer.RepeatConfig.Frequency)
                 .Where(fer => fer.Id != Transfer.Id)
-                .Where(fer => fer.Date >= startDate && fer.Date <= endDate)
+                .AsEnumerable()
+                .Where(fer => Math.Abs((fer.Date - Transfer.Date).TotalDays) <= 5)
                 .ToList();
 
             return Page();
@@ -59,7 +57,7 @@ namespace K9_Koinz.Pages.Transfers {
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage(PagePaths.SavingsGoalsAllocateRecurring, new { relatedId = transfer.Id });
+                return RedirectToPage(PagePaths.SavingsAllocateRecurring, new { relatedId = transfer.Id });
             }
 
             return RedirectToPage(PagePaths.TransferManage);

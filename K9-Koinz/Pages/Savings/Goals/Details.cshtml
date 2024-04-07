@@ -1,5 +1,5 @@
 ﻿@page
-@model K9_Koinz.Pages.SavingsGoals.DetailsModel
+@model K9_Koinz.Pages.Savings.Goals.DetailsModel
 
 @{
     ViewData["Title"] = "Savings Goal Details";
@@ -32,7 +32,7 @@
             @Html.DisplayNameFor(model => model.Record.TargetAmount)
         </dt>
         <dd class="col-sm-9">
-            @Model.Record.TargetAmount.FormatCurrency(0)
+            @Model.Record.TargetAmount.Value.FormatCurrency(0)
         </dd>
         @if (Model.Record.StartingAmount.HasValue) {
             <dt class="col-sm-3">
@@ -105,4 +105,4 @@
         <i class="fa-solid fa-trash"></i> Delete
     </a>
 </div>
-<a asp-page="@PagePaths.SavingsGoalIndex">Back to List</a>
+<a asp-page="@PagePaths.SavingsIndex">Back to List</a>

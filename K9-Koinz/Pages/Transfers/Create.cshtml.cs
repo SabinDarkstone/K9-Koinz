@@ -76,7 +76,7 @@ namespace K9_Koinz.Pages.Transfers {
             var accountHasGoals = _context.SavingsGoals.Any(goal => goal.AccountId == toAccount.Id);
 
             if ((toAccount.Type == AccountType.CHECKING || toAccount.Type == AccountType.SAVINGS) && accountHasGoals) {
-                return RedirectToPage(PagePaths.SavingsGoalsAllocate, new { relatedId = transactions[1].Id });
+                return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = transactions[1].Id });
             }
 
             return RedirectToPage(PagePaths.TransactionIndex);

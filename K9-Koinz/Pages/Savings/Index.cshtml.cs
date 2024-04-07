@@ -5,18 +5,28 @@ using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace K9_Koinz.Pages.SavingsGoals {
+namespace K9_Koinz.Pages.Savings {
     public class IndexModel : AbstractDbPage {
         public IndexModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) {
         }
 
-        public Dictionary<string, List<SavingsGoal>> SavingsGoalsDict { get; set; }
+        public Dictionary<string, List<SavingsGoal>> SavingsDict { get; set; }
 
-        public async Task<IActionResult> OnGetAsync() {
-            SavingsGoalsDict = await _context.SavingsGoals
-                .Include(goal => goal.Transactions)
+        public SavingsType ActiveTab { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(string view) {
+            if (string.IsNullOrEmpty(view) || view == "goals") {
+                ActiveTab = SavingsType.GOAL;
+            } else {
+                ActiveTab = SavingsType.BUCKET;
+            }
+
+            SavingsDict = await _context.SavingsGoals
                 .AsNoTracking()
+                .Include(goal => goal.Transactions
+                    .OrderByDescending(trans => trans.Date))
+                .Where(goal => goal.SavingsType == ActiveTab)
                 .GroupBy(goal => goal.AccountName)
                 .ToDictionaryAsync(
                     x => x.Key,
@@ -30,7 +40,7 @@ namespace K9_Koinz.Pages.SavingsGoals {
 
         private void VerifyGoalAmountsWithTransactions() {
             var goalsToFix = new List<SavingsGoal>();
-            foreach (var goal in SavingsGoalsDict.Values.SelectMany(x => x)) {
+            foreach (var goal in SavingsDict.Values.SelectMany(x => x)) {
                 var transactionsTotal = goal.Transactions
                     .GetTotal();
                 if (transactionsTotal != goal.SavedAmount) {
