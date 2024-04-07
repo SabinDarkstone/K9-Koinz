@@ -1,6 +1,6 @@
 ﻿@page
 @using K9_Koinz.Utils
-@model K9_Koinz.Pages.SavingsGoals.DeleteModel
+@model K9_Koinz.Pages.Savings.Goals.DeleteModel
 
 @{
     ViewData["Title"] = "Delete Savings Goal";
@@ -37,7 +37,7 @@
             @Html.DisplayNameFor(model => model.Record.TargetAmount)
         </dt>
         <dd class="col-sm-9">
-            @Model.Record.TargetAmount.FormatCurrency(0)
+            @Model.Record.TargetAmount.Value.FormatCurrency(0)
         </dd>
         @if (Model.Record.StartingAmount.HasValue) {
             <dt class="col-sm-3">
@@ -64,6 +64,6 @@
     <form method="post">
         <input type="hidden" asp-for="Record.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="@PagePaths.SavingsGoalIndex">Back to List</a>
+        <a asp-page="@PagePaths.SavingsIndex">Back to List</a>
     </form>
 </div>
