@@ -19,11 +19,11 @@ namespace K9_Koinz.Utils {
         };
 
         public static DateTime StartOfWeek(this DateTime dt) {
-            return dt.AtMidnight().AddDays(-(int)dt.DayOfWeek);
+            return dt.Date.AddDays(-(int)dt.DayOfWeek);
         }
 
         public static DateTime EndOfWeek(this DateTime dt) {
-            return dt.StartOfWeek().AtMidnight().AddDays(7).AddSeconds(-1);
+            return dt.StartOfWeek().Date.AddDays(7).AddSeconds(-1);
         }
 
         public static DateTime StartOfMonth(this DateTime dt) {
@@ -35,11 +35,11 @@ namespace K9_Koinz.Utils {
         }
 
         public static DateTime StartOfYear(this DateTime dt) {
-            return new DateTime(dt.Year, 1, 1).AtMidnight();
+            return new DateTime(dt.Year, 1, 1).Date;
         }
 
         public static DateTime EndOfYear(this DateTime dt) {
-            return new DateTime(dt.Year + 1, 1, 1).AddDays(-1).AtMidnight();
+            return new DateTime(dt.Year + 1, 1, 1).AddDays(-1).Date;
         }
 
         public static DateTime GetPreviousPeriod(this DateTime dt, BudgetTimeSpan timespan) {
@@ -70,20 +70,15 @@ namespace K9_Koinz.Utils {
 
         public static double GetPercentThroughWeek(this DateTime dt) {
             var startDate = dt.StartOfWeek();
-            return (dt - startDate).TotalDays * 100 / 7;
+            return (dt.Day - startDate.Day + 1) / 7d * 100;
         }
 
         public static double GetPercentThroughMonth(this DateTime dt) {
-            var startDate = dt.StartOfMonth();
-            var endDate = dt.EndOfMonth();
-            var totalDays = (endDate - startDate).Days;
-            return (dt - startDate).Days * 100 / totalDays;
+            var totalDays = DateTime.DaysInMonth(dt.Year, dt.Month);
+            return (double)dt.Day / totalDays * 100;
         }
         public static double GetPercentThroughYear(this DateTime dt) {
-            var startDate = dt.StartOfYear();
-            var endDate = dt.EndOfYear();
-            var totalDays = (endDate - startDate).Days;
-            return (dt - startDate).Days * 100 / totalDays;
+            return dt.DayOfYear / 365.25 * 100;
         }
 
         public static string FormatForUrl(this DateTime dt) {

@@ -21,13 +21,15 @@
             width: 2px;
             height: 20px;
             background-color: black;
+            z-index: 2;
         }
 
         .marker-list .marker2 {
             position: absolute;
-            width: 3px;
+            width: 4px;
             height: 20px;
             background-color: white;
+            transform: translateX(-1px);
         }
 
     .list-group-item {
@@ -154,7 +156,7 @@
                     }
                 </ul>
 
-                @if (Model.SelectedBudget.UnallocatedLines.Any()) {
+                @if (Model.SelectedBudget.UnallocatedIncomes.Any()) {
                     <div class="row">
                         <div class="col">
                             <h4>Other Income</h4>
