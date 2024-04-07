@@ -4,10 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9_Koinz.Models {
+
+    public enum SavingsType {
+        [Display(Name = "Goal")]
+        GOAL = 1,
+        [Display(Name = "Bucket")]
+        BUCKET = 2
+    }
+
     public class SavingsGoal : BaseEntity, INameable {
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        [DisplayName("Savings Type")]
+        public SavingsType SavingsType { get; set; }
 
         [DisplayName("Starting Amount")]
         [DataType(DataType.Currency)]
@@ -15,7 +26,7 @@ namespace K9_Koinz.Models {
 
         [DisplayName("Target Amount")]
         [DataType(DataType.Currency)]
-        public double TargetAmount { get; set; }
+        public double? TargetAmount { get; set; }
 
         [DisplayName("Saved Amount")]
         [DataType(DataType.Currency)]
@@ -40,7 +51,7 @@ namespace K9_Koinz.Models {
 
         public ICollection<Transaction> Transactions { get; set; }
 
-        [DisplayName("Progress Towards Goal")]
+        [DisplayName("Total Saved")]
         [NotMapped]
         public double TotalContributed {
             get {
@@ -49,19 +60,32 @@ namespace K9_Koinz.Models {
         }
 
         [NotMapped]
-        public double TimePercent {
+        public double? TimePercent {
             get {
+                if (SavingsType == SavingsType.BUCKET) {
+                    return null;
+                }
+
                 if (!TargetDate.HasValue) {
                     return -1d;
                 }
-                return Math.Clamp((DateTime.Now - StartDate) / (TargetDate.Value - StartDate), 0, 1) * 100;
+
+                return Math.Clamp((DateTime.Now.Date - StartDate) / (TargetDate.Value - StartDate), 0, 1) * 100;
             }
         }
 
         [NotMapped]
-        public double SavingsPercent {
+        public double? SavingsPercent {
             get {
-                return Math.Clamp(TotalContributed / TargetAmount, 0, 1) * 100;
+                if (SavingsType == SavingsType.BUCKET) {
+                    return null;
+                }
+
+                if (!TargetAmount.HasValue) {
+                    return null;
+                }
+
+                return Math.Clamp(TotalContributed / TargetAmount.Value, 0, 1) * 100;
             }
         }
     }
