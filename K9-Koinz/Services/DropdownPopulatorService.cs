@@ -14,6 +14,7 @@ namespace K9_Koinz.Services {
     }
 
     public class DropdownPopulatorService : AbstractService<DropdownPopulatorService>, IDropdownPopulatorService {
+        
         public DropdownPopulatorService(KoinzContext context, ILogger<DropdownPopulatorService> logger)
             : base(context, logger) { }
 

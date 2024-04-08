@@ -23,7 +23,7 @@ namespace K9_Koinz.Pages.Transfers {
                 .AsNoTracking()
                 .GroupBy(fer => fer.FromAccount.Name)
                 .ToDictionaryAsync(
-                    x => x.Key,
+                    x => x.Key ?? "Income",
                     x => x.AsEnumerable()
                         .OrderBy(fer => fer.RepeatConfig.NextFiring)
                         .ThenBy(fer => fer.ToAccount.Name)

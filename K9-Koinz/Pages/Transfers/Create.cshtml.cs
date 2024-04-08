@@ -43,15 +43,11 @@ namespace K9_Koinz.Pages.Transfers {
             var endDate = Record.Date.AddDays(3);
 
             foundMatchingTransactions = await _context.Transactions
-                .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
+                .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (transactions[1] != null && trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date.Date)
                 .AnyAsync();
 
-            foreach (var transaction in transactions) {
-                transaction.TransferId = Record.Id;
-            }
-
-            _context.Transactions.AddRange(transactions);
+            _context.Transactions.AddRange(transactions.Where(x => x != null));
             await _context.SaveChangesAsync();
         }
 
@@ -63,7 +59,7 @@ namespace K9_Koinz.Pages.Transfers {
                 _logger.LogInformation(
                     JsonConvert.SerializeObject(
                         _context.Transactions
-                            .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
+                            .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (transactions[1] != null && trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
                             .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date.Date)
                             .ToList()
                         , new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects, Formatting = Formatting.Indented }

@@ -1,6 +1,8 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers.Recurring {
@@ -18,6 +20,10 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                 .Include(fer => fer.RepeatConfig)
                 .Include(fer => fer.SavingsGoal)
                 .FirstOrDefaultAsync(fer => fer.Id == id);
+        }
+
+        protected override IActionResult NavigateOnSuccess() {
+            return RedirectToAction(PagePaths.TransferManage);
         }
     }
 }

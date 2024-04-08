@@ -15,11 +15,15 @@
             <input type="hidden" asp-for="Transfer.Id" />
             <div class="form-group">
                 <label asp-for="Transfer.FromAccountId" class="control-label"></label>
-                <input asp-for="Transfer.FromAccount.Name" class="form-control" readonly />
+                @if (!Model.Transfer.FromAccountId.HasValue) {
+                    <input value="Income" class="form-control" readonly/>
+                } else {
+                    <input value="@Model.Transfer.FromAccount.Name" class="form-control" readonly />
+                }
             </div>
             <div class="form-group">
                 <label asp-for="Transfer.ToAccountId" class="control-label"></label>
-                <input asp-for="Transfer.ToAccount.Name" class="form-control" readonly />
+                <input value="@Model.Transfer.ToAccount.Name" class="form-control" readonly />
             </div>
             <div class="form-group">
                 <label asp-for="Transfer.CategoryId" class="control-label"></label>

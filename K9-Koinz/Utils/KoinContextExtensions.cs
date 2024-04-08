@@ -19,8 +19,6 @@ namespace K9_Koinz.Utils {
         }
 
         public static async Task<Transaction[]> CreateTransactionsFromTransfer(this KoinzContext context, Transfer transfer, bool trustSavingsGoals = true) {
-            Transaction[] transactons = new Transaction[2];
-
             var category = await context.Categories.FindAsync(transfer.CategoryId);
             var merchant = await context.Merchants.FindAsync(transfer.MerchantId);
             var fromAccount = await context.Accounts.FindAsync(transfer.FromAccountId);
@@ -30,20 +28,25 @@ namespace K9_Koinz.Utils {
                 transfer.TagId = null;
             }
 
-            var fromTransaction = new Transaction {
-                AccountId = transfer.FromAccountId,
-                AccountName = fromAccount.Name,
-                CategoryId = transfer.CategoryId,
-                CategoryName = category.Name,
-                MerchantId = transfer.MerchantId,
-                MerchantName = merchant.Name,
-                Amount = -1 * transfer.Amount,
-                Notes = transfer.Notes,
-                TagId = transfer.TagId,
-                Date = transfer.Date,
-                TransferId = transfer.Id
-            };
-            var toTransaction = new Transaction {
+            Transaction fromTransaction = null;
+
+            if (transfer.FromAccountId.HasValue) {
+                fromTransaction = new Transaction {
+                    AccountId = transfer.FromAccountId.Value,
+                    AccountName = fromAccount.Name,
+                    CategoryId = transfer.CategoryId,
+                    CategoryName = category.Name,
+                    MerchantId = transfer.MerchantId,
+                    MerchantName = merchant.Name,
+                    Amount = -1 * transfer.Amount,
+                    Notes = transfer.Notes,
+                    TagId = transfer.TagId,
+                    Date = transfer.Date,
+                    TransferId = transfer.Id
+                };
+            }
+
+            Transaction toTransaction = new Transaction {
                 AccountId = transfer.ToAccountId,
                 AccountName = toAccount.Name,
                 CategoryId = transfer.CategoryId,
@@ -54,8 +57,11 @@ namespace K9_Koinz.Utils {
                 Notes = transfer.Notes,
                 TagId = transfer.TagId,
                 Date = transfer.Date,
-                TransferId = transfer.Id
             };
+
+            if (transfer.FromAccountId.HasValue) {
+                toTransaction.TransferId = transfer.Id;
+            }
 
             if (trustSavingsGoals && transfer.SavingsGoalId.HasValue) {
                 var savingsGoal = await context.SavingsGoals.FindAsync(transfer.SavingsGoalId);

@@ -27,6 +27,13 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
+            var category = await _context.Categories.FindAsync(Record.CategoryId);
+
+            if (!Record.FromAccountId.HasValue && category.CategoryType != CategoryType.INCOME) {
+                ModelState.AddModelError("income", "You must select a From Account unless you are specifying a source of income.");
+                return;
+            }
+
             foundMatchingSchedule = (await _context.Transfers
                 .Where(fer => fer.ToAccountId == Record.ToAccountId && fer.FromAccountId == Record.FromAccountId)
                 .Where(fer => fer.Amount == Record.Amount)
@@ -54,7 +61,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                 }
 
                 _context.Transfers.Update(Record);
-                _context.Transactions.AddRange(transactions);
+                _context.Transactions.AddRange(transactions.Where(x => x != null));
 
                 await _context.SaveChangesAsync();
             }

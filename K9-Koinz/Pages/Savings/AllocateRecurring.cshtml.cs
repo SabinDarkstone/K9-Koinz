@@ -5,17 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace K9_Koinz.Pages.Savings {
     public class AllocateRecurringModel : PageModel {
         private readonly KoinzContext _context;
+        private readonly ILogger<AllocateRecurringModel> _logger;
 
         [BindProperty]
         public Transfer Transfer { get; set; }
         public SelectList GoalOptions { get; set; } = default!;
 
-        public AllocateRecurringModel(KoinzContext context) {
+        public AllocateRecurringModel(KoinzContext context, ILogger<AllocateRecurringModel> logger) {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult OnGet(Guid relatedId) {
@@ -38,6 +41,9 @@ namespace K9_Koinz.Pages.Savings {
 
         public async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
+                _logger.LogInformation(
+                    JsonConvert.SerializeObject(ModelState, Formatting.Indented)
+                );
                 return NotFound();
             }
 

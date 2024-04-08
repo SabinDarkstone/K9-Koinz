@@ -15,7 +15,10 @@ namespace K9_Koinz.Services.BackgroundWorkers {
             var transactionsCreated = await CreateTransfers(nextMinute);
 
             _logger.LogInformation("Created transfer transactions with the following IDs:");
-            transactionsCreated.ForEach(trans => {
+            transactionsCreated
+                .Where(trans => trans != null)
+                .ToList()
+                .ForEach(trans => {
                 _logger.LogInformation(trans.Id.ToString());
             });
         }
@@ -36,7 +39,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 transfer.RepeatConfig.FireNow();
             }
 
-            _context.Transactions.AddRange(transactions);
+            _context.Transactions.AddRange(transactions.Where(x => x != null));
             await _context.SaveChangesAsync();
             return transactions;
         }

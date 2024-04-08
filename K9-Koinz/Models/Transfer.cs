@@ -2,13 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using K9_Koinz.Models.Meta;
-using K9_Koinz.Data;
 
 namespace K9_Koinz.Models {
     public class Transfer : BaseEntity, IAmount {
-        [Required]
         [DisplayName("From Account")]
-        public Guid FromAccountId { get; set; }
+        public Guid? FromAccountId { get; set; }
         public Account FromAccount { get; set; }
         [Required]
         [DisplayName("To Account")]
