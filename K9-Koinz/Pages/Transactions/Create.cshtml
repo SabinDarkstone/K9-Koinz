@@ -24,60 +24,73 @@
     <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group form-floating">
-                <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
-                    <option value="" selected disabled>Select an Account</option>
-                </select>
-                <label asp-for="Record.AccountId"></label>
+            <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
+            <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
+
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
+                        <option value="" selected disabled>Select an Account</option>
+                    </select>
+                    <label asp-for="Record.AccountId"></label>
+                </div>
             </div>
-            <div class="form-group form-floating">
-                <input asp-for="Record.Date" class="form-control" placeholder="Date"/>
-                <label asp-for="Record.Date"></label>
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    <input asp-for="Record.Date" class="form-control" placeholder="Date" />
+                    <label asp-for="Record.Date"></label>
+                </div>
                 <span asp-validation-for="Record.Date" class="text-danger"></span>
             </div>
-            <div class="row align-items-end">
-                <div class="form-group col-8">
-                    <div class="form-floating">
-                        <input id="txtMerchant" class="form-control" placeholder="Merchant"/>
-                        <label for="txtMerchant" asp-for="Record.MerchantId"></label>
-                    </div>
-                    <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
-                    <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
+            <div class="input-group mb-3">
+                <div class="form-floating flex-grow-1">
+                    <input id="txtMerchant" class="form-control" placeholder="Merchant" />
+                    <label asp-for="Record.MerchantId"></label>
                 </div>
-                <div class="form-group col-4" style="text-align: right">
-                    <a class="btn btn-outline-primary" id="btnAddMerchant">Add New</a>
+                <div class="input-group-text">
+                    <span class="btn btn-outline-secondary input-group-text" id="btnAddMerchant">Add New</span>
                 </div>
+                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
             </div>
-            <div class="form-group form-floating">
-                <input id="txtCategory" class="form-control" placeholder="Category" />
-                <label asp-for="Record.CategoryId"></label>
-                <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    <input id="txtCategory" class="form-control" placeholder="Category" />
+                    <label asp-for="Record.CategoryId"></label>
+                </div>
                 <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>
-            <div class="form-group form-floating">
-                <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
-                    <option value="@Guid.Empty" selected>No Tag</option>
-                </select>
-                <label asp-for="Record.TagId"></label>
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
+                        <option value="@Guid.Empty" selected>No Tag</option>
+                    </select>
+                    <label asp-for="Record.TagId"></label>
+                </div>
             </div>
-            <div class="form-group form-floating">
-                <input asp-for="Record.Amount" class="form-control" placeholder="Amount"/>
-                <label asp-for="Record.Amount"></label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <div class="form-floating">
+                    <input asp-for="Record.Amount" class="form-control" placeholder="Amount" />
+                    <label asp-for="Record.Amount"></label>
+                </div>
                 <span asp-validation-for="Record.Amount" class="text-danger"></span>
             </div>
-            <div class="form-group form-floating">
-                <textarea asp-for="Record.Notes" class="form-control" placeholder="Notes" style="height:150px"></textarea>
-                <label asp-for="Record.Notes"></label>
+
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    <textarea asp-for="Record.Notes" class="form-control" placeholder="Notes" style="height:150px"></textarea>
+                    <label asp-for="Record.Notes"></label>
+                </div>
                 <span asp-validation-for="Record.Notes" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="input-group mb-3">
                 <div class="form-check form-switch">
                     @Html.EditorFor(x => x.Record.IsSavingsSpending, new { htmlAttributes = new { @class = "form-check-input" } })
                     <label class="form-check-label" asp-for="Record.IsSavingsSpending"></label>
                 </div>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary my-2">
+                <button type="submit" class="btn btn-primary mb-2">
                     <i class="fa-solid fa-floppy-disk"></i> Create
                 </button>
             </div>

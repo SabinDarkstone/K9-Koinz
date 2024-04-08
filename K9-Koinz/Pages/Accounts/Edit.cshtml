@@ -14,34 +14,36 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.Id" />
-            <div class="form-group">
-                <label asp-for="Record.Name" class="control-label"></label>
-                <input asp-for="Record.Name" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Name" class="form-control" placeholder="Account Name"/>
+                <label asp-for="Record.Name"></label>
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Description" class="control-label"></label>
-                <input asp-for="Record.Description" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Description" class="form-control" placeholder="Description"/>
+                <label asp-for="Record.Description"></label>
                 <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Type" class="control-label"></label>
-                <select asp-for="Record.Type" class="form-control" asp-items="@Html.GetEnumSelectList<AccountType>()"></select>
+            <div class="form-group form-floating">
+                <select asp-for="Record.Type" class="form-control" asp-items="@Html.GetEnumSelectList<AccountType>()">
+                    <option value="" selected disabled>Account Type</option>
+                </select>
+                <label asp-for="Record.Type"></label>
                 <span asp-validation-for="Record.Type" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.InitialBalance" class="control-label"></label>
-                <input asp-for="Record.InitialBalance" class="form-control" type="number" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.InitialBalance" class="form-control" type="number" placeholder="Initial Balance"/>
+                <label asp-for="Record.InitialBalance"></label>
                 <span asp-validation-for="Record.InitialBalance" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.InitialBalanceDate" class="control-label"></label>
-                <input asp-for="Record.InitialBalanceDate" class="form-control" type="date" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.InitialBalanceDate" class="form-control" type="date" placeholder="Initial Balance Date"/>
+                <label asp-for="Record.InitialBalanceDate"></label>
                 <span asp-validation-for="Record.InitialBalanceDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.MinimumBalance" class="control-label"></label>
-                <input asp-for="Record.MinimumBalance" class="form-control" type="number" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.MinimumBalance" class="form-control" type="number" placeholder="Minimum Balance"/>
+                <label asp-for="Record.MinimumBalance"></label>
                 <span asp-validation-for="Record.MinimumBalance" class="text-danger"></span>
             </div>
             <div class="form-group">

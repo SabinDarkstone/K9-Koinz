@@ -13,6 +13,7 @@ namespace K9_Koinz {
             });
 
             builder.Services.AddMvc();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
