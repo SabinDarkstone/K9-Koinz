@@ -14,18 +14,17 @@ function checkDisableSaveButton() {
 
     // Determine if the save button should be disabled
     if (runningTotal.toFixed(2) != parentTransaction.Amount.toFixed(2)) {
-        //console.log('disabling button because', runningTotal.toFixed(2), parentTransaction.Amount.toFixed(2));
         $("#btnSave").prop("disabled", true);
     } else {
         $("#btnSave").prop("disabled", false);
     }
     $(".txtAmount").each(function (idx) {
-        const hfCategoryValue = $("#hfCategory-" + idx).val();
+        const categoryOrGoalValue = $("#hfCategory-" + idx).val() || $("#cbxSavingsGoal-" + idx).val();
 
-        //console.log(idx, "hfcategoryvalue", hfCategoryValue, $(this).val() && $(this).val() != 0 && $(this).val() != "");
+        console.log(categoryOrGoalValue);
 
         if ($(this).val() && $(this).val() != 0 && $(this).val() != "") {
-            if (!hfCategoryValue) {
+            if (!categoryOrGoalValue) {
                 console.log('disabling button because', idx);
                 $("#btnSave").prop("disabled", true);
             }

@@ -14,6 +14,7 @@ namespace K9_Koinz.Pages.Transactions {
                 .Include(trans => trans.Bill)
                 .Include(trans => trans.SplitTransactions)
                 .Include(trans => trans.Category)
+                .Include(trans => trans.Transfer)
                 .SingleOrDefaultAsync(trans => trans.Id == id);
         }
     }
