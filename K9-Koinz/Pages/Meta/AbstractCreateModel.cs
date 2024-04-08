@@ -3,6 +3,8 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
@@ -35,6 +37,7 @@ namespace K9_Koinz.Pages.Meta {
 
         public virtual async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
+                _logger.LogInformation(JsonConvert.SerializeObject(ModelState, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects }));
                 await BeforePageLoadActions();
                 return NavigationOnFailure();
             }

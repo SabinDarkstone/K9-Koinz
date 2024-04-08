@@ -31,11 +31,6 @@
                 </div>
             }
             <div class="form-group">
-                <label asp-for="Record.Name" class="control-label"></label>
-                <input asp-for="Record.Name" class="form-control" />
-                <span asp-validation-for="Record.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Record.FontAwesomeIcon" class="control-label"></label>
                 <input asp-for="Record.FontAwesomeIcon" class="form-control" />
                 <span asp-validation-for="Record.FontAwesomeIcon" class="text-danger"></span>
@@ -58,11 +53,8 @@
                     <input type="text" asp-for="Record.CategoryType" value="@Model.ParentCategory.CategoryTypeName" class="form-control" readonly />
                 </div>
             }
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary my-2">
-                    <i class="fa-solid fa-floppy-disk"></i> Create
-                </button>
-            </div>
+
+            @Html.SubmitButton()
         </form>
     </div>
 </div>

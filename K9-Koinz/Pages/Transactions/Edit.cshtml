@@ -29,17 +29,8 @@
                 </select>
                 <label asp-for="Record.AccountId"></label>
             </div>
-            <div class="form-group form-floating">
-                <input asp-for="Record.Date" class="form-control" value="@Model.Record.Date.FormatForUrl()" placeholder="Date" />
-                <label asp-for="Record.Date"></label>
-                <span asp-validation-for="Record.Date" class="text-danger"></span>
-            </div>
-            <div class="form-group form-floating">
-                <input id="txtMerchant" class="form-control" value="@Model.Record.MerchantName" placeholder="Merchant">
-                <label asp-for="Record.MerchantId"></label>
-                <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
-                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
-            </div>
+            @Html.FloatingFormInput(model => Model.Record.Date, type: "date", value: Model.Record.Date.FormatForUrl())
+            @Html.FloatingFormInput(model => Model.Record.MerchantId, autocompleteKey: "Merchant", value: Model.Record.MerchantName)
             <div class="form-group form-floating">
                 @if (Model.Record.IsSplit) {
                     <input id="txtCategory" class="form-control" value="@Model.Record.CategoryName" disabled />

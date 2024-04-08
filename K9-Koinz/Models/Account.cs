@@ -41,6 +41,11 @@ namespace K9_Koinz.Models {
         [Column(TypeName = "decimal(10, 2)")]
         public double? MinimumBalance { get; set; }
 
+        [DisplayName("Interest Rate")]
+        [DisplayFormat(DataFormatString = "{0:P2}")]
+        [Column(TypeName = "decimal(2,2)")]
+        public double? InterestRate { get; set; }
+
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<Bill> Bills { get; set; }
 
