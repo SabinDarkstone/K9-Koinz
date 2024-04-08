@@ -104,8 +104,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => Model.Record.MerchantId)</th>
-                <th>@Html.DisplayNameFor(model => Model.Record.CategoryId)</th>
+                @if (Model.Record.Category.CategoryType == CategoryType.TRANSFER) {
+                    <th>Savings Goal</th>
+                } else {
+                    <th>@Html.DisplayNameFor(model => Model.Record.MerchantId)</th>
+                    <th>@Html.DisplayNameFor(model => Model.Record.CategoryId)</th>
+                }
                 <th>@Html.DisplayNameFor(model => Model.Record.Amount)</th>
                 <th>@Html.DisplayNameFor(model => Model.Record.Notes)</th>
             </tr>
@@ -114,8 +118,15 @@
         <tbody>
             @foreach (var split in Model.Record.SplitTransactions) {
                 <tr>
-                    <td>@Html.DisplayFor(model => split.MerchantName)</td>
-                    <td>@Html.DisplayFor(model => split.CategoryName)</td>
+                    @if (Model.Record.Category.CategoryType == CategoryType.TRANSFER) {
+                        <td>
+                            @Html.DisplayFor(model => split.SavingsGoalName)
+                        </td>
+                    } else {
+                        <td>@Html.DisplayFor(model => split.MerchantName)</td>
+                        <td>@Html.DisplayFor(model => split.CategoryName)</td>
+                    }
+
                     <td>@split.Amount.FormatCurrency(2)</td>
                     <td>@Html.DisplayFor(model => split.Notes)</td>
                 </tr>
@@ -125,6 +136,18 @@
 }
 
 <div>
+    @if (Model.Record.TransferId.HasValue) {
+        @if (Model.Record.Transfer.RepeatConfigId.HasValue) {
+            <a class="btn btn-secondary mb-2" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@Model.Record.TransferId">
+                View Recurring Transfer
+            </a>
+        } else {
+            <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransferDetails" asp-route-id="@Model.Record.TransferId">
+                View Transfer
+            </a>
+        }
+    }
+
     @if (!Model.Record.ParentTransactionId.HasValue) {
         <a asp-page="@PagePaths.TransactionEdit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
             <i class="fa-solid fa-pen-to-square"></i> Edit

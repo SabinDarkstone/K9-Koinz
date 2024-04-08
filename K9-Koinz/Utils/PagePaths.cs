@@ -70,6 +70,7 @@
         public const string TransactionSplit = "/Transactions/Split";
 
         public const string TransferCreate = "/Transfers/Create";
+        public const string TransferDetails = "/Transfers/Details";
         public const string TransferDuplicateFound = "/Transfers/DuplicateFound";
         public const string TransferManage = "/Transfers/Manage";
 

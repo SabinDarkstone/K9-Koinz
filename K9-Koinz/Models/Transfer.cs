@@ -38,6 +38,28 @@ namespace K9_Koinz.Models {
         [DisplayName("Repeat Settings")]
         public RepeatConfig RepeatConfig { get; set; }
 
+        public bool IsSplit { get; set; }
+
+        public Transaction ToTransaction {
+            get {
+                if (Transactions == null || Transactions.Count == 0) {
+                    return null;
+                }
+
+                return Transactions.Where(trans => trans.AccountId == ToAccountId).SingleOrDefault();
+            }
+        }
+
+        public Transaction FromTransaction {
+            get {
+                if (Transactions == null || Transactions.Count == 0) {
+                    return null;
+                }
+
+                return Transactions.Where(trans => trans.AccountId == FromAccountId).SingleOrDefault();
+            }
+        }
+
         public ICollection<Transaction> Transactions { get; set; }
     }
 }

@@ -20,6 +20,11 @@ namespace K9_Koinz.Pages.Transactions {
             parent.CategoryName = parent.Category.Name;
             parent.IsSplit = false;
 
+            if (parent.TransferId.HasValue) {
+                var transfer = _context.Transfers.Find(parent.TransferId);
+                transfer.IsSplit = false;
+            }
+
             _context.Transactions.RemoveRange(parent.SplitTransactions);
 
             parent.SplitTransactions = null;

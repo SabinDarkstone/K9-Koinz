@@ -64,7 +64,11 @@
     <table class="table" id="splitTransTable">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(row => Model.ParentTransaction.CategoryId)</th>
+                @if (Model.ParentTransaction.Category.CategoryType == CategoryType.TRANSFER) {
+                    <th>Savings Goal</th>
+                } else {
+                    <th>@Html.DisplayNameFor(row => Model.ParentTransaction.CategoryId)</th>
+                }
                 <th>@Html.DisplayNameFor(row => Model.ParentTransaction.Amount)</th>
                 <th>@Html.DisplayNameFor(row => Model.ParentTransaction.Notes)</th>
                 <th></th>
@@ -78,13 +82,20 @@
                 <input type="hidden" asp-for="SplitTransactions[i].TagId" />
                 <input type="hidden" asp-for="SplitTransactions[i].Date" />
                 <input type="hidden" asp-for="SplitTransactions[i].ParentTransactionId" />
+                <input type="hidden" asp-for="SplitTransactions[i].MerchantId"/>
                 <tr data-index="@i">
                     <td>
-                        <input class="form-control txtCategory" data-index="@i" id="txtCategory-@i" value="@Model.SplitTransactions[i].CategoryName" />
-                        <input asp-for="SplitTransactions[i].CategoryId" type="hidden" class="hfCategory" data-index="@i" id="hfCategory-@i" />
+                        @if (Model.ParentTransaction.Category.CategoryType == CategoryType.TRANSFER) {
+                            <select class="form-control cbxSavingsGoal" asp-for="SplitTransactions[i].SavingsGoalId" data-index="@i" id="cbxSavingsGoal-@i" asp-items="@Model.SavingsGoalsList">
+                                <option value="" selected disabled>Select a Savings Goal...</option>
+                            </select>
+                        } else {
+                            <input class="form-control txtCategory" data-index="@i" id="txtCategory-@i" value="@Model.SplitTransactions[i].CategoryName" />
+                            <input asp-for="SplitTransactions[i].CategoryId" type="hidden" class="hfCategory" data-index="@i" id="hfCategory-@i" />
+                        }
                     </td>
                     <td>
-                        <input asp-for="SplitTransactions[i].Amount" class="form-control txtAmount" data-index="@i" id="txtAmount-@i" size="4"/>
+                        <input asp-for="SplitTransactions[i].Amount" class="form-control txtAmount" data-index="@i" id="txtAmount-@i" size="4" />
                     </td>
                     <td>
                         <input asp-for="SplitTransactions[i].Notes" rows="1" class="form-control" />
