@@ -11,7 +11,7 @@
         },
         data: [
             {
-                type: "spline",
+                type: "line",
                 name: "This Month",
                 dataPoints: thisMonth,
                 markerType: "none",
@@ -20,7 +20,7 @@
                 yValueFormatString: "$##,###"
             },
             {
-                type: "spline",
+                type: "line",
                 name: "Last Month",
                 dataPoints: lastMonth,
                 markerType: "none",
