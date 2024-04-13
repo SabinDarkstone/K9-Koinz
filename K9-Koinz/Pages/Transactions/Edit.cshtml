@@ -29,8 +29,8 @@
                 </select>
                 <label asp-for="Record.AccountId"></label>
             </div>
-            @Html.FloatingFormInput(model => Model.Record.Date, type: "date", value: Model.Record.Date.FormatForUrl())
-            @Html.FloatingFormInput(model => Model.Record.MerchantId, autocompleteKey: "Merchant", value: Model.Record.MerchantName)
+            @Html.FloatingFormInput(model => Model.Record.Date, type: "date")
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.MerchantId, "Merchant", text: Model.Record.MerchantName)
             <div class="form-group form-floating">
                 @if (Model.Record.IsSplit) {
                     <input id="txtCategory" class="form-control" value="@Model.Record.CategoryName" disabled />

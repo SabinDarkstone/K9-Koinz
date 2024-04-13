@@ -35,18 +35,10 @@
                     <label asp-for="Record.AccountId"></label>
                 </div>
             </div>
+            <!-- TODO: Fix -->
             @Html.FloatingFormInput(model => Model.Record.Date, "date")
-            <div class="input-group mb-3">
-                <div class="form-floating flex-grow-1">
-                    <input id="txtMerchant" class="form-control" placeholder="Merchant" />
-                    <label asp-for="Record.MerchantId"></label>
-                </div>
-                <div class="input-group-text">
-                    <span class="btn btn-outline-secondary input-group-text" id="btnAddMerchant">Add New</span>
-                </div>
-                <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
-            </div>
-            @Html.FloatingFormInput(model => Model.Record.CategoryId, autocompleteKey: "Category")
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.MerchantId, "Merchant")
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.CategoryId, "Category")
             <div class="input-group mb-3">
                 <div class="form-floating">
                     <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
@@ -78,7 +70,7 @@
                 </div>
             </div>
 
-            @Html.SubmitButton()
+            @Html.SubmitButton("Create", icon: "fa-floppy-disk")
         </form>
     </div>
 </div>

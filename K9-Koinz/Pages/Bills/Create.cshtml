@@ -21,25 +21,13 @@
                 </select>
                 <label asp-for="Record.AccountId"></label>
             </div>
-            @Html.FloatingFormInput(model => Model.Record.MerchantId, autocompleteKey: "Merchant")
-            @Html.FloatingFormInput(model => Model.Record.CategoryId, autocompleteKey: "Category")
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.MerchantId, "Merchant")
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.CategoryId, "Category")
             @Html.FloatingFormInput(model => Model.Record.Amount, "number")
             @Html.FloatingFormInput(model => Model.Record.RepeatConfig.FirstFiring, "date")
             @Html.FloatingFormInput(model => Model.Record.RepeatConfig.TerminationDate, "date")
-            <div class="form-group form-floating">
-                <select asp-for="Record.RepeatConfig.Mode" id="modeSelector" class="form-control" asp-items="Html.GetEnumSelectList<RepeatMode>()">
-                    <option value="" selected disabled>Select a Mode...</option>
-                </select>
-                <label asp-for="Record.RepeatConfig.Mode"></label>
-                <span asp-validation-for="Record.RepeatConfig.Mode"></span>
-            </div>
-            <div class="form-group form-floating">
-                <select asp-for="Record.RepeatConfig.Frequency" class="form-control" asp-items="Html.GetEnumSelectList<RepeatFrequency>()">
-                    <option value="" selected disabled>Select a Frequency...</option>
-                </select>
-                <label asp-for="Record.RepeatConfig.Frequency"></label>
-                <span asp-validation-for="Record.RepeatConfig.Frequency" class="text-danger"></span>
-            </div>
+            @Html.FloatingFormEnumSelect(model => Model.Record.RepeatConfig.Mode, typeof(RepeatMode), placeholder: "Select a Mode...")
+            @Html.FloatingFormEnumSelect(model => Model.Record.RepeatConfig.Frequency, typeof(RepeatFrequency), placeholder: "Select a Freqency...")
             @Html.FloatingFormInput(model => Model.Record.RepeatConfig.IntervalGap, "number", "grpIntervalGap")
             <div class="form-group">
                 <div class="form-check form-switch">
@@ -48,11 +36,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary my-2">
-                    <i class="fa-solid fa-floppy-disk"></i> Create
-                </button>
-            </div>
+            @Html.SubmitButton("Create", icon: "fa-floppy-disk")
         </form>
     </div>
 </div>

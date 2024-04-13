@@ -21,18 +21,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @Html.FloatingFormInput(model => Model.Record.Name)
             @Html.FloatingFormInput(model => Model.Record.Description)
-            <div class="form-group form-floating">
-                <select asp-for="Record.Type" class="form-control" asp-items="@Html.GetEnumSelectList<AccountType>()">
-                    <option value="" selected disabled>Account Type</option>
-                </select>
-                <label asp-for="Record.Type"></label>
-                <span asp-validation-for="Record.Type" class="text-danger"></span>
-            </div>
+            @Html.FloatingFormEnumSelect(model => Model.Record.Type, typeof(AccountType), "Select an Account...")
             @Html.FloatingFormInput(model => Model.Record.InitialBalance, "number")
             @Html.FloatingFormInput(model => Model.Record.InitialBalanceDate, "date")
             @Html.FloatingFormInput(model => Model.Record.MinimumBalance, "number")
 
-            @Html.SubmitButton()
+            @Html.SubmitButton("Create")
         </form>
     </div>
 </div>

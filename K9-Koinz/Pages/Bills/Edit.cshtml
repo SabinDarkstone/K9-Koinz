@@ -16,35 +16,15 @@
             <input type="hidden" asp-for="Record.Id" />
             <input type="hidden" asp-for="Record.RepeatConfig.LastFiring" />
             @Html.FloatingFormInput(model => Model.Record.Name)
-            <div class="form-group form-floating">
-                <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
-                    <option value="" selected disabled>Select an Account...</option>
-                </select>
-                <label asp-for="Record.AccountId"></label>
-            </div>
-            @Html.FloatingFormInput(model => Model.Record.MerchantId, autocompleteKey: "Merchant", value: Model.Record.MerchantName)
-            @Html.FloatingFormInput(model => Model.Record.CategoryId, autocompleteKey: "Category", value: Model.Record.CategoryName)
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.AccountId, "Account", text: Model.Record.AccountName)
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.MerchantId, "Merchant", text: Model.Record.MerchantName)
+            @Html.FloatingFormAutocompleteInput(model => Model.Record.CategoryId, "Category", text: Model.Record.CategoryName)
             @Html.FloatingFormInput(model => Model.Record.Amount, "number")
             @Html.FloatingFormInput(model => Model.Record.RepeatConfig.FirstFiring, "date")
             @Html.FloatingFormInput(model => Model.Record.RepeatConfig.TerminationDate, "date")
-            <div class="form-group form-floating">
-                <select asp-for="Record.RepeatConfig.Mode" id="modeSelector" class="form-control" asp-items="Html.GetEnumSelectList<RepeatMode>()">
-                </select>
-                <label asp-for="Record.RepeatConfig.Mode"></label>
-                <span asp-validation-for="Record.RepeatConfig.Mode" class="text-danger"></span>
-            </div>
-            <div class="form-group form-floating">
-                <select asp-for="Record.RepeatConfig.Frequency" id="modeSelector" class="form-control" asp-items="Html.GetEnumSelectList<RepeatFrequency>()">
-                    <option value="" selected disabled>Make a selection...</option>
-                </select>
-                <label asp-for="Record.RepeatConfig.Frequency"></label>
-                <span asp-validation-for="Record.RepeatConfig.Frequency" class="text-danger"></span>
-            </div>
-            <div class="form-group form-floating" id="grpIntervalGap">
-                <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" placeholder="Repeat Gap"/>
-                <label asp-for="Record.RepeatConfig.IntervalGap"></label>
-                <span asp-validation-for="Record.RepeatConfig.IntervalGap" class="text-danger"></span>
-            </div>
+            @Html.FloatingFormEnumSelect(model => Model.Record.RepeatConfig.Mode, typeof(RepeatMode), placeholder: "Select a Mode...")
+            @Html.FloatingFormEnumSelect(model => Model.Record.RepeatConfig.Frequency, typeof(RepeatFrequency), placeholder: "Select a Freqency...")
+            @Html.FloatingFormInput(model => Model.Record.RepeatConfig.IntervalGap, divId: "grpIntervalGap")
             <div class="form-group">
                 <div class="form-check form-switch">
                     @Html.EditorFor(x => x.Record.IsAutopay, new { htmlAttributes = new { @class = "form-check-input" } })
@@ -56,6 +36,7 @@
                     <i class="fa-solid fa-floppy-disk"></i> Save
                 </button>
             </div>
+            @Html.SubmitButton("Save", icon: "fa-floppy-disk")
         </form>
     </div>
 </div>
