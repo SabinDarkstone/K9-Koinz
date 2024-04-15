@@ -35,9 +35,9 @@
                     <label asp-for="Record.AccountId"></label>
                 </div>
             </div>
-            @Html.EditorFor(x => Model.Record.Date)
+            @*@Html.EditorFor(x => Model.Record.Date)*@
             <!-- TODO: Fix -->
-            @*@Html.FloatingFormInput(model => Model.Record.Date, "date")*@
+            @Html.FloatingFormInput(model => Model.Record.Date, "date")
             @Html.FloatingFormAutocompleteInput(model => Model.Record.MerchantId, "Merchant")
             @Html.FloatingFormAutocompleteInput(model => Model.Record.CategoryId, "Category")
             @Html.FloatingFormDataSelect(model => model.Record.TagId, Model.TagOptions, placeholder: "No Tag")

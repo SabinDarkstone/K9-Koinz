@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 namespace K9_Koinz.Utils.HtmlHelpers {
     public static class InputHelpers {
         
-        // TODO: Fix for dates
         public static IHtmlContent FloatingFormInput<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, string type = "text", string divId = "") {
             var divBuilder = Utils.MakeFloatingDiv(divId);
 
@@ -15,7 +14,8 @@ namespace K9_Koinz.Utils.HtmlHelpers {
             inputBuilder.Attributes.Add("asp-for", htmlHelper.NameFor(expression).ToString());
 
             if (type == "date") {
-                inputBuilder.Attributes.Add("value", htmlHelper.Value(htmlHelper.NameFor(expression), "{0:yyyy-MM-dd}"));
+                var date = DateTime.Parse(htmlHelper.ValueFor(expression));
+                inputBuilder.Attributes.Add("value", date.FormatForUrl());
             } else {
                 inputBuilder.Attributes.Add("value", htmlHelper.ValueFor(expression));
             }
@@ -53,7 +53,6 @@ namespace K9_Koinz.Utils.HtmlHelpers {
             hiddenInputBuilder.Attributes.Add("type", "hidden");
             hiddenInputBuilder.Attributes.Add("asp-for", htmlHelper.NameFor(expression).ToString());
             hiddenInputBuilder.Attributes.Add("value", htmlHelper.ValueFor(expression).ToString());
-
             hiddenInputBuilder.Attributes.Add("id", "hf" + autocompleteKey);
 
             divBuilder.InnerHtml.AppendHtml(inputBuilder);
