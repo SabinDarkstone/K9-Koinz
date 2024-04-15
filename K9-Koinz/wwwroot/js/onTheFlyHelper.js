@@ -3,7 +3,7 @@
     console.log(text);
     $.ajax({
         url: "/api/OnTheFlyCreate/AddMerchant",
-        data: { text: text },
+        data: { merchantName: text },
         type: "POST",
         success: function (data) {
             console.log(data);
