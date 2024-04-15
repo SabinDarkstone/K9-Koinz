@@ -34,6 +34,7 @@ namespace K9_Koinz.ViewComponents {
                 .AsNoTracking()
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
+                .Where(trans => trans.Amount > 0)
                 .GetTotal(true);
 
             BillsTotal = SimulateBills(referenceDate, budget.Timespan);
