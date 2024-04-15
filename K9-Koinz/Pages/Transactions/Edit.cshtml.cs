@@ -42,6 +42,8 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         protected override async Task BeforeSaveActionsAsync() {
+            _logger.LogInformation(Record.ToLogJson());
+
             Record.Date = Record.Date.AtMidnight()
                 .Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
 

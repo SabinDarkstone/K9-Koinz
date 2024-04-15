@@ -9,19 +9,15 @@ namespace K9_Koinz.Utils.HtmlHelpers {
         public static IHtmlContent FloatingFormInput<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, string type = "text", string divId = "") {
             var divBuilder = Utils.MakeFloatingDiv(divId);
 
-            //var inputBuilder = htmlHelper.EditorFor(expression, new { @class = "form-control", type = type, placeholder = htmlHelper.DisplayNameFor(expression).ToString(), value = value });
             var inputBuilder = new TagBuilder("input");
             inputBuilder.AddCssClass("form-control");
             inputBuilder.Attributes.Add("type", type);
             inputBuilder.Attributes.Add("asp-for", htmlHelper.NameFor(expression).ToString());
 
-            if (htmlHelper.ValueFor(expression) != "") {
-                if (type == "date") {
-                    var dateValue = DateTime.Parse(htmlHelper.ValueFor(expression));
-                    inputBuilder.Attributes.Add("value", dateValue.FormatForUrl());
-                } else {
-                    inputBuilder.Attributes.Add("value", htmlHelper.ValueFor(expression));
-                }
+            if (type == "date") {
+                inputBuilder.Attributes.Add("value", htmlHelper.Value(htmlHelper.NameFor(expression), "{0:yyyy-MM-dd}"));
+            } else {
+                inputBuilder.Attributes.Add("value", htmlHelper.ValueFor(expression));
             }
 
             var labelBuilder = new TagBuilder("label");
@@ -68,17 +64,26 @@ namespace K9_Koinz.Utils.HtmlHelpers {
             return divBuilder;
         }
 
-        public static IHtmlContent FloatingFormEnumSelect<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, Type enumType, string divId = "", string placeholder = "None") {
+        public static IHtmlContent FloatingFormDataSelect<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, List<SelectListItem> items, string divId = "", string placeholder = "None") {
             var divBuilder = Utils.MakeFloatingDiv(divId);
-
-            var selectItems = Utils.GetOptionsFromEnum(enumType);
 
             var selectBuilder = new TagBuilder("select");
             selectBuilder.AddCssClass("form-control");
             selectBuilder.Attributes.Add("asp-for", htmlHelper.NameFor(expression).ToString());
-            foreach (var item in selectItems) {
+
+            if (string.IsNullOrEmpty(htmlHelper.ValueFor(expression))) {
+                var defaultOptionBuilder = new TagBuilder("option");
+                defaultOptionBuilder.Attributes.Add("value", "");
+                defaultOptionBuilder.Attributes.Add("selected", "selected");
+                defaultOptionBuilder.Attributes.Add("disabled", "disabled");
+                defaultOptionBuilder.InnerHtml.Append(placeholder);
+
+                selectBuilder.InnerHtml.AppendHtml(defaultOptionBuilder);
+            }
+
+            foreach (var item in items) {
                 var optionBuilder = new TagBuilder("option");
-                if (item.Value != null) {
+                if (string.IsNullOrEmpty(item.Value)) {
                     optionBuilder.Attributes.Add("value", item.Value.ToString());
                 }
 
@@ -97,7 +102,23 @@ namespace K9_Koinz.Utils.HtmlHelpers {
 
             var validationSpanBuilder = htmlHelper.ValidationMessageFor(expression);
 
-            if (htmlHelper.ValueFor(expression) == null) {
+            divBuilder.InnerHtml.AppendHtml(selectBuilder);
+            divBuilder.InnerHtml.AppendHtml(labelBuilder);
+            divBuilder.InnerHtml.AppendHtml(validationSpanBuilder);
+
+            return divBuilder;
+        }
+
+        public static IHtmlContent FloatingFormEnumSelect<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, Type enumType, string divId = "", string placeholder = "None") {
+            var divBuilder = Utils.MakeFloatingDiv(divId);
+
+            var selectItems = Utils.GetOptionsFromEnum(enumType);
+
+            var selectBuilder = new TagBuilder("select");
+            selectBuilder.AddCssClass("form-control");
+            selectBuilder.Attributes.Add("asp-for", htmlHelper.NameFor(expression).ToString());
+
+            if (string.IsNullOrEmpty(htmlHelper.ValueFor(expression))) {
                 var defaultOptionBuilder = new TagBuilder("option");
                 defaultOptionBuilder.Attributes.Add("value", "");
                 defaultOptionBuilder.Attributes.Add("selected", "selected");
@@ -106,6 +127,27 @@ namespace K9_Koinz.Utils.HtmlHelpers {
 
                 selectBuilder.InnerHtml.AppendHtml(defaultOptionBuilder);
             }
+
+            foreach (var item in selectItems) {
+                var optionBuilder = new TagBuilder("option");
+                if (string.IsNullOrEmpty(item.Value)) {
+                    optionBuilder.Attributes.Add("value", item.Value.ToString());
+                }
+
+                if (item.Value == htmlHelper.ValueFor(expression).ToString()) {
+                    optionBuilder.Attributes.Add("selected", "selected");
+                }
+
+                optionBuilder.InnerHtml.Append(item.Text);
+
+                selectBuilder.InnerHtml.AppendHtml(optionBuilder);
+            }
+
+            var labelBuilder = new TagBuilder("label");
+            labelBuilder.MergeAttribute("asp-for", htmlHelper.NameFor(expression).ToString());
+            labelBuilder.InnerHtml.Append(htmlHelper.DisplayNameFor(expression).ToString());
+
+            var validationSpanBuilder = htmlHelper.ValidationMessageFor(expression);
 
             divBuilder.InnerHtml.AppendHtml(selectBuilder);
             divBuilder.InnerHtml.AppendHtml(labelBuilder);

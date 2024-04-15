@@ -35,18 +35,12 @@
                     <label asp-for="Record.AccountId"></label>
                 </div>
             </div>
+            @Html.EditorFor(x => Model.Record.Date)
             <!-- TODO: Fix -->
-            @Html.FloatingFormInput(model => Model.Record.Date, "date")
+            @*@Html.FloatingFormInput(model => Model.Record.Date, "date")*@
             @Html.FloatingFormAutocompleteInput(model => Model.Record.MerchantId, "Merchant")
             @Html.FloatingFormAutocompleteInput(model => Model.Record.CategoryId, "Category")
-            <div class="input-group mb-3">
-                <div class="form-floating">
-                    <select asp-for="Record.TagId" class="form-control" asp-items="@Model.TagOptions">
-                        <option value="@Guid.Empty" selected>No Tag</option>
-                    </select>
-                    <label asp-for="Record.TagId"></label>
-                </div>
-            </div>
+            @Html.FloatingFormDataSelect(model => model.Record.TagId, Model.TagOptions, placeholder: "No Tag")
             <div class="input-group mb-3">
                 <span class="input-group-text">$</span>
                 <div class="form-floating">

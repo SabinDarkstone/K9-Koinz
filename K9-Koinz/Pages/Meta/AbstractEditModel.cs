@@ -13,7 +13,7 @@ namespace K9_Koinz.Pages.Meta {
         public T Record { get; set; } = default!;
 
         public List<SelectListItem> AccountOptions;
-        public SelectList TagOptions;
+        public List<SelectListItem> TagOptions;
 
         protected AbstractEditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)

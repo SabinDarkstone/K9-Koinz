@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace K9_Koinz.Services {
     public interface IDropdownPopulatorService : ICustomService {
-        public abstract Task<SelectList> GetTagListAsync();
+        public abstract Task<List<SelectListItem>> GetTagListAsync();
         public abstract Task<List<SelectListItem>> GetAccountListAsync();
     }
 
@@ -41,10 +41,18 @@ namespace K9_Koinz.Services {
             return result;
         }
 
-        public async Task<SelectList> GetTagListAsync() {
-            return new SelectList(await _context.Tags
+        public async Task<List<SelectListItem>> GetTagListAsync() {
+            var result = new List<SelectListItem>();
+
+            var tagList = await _context.Tags
                 .OrderBy(tag => tag.Name)
-                .ToListAsync(), nameof(Tag.Id), nameof(Tag.Name));
+                .ToListAsync();
+
+            foreach (var tag in tagList) {
+                result.Add(new SelectListItem(tag.Name, tag.Id.ToString()));
+            }
+
+            return result;
         }
     }
 }

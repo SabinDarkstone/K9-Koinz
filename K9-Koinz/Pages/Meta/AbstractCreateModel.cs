@@ -3,7 +3,6 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace K9_Koinz.Pages.Meta {
@@ -16,7 +15,7 @@ namespace K9_Koinz.Pages.Meta {
         protected Guid? RelatedId { get; private set; }
 
         public List<SelectListItem> AccountOptions;
-        public SelectList TagOptions;
+        public List<SelectListItem> TagOptions;
 
         protected AbstractCreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService) : base(context, logger) {
