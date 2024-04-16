@@ -46,7 +46,13 @@
             }
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Record.Transactions)
+            @Html.DisplayNameFor(model => model.Record.HideAccountTransactions)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Record.HideAccountTransactions ? "Yes" : "No")
+        </dd>
+        <dt class="col-sm-2">
+            Recent Transactions
         </dt>
         <dd class="col-sm-10">
             <table class="table">

@@ -22,11 +22,13 @@ namespace K9_Koinz.Services {
 
             if (line.Budget.DoNotUseCategories) {
                 line.BudgetCategory.Transactions = _context.Transactions
+                    .Include(trans => trans.Account)
                     .AsNoTracking()
                     .Where(trans => trans.Category.CategoryType != CategoryType.TRANSFER)
                     .Where(trans => !trans.IsSplit)
                     .Where(trans => !trans.IsSavingsSpending)
                     .Where(trans => !trans.BillId.HasValue)
+                    .Where(trans => !trans.Account.HideAccountTransactions)
                     .ToList();
             }
 
@@ -34,7 +36,8 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
-                .Where(trans => !trans.BillId.HasValue);
+                .Where(trans => !trans.BillId.HasValue)
+                .Where(trans => !trans.Account.HideAccountTransactions);
 
             if (line.Budget.BudgetTagId.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.TagId == line.Budget.BudgetTagId.Value);
@@ -48,6 +51,7 @@ namespace K9_Koinz.Services {
                     .Where(trans => !trans.IsSavingsSpending)
                     .Where(trans => !trans.IsSplit)
                     .Where(trans => !trans.BillId.HasValue)
+                    .Where(trans => !trans.Account.HideAccountTransactions)
                     .AsEnumerable();
 
                 if (line.Budget.BudgetTagId.HasValue) {
@@ -89,6 +93,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => !trans.IsSplit)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.CREDIT_CARD)
                 .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => !trans.Account.HideAccountTransactions)
                 .Where(trans => !trans.BillId.HasValue);
 
             if (budget.BudgetTagId.HasValue) {
@@ -162,6 +167,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => !trans.IsSplit)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.BillId.HasValue)
+                .Where(trans => !trans.Account.HideAccountTransactions)
                 .AsNoTracking();
 
             if (budgetLine.BudgetCategory.CategoryType != CategoryType.ALL) {

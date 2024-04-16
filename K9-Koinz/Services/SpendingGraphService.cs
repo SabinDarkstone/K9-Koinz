@@ -58,6 +58,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Category.CategoryType == CategoryType.EXPENSE)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
+                .Where(trans => !trans.Account.HideAccountTransactions)
                 .GroupBy(trans => trans.Date.Day)
                 .Select(group => new Point(group.Key, group.ToList().GetTotal(true)))
                 .ToListAsync();

@@ -41,6 +41,9 @@ namespace K9_Koinz.Models {
         [Column(TypeName = "decimal(10, 2)")]
         public double? MinimumBalance { get; set; }
 
+        [DisplayName("Exclude from Budget and Trends")]
+        public bool HideAccountTransactions { get; set; }
+
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<Bill> Bills { get; set; }
 
