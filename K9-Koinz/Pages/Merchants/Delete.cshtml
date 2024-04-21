@@ -22,9 +22,32 @@
         </dd>
     </dl>
 
-    <form method="post">
+
+    <form method="post" id="form">
         <input type="hidden" asp-for="Record.Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input asp-for="SelectedMerchantId" type="hidden" id="hfMerchant" />
+
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <input id="txtMerchant" class="form-control" placeholder="Merchant" />
+                <label asp-for="SelectedMerchantId"></label>
+            </div>
+            <span asp-validation-for="SelectedMerchantId" class="text-danger"></span>
+        </div>
+
+        <button type="submit"class="btn btn-danger" id="btnDelete">Delete</button> |
         <a asp-page="@PagePaths.MerchantIndex">Back to List</a>
     </form>
 </div>
+
+@section Scripts {
+    <script src="~/js/onTheFlyHelper.js"></script>
+
+    <script>
+        $("#btnDelete").on("click", function () {
+            $(this).html('<span class="spinner-border spinner-border-sm" role="status"></span> Processing...')
+            $(this).prop("disabled", true);
+            $("#form").submit();
+        });
+    </script>
+}

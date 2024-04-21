@@ -23,7 +23,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => Model.Categories.FirstOrDefault().CategoryType)
-                </th>
+            </th>
             <th>
                 Transaction Count
             </th>
@@ -41,7 +41,7 @@
                     @Html.DisplayFor(modelItem => item.CategoryType)
                 </td>
                 <td style="font-weight: bold;">
-                    @Html.DisplayFor(modelItem => item.Transactions.Count) 
+                    @Html.DisplayFor(modelItem => item.Transactions.Count)
                     @if (!item.IsChildCategory) {
                         <text>
                             (@item.ChildCategories.Sum(cCat => cCat.Transactions.Count))
@@ -50,12 +50,8 @@
                 </td>
                 <td>
                     <a asp-page="@PagePaths.CategoryEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                    <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
-                    @if (!item.Transactions.Any()) {
-                        <text>
-                            | <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash text-danger"></i></a>
-                        </text>
-                    }
+                    <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info text-dark"></i></a> |
+                    <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash text-danger"></i></a>
                 </td>
             </tr>
             @if (!item.IsChildCategory) {
@@ -76,11 +72,7 @@
                         <td>
                             <a asp-page="@PagePaths.CategoryEdit" asp-route-id="@childCat.Id"><i class="fa-solid fa-pencil"></i></a> |
                             <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@childCat.Id"><i class="fa-solid fa-circle-info text-dark"></i></a>
-                            @if (!childCat.Transactions.Any()) {
-                                <text>
-                                    | <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@childCat.Id"><i class="fa-solid fa-trash text-danger"></i></a>
-                                </text>
-                            }
+                            <a asp-page="@PagePaths.CategoryDelete" asp-route-id="@childCat.Id"><i class="fa-solid fa-trash text-danger"></i></a> | 
                         </td>
                     </tr>
                 }

@@ -46,9 +46,30 @@
         }
     </dl>
 
-    <form method="post">
+    <form method="post" id="form">
         <input type="hidden" asp-for="Record.Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input asp-for="SelectedCategoryId" type="hidden" id="hfCategory" />
+
+        <p>This will not automatically update any budget lines you are assigned to the category being deleted.</p>
+
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <input id="txtCategory" class="form-control" placeholder="Category" />
+                <label asp-for="SelectedCategoryId"></label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-danger" id="btnDelete">Delete</button> |
         <a asp-page="@PagePaths.CategoryIndex">Back to List</a>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        $("#btnDelete").on("click", function () {
+            $(this).html('<span class="spinner-border spinner-border-sm" role="status"></span> Processing...')
+            $(this).prop("disabled", true);
+            $("#form").submit();
+        });
+    </script>
+}

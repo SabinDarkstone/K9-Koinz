@@ -37,12 +37,8 @@
                 </td>
                 <td>
                     <a asp-page="@PagePaths.MerchantEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
-                    <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
-                    @if (!item.Transactions.Any()) {
-                        <text>
-                            | <a asp-page="@PagePaths.MerchantDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
-                        </text>
-                    }
+                    <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> | 
+                    <a asp-page="@PagePaths.MerchantDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                 </td>
             </tr>
         }
