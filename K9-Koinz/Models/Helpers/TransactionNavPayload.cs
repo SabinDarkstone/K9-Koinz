@@ -9,5 +9,17 @@
         public int PageIndex { get; set; }
         public string SearchString { get; set; }
         public bool HideTransfers { get; set; }
+
+        public TransactionNavPayload() {
+            SortOrder = "";
+            CatFilter = "";
+            AccountFilter = "";
+            MinDate = "";
+            MaxDate = "";
+            MerchFilter = "";
+            PageIndex = 1;
+            SearchString = "";
+            HideTransfers = false;
+        }
     }
 }
