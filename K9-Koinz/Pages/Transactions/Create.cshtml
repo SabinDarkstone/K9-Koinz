@@ -9,7 +9,7 @@
 
     var payloadString = Request.Cookies["backToTransactions"];
     var payload = new TransactionNavPayload();
-    if (string.IsNullOrEmpty(payloadString)) {
+    if (!string.IsNullOrEmpty(payloadString)) {
         payload = JsonSerializer.Deserialize<TransactionNavPayload>(payloadString);
     }
 }
