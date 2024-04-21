@@ -122,7 +122,7 @@
     <script>
         $(document).ready(changeAmountColor($("#txtAmount")));
 
-        $("#txtAmount").on("keyup", function () {
+        $("#txtAmount").on("keyup touchend", function () {
             changeAmountColor($(this));
         });
     </script>
