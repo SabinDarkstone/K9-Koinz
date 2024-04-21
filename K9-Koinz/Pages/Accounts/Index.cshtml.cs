@@ -23,8 +23,10 @@ namespace K9_Koinz.Pages.Accounts {
                 .GroupBy(acct => acct.Type.GetAttribute<DisplayAttribute>().Name)
                 .ToDictionary(grp => grp.Key, grp => grp.OrderBy(acct => acct.Name).ToList());
 
-            var savingsAccountGroup = AccountDict[AccountType.SAVINGS.GetAttribute<DisplayAttribute>().Name];
-            var checkingAndSavings = AccountDict[AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name].Concat(savingsAccountGroup).OrderBy(acct => acct.Name).ToList();
+            var savingsAccounts = AccountDict[AccountType.SAVINGS.GetAttribute<DisplayAttribute>().Name] ?? new List<Account>();
+            var checkingAccounts = AccountDict[AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name] ?? new List<Account>();
+            var checkingAndSavings = savingsAccounts.Concat(checkingAccounts).ToList();
+
             AccountDict["Checking & Savings"] = checkingAndSavings;
             AccountDict.Remove(AccountType.SAVINGS.GetAttribute<DisplayAttribute>().Name);
             AccountDict.Remove(AccountType.CHECKING.GetAttribute<DisplayAttribute>().Name);
