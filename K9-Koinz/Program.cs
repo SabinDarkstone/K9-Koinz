@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using K9_Koinz.Utils;
+using Serilog;
 namespace K9_Koinz {
     public class Program {
         public static void Main(string[] args) {
@@ -15,13 +16,20 @@ namespace K9_Koinz {
             builder.Services.AddMvc();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Warning()
+                .WriteTo.Console()
+                .WriteTo.File("logs/k9-koinz.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddControllers();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddLogging(options => {
-                options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
-            });
+            //builder.Services.AddLogging(options => {
+            //    options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+            //});
+            builder.Services.AddLogging(options => options.AddSerilog(dispose: true));
 
             // Add K9 Koinz Services
             builder.Services.AddMyServices();
