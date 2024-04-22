@@ -19,7 +19,7 @@ namespace K9_Koinz {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Warning()
                 .WriteTo.Console()
-                .WriteTo.File("logs/k9-koinz.log", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("logs/k9-koinz.log", rollingInterval: RollingInterval.Infinite)
                 .CreateLogger();
 
             // Add services to the container.
