@@ -11,10 +11,15 @@ using Newtonsoft.Json;
 namespace K9_Koinz.Pages.Transfers {
     public class CreateModel : AbstractCreateModel<Transfer> {
         private Transaction[] transactions = new Transaction[2];
-        private bool foundMatchingTransactions;
+        private Transaction duplicateTransaction;
 
-        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
-            : base(context, logger, dropdownService) { }
+        private readonly IDupeCheckerService<Transaction> _dupeCheckerService;
+
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService,
+            IDupeCheckerService<Transaction> dupeCheckerService)
+            : base(context, logger, dropdownService) {
+                _dupeCheckerService = dupeCheckerService;
+            }
 
         protected override Task BeforePageLoadActions() {
             var defaultCategory = _context.Categories
@@ -38,34 +43,24 @@ namespace K9_Koinz.Pages.Transfers {
 
         protected override async Task AfterSaveActionsAsync() {
             transactions = (await _context.CreateTransactionsFromTransfer(Record, false)).ToArray();
-
-            var startDate = Record.Date.AddDays(-3);
-            var endDate = Record.Date.AddDays(3);
-
-            foundMatchingTransactions = await _context.Transactions
-                .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (transactions[1] != null && trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
-                .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date.Date)
-                .AnyAsync();
+            
+            foreach (var transaction in transactions) {
+                if (transaction != null) {
+                    var matchingTransactions = await _dupeCheckerService.FindPotentialDuplicates(transaction);
+                    if (matchingTransactions.Count > 0) {
+                        duplicateTransaction = transaction;
+                        break;
+                    }
+                }
+            }
 
             _context.Transactions.AddRange(transactions.Where(x => x != null));
             await _context.SaveChangesAsync();
         }
 
         protected override IActionResult NavigateOnSuccess() {
-            if (foundMatchingTransactions) {
-                var startDate = Record.Date.AddDays(-3);
-                var endDate = Record.Date.AddDays(3);
-
-                _logger.LogInformation(
-                    JsonConvert.SerializeObject(
-                        _context.Transactions
-                            .Where(trans => (trans.AccountId == transactions[0].AccountId && trans.Amount == transactions[0].Amount) || (transactions[1] != null && trans.AccountId == transactions[1].AccountId && trans.Amount == transactions[1].Amount))
-                            .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date.Date)
-                            .ToList()
-                        , new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects, Formatting = Formatting.Indented }
-                    )
-                );
-                return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = transactions[1].Id });
+            if (duplicateTransaction != null) {
+                return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = duplicateTransaction.Id });
             }
 
             var toAccount = _context.Accounts.Find(transactions[1].AccountId);

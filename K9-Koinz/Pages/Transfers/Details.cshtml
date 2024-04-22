@@ -1,8 +1,7 @@
 ﻿@page
 @using K9_Koinz.Utils
 @model K9_Koinz.Pages.Transfers.DetailsModel
-@{
-}
+
 
 <h1>Details</h1>
 
@@ -78,18 +77,18 @@
 </div>
 
 <div>
+    <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransactionSplit" asp-route-parentId="@Model.Record.ToTransaction.Id">
+        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+        @if (Model.Record.IsSplit) {
+            <text>Edit Split</text>
+        } else {
+            <text>Split Transfer</text>
+        }
+    </a>
+    
     @if (Model.Record.IsSplit) {
         <a class="btn btn-outline-secondary mb-2" asp-page="@PagePaths.TransactionRemoveSplit" asp-route-parentId="@Model.Record.ToTransaction.Id">
             Remove Split
-        </a>
-    } else {
-        <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransactionSplit" asp-route-parentId="@Model.Record.ToTransaction.Id">
-            <i class="fa-solid fa-arrows-split-up-and-left"></i>
-            @if (Model.Record.Transactions.Count > 2) {
-                <text>Edit Split</text>
-            } else {
-                <text>Split Transfer</text>
-            }
         </a>
     }
 </div>

@@ -7,7 +7,10 @@
     ViewData["Title"] = "Transaction Details";
 
     var payloadString = Request.Cookies["backToTransactions"];
-    var payload = JsonSerializer.Deserialize<TransactionNavPayload>(payloadString);
+    var payload = new TransactionNavPayload();
+    if (!string.IsNullOrEmpty(payloadString)) {
+        payload = JsonSerializer.Deserialize<TransactionNavPayload>(payloadString);
+    }
 }
 
 <h1>Details</h1>

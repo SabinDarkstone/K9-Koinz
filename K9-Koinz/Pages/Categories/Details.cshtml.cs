@@ -52,7 +52,6 @@ namespace K9_Koinz.Pages.Categories {
                 .Where(trans => trans.CategoryId == Record.Id || trans.Category.ParentCategoryId == Record.Id)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
-                .Where(trans => trans.BillId == null)
                 .Where(trans => !trans.Account.HideAccountTransactions)
                 .Where(trans => trans.Date <= DateTime.Today.Date.Date && trans.Date.Date >= DateTime.Today.AddMonths(-11))
                 .ToListAsync();
