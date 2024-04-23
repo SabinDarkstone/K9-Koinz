@@ -19,6 +19,7 @@ namespace K9_Koinz {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Warning()
                 .WriteTo.Console()
+                .Filter.ByExcluding(line => line.RenderMessage().Contains("Executed DbCommand"))
                 .WriteTo.File("logs/k9-koinz.log", rollingInterval: RollingInterval.Infinite)
                 .CreateLogger();
 
@@ -26,10 +27,10 @@ namespace K9_Koinz {
             builder.Services.AddRazorPages();
             builder.Services.AddControllers();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            //builder.Services.AddLogging(options => {
-            //    options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
-            //});
-            builder.Services.AddLogging(options => options.AddSerilog(dispose: true));
+            builder.Services.AddLogging(options => {
+                options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                options.AddSerilog(dispose: true);
+            });
 
             // Add K9 Koinz Services
             builder.Services.AddMyServices();

@@ -39,6 +39,11 @@ namespace K9_Koinz.ViewComponents {
 
             BillsTotal = SimulateBills(referenceDate, budget.Timespan);
 
+            // Used for transaction modals
+            StartDate = startDate;
+            EndDate = endDate;
+            Timespan = budget.Timespan;
+
             return View(this);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -97,6 +102,10 @@ namespace K9_Koinz.ViewComponents {
                 return BudgetedIncome + ExtraIncome + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
             }
         }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public BudgetTimeSpan Timespan { get; set; }
 
         public string AlertClasses {
             get {

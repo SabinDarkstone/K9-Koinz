@@ -1,0 +1,54 @@
+﻿@model K9_Koinz.ViewComponents.TransactionListModalController
+
+<div class="modal fade" id="@Model.ModalId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Transactions List</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>
+                                @if (Model.ModalId.Contains("Savings")) {
+                                    <text>Savings Goal</text>
+                                } else {
+                                    <text>Merchant Name</text>
+                                }
+                            </th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model.SortedTransactions) {
+                            <tr>
+                                <td>
+                                    @transaction.FormattedDate
+                                </td>
+                                <td>
+                                    @if (Model.ModalId.Contains("Savings")) {
+                                        if (string.IsNullOrEmpty(transaction.SavingsGoalName)) {
+                                            <text>(@transaction.MerchantName)</text>
+                                        }
+                                        @transaction.SavingsGoalName
+                                    } else {
+                                        @transaction.MerchantName
+                                    }
+                                </td>
+                                <td>
+                                    @transaction.FormattedAmount
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,13 +1,18 @@
-﻿using K9_Koinz.Models;
+﻿using K9_Koinz.Data;
+using K9_Koinz.Models;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.ViewComponents {
+
     [ViewComponent(Name = "BudgetLineBar")]
-    public class BudgetLineBar : ViewComponent {
+    public class BudgetLineBar : KoinzController<BudgetLineBar> {
         private BudgetLine line;
 
-        public  DateTime CurrentPeriod { get; set; }
+        public BudgetLineBar(KoinzContext context, ILogger<BudgetLineBar> logger)
+            : base(context, logger) { }
+
+        public DateTime CurrentPeriod { get; set; }
 
         public string TodayLineStyle {
             get {

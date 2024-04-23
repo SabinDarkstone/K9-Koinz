@@ -51,7 +51,10 @@
                 @if (Math.Abs(Model.SavingsGoalTransferTotal) > 0) {
                     <div class="row">
                         <div class="col-7">
-                            @Html.DisplayNameFor(model => Model.SavingsGoalTransferTotal)
+                            <a class="no-underline" id="savingsDetailsLink" href="javascript:$('#transactionListSavings').modal('show');" style="cursor: pointer">
+                                @Html.DisplayNameFor(model => Model.SavingsGoalTransferTotal)
+                            </a>
+                            <i class="fa-solid fa-magnifying-glass-dollar"></i>
                         </div>
                         <div class="col-5" style="text-align:right">
                             @Model.SavingsGoalTransferTotal.FormatCurrency(0)
@@ -62,7 +65,10 @@
                 @if (Math.Abs(Model.BillsTotal) > 0) {
                     <div class="row">
                         <div class="col-7">
-                            @Html.DisplayNameFor(model => Model.BillsTotal)
+                            <a class="no-underline" id="billDetailsLink" href="javascript:$('#transactionListBills').modal('show');" style="cursor: pointer">
+                                @Html.DisplayNameFor(model => Model.BillsTotal)
+                            </a>
+                            <i class="fa-solid fa-magnifying-glass-dollar"></i>
                         </div>
                         <div class="col-5" style="text-align:right">
                             @Model.BillsTotal.FormatCurrency(0)
@@ -84,3 +90,17 @@
         </div>
     </div>
 </div>
+
+@await Component.InvokeAsync(nameof(TransactionListModal), new {
+        relatedObjectType = "Bills",
+        startDate = Model.StartDate,
+        endDate = Model.EndDate,
+        timespan = Model.Timespan
+    });
+
+@await Component.InvokeAsync(nameof(TransactionListModal), new {
+        relatedObjectType = "Savings",
+        startDate = Model.StartDate,
+        endDate = Model.EndDate,
+        timespan = Model.Timespan
+    });
