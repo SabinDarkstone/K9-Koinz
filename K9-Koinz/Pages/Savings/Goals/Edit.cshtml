@@ -15,6 +15,7 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.Id" />
+            <input type="hidden" asp-for="Record.SavingsType" />
             <div class="form-group">
                 <label asp-for="Record.Name" class="control-label"></label>
                 <input asp-for="Record.Name" class="form-control" />
