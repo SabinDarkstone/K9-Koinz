@@ -156,7 +156,8 @@
                 </thead>
                 <tbody>
                     @foreach (var item in Model.Transactions) {
-                        <tr>
+                        var hasNotes = !string.IsNullOrEmpty(item.Notes) ? "tooltip" : string.Empty;
+                        <tr data-bs-toggle="@hasNotes" data-bs-title="Notes: @item.Notes" data-bs-placement="left">
                             <td class="d-none d-xl-block">
                                 @Html.DisplayFor(modelItem => item.AccountName)
                             </td>
@@ -312,4 +313,9 @@
     }
 
     <script src="~/js/mobileListInteraction.js"></script>
+
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
 }
