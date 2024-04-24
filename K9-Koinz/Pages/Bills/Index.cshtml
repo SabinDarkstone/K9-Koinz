@@ -75,7 +75,7 @@
                                 @item.Amount.FormatCurrency(2)
                             </td>
                             <td>
-                                @if (item.RepeatConfig.NextFiring.HasValue) {
+                                @if (item.RepeatConfig.IsActive) {
                                     @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
                                     <span style="font-weight:lighter;">
                                         @{
