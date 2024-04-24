@@ -66,8 +66,10 @@
         public const string TransactionEdit = "/Transactions/Edit";
         public const string TransactionIndex = "/Transactions/Index";
         public const string TransactionPrint = "/Transactions/Print";
-        public const string TransactionRemoveSplit = "/Transactions/RemoveSplit";
-        public const string TransactionSplit = "/Transactions/Split";
+
+        public const string TransactionRemoveSplit = "/Transactions/Split/Remove";
+        public const string TransactionSplit = "/Transactions/Split/Create";
+        public const string TransactionEditSplit = "/Transactions/Split/Edit";
 
         public const string TransferCreate = "/Transfers/Create";
         public const string TransferDetails = "/Transfers/Details";

@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
-namespace K9_Koinz.Pages.Transactions {
-    public class SplitModel : AbstractDbPage {
-        public SplitModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+namespace K9_Koinz.Pages.Transactions.Split {
+    public class CreateModel : AbstractDbPage {
+        public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }
 
         public Transaction ParentTransaction { get; set; }

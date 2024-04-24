@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace K9_Koinz.Pages.Transactions {
-    public class RemoveSplitModel : AbstractDbPage {
-        public RemoveSplitModel(KoinzContext context, ILogger<AbstractDbPage> logger)
+namespace K9_Koinz.Pages.Transactions.Split {
+    public class RemoveModel : AbstractDbPage {
+        public RemoveModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }
 
         public IActionResult OnGet(Guid parentId) {

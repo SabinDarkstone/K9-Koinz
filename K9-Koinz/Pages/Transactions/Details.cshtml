@@ -96,7 +96,7 @@
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.IsSavingsSpending)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-3">
             @(Model.Record.IsSavingsSpending ? "Yes" : "No")
         </dd>
     </dl>
@@ -115,6 +115,7 @@
                 }
                 <th>@Html.DisplayNameFor(model => Model.Record.Amount)</th>
                 <th>@Html.DisplayNameFor(model => Model.Record.Notes)</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -132,6 +133,10 @@
 
                     <td>@split.Amount.FormatCurrency(2)</td>
                     <td>@Html.DisplayFor(model => split.Notes)</td>
+                    <td>
+                        <a asp-page="@PagePaths.TransactionEditSplit" asp-route-id="@split.Id"><i class="fa-solid fa-pencil"></i></a>
+                        <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@split.Id"><i class="fa-solid fa-circle-info"></i></a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -174,6 +179,9 @@
             <i class="fa-solid fa-trash"></i> Delete
         </a>
     } else {
+        <a asp-page="@PagePaths.TransactionEditSplit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+        </a>
         <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@Model.Record.ParentTransactionId" class="btn btn-primary mb-2">
             Go to Parent
         </a>
