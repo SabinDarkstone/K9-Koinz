@@ -80,25 +80,18 @@
                                 <li class="nav-item">
                                     <a class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.TagIndex"><i class="fa-solid fa-tags"></i> Tags</a>
                                 </li>
-                                @*
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="/DataImportWizard"><i class="fa-solid fa-file-import"></i> Import</a>
-                                </li>
-                                <li>
-                                <a class="dropdown-item nav-link text-dark nav-link-hover" asp-page="/JobStatuses/Index"><i class="fa-solid fa-calendar-week"></i> Job Statuses</a>
-                                </li>
-                                *@
                             </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-hover" asp-page="@PagePaths.HelpForm"><i class="fa-solid fa-question"></i> Support</a>
                         </li>
                     </ul>
+                    @*
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" role="switch" id="switchColorMode">
                         <label class="form-check-label" for="switchColorMode">Dark Mode</label>
                     </div>
+                    *@
                 </div>
             </div>
         </nav>
@@ -126,6 +119,7 @@
     <script src="~/js/cookieHelper.js"></script>
     <script src="~/js/inputActions.js"></script>
 
+    @*
     <script>
         $(document).ready(function () {
             let colorModeCookie = getCookie("k9koinz-colorMode");
@@ -150,6 +144,7 @@
             location.reload();
         });
     </script>
+    *@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

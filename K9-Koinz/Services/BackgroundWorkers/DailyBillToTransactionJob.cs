@@ -1,5 +1,4 @@
 ﻿
-using Humanizer;
 using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
@@ -9,7 +8,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
     public class DailyBillToTransactionJob : AbstractWorker<DailyBillToTransactionJob> {
 
         public DailyBillToTransactionJob(IServiceScopeFactory scopeFactory)
-            : base(scopeFactory, DateTime.Today.AtMidnight(), new CronData(Cron.Hourly, 1), true) { }
+            : base(scopeFactory, DateTime.Now, new CronData(Cron.Hourly, 1), true) { }
 
         protected override void DoWork(object state) {
             _logger.LogInformation("Checking for any transactions that need to be created for bills today: " + DateTime.Today.ToShortDateString());
