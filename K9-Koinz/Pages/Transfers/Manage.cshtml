@@ -67,7 +67,9 @@
                     </td>
                     <td>
                         @if (transfer.SavingsGoalId.HasValue) {
-                            <text>@transfer.SavingsGoal.Name</text>
+                            <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@transfer.SavingsGoalId" class="no-underline">
+                                <text>@transfer.SavingsGoal.Name</text>
+                            </a>
                         }
                     </td>
                     <td>@transfer.RepeatConfig.RepeatString</td>

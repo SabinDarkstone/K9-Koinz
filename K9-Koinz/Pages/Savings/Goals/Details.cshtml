@@ -79,6 +79,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Amount</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,6 +87,9 @@
                         <tr>
                             <td>@transaction.Date.FormatShortString()</td>
                             <td>@transaction.Amount.FormatCurrency(2)</td>
+                            <td>
+                                <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@transaction.Id"><i class="fa-solid fa-circle-info"></i></a>
+                            </td>
                         </tr>
                     }
                 </tbody>

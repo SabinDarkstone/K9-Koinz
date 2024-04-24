@@ -39,7 +39,9 @@
                 @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Record.SavingsGoal.Name)
+                <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@Model.Record.SavingsGoalId" class="no-underline">
+                    @Html.DisplayFor(model => model.Record.SavingsGoal.Name)
+                </a>
             </dd>
         }
         <dt class="col-sm-2">
