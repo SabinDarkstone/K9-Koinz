@@ -58,7 +58,7 @@ namespace K9_Koinz.Models {
                     return FirstFiring;
                 }
 
-                DateTime nextProposedFiring = DateTime.MinValue;
+                DateTime nextProposedFiring;
                 if (Mode == RepeatMode.SPECIFIC_DAY) {
                     nextProposedFiring = CalculateNextSpecificFiring();
                 } else if (Mode == RepeatMode.INTERVAL) {
@@ -77,7 +77,11 @@ namespace K9_Koinz.Models {
 
         public bool IsActive {
             get {
-                return NextFiring.HasValue;
+                if (TerminationDate.HasValue) {
+                    return TerminationDate.Value.Date <= DateTime.Today;
+                } else {
+                    return true;
+                }
             }
         }
 
@@ -89,7 +93,7 @@ namespace K9_Koinz.Models {
 
         public string RepeatString {
             get {
-                if (!NextFiring.HasValue) {
+                if (!IsActive) {
                     return "Never - Expired";
                 }
 
@@ -142,7 +146,7 @@ namespace K9_Koinz.Models {
         }
 
         public void FireNow() {
-            LastFiring = NextFiring;
+            LastFiring = DateTime.Now.Date;
         }
 
         private DateTime CalculateNextSpecificFiring() {

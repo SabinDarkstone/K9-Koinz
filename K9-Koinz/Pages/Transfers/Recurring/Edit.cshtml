@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.RepeatConfig.FirstFiring" class="control-label"></label>
-                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" value="@Model.Record.RepeatConfig.FirstFiring.FormatForUrl()" />
+                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" value="@Model.Record.RepeatConfig.FirstFiring.FormatForUrl()" disabled />
                 <span asp-validation-for="Record.RepeatConfig.FirstFiring" class="text-danger"></span>
             </div>
             <div class="form-group">
