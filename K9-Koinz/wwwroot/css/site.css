@@ -25,6 +25,7 @@ body {
     color: inherit;
     text-decoration: none;
 }
+
     .no-underline:hover {
         color: inherit;
         text-decoration: underline;
@@ -36,6 +37,7 @@ body {
 
 
 .nav-link-hover {
+    color: black;
     border-radius: 10px;
     margin-left: 2px;
     margin-right: 2px;

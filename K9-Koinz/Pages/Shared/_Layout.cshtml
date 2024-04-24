@@ -1,18 +1,5 @@
 ﻿ @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
-@{
-    var colorTheme = "";
-    foreach (var cookie in HttpContextAccessor.HttpContext.Request.Cookies) {
-        if (cookie.Key == "k9koinz-colorMode") {
-            colorTheme = cookie.Value;
-        }
-    }
-
-    if (colorTheme == "") {
-        colorTheme = "light";
-    }
-}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +21,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body id="body" data-bs-theme="@colorTheme">
+<body id="body">
     <header class="d-print-none">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container">
@@ -52,46 +39,40 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link nav-link-hover" asp-page="@PagePaths.AccountIndex"><i class="fa-solid fa-landmark"></i> Accounts</a>
+                            <a id="nav-accounts" class="nav-link nav-link-hover" asp-page="@PagePaths.AccountIndex"><i class="fa-solid fa-landmark"></i> Accounts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-hover" asp-page="@PagePaths.TransactionIndex"><i class="fa-solid fa-scale-balanced"></i> Transactions</a>
+                            <a id="nav-transactions" class="nav-link nav-link-hover" asp-page="@PagePaths.TransactionIndex"><i class="fa-solid fa-scale-balanced"></i> Transactions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-hover" asp-page="@PagePaths.BudgetIndex"><i class="fa-solid fa-file-invoice"></i> Budgets</a>
+                            <a id="nav-budgets" class="nav-link nav-link-hover" asp-page="@PagePaths.BudgetIndex"><i class="fa-solid fa-file-invoice"></i> Budgets</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-hover" asp-page="@PagePaths.BillIndex"><i class="fa-solid fa-money-bills"></i> Bills</a>
+                            <a id="nav-bills" class="nav-link nav-link-hover" asp-page="@PagePaths.BillIndex"><i class="fa-solid fa-money-bills"></i> Bills</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-hover" asp-page="@PagePaths.SavingsIndex"><i class="fa-solid fa-piggy-bank"></i> Savings</a>
+                            <a id="nav-savings" class="nav-link nav-link-hover" asp-page="@PagePaths.SavingsIndex"><i class="fa-solid fa-piggy-bank"></i> Savings</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link nav-link-hover dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                                <i class="fa-solid fa-ellipsis"></i> More
+                                <i id="nav-more" class="fa-solid fa-ellipsis"></i> More
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item nav-lin nav-link-hover" asp-page="@PagePaths.MerchantIndex"><i class="fa-solid fa-cash-register"></i> Merchants</a>
+                                    <a id="nav-merchants" class="dropdown-item nav-lin nav-link-hover" asp-page="@PagePaths.MerchantIndex"><i class="fa-solid fa-cash-register"></i> Merchants</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.CategoryIndex"><i class="fa-solid fa-layer-group"></i> Categories</a>
+                                    <a id="nav-categories" class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.CategoryIndex"><i class="fa-solid fa-layer-group"></i> Categories</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.TagIndex"><i class="fa-solid fa-tags"></i> Tags</a>
+                                    <a id="nav-tags" class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.TagIndex"><i class="fa-solid fa-tags"></i> Tags</a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-hover" asp-page="@PagePaths.HelpForm"><i class="fa-solid fa-question"></i> Support</a>
+                            <a id="nav-support" class="nav-link nav-link-hover" asp-page="@PagePaths.HelpForm"><i class="fa-solid fa-question"></i> Support</a>
                         </li>
                     </ul>
-                    @*
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="switchColorMode">
-                        <label class="form-check-label" for="switchColorMode">Dark Mode</label>
-                    </div>
-                    *@
                 </div>
             </div>
         </nav>
@@ -118,33 +99,7 @@
     <script src="~/js/autocompleteHelper.js"></script>
     <script src="~/js/cookieHelper.js"></script>
     <script src="~/js/inputActions.js"></script>
-
-    @*
-    <script>
-        $(document).ready(function () {
-            let colorModeCookie = getCookie("k9koinz-colorMode");
-
-            if (colorModeCookie == "light") {
-                $("#switchColorMode").prop("checked");
-            } else {
-                $("#switchColorMode").prop("checked", true);
-            }
-        });
-
-        $("#switchColorMode").change(function () {
-            console.log("click");
-            let colorModeCookie = getCookie("k9koinz-colorMode");
-            console.log(colorModeCookie);
-            if (colorModeCookie == "light") {
-                setCookie("k9koinz-colorMode", "dark");
-            } else {
-                setCookie("k9koinz-colorMode", "light");
-            }
-
-            location.reload();
-        });
-    </script>
-    *@
+    <script src="~/js/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
