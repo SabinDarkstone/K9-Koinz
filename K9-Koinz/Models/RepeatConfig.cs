@@ -78,7 +78,7 @@ namespace K9_Koinz.Models {
         public bool IsActive {
             get {
                 if (TerminationDate.HasValue) {
-                    return TerminationDate.Value.Date <= DateTime.Today;
+                    return TerminationDate.Value.Date > DateTime.Today;
                 } else {
                     return true;
                 }
