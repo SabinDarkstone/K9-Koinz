@@ -10,6 +10,7 @@
                        asp-route-minDate="@Model.StartDate.FormatForUrl()"
                        asp-route-maxDate="@Model.EndDate.FormatForUrl()"
                        asp-route-catFilter="@Model.CategoryId">
+                        <i class="fa-solid @Model.CategoryIcon"></i>
                         @Model.CategoryName
                     </a>
                 </button>

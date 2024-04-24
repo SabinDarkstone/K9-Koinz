@@ -62,6 +62,12 @@ namespace K9_Koinz.ViewComponents {
             }
         }
 
+        public string CategoryIcon {
+            get {
+                return line.BudgetCategory.FontAwesomeIcon;
+            }
+        }
+
         public bool RolloverInactive {
             get {
                 return line.RolloverStatus == RolloverStatus.NOT_READY || line.RolloverStatus == RolloverStatus.NONE;
