@@ -34,6 +34,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Savings Goal")]
         public Guid? SavingsGoalId { get; set; }
         public SavingsGoal SavingsGoal { get; set; }
+        [DisplayName("Recurring Schedule")]
         public Guid? RepeatConfigId { get; set; }
         [DisplayName("Repeat Settings")]
         public RepeatConfig RepeatConfig { get; set; }
