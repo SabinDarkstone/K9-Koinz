@@ -91,7 +91,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .Where(trans => trans.CategoryId.HasValue && unallocatedCategories.Contains(trans.CategoryId.Value))
                 .Where(trans => !trans.IsSplit)
-                .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.CREDIT_CARD)
+                .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.Account.HideAccountTransactions)
                 .Where(trans => !trans.BillId.HasValue);
