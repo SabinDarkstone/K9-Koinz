@@ -24,6 +24,10 @@ namespace K9_Koinz.Pages.Accounts {
                 .Where(bill => bill.AccountId == Record.Id)
                 .ToListAsync();
 
+            var relatedGoals = await _context.SavingsGoals
+                .Where(goal => goal.AccountId == Record.Id)
+                .ToListAsync();
+
             foreach (var trans in relatedTransactions) {
                 trans.AccountName = Record.Name;
             }
@@ -32,8 +36,13 @@ namespace K9_Koinz.Pages.Accounts {
                 bill.AccountName = Record.Name;
             }
 
+            foreach (var goal in relatedGoals) {
+                goal.AccountName = Record.Name;
+            }
+
             _context.Transactions.UpdateRange(relatedTransactions);
             _context.Bills.UpdateRange(relatedBills);
+            _context.SavingsGoals.UpdateRange(relatedGoals);
             await _context.SaveChangesAsync();
         }
     }
