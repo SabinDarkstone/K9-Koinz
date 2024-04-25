@@ -38,15 +38,16 @@ namespace K9_Koinz.Pages.Bills {
         [Display(Name = "Show All Bills")]
         public bool ShowAllBills { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(bool? showAllBills) {
+        public async Task<IActionResult> OnPostAsync(bool? showAllBills) {
+            ShowAllBills = showAllBills ?? false;
+            return await OnGetAsync();
+        }
+
+        public async Task<IActionResult> OnGetAsync() {
             var startDate = DateTime.Today.StartOfMonth();
             var endDate = DateTime.Today.EndOfMonth();
 
-            if (showAllBills.HasValue) {
-                this.ShowAllBills = showAllBills.Value;
-            }
-
-            if (showAllBills.HasValue && showAllBills.Value) {
+            if (ShowAllBills) {
                 Bills = (await _context.Bills
                     .AsNoTracking()
                     .Include(bill => bill.Account)

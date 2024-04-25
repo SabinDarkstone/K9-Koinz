@@ -5,10 +5,16 @@ using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 
 namespace K9_Koinz.Pages.Accounts {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
+
+        [BindProperty(SupportsGet = true)]
+        [DisplayName("Show All Accounts")]
+        public bool ShowAllAccounts { get; set; } = false;
 
         public IndexModel(KoinzContext context) {
             _context = context;
@@ -16,10 +22,20 @@ namespace K9_Koinz.Pages.Accounts {
 
         public Dictionary<string, List<Account>> AccountDict { get;set; } = default!;
 
+        public async Task OnPostAsync(bool? showAllAccounts) {
+            ShowAllAccounts = showAllAccounts ?? false;
+
+            await OnGetAsync();
+        }
+
         public async Task OnGetAsync() {
-            AccountDict = (await _context.Accounts
-                .AsNoTracking()
-                .ToListAsync())
+            var accountsIQ = _context.Accounts.AsNoTracking();
+
+            if (!ShowAllAccounts) {
+                accountsIQ = accountsIQ.Where(acct => !acct.IsRetired);
+            }
+
+            AccountDict = (await accountsIQ.ToListAsync())
                 .GroupBy(acct => acct.Type.GetAttribute<DisplayAttribute>().Name)
                 .ToDictionary(grp => grp.Key, grp => grp.OrderBy(acct => acct.Name).ToList());
 

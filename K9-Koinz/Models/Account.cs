@@ -44,6 +44,9 @@ namespace K9_Koinz.Models {
         [DisplayName("Exclude from Budget and Trends")]
         public bool HideAccountTransactions { get; set; }
 
+        [DisplayName("Retire Account")]
+        public bool IsRetired { get; set; }
+
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<Bill> Bills { get; set; }
 

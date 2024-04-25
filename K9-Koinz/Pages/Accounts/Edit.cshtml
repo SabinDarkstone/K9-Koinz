@@ -52,6 +52,12 @@
                     <label class="form-check-label" asp-for="Record.HideAccountTransactions"></label>
                 </div>
             </div>
+            <div class="input-group mb-3">
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Record.IsRetired, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Record.IsRetired"></label>
+                </div>
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">
                     <i class="fa-solid fa-floppy-disk"></i> Save
