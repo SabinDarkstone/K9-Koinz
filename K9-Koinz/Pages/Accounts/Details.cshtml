@@ -11,76 +11,94 @@
     <h4>Account</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Description)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Record.Description)
+        <dd class="col-sm-9">
+            @if (string.IsNullOrEmpty(Model.Record.Description)) {
+                <text>&nbsp;</text>
+            } else {
+                @Html.DisplayFor(model => model.Record.Description)
+            }
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Type)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Type)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.CurrentBalance)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Model.Record.CurrentBalance.FormatCurrency(2)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.MinimumBalance)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @if (Model.Record.MinimumBalance.HasValue) {
                 @Model.Record.MinimumBalance.Value.FormatCurrency(0)
             } else {
                 <span>None</span>
             }
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.HideAccountTransactions)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @(Model.Record.HideAccountTransactions ? "Yes" : "No")
         </dd>
-        <dt class="col-sm-2">
-            Recent Transactions
-        </dt>
-        <dd class="col-sm-10">
-            <table class="table">
-                <tr>
-                    <th>Date</th>
-                    <th>Merchant</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                </tr>
-                @foreach (var item in Model.Transactions) {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Date)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Merchant.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Amount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Category.Name)
-                        </td>
-                    </tr>
-                }
-            </table>
-        </dd>
     </dl>
+    <h4>
+        Most Recent 100 Transactions
+    </h4>
+    <table class="table">
+        <tr>
+            <th>Date</th>
+            <th>Merchant</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Transactions) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @if (item.IsSavingsSpending) {
+                        <i class="fa-solid fa-eye-slash"></i>
+                    }
+                    @if (item.ParentTransactionId.HasValue) {
+                        <i class="fa-solid fa-sitemap"></i>
+                    }
+                    @if (item.BillId.HasValue) {
+                        <i class="fa-regular fa-money-bill-1"></i>
+                    }
+                    @Html.DisplayFor(modelItem => item.MerchantName)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.CategoryIcon)) {
+                        <i class="fa-solid @item.CategoryIcon"></i>
+                    }
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @item.Amount.FormatCurrency(2)
+                </td>
+                <td>
+                    <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a>
+                </td>
+            </tr>
+        }
+    </table>
 </div>
 <div>
     <a asp-page="@PagePaths.AccountEdit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">

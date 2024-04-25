@@ -9,16 +9,22 @@ namespace K9_Koinz.Pages.Accounts {
         public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }
 
-        public List<Transaction> Transactions => Record?.Transactions
-            .OrderByDescending(trans => trans.Date)
-            .ToList() ?? new List<Transaction>();
+        public List<Transaction> Transactions { get; set; }
 
         protected override async Task<Account> QueryRecordAsync(Guid id) {
+            Transactions = await _context.Transactions
+                .AsNoTracking()
+                .Include(trans => trans.ParentTransaction)
+                .Include(trans => trans.SplitTransactions)
+                .Include(trans => trans.Category)
+                    .ThenInclude(cat => cat.ParentCategory)
+                .Where(trans => trans.AccountId == id)
+                .OrderByDescending(trans => trans.Date)
+                .Take(100)
+                .ToListAsync();
+
             return await _context.Accounts
-                .Include(acct => acct.Transactions)
-                    .ThenInclude(trans => trans.Category)
-                .Include(acct => acct.Transactions)
-                    .ThenInclude(trans => trans.Merchant)
+                .AsSplitQuery()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(acct => acct.Id == id);
         }
@@ -26,6 +32,7 @@ namespace K9_Koinz.Pages.Accounts {
         protected override void AdditionalActions() {
             var newBalance = Transactions
                 .Where(trans => trans.Date > Record.InitialBalanceDate || (trans.Date.Date == Record.InitialBalanceDate.Date && trans.DoNotSkip))
+                .Where(trans => !trans.IsSplit)
                 .Where(trans => trans.AccountId == Record.Id).GetTotal();
             Record.CurrentBalance = Record.InitialBalance + newBalance;
         }

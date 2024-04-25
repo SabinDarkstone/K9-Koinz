@@ -42,6 +42,7 @@ namespace K9_Koinz.Pages.Accounts {
             foreach (var acct in AccountDict.SelectMany(x => x.Value)) {
                 var newBalance = _context.Transactions
                     .Where(trans => (trans.Date.Date > acct.InitialBalanceDate.Date || (trans.Date.Date == acct.InitialBalanceDate.Date && trans.DoNotSkip)) && trans.AccountId == acct.Id)
+                    .Where(trans =>! trans.IsSplit)
                     .GetTotal();
                 acct.CurrentBalance = acct.InitialBalance + newBalance;
             }
