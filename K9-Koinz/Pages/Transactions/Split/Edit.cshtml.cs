@@ -45,6 +45,11 @@ namespace K9_Koinz.Pages.Transactions.Split {
             // Change only the savings goal and notes
             SplitTransaction = beforeTransction;
             SplitTransaction.SavingsGoalId = savingsGoalId == Guid.Empty ? null : savingsGoalId;
+            if (SplitTransaction.SavingsGoalId.HasValue) {
+                SplitTransaction.IsSavingsSpending = true;
+                var savingsGoal = _context.SavingsGoals.Find(savingsGoalId);
+                SplitTransaction.SavingsGoalName = savingsGoal.Name;
+            }
             SplitTransaction.Notes = notes;
 
             _context.Transactions.Update(SplitTransaction);
