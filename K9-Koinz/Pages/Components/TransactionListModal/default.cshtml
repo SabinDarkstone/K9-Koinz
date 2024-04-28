@@ -29,17 +29,28 @@
                                     @transaction.FormattedDate
                                 </td>
                                 <td>
-                                    @if (Model.ModalId.Contains("Savings")) {
-                                        if (string.IsNullOrEmpty(transaction.SavingsGoalName)) {
-                                            <text>(@transaction.MerchantName)</text>
+                                    <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@transaction.Id" class="no-underline">
+                                        @if (Model.ModalId.Contains("Savings")) {
+                                            if (string.IsNullOrEmpty(transaction.SavingsGoalName)) {
+                                                <text>(@transaction.MerchantName)</text>
+
+                                            }
+                                            @transaction.SavingsGoalName
+                                        } else {
+                                            @transaction.MerchantName
                                         }
-                                        @transaction.SavingsGoalName
-                                    } else {
-                                        @transaction.MerchantName
-                                    }
+                                    </a>
                                 </td>
                                 <td>
-                                    @transaction.FormattedAmount
+                                    @if (transaction.TransactionType == Models.TransactionType.PLUS) {
+                                        <span class="text-success">
+                                            @Math.Abs(transaction.Amount).FormatCurrency()
+                                        </span>
+                                    } else {
+                                        <span class="text-danger">
+                                            @Math.Abs(transaction.Amount).FormatCurrency()
+                                        </span>
+                                    }
                                 </td>
                             </tr>
                         }
