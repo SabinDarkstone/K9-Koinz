@@ -54,29 +54,27 @@ namespace K9_Koinz.ViewComponents {
                 .Include(bill => bill.RepeatConfig)
                 .AsEnumerable()
                 .Where(bill => bill.RepeatConfig.IsActive)
+                .Where(bill => bill.IsActive)
                 .ToList();
 
             var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
-            var runningTotal = 0d;
 
             // Get bills that have already been paid
-            for (var simDate = startDate; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
-                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.LastFiring.HasValue && bill.RepeatConfig.LastFiring.Value.Date == simDate.Date).ToList();
-                foreach (var bill in todaysBills) {
-                    runningTotal += bill.Amount;
-                }
-            }
+            var runningTotal = _context.Transactions
+                .Where(trans => trans.BillId.HasValue)
+                .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date < endDate.Date)
+                .Sum(trans => trans.Amount);
 
             // Get bills that have yet to be paid
-            for (var simDate = startDate; simDate <= endDate; simDate += TimeSpan.FromDays(1)) {
+            for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
                 var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var bill in todaysBills) {
-                    runningTotal += bill.Amount;
-                    bill.RepeatConfig.FireNow();
+                    runningTotal -= bill.Amount;
+                    bill.RepeatConfig.FireNow();        
                 }
             }
 
-            return runningTotal * -1;
+            return runningTotal;
         }
 
 
