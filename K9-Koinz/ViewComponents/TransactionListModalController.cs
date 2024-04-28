@@ -43,7 +43,8 @@ namespace K9_Koinz.ViewComponents {
                 if (relatedObjectType == "Bills") {
                     transactionsIQ = transactionsIQ.Where(trans => trans.BillId.HasValue);
                 } else if (relatedObjectType == "Savings") {
-                    transactionsIQ = transactionsIQ.Where(trans => trans.SavingsGoalId.HasValue);
+                    transactionsIQ = transactionsIQ.Where(trans => trans.SavingsGoalId.HasValue)
+                        .Where(trans => trans.Amount > 0);
                 } else {
                     throw new Exception("Unknown related object type: " + relatedObjectType);
                 }
