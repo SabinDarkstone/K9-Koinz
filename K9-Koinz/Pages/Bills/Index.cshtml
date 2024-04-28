@@ -59,7 +59,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+                    @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key && bill.IsActive && bill.RepeatConfig.IsActive)) {
                         <tr>
                             <td>
                                 @item.Name
@@ -98,6 +98,56 @@
                                 <a asp-page="@PagePaths.BillEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
                                 <a asp-page="@PagePaths.BillDetails" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i></a> |
                                 <a asp-page="@PagePaths.BillDelete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var inactiveItem in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key && (!bill.IsActive || !bill.RepeatConfig.IsActive))) {
+                        var rowClassList = "";
+                        if (!inactiveItem.RepeatConfig.IsActive) {
+                            rowClassList = "table-warning";
+                        }
+                        if (!inactiveItem.IsActive) {
+                            rowClassList = "table-danger";
+                        }
+
+                        <tr class="@rowClassList">
+                            <td>
+                                @inactiveItem.Name
+                            </td>
+                            <td class="d-none d-xl-block">
+                                @inactiveItem.MerchantName
+                            </td>
+                            <td>
+                                @inactiveItem.RepeatConfig.RepeatString
+                            </td>
+                            <td>
+                                @inactiveItem.Amount.FormatCurrency(2)
+                            </td>
+                            <td>
+                                @if (inactiveItem.RepeatConfig.IsActive) {
+                                    @Html.DisplayFor(x => inactiveItem.RepeatConfig.NextFiring)
+                                    <span style="font-weight:lighter;">
+                                        @{
+                                            var daysRemaining = (inactiveItem.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                            if (daysRemaining < 0) {
+                                                <text>&nbsp;</text>
+                                            } else if (daysRemaining >= 0 && daysRemaining < 1) {
+                                                <text>(Today)</text>
+                                            } else if (daysRemaining == 1) {
+                                                <text>(Tomorrow)</text>
+                                            } else {
+                                                <text>(@daysRemaining Days)</text>
+                                            }
+                                        }
+                                    </span>
+                                } else {
+                                    <span class="text-danger">Expired</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-page="@PagePaths.BillEdit" asp-route-id="@inactiveItem.Id"><i class="fa-solid fa-pencil"></i></a> |
+                                <a asp-page="@PagePaths.BillDetails" asp-route-id="@inactiveItem.Id"><i class="fa-solid fa-circle-info"></i></a> |
+                                <a asp-page="@PagePaths.BillDelete" asp-route-id="@inactiveItem.Id"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                     }
