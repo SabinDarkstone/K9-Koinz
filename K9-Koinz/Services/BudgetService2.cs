@@ -4,24 +4,24 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace K9_Koinz.Services {
     public interface IBudgetService2 : ICustomService {
-        public abstract Budget GetBudget(Guid budgetId, DateTime referenceDate);
+        public abstract Task<Budget> GetBudgetAsync(Guid budgetId, DateTime referenceDate);
         public abstract Task<List<Transaction>> GetTransactionsForCurrentBudgetLinePeriodAsync(BudgetLine budgetLine, DateTime refDate);
         public abstract Task<List<Transaction>> GetTransactionsForPreviousLinePeriodAsync(BudgetLine budgetLine, DateTime refDate);
         public abstract void DeleteOldBudgetLinePeriods(BudgetLine budgetLine);
     }
+
     public class BudgetService2 : AbstractService<BudgetService2>, IBudgetService2 {
         public BudgetService2(KoinzContext context, ILogger<BudgetService2> logger) : base(context, logger) { }
 
-        public Budget GetBudget(Guid budgetId, DateTime referenceDate) {
+        public async Task<Budget> GetBudgetAsync(Guid budgetId, DateTime referenceDate) {
             // Get basic budget information
-            var budget = _context.Budgets
+            var budget = await _context.Budgets
                 .AsNoTracking()
                 .Where(bud => bud.Id == budgetId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             // Find out start and end date for selected period
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(referenceDate);
@@ -42,10 +42,10 @@ namespace K9_Koinz.Services {
                     .Where(trans => trans.TagId == budget.BudgetTagId.Value);
             }
 
-            var allTransactions = transactionsIQ.ToList();
+            var allTransactions = await transactionsIQ.ToListAsync();
 
             // Get categories in budget for grouping
-            var budgetCategories = _context.BudgetLines
+            var budgetCategories = await _context.BudgetLines
                 .AsNoTracking()
                 .Include(line => line.BudgetCategory)
                     .ThenInclude(cat => cat.ParentCategory)
@@ -53,7 +53,7 @@ namespace K9_Koinz.Services {
                     .ThenInclude(cat => cat.ChildCategories)
                 .AsSplitQuery()
                 .Where(line => line.BudgetId == budgetId)
-                .ToList();
+                .ToListAsync();
 
             // Create dictionary and pre-populate category IDs
             Dictionary<Guid, List<Transaction>> allocated = new();
@@ -106,7 +106,7 @@ namespace K9_Koinz.Services {
 
                 line.Transactions = transactionList;
                 line.Budget = budget;
-                line.SpentAmount = transactionList.GetTotal();
+                line.SpentAmount = transactionList.GetTotal(line.BudgetCategory.CategoryType == CategoryType.EXPENSE);
             }
 
             // Get details about unallocated lines

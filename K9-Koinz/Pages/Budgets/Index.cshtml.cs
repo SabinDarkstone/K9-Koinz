@@ -68,15 +68,13 @@ namespace K9_Koinz.Pages.Budgets {
                 .AsNoTracking()
                 .ToListAsync();
 
-            //SelectedBudget = GetBudgetDetails(selectedBudget);
-            SelectedBudget = _budgetService2.GetBudget(DetermineBudgetId(selectedBudget), BudgetPeriod);
+            SelectedBudget = await _budgetService2.GetBudgetAsync(DetermineBudgetId(selectedBudget), BudgetPeriod);
 
             if (SelectedBudget == null) {
                 return;
             }
 
             GenerateBudgetPeriodOptions();
-            //await RetrieveAndHandleTransactionsAsync();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
                 budgetLine.GetCurrentAndPreviousPeriods(BudgetPeriod);
             }
@@ -84,32 +82,6 @@ namespace K9_Koinz.Pages.Budgets {
             await UpdateCurrentPeriodsAsync();
             await _context.SaveChangesAsync();
         }
-
-        // TODO: This needs to be cleaned up
-        //private Budget GetBudgetDetails(string selectedBudget) {
-        //    var budgetQuery = _context.Budgets
-        //        .Include(bud => bud.BudgetLines)
-        //            .ThenInclude(line => line.BudgetCategory)
-        //                .ThenInclude(cat => cat.Transactions)
-        //                    .ThenInclude(trans => trans.Account)
-        //        .Include(bud => bud.BudgetLines)
-        //            .ThenInclude(line => line.BudgetCategory)
-        //                .ThenInclude(cat => cat.ChildCategories)
-        //                    .ThenInclude(cCat => cCat.Transactions)
-        //                        .ThenInclude(trans => trans.Account)
-        //        .Include(bud => bud.BudgetLines)
-        //            .ThenInclude(line => line.Periods)
-        //        .Include(bud => bud.BudgetTag)
-        //        .OrderBy(bud => bud.Id)
-        //        .AsSplitQuery()
-        //        .AsNoTracking();
-
-        //    if (!string.IsNullOrEmpty(selectedBudget)) {
-        //        return budgetQuery.FirstOrDefault(bud => bud.Id == Guid.Parse(selectedBudget));
-        //    } else {
-        //        return budgetQuery.FirstOrDefault();
-        //    }
-        //}
 
         private Guid DetermineBudgetId(string selectedBudget) {
             if (string.IsNullOrEmpty(selectedBudget)) {
@@ -156,19 +128,6 @@ namespace K9_Koinz.Pages.Budgets {
             PeriodOptions.FirstOrDefault().IsDisabled = false;
             PeriodOptions.Reverse();
         }
-
-        //private async Task RetrieveAndHandleTransactionsAsync() {
-        //    // Get transactions for each budget line and write values to unmapped properties in the budget line model
-        //    foreach (var budgetLine in SelectedBudget.BudgetLines) {
-        //        _budgetService.GetTransactions(budgetLine, BudgetPeriod);
-        //    }
-
-        //    // If the current budget uses categories, determine unallocated spending
-        //    if (!SelectedBudget.DoNotUseCategories) {
-        //        var newBudgetLines = await _budgetService2.GetUnallocatedSpendingAsync(SelectedBudget, BudgetPeriod);
-        //        SelectedBudget.UnallocatedLines = newBudgetLines;
-        //    }
-        //}
 
         private async Task UpdateCurrentPeriodsAsync() {
             var periodsToUpdate = new List<BudgetLinePeriod>();

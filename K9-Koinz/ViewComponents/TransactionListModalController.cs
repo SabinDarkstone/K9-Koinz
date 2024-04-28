@@ -3,8 +3,6 @@ using K9_Koinz.Models;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using NuGet.Protocol;
 
 namespace K9_Koinz.ViewComponents {
 
@@ -38,7 +36,6 @@ namespace K9_Koinz.ViewComponents {
             }
 
             if (!string.IsNullOrEmpty(relatedObjectType)) {
-                _logger.LogInformation(relatedObjectType);
                 ModalId = "transactionList" + relatedObjectType;
                 var transactionsIQ = _context.Transactions
                     .Where(trans => trans.Date.Date >= startDate.Value.Date && trans.Date.Date <= endDate.Value.Date);
@@ -52,12 +49,9 @@ namespace K9_Koinz.ViewComponents {
                 }
 
                 transactions = await transactionsIQ.ToListAsync();
-
-                _logger.LogInformation(transactions.ToJson());
             }
 
             if (sourceId.HasValue) {
-                _logger.LogInformation(sourceId.Value.ToString());
                 ModalId = "transactionList" + sourceId.ToString();
                 transactions = await _context.Transactions
                     .Where(trans => trans.BillId == sourceId || trans.AccountId == sourceId || trans.TagId == sourceId || trans.CategoryId == sourceId || trans.MerchantId == sourceId || trans.SavingsGoalId == sourceId)
