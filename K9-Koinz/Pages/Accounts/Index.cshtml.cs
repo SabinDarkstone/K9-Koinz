@@ -12,7 +12,6 @@ namespace K9_Koinz.Pages.Accounts {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
 
-        [BindProperty(SupportsGet = true)]
         [DisplayName("Show All Accounts")]
         public bool ShowAllAccounts { get; set; } = false;
 

@@ -71,6 +71,17 @@
         </p>
     }
 
+    <form method="post" name="form1">
+        <div class="mb-4">
+            <div class="form-check form-switch">
+                <input type="hidden" asp-for="@Model.ActiveTab" />
+
+                @Html.EditorFor(x => x.ShowAll, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
+                <label class="form-check-label">Show All Goals</label>
+            </div>
+        </div>
+    </form>
+
     @foreach (var goalGroups in Model.SavingsDict.OrderBy(x => x.Key)) {
         <h2>@goalGroups.Key</h2>
 
@@ -190,6 +201,15 @@
             </a>
         </p>
     }
+
+    <form method="post" name="form1">
+        <div class="mb-4">
+            <div class="form-check form-switch">
+                @Html.EditorFor(x => x.ShowAll, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
+                <label class="form-check-label">Show All Buckets</label>
+            </div>
+        </div>
+    </form>
 
     @foreach (var goalGroups in Model.SavingsDict.OrderBy(x => x.Key)) {
         <h2>@goalGroups.Key</h2>

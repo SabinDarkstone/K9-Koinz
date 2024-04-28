@@ -47,8 +47,13 @@ namespace K9_Koinz.Pages.Bills {
             var startDate = DateTime.Today.StartOfMonth();
             var endDate = DateTime.Today.EndOfMonth();
 
+            var billsIQ = _context.Bills
+                .AsNoTracking()
+                .Include(bill => bill.Account)
+                .Include(bill => bill.RepeatConfig);
+
             if (ShowAllBills) {
-                Bills = (await _context.Bills
+                Bills = (await billsIQ
                     .AsNoTracking()
                     .Include(bill => bill.Account)
                     .Include(bill => bill.RepeatConfig)
@@ -56,14 +61,12 @@ namespace K9_Koinz.Pages.Bills {
                     .OrderBy(bill => bill.RepeatConfig.NextFiring)
                     .ToList();
             } else {
-                Bills = (await _context.Bills
-                    .AsNoTracking()
-                    .Include(bill => bill.Account)
-                    .Include(bill => bill.RepeatConfig)
+                Bills = (await billsIQ
                     .ToListAsync())
                     .Where(bill => bill.RepeatConfig.NextFiring.HasValue)
                     .Where(bill => bill.RepeatConfig.NextFiring >= startDate)
                     .Where(bill => bill.RepeatConfig.NextFiring <= endDate)
+                    .Where(bill => bill.IsActive)
                     .OrderBy(bill => bill.RepeatConfig.NextFiring)
                     .ToList();
             }

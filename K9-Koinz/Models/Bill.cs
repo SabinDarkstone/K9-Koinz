@@ -41,6 +41,8 @@ namespace K9_Koinz.Models {
         public DateTime? LastDueDate { get; set; }
         [DisplayName("Mark as Autopay")]
         public bool IsAutopay { get; set; }
+        [DisplayName("Currently Active?")]
+        public bool IsActive { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
     }

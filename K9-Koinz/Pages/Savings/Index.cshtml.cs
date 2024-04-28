@@ -4,6 +4,7 @@ using K9_Koinz.Pages.Meta;
 using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace K9_Koinz.Pages.Savings {
     public class IndexModel : AbstractDbPage {
@@ -15,6 +16,13 @@ namespace K9_Koinz.Pages.Savings {
 
         public SavingsType ActiveTab { get; set; }
 
+        public bool ShowAll { get; set; } = false;
+
+        public async Task<IActionResult> OnPostAsync(bool? showAll, string view) {
+            ShowAll = showAll ?? false;
+            return await OnGetAsync(view);
+        }
+
         public async Task<IActionResult> OnGetAsync(string view) {
             if (string.IsNullOrEmpty(view) || view == "goals") {
                 ActiveTab = SavingsType.GOAL;
@@ -22,11 +30,17 @@ namespace K9_Koinz.Pages.Savings {
                 ActiveTab = SavingsType.BUCKET;
             }
 
-            SavingsDict = await _context.SavingsGoals
+            var savingsIQ = _context.SavingsGoals
                 .AsNoTracking()
                 .Include(goal => goal.Transactions
                     .OrderByDescending(trans => trans.Date))
-                .Where(goal => goal.SavingsType == ActiveTab)
+                .Where(goal => goal.SavingsType == ActiveTab);
+
+            if (!ShowAll) {
+                savingsIQ = savingsIQ.Where(goal => goal.IsActive);
+            }
+
+            SavingsDict = await savingsIQ
                 .GroupBy(goal => goal.AccountName)
                 .ToDictionaryAsync(
                     x => x.Key,

@@ -49,6 +49,9 @@ namespace K9_Koinz.Models {
 
         public string AccountName {  get; set; }
 
+        [DisplayName("Currently Active?")]
+        public bool IsActive { get; set; }
+
         public ICollection<Transaction> Transactions { get; set; }
 
         [DisplayName("Total Saved")]
