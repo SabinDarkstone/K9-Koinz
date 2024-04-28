@@ -28,6 +28,16 @@
         <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.AccountName)
         </dd>
+        <dt class="col-sm-3">
+            Scheduled Transfers
+        </dt>
+        <dd class="col-sm-9">
+            @foreach (var transfer in Model.ScheduledTransfers) {
+                <span>
+                    <a class="no-underline" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@transfer.Id">@transfer.RepeatConfig.RepeatString</a> &nbsp;
+                </span>
+            }
+        </dd>
         @if (Model.Record.StartingAmount.HasValue) {
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.StartingAmount)
@@ -50,6 +60,7 @@
         </dd>
     </dl>
 </div>
+
 <div class="row">
     <h5>Transactions</h5>
     @if (Model.Record.Transactions.Any()) {

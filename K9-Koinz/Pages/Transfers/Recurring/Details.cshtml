@@ -39,9 +39,15 @@
                 @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
             </dt>
             <dd class="col-sm-10">
-                <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@Model.Record.SavingsGoalId" class="no-underline">
-                    @Html.DisplayFor(model => model.Record.SavingsGoal.Name)
-                </a>
+                @if (Model.Record.SavingsGoal.SavingsType == SavingsType.BUCKET) {
+                    <a asp-page="@PagePaths.SavingsBucketDetails" asp-route-id="@Model.Record.SavingsGoalId" class="no-underline">
+                        @Html.DisplayFor(model => model.Record.SavingsGoal.Name)
+                    </a>
+                } else if (Model.Record.SavingsGoal.SavingsType == SavingsType.GOAL) {
+                    <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@Model.Record.SavingsGoalId" class="no-underline">
+                        @Html.DisplayFor(model => model.Record.SavingsGoal.Name)
+                    </a>
+                }
             </dd>
         }
         <dt class="col-sm-2">
