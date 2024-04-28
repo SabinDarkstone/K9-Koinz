@@ -175,6 +175,8 @@ namespace K9_Koinz.ViewComponents {
             this.line = line;
             this.CurrentPeriod = currentPeriod;
 
+            _logger.LogInformation(line.BudgetCategoryId + " " + line.BudgetCategoryName + " " + line.SpentAmount.ToString());
+
             SolidProgressBarClassList = "progress-bar";
             StripedProgressBarClassList = "progress-bar progress-bar-striped";
 

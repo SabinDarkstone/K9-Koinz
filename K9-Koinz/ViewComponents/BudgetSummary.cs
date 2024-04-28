@@ -20,12 +20,12 @@ namespace K9_Koinz.ViewComponents {
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate) {
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(referenceDate);
-            BudgetedIncome = budget.IncomeLines
+            BudgetedIncome = budget.GetIncomeLines()
                 .Sum(line => line.BudgetedAmount);
             ExtraIncome = budget.UnallocatedIncomes
                 .SelectMany(line => line.Transactions)
                 .GetTotal();
-            AllocatedExpenseTotal = budget.ExpenseLines
+            AllocatedExpenseTotal = budget.GetExpenseLines()
                 .Sum(line => line.BudgetedAmount) * -1;
             ExtraExpenseTotal = budget.UnallocatedExpenses
                 .SelectMany(line => line.Transactions)

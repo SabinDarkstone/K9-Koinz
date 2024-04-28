@@ -136,19 +136,19 @@
             </ul>
         } else {
 
-            @if (Model.SelectedBudget.IncomeLines.Any()) {
+            @if (Model.SelectedBudget.GetIncomeLines().Any()) {
                 <div class="row">
                     <div class="col">
                         <h4>Income</h4>
                     </div>
                     <div class="col">
                         <h4 style="text-align: right;">
-                            @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                            @Model.SelectedBudget.GetIncomeLines().Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.GetIncomeLines().Sum(line => line.BudgetedAmount).FormatCurrency(0)
                         </h4>
                     </div>
                 </div>
                 <ul class="list-group mb-4">
-                    @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
+                    @foreach (var budgetLine in Model.SelectedBudget.GetIncomeLines()) {
                         @await Component.InvokeAsync(nameof(BudgetLineBar), new {
                                 line = budgetLine,
                                 currentPeriod = Model.BudgetPeriod
@@ -187,13 +187,13 @@
                 </div>
                 <div class="col">
                     <h4 style="text-align: right;">
-                        @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                        @Model.SelectedBudget.GetExpenseLines().Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.GetExpenseLines().Sum(line => line.BudgetedAmount).FormatCurrency(0)
                     </h4>
                 </div>
             </div>
 
             <ul class="list-group mb-4">
-                @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
+                @foreach (var budgetLine in Model.SelectedBudget.GetExpenseLines()) {
                     @await Component.InvokeAsync(nameof(BudgetLineBar), new {
                             line = budgetLine,
                             currentPeriod = Model.BudgetPeriod
