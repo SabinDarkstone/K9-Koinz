@@ -75,24 +75,24 @@ namespace K9_Koinz.Services {
 
                 // First check the transaction category
                 if (allocated.ContainsKey(catId)) {
-                    _logger.LogInformation("Found allocated category");
+                    //_logger.LogInformation("Found allocated category");
                     allocated[catId].Add(transaction);
                     continue;
                 }
 
                 // Check parent category, if needed
                 if (parentCatId.HasValue && allocated.ContainsKey(parentCatId.Value)) {
-                    _logger.LogInformation("Found allocated parent category");
+                    //_logger.LogInformation("Found allocated parent category");
                     allocated[parentCatId.Value].Add(transaction);
                     continue;
                 }
 
                 // Add to unallocated lines
                 if (unallocated.ContainsKey(catId)) {
-                    _logger.LogInformation("Could not find allocated category, but unallocated line exists");
+                    //_logger.LogInformation("Could not find allocated category, but unallocated line exists");
                     unallocated[catId].Add(transaction);
                 } else {
-                    _logger.LogInformation("Could not find allocated category, creating new unallocated line");
+                    //_logger.LogInformation("Could not find allocated category, creating new unallocated line");
                     unallocated.Add(catId, new List<Transaction> { transaction });
                 }
             }

@@ -48,6 +48,14 @@
 
 <h1>Budgets</h1>
 
+@{
+    var incomeLines = Model.SelectedBudget.GetIncomeLines();
+    var expenseLines = Model.SelectedBudget.GetExpenseLines();
+
+    var unallocatedIncome = Model.SelectedBudget.UnallocatedIncomes;
+    var unallocatedExpenses = Model.SelectedBudget.UnallocatedExpenses;
+}
+
 
 @if (!Model.Budgets.Any()) {
     <div>
@@ -136,19 +144,19 @@
             </ul>
         } else {
 
-            @if (Model.SelectedBudget.GetIncomeLines().Any()) {
+            @if (incomeLines.Count > 0) {
                 <div class="row">
                     <div class="col">
                         <h4>Income</h4>
                     </div>
                     <div class="col">
                         <h4 style="text-align: right;">
-                            @Model.SelectedBudget.GetIncomeLines().Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.GetIncomeLines().Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                            @incomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @incomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
                         </h4>
                     </div>
                 </div>
                 <ul class="list-group mb-4">
-                    @foreach (var budgetLine in Model.SelectedBudget.GetIncomeLines()) {
+                    @foreach (var budgetLine in incomeLines) {
                         @await Component.InvokeAsync(nameof(BudgetLineBar), new {
                                 line = budgetLine,
                                 currentPeriod = Model.BudgetPeriod
@@ -156,19 +164,19 @@
                     }
                 </ul>
 
-                @if (Model.SelectedBudget.UnallocatedIncomes.Any()) {
+                @if (unallocatedIncome.Count > 0) {
                     <div class="row">
                         <div class="col">
                             <h4>Other Income</h4>
                         </div>
                         <div class="col">
                             <h4 style="text-align: right;">
-                                @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
+                                @(unallocatedIncome.Sum(line => line.SpentAmount)).FormatCurrency(0))
                             </h4>
                         </div>
                     </div>
                     <ul>
-                        @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
+                        @foreach (var budgetLine in unallocatedIncome) {
                             var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
                             var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
 
@@ -187,13 +195,13 @@
                 </div>
                 <div class="col">
                     <h4 style="text-align: right;">
-                        @Model.SelectedBudget.GetExpenseLines().Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.GetExpenseLines().Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                        @expenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @expenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
                     </h4>
                 </div>
             </div>
 
             <ul class="list-group mb-4">
-                @foreach (var budgetLine in Model.SelectedBudget.GetExpenseLines()) {
+                @foreach (var budgetLine in expenseLines) {
                     @await Component.InvokeAsync(nameof(BudgetLineBar), new {
                             line = budgetLine,
                             currentPeriod = Model.BudgetPeriod
@@ -201,19 +209,19 @@
                 }
             </ul>
 
-            @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
+            @if (unallocatedExpenses.Count > 0) {
                 <div class="row">
                     <div class="col">
                         <h4>Other Spending</h4>
                     </div>
                     <div class="col">
                         <h4 style="text-align: right;">
-                            @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+                            @(unallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
                         </h4>
                     </div>
                 </div>
                 <ul>
-                    @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
+                    @foreach (var budgetLine in unallocatedExpenses) {
                         var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
                         var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
 

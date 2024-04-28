@@ -113,7 +113,7 @@ namespace K9_Koinz.Pages.Budgets {
 
         private Guid DetermineBudgetId(string selectedBudget) {
             if (string.IsNullOrEmpty(selectedBudget)) {
-                return _context.Budgets.FirstOrDefault().Id;
+                return Budgets.FirstOrDefault().Id;
             } else {
                 return Guid.Parse(selectedBudget);
             }
@@ -154,7 +154,6 @@ namespace K9_Koinz.Pages.Budgets {
             }
 
             PeriodOptions.FirstOrDefault().IsDisabled = false;
-
             PeriodOptions.Reverse();
         }
 
