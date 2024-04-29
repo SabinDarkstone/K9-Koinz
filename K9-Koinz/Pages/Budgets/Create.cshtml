@@ -37,7 +37,7 @@
                 <input asp-for="Record.Description" class="form-control" />
                 <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <div class="form-check form-switch">
                     @Html.EditorFor(x => x.Record.DoNotUseCategories, new { htmlAttributes = new { @class = "form-check-input" } })
                     <label class="form-check-label" asp-for="Record.DoNotUseCategories"></label>
@@ -52,7 +52,7 @@
                     @Html.EditorFor(x => x.Record.DoNoCategoryRollover, new { htmlAttributes = new { @class = "form-check-input" } })
                     <label class="form-check-label" asp-for="Record.DoNoCategoryRollover"></label>
                 </div>
-            </div>
+            </div>*@
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">
                     <i class="fa-solid fa-floppy-disk"></i> Create

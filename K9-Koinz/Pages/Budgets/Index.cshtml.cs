@@ -24,14 +24,15 @@ namespace K9_Koinz.Pages.Budgets {
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<IndexModel> _logger;
-        private readonly IBudgetService _budgetService;
+
+        private readonly IBudgetService2 _budgetService2;
 
         private Budget selectedBudget;
 
-        public IndexModel(KoinzContext context, ILogger<IndexModel> logger, IBudgetService budgetService) {
+        public IndexModel(KoinzContext context, ILogger<IndexModel> logger, IBudgetService2 budgetService2) {
             _context = context;
             _logger = logger;
-            _budgetService = budgetService;
+            _budgetService2 = budgetService2;
         }
 
         public IList<Budget> Budgets { get; set; } = default!;
@@ -67,14 +68,13 @@ namespace K9_Koinz.Pages.Budgets {
                 .AsNoTracking()
                 .ToListAsync();
 
-            SelectedBudget = GetBudgetDetails(selectedBudget);
+            SelectedBudget = await _budgetService2.GetBudgetAsync(DetermineBudgetId(selectedBudget), BudgetPeriod);
 
             if (SelectedBudget == null) {
                 return;
             }
 
             GenerateBudgetPeriodOptions();
-            await RetrieveAndHandleTransactionsAsync();
             foreach (var budgetLine in SelectedBudget.RolloverExpenses) {
                 budgetLine.GetCurrentAndPreviousPeriods(BudgetPeriod);
             }
@@ -83,29 +83,11 @@ namespace K9_Koinz.Pages.Budgets {
             await _context.SaveChangesAsync();
         }
 
-        // TODO: This needs to be cleaned up
-        private Budget GetBudgetDetails(string selectedBudget) {
-            var budgetQuery = _context.Budgets
-                .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.BudgetCategory)
-                        .ThenInclude(cat => cat.Transactions)
-                            .ThenInclude(trans => trans.Account)
-                .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.BudgetCategory)
-                        .ThenInclude(cat => cat.ChildCategories)
-                            .ThenInclude(cCat => cCat.Transactions)
-                                .ThenInclude(trans => trans.Account)
-                .Include(bud => bud.BudgetLines)
-                    .ThenInclude(line => line.Periods)
-                .Include(bud => bud.BudgetTag)
-                .OrderBy(bud => bud.Id)
-                .AsSplitQuery()
-                .AsNoTracking();
-
-            if (!string.IsNullOrEmpty(selectedBudget)) {
-                return budgetQuery.FirstOrDefault(bud => bud.Id == Guid.Parse(selectedBudget));
+        private Guid DetermineBudgetId(string selectedBudget) {
+            if (string.IsNullOrEmpty(selectedBudget)) {
+                return Budgets.FirstOrDefault().Id;
             } else {
-                return budgetQuery.FirstOrDefault();
+                return Guid.Parse(selectedBudget);
             }
         }
 
@@ -144,21 +126,7 @@ namespace K9_Koinz.Pages.Budgets {
             }
 
             PeriodOptions.FirstOrDefault().IsDisabled = false;
-
             PeriodOptions.Reverse();
-        }
-
-        private async Task RetrieveAndHandleTransactionsAsync() {
-            // Get transactions for each budget line and write values to unmapped properties in the budget line model
-            foreach (var budgetLine in SelectedBudget.BudgetLines) {
-                _budgetService.GetTransactions(budgetLine, BudgetPeriod);
-            }
-
-            // If the current budget uses categories, determine unallocated spending
-            if (!SelectedBudget.DoNotUseCategories) {
-                var newBudgetLines = await _budgetService.GetUnallocatedSpendingAsync(SelectedBudget, BudgetPeriod);
-                SelectedBudget.UnallocatedLines = newBudgetLines;
-            }
         }
 
         private async Task UpdateCurrentPeriodsAsync() {
@@ -177,7 +145,7 @@ namespace K9_Koinz.Pages.Budgets {
 
                 // Set the spent amount for the period based on the sum of the amounts of transations.
                 // Multiply by -1 to make value positive
-                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, BudgetPeriod))
+                budgetLine.CurrentPeriod.SpentAmount = (await _budgetService2.GetTransactionsForCurrentBudgetLinePeriodAsync(budgetLine, BudgetPeriod))
                     .GetTotal(true);
                 periodsToUpdate.Add(budgetLine.CurrentPeriod);
 
@@ -219,7 +187,7 @@ namespace K9_Koinz.Pages.Budgets {
                     continue;
                 }
 
-                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotal(true);
+                budgetLine.PreviousPeriod.SpentAmount = (await _budgetService2.GetTransactionsForPreviousLinePeriodAsync(budgetLine, BudgetPeriod)).GetTotal(true);
                 budgetLine.PreviousPeriod.BudgetLine = null;
                 periodsToUpdate.Add(budgetLine.PreviousPeriod);
             }
