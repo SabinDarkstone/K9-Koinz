@@ -15,8 +15,9 @@ namespace K9_Koinz.ViewComponents {
         public async Task<IViewComponentResult> InvokeAsync() {
             var accounts = await _context.Accounts
                 .Include(acct => acct.Transactions.Where(trans => trans.Date.Date >= trans.Account.InitialBalanceDate))
-            .AsNoTracking()
-            .ToListAsync();
+                .Where(acct => !acct.IsRetired)
+                .AsNoTracking()
+                .ToListAsync();
 
             foreach (var acct in accounts) {
                 acct.Transactions = acct.Transactions.Where(trans => trans.Date.Date > acct.InitialBalanceDate || trans.Date.Date == acct.InitialBalanceDate && trans.DoNotSkip).ToList();
