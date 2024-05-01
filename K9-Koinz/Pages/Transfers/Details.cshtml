@@ -68,8 +68,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <td>Savings Goal</td>
-                    <td>Amount</td>
+                    <th>Savings Goal</th>
+                    <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,18 +81,57 @@
                 }
             </tbody>
         </table>
+    } else if (Model.Record.Transactions.Any() && !Model.Record.IsSplit) {
+        <h4>Transactions</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>Amount</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var trans in Model.Record.Transactions) {
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary">
+                                @if (Model.Record.ToAccountId == trans.AccountId) {
+                                    <text>To</text>
+                                } else {
+                                    <text>From</text>
+                                }
+                            </span>
+                            @trans.AccountName
+                        </td>
+                        <td>@trans.Amount.FormatCurrency(2)</td>
+                        <td>
+                            <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@trans.Id"><i class="fa-solid fa-circle-info"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
 </div>
 
 <div>
-    <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransactionSplit" asp-route-parentId="@Model.Record.ToTransaction.Id">
-        <i class="fa-solid fa-arrows-split-up-and-left"></i>
-        @if (Model.Record.IsSplit) {
-            <text>Edit Split</text>
-        } else {
-            <text>Split Transfer</text>
-        }
-    </a>
+    @if (Model.Record.RecurringTransferId.HasValue) {
+        <a class="btn btn-primary mb-2" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@Model.Record.RecurringTransferId">
+            Goto Recurring
+        </a>
+    }
+
+    @if (Model.Record.ToTransaction != null) {
+        <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransactionSplit" asp-route-parentId="@Model.Record.ToTransaction.Id">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i>
+            @if (Model.Record.IsSplit) {
+                <text>Edit Split</text>
+            } else {
+                <text>Split Transfer</text>
+            }
+        </a>
+    }
 
     @if (Model.Record.IsSplit) {
         <a class="btn btn-outline-secondary mb-2" asp-page="@PagePaths.TransactionRemoveSplit" asp-route-parentId="@Model.Record.ToTransaction.Id">

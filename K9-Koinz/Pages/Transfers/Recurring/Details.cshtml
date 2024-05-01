@@ -70,8 +70,8 @@
         </dd>
     </dl>
 
-    <h4>Transactions</h4>
-    @if (Model.Record.Transactions.Any()) {
+    <h4>Fired Transfers</h4>
+    @if (Model.Record.InstantiatedFromRecurring.Any()) {
         <table class="table">
             <thead>
                 <tr>
@@ -79,15 +79,19 @@
                     <th>Merchant</th>
                     <th>Category</th>
                     <th>Amount</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var trans in Model.Record.Transactions) {
+                @foreach (var transfer in Model.Record.InstantiatedFromRecurring) {
                     <tr>
-                        <td>@Html.DisplayFor(model => trans.Date)</td>
-                        <td>@Html.DisplayFor(model => trans.MerchantName)</td>
-                        <td>@Html.DisplayFor(model => trans.CategoryName)</td>
-                        <td>@trans.Amount.FormatCurrency(2)</td>
+                        <td>@Html.DisplayFor(model => transfer.Date)</td>
+                        <td>@Html.DisplayFor(model => transfer.Merchant.Name)</td>
+                        <td>@Html.DisplayFor(model => transfer.Category.Name)</td>
+                        <td>@transfer.Amount.FormatCurrency(2)</td>
+                        <td>
+                            <a asp-page="@PagePaths.TransferDetails" asp-route-id="@transfer.Id"><i class="fa-solid fa-circle-info"></i></a>
+                        </td>
                     </tr>
                 }
             </tbody>

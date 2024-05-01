@@ -38,6 +38,8 @@ namespace K9_Koinz.Models {
         public Guid? RepeatConfigId { get; set; }
         [DisplayName("Repeat Settings")]
         public RepeatConfig RepeatConfig { get; set; }
+        public Guid? RecurringTransferId { get; set; }
+        public Transfer RecurringTransfer { get; set; }
 
         public bool IsSplit { get; set; }
 
@@ -62,5 +64,7 @@ namespace K9_Koinz.Models {
         }
 
         public ICollection<Transaction> Transactions { get; set; }
+
+        public ICollection<Transfer> InstantiatedFromRecurring { get; set; }
     }
 }

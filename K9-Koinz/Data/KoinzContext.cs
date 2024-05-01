@@ -95,6 +95,12 @@ namespace K9_Koinz.Data {
                 .HasMany(x => x.BudgetLines)
                 .WithOne(x => x.Budget)
                 .HasForeignKey(x => x.BudgetId);
+
+            // Recurring Transfer -> Instance Transfers
+            modelBuilder.Entity<Transfer>()
+                .HasOne(x => x.RecurringTransfer)
+                .WithMany(x => x.InstantiatedFromRecurring)
+                .HasForeignKey(x => x.RecurringTransferId);
         }
     }
 }

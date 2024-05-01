@@ -14,7 +14,7 @@ namespace K9_Koinz.Utils {
                 TagId = recurringTransfer.TagId,
                 ToAccountId = recurringTransfer.ToAccountId,
                 FromAccountId = recurringTransfer.FromAccountId,
-                Id = recurringTransfer.Id
+                RecurringTransferId = recurringTransfer.Id
             };
         }
 

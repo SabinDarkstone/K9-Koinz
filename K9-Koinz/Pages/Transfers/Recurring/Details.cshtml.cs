@@ -10,6 +10,7 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
 
         protected override async Task<Transfer> QueryRecordAsync(Guid id) {
             return await _context.Transfers
+                .AsNoTracking()
                 .Include(fer => fer.Tag)
                 .Include(fer => fer.Category)
                 .Include(fer => fer.FromAccount)
@@ -17,7 +18,11 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
                 .Include(fer => fer.Merchant)
                 .Include(fer => fer.RepeatConfig)
                 .Include(fer => fer.SavingsGoal)
-                .Include(fer => fer.Transactions)
+                .Include(fer => fer.InstantiatedFromRecurring)
+                    .ThenInclude(ins => ins.Merchant)
+                .Include(fer => fer.InstantiatedFromRecurring)
+                    .ThenInclude(ins => ins.Category)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(fer => fer.Id == id);
         }
     }
