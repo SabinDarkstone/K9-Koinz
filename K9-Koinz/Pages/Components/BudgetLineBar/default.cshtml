@@ -3,7 +3,7 @@
 
 <li class="list-group-item">
     <div class="row">
-        <div class="col">
+        <div class="col-8">
             <p>
                 <button class="btn btn-outline-dark btn-sm" style="margin-bottom:-5px">
                     <a class="no-underline" asp-page="@PagePaths.TransactionIndex"
@@ -16,6 +16,13 @@
                 </button>
             </p>
         </div>
+        @if (Model.SundayPercentLines.Count > 0) {
+            <div class="col-4" style="text-align: right;">
+                <span style="font-weight: lighter;">
+                    @Model.WeeklyAmount
+                </span>
+            </div>
+        }
     </div>
     @if (Model.RolloverInactive) {
         <div class="row">
