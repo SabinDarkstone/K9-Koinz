@@ -41,8 +41,8 @@ namespace K9_Koinz.Pages {
             //await _context.SaveChangesAsync();
 
             //await _dbCleanupService.DateMigrateBillSchedules();
-            await _dbCleanupService.InstantiateRecurringTransfers();
-            await _dbCleanupService.FixTransferDates();
+            //await _dbCleanupService.InstantiateRecurringTransfers();
+            //await _dbCleanupService.FixTransferDates();
 
             var results = await _spendingGraph.CreateGraphData();
             ThisMonthSpendingJson = results[0];
