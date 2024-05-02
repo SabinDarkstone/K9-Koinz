@@ -15,6 +15,7 @@ namespace K9_Koinz.Pages.Savings.Goals {
             var account = _context.Accounts.Find(Record.AccountId);
             Record.AccountName = account.Name;
             Record.SavingsType = SavingsType.GOAL;
+            Record.IsActive = true;
 
             Record.SavedAmount = 0d;
         }

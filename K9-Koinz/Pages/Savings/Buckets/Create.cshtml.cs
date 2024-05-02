@@ -16,6 +16,7 @@ namespace K9_Koinz.Pages.Savings.Buckets {
             Record.SavingsType = SavingsType.BUCKET;
             Record.AccountName = account.Name;
             Record.StartDate = DateTime.Today;
+            Record.IsActive = true;
 
             Record.SavedAmount = 0d;
         }
