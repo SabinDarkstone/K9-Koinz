@@ -20,7 +20,11 @@
             @Html.DisplayNameFor(model => model.Record.Description)
         </dt>
         <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Record.Description)
+            @if (string.IsNullOrEmpty(Model.Record.Description)) {
+                <text>&nbsp;</text>
+            } else {
+                @Html.DisplayFor(model => model.Record.Description)
+            }
         </dd>
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.AccountId)
@@ -32,10 +36,14 @@
             Scheduled Transfers
         </dt>
         <dd class="col-sm-9">
-            @foreach (var transfer in Model.ScheduledTransfers) {
-                <span>
-                    <a class="no-underline" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@transfer.Id">@transfer.RepeatConfig.RepeatString</a> &nbsp;
-                </span>
+            @if (Model.ScheduledTransfers.Count == 0) {
+                <text>&nbsp;</text>
+            } else {
+                @foreach (var transfer in Model.ScheduledTransfers) {
+                    <span>
+                        <a class="no-underline" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@transfer.Id">@transfer.RepeatConfig.RepeatString</a> &nbsp;
+                    </span>
+                }
             }
         </dd>
         @if (Model.Record.StartingAmount.HasValue) {

@@ -32,10 +32,14 @@
             Scheduled Transfers
         </dt>
         <dd class="col-sm-9">
-            @foreach (var transfer in Model.ScheduledTransfers) {
-                <span>
-                    <a class="no-underline" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@transfer.Id">@transfer.RepeatConfig.RepeatString</a> &nbsp;
-                </span>
+            @if (Model.ScheduledTransfers.Count == 0) {
+                <text>&nbsp;</text>
+            } else {
+                @foreach (var transfer in Model.ScheduledTransfers) {
+                    <span>
+                        <a class="no-underline" asp-page="@PagePaths.RecurringTransferDetails" asp-route-id="@transfer.Id">@transfer.RepeatConfig.RepeatString</a> &nbsp;
+                    </span>
+                }
             }
         </dd>
         <dt class="col-sm-3">

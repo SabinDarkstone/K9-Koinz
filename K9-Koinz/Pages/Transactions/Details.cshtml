@@ -68,9 +68,8 @@
                 @Html.DisplayNameFor(model => model.Record.BillId)
             </dt>
             <dd class="col-sm-9">
-                <a asp-page="@PagePaths.BillDetails" asp-route-id="@Model.Record.BillId">
-                    @Html.DisplayFor(model => model.Record.Bill.Name)
-                </a>
+                @Html.DisplayFor(model => model.Record.Bill.Name)
+                <a asp-page="@PagePaths.BillDetails" asp-route-id="@Model.Record.BillId"><i class="fa-solid fa-circle-info"></i></a>
             </dd>
         }
         @if (Model.Record.SavingsGoalId.HasValue) {
@@ -79,6 +78,7 @@
             </dt>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.Record.SavingsGoalName)
+                <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@Model.Record.SavingsGoalId"><i class="fa-solid fa-circle-info"></i></a>
             </dd>
         }
         <dt class="col-sm-3">
@@ -91,7 +91,11 @@
             @Html.DisplayNameFor(model => model.Record.Notes)
         </dt>
         <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Record.Notes)
+            @if (string.IsNullOrEmpty(Model.Record.Notes)) {
+                <text>&nbsp;</text>
+            } else {
+                @Html.DisplayFor(model => model.Record.Notes)
+            }
         </dd>
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.IsSavingsSpending)
