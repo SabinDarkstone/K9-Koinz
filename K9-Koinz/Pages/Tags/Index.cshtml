@@ -7,9 +7,12 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-page="@PagePaths.TagCreate">Create New</a>
-</p>
+<a asp-page="@PagePaths.TagCreate" class="no-underline-ever">
+    <span class="btn btn-success btn-sm mb-3">
+        <i class="fa-solid fa-plus"></i> Create New
+    </span>
+</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -35,7 +38,9 @@
                     @Html.DisplayFor(modelItem => item.ShortForm)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.HexColor)
+                    <span style="background-color:@item.HexColor" class="badge">
+                        @Html.DisplayFor(modelItem => item.HexColor)
+                    </span>
                 </td>
                 <td>
                     <a asp-page="@PagePaths.TagEdit" asp-route-id="@item.Id"><i class="fa-solid fa-pencil"></i></a> |
