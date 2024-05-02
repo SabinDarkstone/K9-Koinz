@@ -125,6 +125,17 @@
                                asp-route-pageIndex="@Model.Transactions.PageIndex">
                                 @Html.DisplayNameFor(model => model.Transactions[0].Date)
                             </a>
+
+                            @if (Model.CurrentSort == "date_desc" || string.IsNullOrEmpty(Model.CurrentSort)) {
+                                <text>&nbsp;</text>
+
+                                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                            }
+
+                            @if (Model.CurrentSort == "Date") {
+                                <text>&nbsp;</text>
+                                <i class="fa-solid fa-arrow-up-short-wide"></i>
+                            }
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.MerchantSort"
@@ -136,6 +147,17 @@
                                asp-route-pageIndex="@Model.Transactions.PageIndex">
                                 @Html.DisplayNameFor(model => model.Transactions[0].MerchantId)
                             </a>
+
+                            @if (Model.CurrentSort == "merchant_desc") {
+                                <text>&nbsp;</text>
+
+                                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                            }
+
+                            @if (Model.CurrentSort == "Merchant") {
+                                <text>&nbsp;</text>
+                                <i class="fa-solid fa-arrow-up-short-wide"></i>
+                            }
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Transactions[0].Category)
@@ -150,6 +172,17 @@
                                asp-route-pageIndex="@Model.Transactions.PageIndex">
                                 @Html.DisplayNameFor(model => model.Transactions[0].Amount)
                             </a>
+
+                            @if (Model.CurrentSort == "amount_desc") {
+                                <text>&nbsp;</text>
+
+                                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                            }
+
+                            @if (Model.CurrentSort == "Amount") {
+                                <text>&nbsp;</text>
+                                <i class="fa-solid fa-arrow-up-short-wide"></i>
+                            }
                         </th>
                         <th></th>
                     </tr>
