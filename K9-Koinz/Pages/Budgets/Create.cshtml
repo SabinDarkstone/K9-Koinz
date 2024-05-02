@@ -14,27 +14,27 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Record.Name" class="control-label"></label>
-                <input asp-for="Record.Name" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Name" class="form-control" placeholder="Name"/>
+                <label asp-for="Record.Name"></label>
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Timespan" class="control-label"></label>
+            <div class="form-group form-floating">
                 <select asp-for="Record.Timespan" class="form-control" asp-items="@Html.GetEnumSelectList<BudgetTimeSpan>()">
                     <option disabled selected>Select one...</option>
                 </select>
+                <label asp-for="Record.Timespan"></label>
                 <span asp-validation-for="Record.Timespan" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.BudgetTagId" class="control-label"></label>
+            <div class="form-group form-floating">
                 <select asp-for="Record.BudgetTagId" class="form-control" asp-items="@Model.TagOptions">
                     <option value="@Guid.Empty" selected>No Tag</option>
                 </select>
+                <label asp-for="Record.BudgetTagId"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Description" class="control-label"></label>
-                <input asp-for="Record.Description" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Description" class="form-control" placeholder="Description"/>
+                 <label asp-for="Record.Description"></label>
                 <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,11 +43,11 @@
                     <label class="form-check-label" asp-for="Record.DoNotUseCategories"></label>
                 </div>
             </div>
-            <div class="form-group" id="grpBudgetedAmount">
-                <label asp-for="Record.BudgetedAmount" class="control-label"></label>
-                <input asp-for="Record.BudgetedAmount" class="form-control" />
+            <div class="form-group form-floating" id="grpBudgetedAmount">
+                <input asp-for="Record.BudgetedAmount" class="form-control" placeholder="Budgeted Amount"/>
+                <label asp-for="Record.BudgetedAmount"></label>
             </div>
-            <div class="form-group" id="grpRollover">
+            <div class="form-group form-floating" id="grpRollover">
                 <div class="form-check form-switch">
                     @Html.EditorFor(x => x.Record.DoNoCategoryRollover, new { htmlAttributes = new { @class = "form-check-input" } })
                     <label class="form-check-label" asp-for="Record.DoNoCategoryRollover"></label>
@@ -67,11 +67,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-          rel="Stylesheet" type="text/css" />
-
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -81,7 +76,7 @@
             $("#grpBudgetedAmount").hide();
             $("#grpRollover").hide();
 
-            $("#Budget_DoNotUseCategories").on("change", function () {
+            $("#Record_DoNotUseCategories").on("change", function () {
                 if (!this.checked) {
                     $("#grpBudgetedAmount").hide();
                     $("#grpRollover").hide();

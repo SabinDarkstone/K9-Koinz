@@ -17,25 +17,24 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.DoNotUseCategories" />
             <input type="hidden" asp-for="Record.Id" />
-            <div class="form-group">
-                <label asp-for="Record.Name" class="control-label"></label>
-                <input asp-for="Record.Name" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Name" class="form-control" placeholder="Name"/>
+                <label asp-for="Record.Name"></label>
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Timespan" class="control-label"></label>
+            <div class="form-group form-floating">
                 <select asp-for="Record.Timespan" class="form-control" asp-items="@Html.GetEnumSelectList<BudgetTimeSpan>()">
                     <option disabled selected>Select one...</option>
                 </select>
+                <label asp-for="Record.Timespan"></label>
                 <span asp-validation-for="Record.Timespan" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Description" class="control-label"></label>
-                <input asp-for="Record.Description" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Description" class="form-control" placeholder="Description"/>
+                <label asp-for="Record.Description"></label>
                 <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.BudgetTagId" class="control-label"></label>
+            <div class="form-group form-floating">
                 <select asp-for="Record.BudgetTagId" class="form-control" asp-items="@Model.TagOptions">
                     @if (Model.Record.DoNotUseCategories) {
                         <option value="@Guid.Empty" selected disabled>No Tag</option>
@@ -43,11 +42,12 @@
                         <option value="@Guid.Empty" selected>No Tag</option>
                     }
                 </select>
+                <label asp-for="Record.BudgetTagId"></label>
             </div>
             @if (Model.Record.DoNotUseCategories) {
-                <div class="form-group">
-                    <label asp-for="Record.BudgetedAmount" class="control-label"></label>
-                    <input asp-for="Record.BudgetedAmount" class="form-control" />
+                <div class="form-group form-floating">
+                    <input asp-for="Record.BudgetedAmount" class="form-control" placeholder="Budgeted Amount"/>
+                    <label asp-for="Record.BudgetedAmount"></label>
                 </div>
                 <div class="form-group">
                     <div class="form-check form-switch">

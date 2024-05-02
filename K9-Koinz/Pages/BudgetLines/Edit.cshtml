@@ -14,20 +14,21 @@
     <div class="col-md-4 mb-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Record.BudgetId" />
             <input type="hidden" asp-for="Record.Id" />
-            <div class="form-group">
-                <label asp-for="Record.BudgetId" class="control-label"></label>
+            <input type="hidden" asp-for="Record.BudgetCategoryId" />
+
+            <div class="form-group form-floating">
                 <input type="text" value="@Model.Record.BudgetName" class="form-control" readonly />
-                <input type="hidden" asp-for="Record.BudgetId" />
+                <label asp-for="Record.BudgetId"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.BudgetCategoryId" class="control-label"></label>
+            <div class="form-group form-floating">
                 <input type="text" value="@Model.Record.BudgetCategoryName" class="form-control" readonly />
-                <input type="hidden" asp-for="Record.BudgetCategoryId" />
+                <label asp-for="Record.BudgetCategoryId"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.BudgetedAmount" class="control-label"></label>
-                <input type="number" asp-for="Record.BudgetedAmount" class="form-control" min="1" />
+            <div class="form-group form-floating">
+                <input type="number" asp-for="Record.BudgetedAmount" class="form-control" min="1" placeholder="Budgeted Amount"/>
+                <label asp-for="Record.BudgetedAmount"></label>
                 <span asp-validation-for="Record.BudgetedAmount" class="text-danger"></span>
             </div>
             <div class="form-group">

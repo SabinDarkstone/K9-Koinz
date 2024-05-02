@@ -23,45 +23,50 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Record.ParentCategoryId" id="hfCategory" />
+
             @if (Model.ParentCategory != null) {
-                <div class="form-group">
-                    <label asp-for="Record.ParentCategoryId" class="control-label"></label>
+                <div class="form-group form-floating">
                     <input type="text" value="@Model.ParentCategory.Name" class="form-control" readonly />
+                    <label asp-for="Record.ParentCategoryId"></label>
                     <input type="hidden" asp-for="Record.ParentCategoryId" value="@Model.ParentCategory.Id" readonly />
                 </div>
             }
-            <div class="form-group">
-                <label asp-for="Record.Name" class="control-label"></label>
-                <input asp-for="Record.Name" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Name" class="form-control" placeholder="Name"/>
+                <label asp-for="Record.Name"></label>
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.FontAwesomeIcon" class="control-label"></label>
-                <input asp-for="Record.FontAwesomeIcon" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.FontAwesomeIcon" class="form-control" placeholder="Icon"/>
+                <label asp-for="Record.FontAwesomeIcon"></label>
                 <span asp-validation-for="Record.FontAwesomeIcon" class="text-danger"></span>
             </div>
             @if (Model.ParentCategory == null) {
-                <div class="form-group">
-                    <label asp-for="Record.ParentCategoryId" class="control-label"></label>
-                    <input id="txtCategory" class="form-control" />
-                    <input asp-for="Record.ParentCategoryId" type="hidden" id="hfCategory" />
+                <div class="form-group form-floating">
+                    <input id="txtCategory" class="form-control" placeholder="Parent Category" />
+                    <label asp-for="Record.ParentCategoryId"></label>
                     <span asp-validation-for="Record.ParentCategoryId" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Record.CategoryType" class="control-label"></label>
-                    <select asp-for="Record.CategoryType" class="form-control" asp-items="@Html.GetEnumSelectList<CategoryType>()"></select>
+                <div class="form-group form-floating">
+                    <select asp-for="Record.CategoryType" class="form-control">
+                        <option value="" selected>Select a Type...</option>
+                        <option value="@CategoryType.INCOME">Income</option>
+                        <option value="@CategoryType.EXPENSE">Expense</option>
+                    </select>
+                    <label asp-for="Record.CategoryType"></label>
                     <span asp-validation-for="Record.CategoryType" class="text-danger"></span>
                 </div>
             } else {
-                <div class="form-group">
-                    <label asp-for="Record.CategoryType" class="control-label"></label>
+                <div class="form-group form-floating">
                     <input type="text" asp-for="Record.CategoryType" value="@Model.ParentCategory.CategoryTypeName" class="form-control" readonly />
+                    <label asp-for="Record.CategoryType"></label>
                 </div>
             }
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-2">
                     <i class="fa-solid fa-floppy-disk"></i> Create
-                </button>
+                </button>   
             </div>
         </form>
     </div>
