@@ -36,7 +36,7 @@ namespace K9_Koinz.Services {
                     FirstFiring = bill.FirstDueDate,
                     Frequency = bill.RepeatFrequency,
                     IntervalGap = bill.RepeatFrequencyCount,
-                    LastFiring = bill.LastDueDate,
+                    PreviousFiring = bill.LastDueDate,
                     Mode = RepeatMode.INTERVAL,
                     TerminationDate = bill.EndDate
                 };
