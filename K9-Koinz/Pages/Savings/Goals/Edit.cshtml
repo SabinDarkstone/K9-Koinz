@@ -10,51 +10,54 @@
 
 <h4>Savings Goal</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.Id" />
             <input type="hidden" asp-for="Record.SavingsType" />
-            <div class="form-group">
-                <label asp-for="Record.Name" class="control-label"></label>
-                <input asp-for="Record.Name" class="form-control" />
+            <input type="hidden" asp-for="Record.SavedAmount" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Name" class="form-control" placeholder="Name" />
+                <label asp-for="Record.Name"></label>
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.Description" class="control-label"></label>
-                <input asp-for="Record.Description" class="form-control" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.Description" class="form-control" placeholder="Description" />
+                <label asp-for="Record.Description"></label>
                 <span asp-validation-for="Record.Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.AccountId" class="control-label"></label>
+            <div class="form-group form-floating">
                 <select asp-for="Record.AccountId" class="form-control" asp-items="@Model.AccountOptions">
                     <option value="" selected disabled>Select an Account...</option>
                 </select>
+                <label asp-for="Record.AccountId"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.TargetAmount" class="control-label"></label>
-                <input asp-for="Record.TargetAmount" class="form-control" />
+            <div class="input-group mb-2">
+                <span class="input-group-text">$</span>
+                <div class="form-floating">
+                    <input asp-for="Record.TargetAmount" class="form-control recalculate" placeholder="Target Amount" />
+                    <label asp-for="Record.TargetAmount"></label>
+                </div>
                 <span asp-validation-for="Record.TargetAmount" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.StartDate" class="control-label"></label>
-                <input asp-for="Record.StartDate" class="form-control" value="@Model.Record.StartDate.FormatForUrl()" />
+            <div class="form-group form-floating">
+                <input asp-for="Record.StartDate" class="form-control recalculate" value="@DateTime.Today.FormatForUrl()" placeholder="Start Date" />
+                <label asp-for="Record.StartDate"></label>
                 <span asp-validation-for="Record.StartDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.TargetDate" class="control-label"></label>
-                @if (Model.Record.TargetDate.HasValue) {
-                    <input asp-for="Record.TargetDate" class="form-control" value="@Model.Record.TargetDate.Value.FormatForUrl()" />
-                } else {
-                    <input asp-for="Record.TargetDate" class="form-control" />
-
-                }
+            <div class="form-group form-floating">
+                <input asp-for="Record.TargetDate" class="form-control recalculate" placeholder="Target Date" value="@Model.Record.TargetDate.FormatForUrl()" />
+                <label asp-for="Record.TargetDate"></label>
                 <span asp-validation-for="Record.TargetDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Record.StartingAmount" class="control-label"></label>
-                <input asp-for="Record.StartingAmount" class="form-control" />
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <div class="form-floating">
+                    <input asp-for="Record.StartingAmount" class="form-control recalculate" placeholder="Starting Amount" />
+                    <label asp-for="Record.StartingAmount"></label>
+                </div>
                 <span asp-validation-for="Record.StartingAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -63,14 +66,20 @@
                     <label class="form-check-label" asp-for="Record.IsActive"></label>
                 </div>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary my-2">
-                    <i class="fa-solid fa-floppy-disk"></i> Save
-                </button>
+        </div>
+        <div class="col-md-4">
+            <div class="form-floating mb-3">
+                <input type="text" readonly class="form-control-plaintext" id="calculatedAmount" value="Target Will Display Here">
+                <label for="calculatedAmount">Monthly Savings</label>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary my-2">
+            <i class="fa-solid fa-floppy-disk"></i> Save
+        </button>
+    </div>
+</form>
 
 <div>
     <a asp-page="@PagePaths.SavingsIndex">Back to List</a>
@@ -80,4 +89,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script src="~/js/savingsGoalCalculator.js"></script>
 }
