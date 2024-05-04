@@ -36,8 +36,11 @@ namespace K9_Koinz.Services {
             var startOfLastMonth = DateTime.Now.AddMonths(-1).StartOfMonth();
             var endOfLastMonth = DateTime.Now.AddMonths(-1).EndOfMonth();
 
+            var startOfThreeMonthsAgo = DateTime.Now.AddMonths(-3).StartOfMonth();
+
             var thisMonthTransactions = await getTransactionsForGraph(startOfThisMonth, endOfThisMonth);
             var lastMonthTransactions = await getTransactionsForGraph(startOfLastMonth, endOfLastMonth);
+            var lastThreeMonthTransactions = await getTransactionsForGraph(startOfThreeMonthsAgo, endOfLastMonth, true); 
 
             var thisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
                 StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
@@ -47,11 +50,15 @@ namespace K9_Koinz.Services {
                 StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
             });
 
-            return [thisMonthSpendingJson, lastMonthSpendingJson];
+            var threeMonthAverageSpendingJson = JsonConvert.SerializeObject(lastThreeMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
+                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+            });
+
+            return [thisMonthSpendingJson, lastMonthSpendingJson, threeMonthAverageSpendingJson];
         }
 
-        private async Task<List<Point>> getTransactionsForGraph(DateTime startDate, DateTime endDate) {
-            return await _context.Transactions
+        private async Task<List<Point>> getTransactionsForGraph(DateTime startDate, DateTime endDate, bool doAverage = false) {
+            var query = _context.Transactions
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
                 .Where(trans => trans.Account.Type == AccountType.CREDIT_CARD || trans.Account.Type == AccountType.CHECKING || trans.Account.Type == AccountType.SAVINGS)
@@ -59,9 +66,17 @@ namespace K9_Koinz.Services {
                 .Where(trans => !trans.IsSavingsSpending)
                 .Where(trans => !trans.IsSplit)
                 .Where(trans => !trans.Account.HideAccountTransactions)
-                .GroupBy(trans => trans.Date.Day)
-                .Select(group => new Point(group.Key, group.ToList().GetTotal(true)))
-                .ToListAsync();
+                .GroupBy(trans => trans.Date.Day);
+
+            if (doAverage) {
+                return await query
+                    .Select(group => new Point(group.Key, group.ToList().GetTotal(true) / 3))
+                    .ToListAsync();
+            } else {
+                return await query
+                    .Select(group => new Point(group.Key, group.ToList().GetTotal(true)))
+                    .ToListAsync();
+            }
         }
     }
 }

@@ -25,6 +25,8 @@ namespace K9_Koinz.Pages {
 
         public string ThisMonthSpendingJson { get; set; }
         public string LastMonthSpendingJson { get; set; }
+        public string ThreeMonthAverageSpendingJson { get; set; }
+
         public List<Account> Accounts { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync() {
@@ -47,6 +49,11 @@ namespace K9_Koinz.Pages {
             var results = await _spendingGraph.CreateGraphData();
             ThisMonthSpendingJson = results[0];
             LastMonthSpendingJson = results[1];
+            ThreeMonthAverageSpendingJson = results[2];
+
+            _logger.LogInformation(ThisMonthSpendingJson);
+            _logger.LogInformation(LastMonthSpendingJson);
+            _logger.LogInformation(ThreeMonthAverageSpendingJson);
 
             var accounts = await _context.Accounts
                 .AsNoTracking()
