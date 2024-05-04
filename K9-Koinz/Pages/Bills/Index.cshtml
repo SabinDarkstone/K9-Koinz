@@ -75,10 +75,10 @@
                             </td>
                             <td>
                                 @if (item.RepeatConfig.IsActive) {
-                                    @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
+                                    @Html.DisplayFor(x => item.RepeatConfig.CalculatedNextFiring)
                                     <span style="font-weight:lighter;">
                                         @{
-                                            var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                            var daysRemaining = (item.RepeatConfig.CalculatedNextFiring.Value - DateTime.Today).Days;
                                             if (daysRemaining < 0) {
                                                 <text>&nbsp;</text>
                                             } else if (daysRemaining >= 0 && daysRemaining < 1) {
@@ -125,10 +125,10 @@
                             </td>
                             <td>
                                 @if (inactiveItem.RepeatConfig.IsActive) {
-                                    @Html.DisplayFor(x => inactiveItem.RepeatConfig.NextFiring)
+                                    @Html.DisplayFor(x => inactiveItem.RepeatConfig.CalculatedNextFiring)
                                     <span style="font-weight:lighter;">
                                         @{
-                                            var daysRemaining = (inactiveItem.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                            var daysRemaining = (inactiveItem.RepeatConfig.CalculatedNextFiring.Value - DateTime.Today).Days;
                                             if (daysRemaining < 0) {
                                                 <text>&nbsp;</text>
                                             } else if (daysRemaining >= 0 && daysRemaining < 1) {
@@ -177,11 +177,11 @@
                                 @item.RepeatConfig.RepeatString
                             </div>
                             <div class="col-7 text-secondary text-end bill-item" data-id="@item.Id">
-                                @if (item.RepeatConfig.NextFiring.HasValue) {
-                                    @Html.DisplayFor(x => item.RepeatConfig.NextFiring)
+                                @if (item.RepeatConfig.CalculatedNextFiring.HasValue) {
+                                    @Html.DisplayFor(x => item.RepeatConfig.CalculatedNextFiring)
                                     <span style="font-weight:lighter;">
                                         @{
-                                            var daysRemaining = (item.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                            var daysRemaining = (item.RepeatConfig.CalculatedNextFiring.Value - DateTime.Today).Days;
                                             if (daysRemaining < 0) {
                                                 <text>&nbsp;</text>
                                             } else if (daysRemaining >= 0 && daysRemaining < 1) {

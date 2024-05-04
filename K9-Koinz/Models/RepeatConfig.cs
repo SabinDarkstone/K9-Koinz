@@ -1,5 +1,5 @@
-﻿using Humanizer;
-using K9_Koinz.Models.Meta;
+﻿using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -45,33 +45,22 @@ namespace K9_Koinz.Models {
         [DisplayName("Previous Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? LastFiring { get; set; }
+        public DateTime? PreviousFiring { get; set; }
 
         [DisplayName("Next Firing")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
-        public DateTime? NextFiring {
+        public DateTime? NextFiring { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date, ErrorMessage = "Date only")]
+        public DateTime? CalculatedNextFiring {
             get {
-                // If this has never fired yet, the next firing is the same
-                // as the first firing
-                if (LastFiring == null) {
-                    return FirstFiring;
+                if (NextFiring == null) {
+                    NextFiring = GetNextFireDate();
                 }
 
-                DateTime nextProposedFiring;
-                if (Mode == RepeatMode.SPECIFIC_DAY) {
-                    nextProposedFiring = CalculateNextSpecificFiring();
-                } else if (Mode == RepeatMode.INTERVAL) {
-                    nextProposedFiring = CalculateNextIntervalFiring();
-                } else {
-                    throw new Exception("Either no repeat mode or an invalid repeat mode was specified");
-                }
-
-                if (TerminationDate.HasValue && nextProposedFiring > TerminationDate.Value) {
-                    return null;
-                }
-
-                return nextProposedFiring;
+                return NextFiring;
             }
         }
 
@@ -87,71 +76,43 @@ namespace K9_Koinz.Models {
 
         public bool NeedsToFireImmediately {
             get {
-                return FirstFiring <= DateTime.Now && LastFiring == null;
+                return FirstFiring <= DateTime.Now && PreviousFiring == null;
             }
         }
 
-        public string RepeatString {
-            get {
-                if (!IsActive) {
-                    return "Never - Expired";
-                }
-
-                if (Mode == RepeatMode.SPECIFIC_DAY) {
-                    switch (Frequency) {
-                        case RepeatFrequency.DAILY:
-                            return "Every Day";
-                        case RepeatFrequency.WEEKLY:
-                            return "Every Week on " + NextFiring.Value.DayOfWeek.ToString();
-                        case RepeatFrequency.MONTHLY:
-                            return "Every Month on the " + NextFiring.Value.Date.Day.Ordinalize();
-                        case RepeatFrequency.YEARLY:
-                            return "Every Year on " + NextFiring.Value.Month + "/" + NextFiring.Value.Day;
-                        default:
-                            throw new Exception("Unknown repeat frequency chosen.");
-                    }
-                } else if (Mode == RepeatMode.INTERVAL) {
-                    switch (Frequency) {
-                        case RepeatFrequency.DAILY:
-                            if (IntervalGap == 1) {
-                                return "Every Day";
-                            } else {
-                                return "Every " + IntervalGap + " Days";
-                            }
-                        case RepeatFrequency.WEEKLY:
-                            if (IntervalGap == 1) {
-                                return "Every Week";
-                            } else {
-                                return "Every " + IntervalGap + " Weeks";
-                            }
-                        case RepeatFrequency.MONTHLY:
-                            if (IntervalGap == 1) {
-                                return "Every Month";
-                            } else {
-                                return "Every " + IntervalGap + " Months";
-                            }
-                        case RepeatFrequency.YEARLY:
-                            if (IntervalGap == 1) {
-                                return "Every Year";
-                            } else {
-                                return "Every " + IntervalGap + " Years";
-                            }
-                        default:
-                            throw new Exception("Unknown repeat frequency chosen.");
-                    }
-                } else {
-                    throw new Exception("Unknown repeat mode chosen");
-                }
-            }
-        }
+        public string RepeatString => this.GetRepeatString();
 
         public void FireNow() {
-            LastFiring = DateTime.Now.Date;
+            PreviousFiring = CalculatedNextFiring;
+            NextFiring = GetNextFireDate();
+        }
+
+        private DateTime? GetNextFireDate() {
+            DateTime proposedDate;
+            // If this has never fired yet, the next firing is the same
+            // as the first firing
+            if (PreviousFiring == null) {
+                return FirstFiring;
+            }
+
+            if (Mode == RepeatMode.SPECIFIC_DAY) {
+                proposedDate = CalculateNextSpecificFiring();
+            } else if (Mode == RepeatMode.INTERVAL) {
+                proposedDate = CalculateNextIntervalFiring();
+            } else {
+                throw new Exception("Either no repeat mode or an invalid repeat mode was specified");
+            }
+
+            if (TerminationDate.HasValue && proposedDate > TerminationDate.Value) {
+                return null;
+            }
+
+            return proposedDate;
         }
 
         private DateTime CalculateNextSpecificFiring() {
             // Get either the last firing, or if that is null, the first firing
-            DateTime lastOrFirstFiring = LastFiring ?? FirstFiring;
+            DateTime lastOrFirstFiring = PreviousFiring ?? FirstFiring;
 
             return Frequency switch {
                 RepeatFrequency.DAILY => lastOrFirstFiring.AddDays(1),
@@ -164,7 +125,7 @@ namespace K9_Koinz.Models {
 
         private DateTime CalculateNextIntervalFiring() {
             // Get either the last firing, or if that is null, the first firing
-            DateTime lastOrFirstFiring = LastFiring ?? FirstFiring;
+            DateTime lastOrFirstFiring = PreviousFiring ?? FirstFiring;
 
             if (!IntervalGap.HasValue) {
                 throw new Exception("Interval gap cannot be null in internal mode.");

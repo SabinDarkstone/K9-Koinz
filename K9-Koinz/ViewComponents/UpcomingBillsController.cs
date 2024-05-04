@@ -22,7 +22,7 @@ namespace K9_Koinz.ViewComponents {
                 .AsNoTracking()
                 .Include(bill => bill.RepeatConfig)
                 .ToListAsync())
-                .Where(bill => bill.RepeatConfig.NextFiring >= startDate && bill.RepeatConfig.NextFiring <= endDate)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring >= startDate && bill.RepeatConfig.CalculatedNextFiring <= endDate)
                 .ToList();
 
             return View(this);

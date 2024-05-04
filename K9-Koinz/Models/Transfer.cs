@@ -49,7 +49,10 @@ namespace K9_Koinz.Models {
                     return null;
                 }
 
-                return Transactions.Where(trans => trans.AccountId == ToAccountId).SingleOrDefault();
+                return Transactions
+                    .Where(trans => trans.AccountId == ToAccountId)
+                    .Where(trans => trans.Amount > 0)
+                    .SingleOrDefault();
             }
         }
 
@@ -59,7 +62,10 @@ namespace K9_Koinz.Models {
                     return null;
                 }
 
-                return Transactions.Where(trans => trans.AccountId == FromAccountId).SingleOrDefault();
+                return Transactions
+                    .Where(trans => trans.AccountId == FromAccountId)
+                    .Where(trans => trans.Amount > 0)
+                    .SingleOrDefault();
             }
         }
 

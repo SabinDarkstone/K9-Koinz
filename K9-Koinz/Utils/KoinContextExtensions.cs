@@ -7,7 +7,7 @@ namespace K9_Koinz.Utils {
             return new Transfer {
                 Amount = recurringTransfer.Amount,
                 CategoryId = recurringTransfer.CategoryId,
-                Date = recurringTransfer.RepeatConfig.NextFiring.Value,
+                Date = recurringTransfer.RepeatConfig.CalculatedNextFiring.Value,
                 Notes = recurringTransfer.Notes,
                 MerchantId = recurringTransfer.MerchantId,
                 SavingsGoalId = recurringTransfer.SavingsGoalId,

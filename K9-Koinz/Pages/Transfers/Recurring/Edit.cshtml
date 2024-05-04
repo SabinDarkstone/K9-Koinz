@@ -56,16 +56,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Record.RepeatConfig.FirstFiring" class="control-label"></label>
-                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" value="@Model.Record.RepeatConfig.FirstFiring.FormatForUrl()" disabled />
+                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" value="@Model.Record.RepeatConfig.FirstFiring.FormatForUrl()" readonly style="background-color: #eaeaea" />
                 <span asp-validation-for="Record.RepeatConfig.FirstFiring" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Record.RepeatConfig.NextFiring" class="control-label"></label>
+                <input asp-for="Record.RepeatConfig.NextFiring" class="form-control" value="@Model.Record.RepeatConfig.NextFiring.FormatForUrl()"/>
+                <span asp-validation-for="Record.RepeatConfig.NextFiring" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Record.RepeatConfig.TerminationDate" class="control-label"></label>
-                @if (Model.Record.RepeatConfig.TerminationDate.HasValue) {
-                    <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" value="@Model.Record.RepeatConfig.TerminationDate.Value.FormatForUrl()" />
-                } else {
-                    <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" />
-                }
+                <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" value="@Model.Record.RepeatConfig.TerminationDate.FormatForUrl()" />
                 <span asp-validation-for="Record.RepeatConfig.TerminationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -85,13 +86,13 @@
                 <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Record.RepeatConfig.LastFiring" class="control-label"></label>
-                @if (Model.Record.RepeatConfig.LastFiring.HasValue) {
-                    <input asp-for="Record.RepeatConfig.LastFiring" class="form-control" value="@Model.Record.RepeatConfig.LastFiring.Value.FormatForUrl()" />
+                <label asp-for="Record.RepeatConfig.PreviousFiring" class="control-label"></label>
+                @if (Model.Record.RepeatConfig.PreviousFiring.HasValue) {
+                    <input asp-for="Record.RepeatConfig.PreviousFiring" class="form-control" value="@Model.Record.RepeatConfig.PreviousFiring.Value.FormatForUrl()" />
                 } else {
-                    <input asp-for="Record.RepeatConfig.LastFiring" class="form-control" />
+                    <input asp-for="Record.RepeatConfig.PreviousFiring" class="form-control" />
                 }
-                <span asp-validation-for="Record.RepeatConfig.LastFiring" class="text-danger"></span>
+                <span asp-validation-for="Record.RepeatConfig.PreviousFiring" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.SavingsGoalId" class="control-label"></label>

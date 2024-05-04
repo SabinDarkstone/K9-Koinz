@@ -100,7 +100,8 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<Transfer>()
                 .HasOne(x => x.RecurringTransfer)
                 .WithMany(x => x.InstantiatedFromRecurring)
-                .HasForeignKey(x => x.RecurringTransferId);
+                .HasForeignKey(x => x.RecurringTransferId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

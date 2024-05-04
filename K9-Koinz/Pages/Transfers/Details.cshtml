@@ -96,7 +96,7 @@
                     <tr>
                         <td>
                             <span class="badge bg-secondary">
-                                @if (Model.Record.ToAccountId == trans.AccountId) {
+                                @if (Model.Record.ToTransaction.Id == trans.Id) {
                                     <text>To</text>
                                 } else {
                                     <text>From</text>
