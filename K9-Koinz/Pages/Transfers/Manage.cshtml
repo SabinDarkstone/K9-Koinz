@@ -46,10 +46,10 @@
                     <td>@transfer.Category.Name</td>
                     <td>
                         @if (transfer.RepeatConfig.IsActive) {
-                            @Html.DisplayFor(x => transfer.RepeatConfig.NextFiring)
+                            @Html.DisplayFor(x => transfer.RepeatConfig.CalculatedNextFiring)
                             <span style="font-weight:lighter;">
                                 @{
-                                    var daysRemaining = (transfer.RepeatConfig.NextFiring.Value - DateTime.Today).Days;
+                                    var daysRemaining = (transfer.RepeatConfig.CalculatedNextFiring.Value - DateTime.Today).Days;
                                     if (daysRemaining < 0) {
                                         <text>(Overdue)</text>
                                     } else if (daysRemaining >= 0 && daysRemaining < 1) {

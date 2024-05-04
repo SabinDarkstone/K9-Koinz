@@ -55,6 +55,14 @@ namespace K9_Koinz.Pages {
                 this.Accounts = accounts;
             }
 
+            var configsToUpdate = new List<RepeatConfig>();
+            foreach (var rptCfg in _context.RepeatConfigs.Where(rpt => rpt.NextFiring == null)) {
+                rptCfg.NextFiring = rptCfg.CalculatedNextFiring;
+                configsToUpdate.Add(rptCfg);
+            }
+            _context.UpdateRange(configsToUpdate);
+            _context.SaveChanges();
+
             return Page();
         }
     }

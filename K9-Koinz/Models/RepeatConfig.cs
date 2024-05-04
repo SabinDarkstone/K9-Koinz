@@ -1,9 +1,7 @@
-﻿using Humanizer;
-using K9_Koinz.Models.Meta;
+﻿using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9_Koinz.Models {
 
@@ -26,9 +24,6 @@ namespace K9_Koinz.Models {
     }
 
     public class RepeatConfig : BaseEntity {
-        [NotMapped]
-        private DateTime? nextFiring;
-
         public RepeatMode Mode { get; set; }
 
         [DisplayName("Repeat Frequency")]
@@ -55,36 +50,17 @@ namespace K9_Koinz.Models {
         [DisplayName("Next Firing")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
-        public DateTime? NextFiring {
+        public DateTime? NextFiring { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date, ErrorMessage = "Date only")]
+        public DateTime? CalculatedNextFiring {
             get {
-                if (nextFiring == null) {
-                    // If this has never fired yet, the next firing is the same
-                    // as the first firing
-                    if (PreviousFiring == null) {
-                        return FirstFiring;
-                    }
-
-                    DateTime nextProposedFiring;
-                    if (Mode == RepeatMode.SPECIFIC_DAY) {
-                        nextProposedFiring = CalculateNextSpecificFiring();
-                    } else if (Mode == RepeatMode.INTERVAL) {
-                        nextProposedFiring = CalculateNextIntervalFiring();
-                    } else {
-                        throw new Exception("Either no repeat mode or an invalid repeat mode was specified");
-                    }
-
-                    if (TerminationDate.HasValue && nextProposedFiring > TerminationDate.Value) {
-                        return null;
-                    }
-
-                    return nextProposedFiring;
-                } else {
-                    return nextFiring.Value;
+                if (NextFiring == null) {
+                    NextFiring = GetNextFireDate();
                 }
-            }
-            
-            set {
-                nextFiring = value;
+
+                return NextFiring;
             }
         }
 
@@ -107,7 +83,31 @@ namespace K9_Koinz.Models {
         public string RepeatString => this.GetRepeatString();
 
         public void FireNow() {
-            PreviousFiring = DateTime.Now.Date;
+            PreviousFiring = CalculatedNextFiring;
+            NextFiring = GetNextFireDate();
+        }
+
+        private DateTime? GetNextFireDate() {
+            DateTime proposedDate;
+            // If this has never fired yet, the next firing is the same
+            // as the first firing
+            if (PreviousFiring == null) {
+                return FirstFiring;
+            }
+
+            if (Mode == RepeatMode.SPECIFIC_DAY) {
+                proposedDate = CalculateNextSpecificFiring();
+            } else if (Mode == RepeatMode.INTERVAL) {
+                proposedDate = CalculateNextIntervalFiring();
+            } else {
+                throw new Exception("Either no repeat mode or an invalid repeat mode was specified");
+            }
+
+            if (TerminationDate.HasValue && proposedDate > TerminationDate.Value) {
+                return null;
+            }
+
+            return proposedDate;
         }
 
         private DateTime CalculateNextSpecificFiring() {

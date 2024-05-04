@@ -62,7 +62,7 @@ namespace K9_Koinz.ViewComponents {
 
             // Get bills that have yet to be paid
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
-                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
+                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var bill in todaysBills) {
                     runningTotal -= bill.Amount;
                     bill.RepeatConfig.FireNow();
@@ -93,7 +93,7 @@ namespace K9_Koinz.ViewComponents {
 
             // Get savings goal transfers that are scheduled to happen
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
-                var todaysTransfers = activeSavingsTransfers.Where(fer => fer.RepeatConfig.NextFiring.Value.Date == simDate.Date).ToList();
+                var todaysTransfers = activeSavingsTransfers.Where(fer => fer.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var transfer in todaysTransfers) {
                     runningTotal -= transfer.Amount;
                     transfer.RepeatConfig.FireNow();

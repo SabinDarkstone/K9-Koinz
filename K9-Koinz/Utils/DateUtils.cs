@@ -81,6 +81,14 @@ namespace K9_Koinz.Utils {
             return dt.DayOfYear / 365.25 * 100;
         }
 
+        public static string FormatForUrl(this DateTime? dt) {
+            if (dt == null) {
+                return string.Empty;
+            } else {
+                return FormatForUrl(dt.Value);
+            }
+        }
+
         public static string FormatForUrl(this DateTime dt) {
             return dt.Year.ToString().PadLeft(4, '0') + "-" +
                 dt.Month.ToString().PadLeft(2, '0') + "-" +

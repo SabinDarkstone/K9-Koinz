@@ -16,10 +16,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var bill in Model.Bills.OrderBy(bill => bill.RepeatConfig.NextFiring)) {
+                    @foreach (var bill in Model.Bills.OrderBy(bill => bill.RepeatConfig.CalculatedNextFiring)) {
                         <tr>
                             <td scope="col" class="text-truncate">
-                                @Html.DisplayFor(model => bill.RepeatConfig.NextFiring)
+                                @Html.DisplayFor(model => bill.RepeatConfig.CalculatedNextFiring)
                             </td>
                             <td scope="col" class="text-truncate">
                                 @bill.Name

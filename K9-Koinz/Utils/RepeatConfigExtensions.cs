@@ -24,7 +24,7 @@ namespace K9_Koinz.Utils {
         }
 
         private static string GetStringForSpecificDay(RepeatConfig rptCfg) {
-            var nextFireDate = rptCfg.NextFiring.Value;
+            var nextFireDate = rptCfg.CalculatedNextFiring.Value;
 
             switch (rptCfg.Frequency) {
                 case RepeatFrequency.DAILY:

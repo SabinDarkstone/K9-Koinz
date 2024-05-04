@@ -69,7 +69,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                         CategoryId = bill.CategoryId.Value,
                         CategoryName = bill.CategoryName,
                         Amount = bill.Amount * -1,
-                        Date = bill.RepeatConfig.NextFiring.Value
+                        Date = bill.RepeatConfig.CalculatedNextFiring.Value
                     };
                     transactionsToCreate.Add(newTransaction);
                 }
@@ -98,8 +98,8 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 .Include(bill => bill.RepeatConfig)
                 .AsEnumerable()
                 .Where(bill => bill.RepeatConfigId != null)
-                .Where(bill => bill.RepeatConfig.NextFiring.HasValue)
-                .Where(bill => bill.RepeatConfig.NextFiring >= startDate && bill.RepeatConfig.NextFiring <= endDate)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.HasValue)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring >= startDate && bill.RepeatConfig.CalculatedNextFiring <= endDate)
                 .ToList();
         }
     }

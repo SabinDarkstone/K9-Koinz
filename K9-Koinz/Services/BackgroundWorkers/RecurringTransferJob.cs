@@ -28,8 +28,8 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 .Where(fer => fer.RepeatConfigId.HasValue)
                 .Include(fer => fer.RepeatConfig)
                 .AsEnumerable()
-                .Where(fer => fer.RepeatConfig.NextFiring.HasValue)
-                .Where(fer => fer.RepeatConfig.NextFiring.Value.Date <= mark.Date)
+                .Where(fer => fer.RepeatConfig.CalculatedNextFiring.HasValue)
+                .Where(fer => fer.RepeatConfig.CalculatedNextFiring.Value.Date <= mark.Date)
                 .ToList();
 
             var transactions = new List<Transaction>();
