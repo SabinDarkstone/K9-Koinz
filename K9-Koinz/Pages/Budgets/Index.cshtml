@@ -126,74 +126,19 @@
         }
 
         <hr />
-
-        if (Model.SelectedBudget.DoNotUseCategories) {
-            <ul class="list-group">
-                @await Component.InvokeAsync(nameof(BudgetLineBar), new {
-                        line = Model.SelectedBudget.BudgetLines.First(),
-                        currentPeriod = Model.BudgetPeriod
-                    })
-            </ul>
-        } else {
-
-            @if (Model.SelectedBudget.IncomeLines.Any()) {
-                <div class="row">
-                    <div class="col">
-                        <h4>Income</h4>
-                    </div>
-                    <div class="col">
-                        <h4 style="text-align: right;">
-                            @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
-                        </h4>
-                    </div>
-                </div>
-                <ul class="list-group mb-4">
-                    @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
-                        @await Component.InvokeAsync(nameof(BudgetLineBar), new {
-                                line = budgetLine,
-                                currentPeriod = Model.BudgetPeriod
-                            })
-                    }
-                </ul>
-
-                @if (Model.SelectedBudget.UnallocatedIncomes.Any()) {
-                    <div class="row">
-                        <div class="col">
-                            <h4>Other Income</h4>
-                        </div>
-                        <div class="col">
-                            <h4 style="text-align: right;">
-                                @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
-                            </h4>
-                        </div>
-                    </div>
-                    <ul>
-                        @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
-                            var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
-                            var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
-
-                            <li>
-                                <a style="color:black;" asp-page="@PagePaths.TransactionIndex" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
-                            </li>
-                        }
-                    </ul>
-                }
-
-            }
-
+        @if (Model.SelectedBudget.IncomeLines.Any()) {
             <div class="row">
                 <div class="col">
-                    <h4>Expenses</h4>
+                    <h4>Income</h4>
                 </div>
                 <div class="col">
                     <h4 style="text-align: right;">
-                        @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.ExpenseLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
+                        @Model.SelectedBudget.IncomeLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @Model.SelectedBudget.IncomeLines.Sum(line => line.BudgetedAmount).FormatCurrency(0)
                     </h4>
                 </div>
             </div>
-
             <ul class="list-group mb-4">
-                @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
+                @foreach (var budgetLine in Model.SelectedBudget.IncomeLines) {
                     @await Component.InvokeAsync(nameof(BudgetLineBar), new {
                             line = budgetLine,
                             currentPeriod = Model.BudgetPeriod
@@ -201,28 +146,88 @@
                 }
             </ul>
 
-            @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
+            @if (Model.SelectedBudget.UnallocatedIncomes.Any()) {
                 <div class="row">
                     <div class="col">
-                        <h4>Other Spending</h4>
+                        <h4>Other Income</h4>
                     </div>
                     <div class="col">
                         <h4 style="text-align: right;">
-                            @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+                            @((Model.SelectedBudget.UnallocatedIncomes.Sum(line => line.SpentAmount)).FormatCurrency(0))
                         </h4>
                     </div>
                 </div>
                 <ul>
-                    @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
-                        var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
-                        var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
+                    @foreach (var budgetLine in Model.SelectedBudget.UnallocatedIncomes) {
+                        var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item1.FormatForUrl();
+                        var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate().Item2.FormatForUrl();
 
                         <li>
-                            <a style="color:black;" asp-page="@PagePaths.TransactionIndex" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                            <a style="color:black;" 
+                                asp-page="@PagePaths.TransactionIndex"
+                                asp-route-minDate="@startDate"
+                                asp-route-maxDate="@endDate"
+                                asp-route-catFilter="@budgetLine.BudgetCategoryId">
+                                    @budgetLine.BudgetCategory.FullyQualifiedName
+                             </a>
+                             
+                             @budgetLine.SpentAmount.FormatCurrency()
                         </li>
                     }
                 </ul>
             }
+        }
+
+        <div class="row">
+            <div class="col">
+                <h4>Expenses</h4>
+            </div>
+            <div class="col">
+                <h4 style="text-align: right;">
+                    @{
+                        var totalWithRollover = 0d;
+                        foreach (var line in Model.SelectedBudget.ExpenseLines) {
+                            if (line.CurrentPeriod != null) {
+                                totalWithRollover += line.CurrentPeriod.StartingAmount;
+                            }
+                            totalWithRollover += line.BudgetedAmount;
+                        }
+                    }
+                    @Model.SelectedBudget.ExpenseLines.Sum(line => line.SpentAmount).FormatCurrency(0) of @totalWithRollover.FormatCurrency(0)
+                </h4>
+            </div>
+        </div>
+
+        <ul class="list-group mb-4">
+            @foreach (var budgetLine in Model.SelectedBudget.ExpenseLines) {
+                @await Component.InvokeAsync(nameof(BudgetLineBar), new {
+                        line = budgetLine,
+                        currentPeriod = Model.BudgetPeriod
+                    })
+            }
+        </ul>
+
+        @if (Model.SelectedBudget.UnallocatedExpenses.Any()) {
+            <div class="row">
+                <div class="col">
+                    <h4>Other Spending</h4>
+                </div>
+                <div class="col">
+                    <h4 style="text-align: right;">
+                        @((Model.SelectedBudget.UnallocatedExpenses.Sum(line => line.SpentAmount) * -1).FormatCurrency(0))
+                    </h4>
+                </div>
+            </div>
+            <ul>
+                @foreach (var budgetLine in Model.SelectedBudget.UnallocatedExpenses) {
+                    var startDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item1.FormatForUrl();
+                    var endDate = Model.SelectedBudget.Timespan.GetStartAndEndDate(Model.BudgetPeriod).Item2.FormatForUrl();
+
+                    <li>
+                        <a style="color:black;" asp-page="@PagePaths.TransactionIndex" asp-route-minDate="@startDate" asp-route-maxDate="@endDate" asp-route-catFilter="@budgetLine.BudgetCategoryId">@budgetLine.BudgetCategory.FullyQualifiedName</a> @budgetLine.SpentAmount.FormatCurrency()
+                    </li>
+                }
+            </ul>
         }
     }
 }
