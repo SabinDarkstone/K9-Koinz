@@ -140,19 +140,23 @@ namespace K9_Koinz.ViewComponents {
 
         public string WeeklyAmount {
             get {
-                if (line.ShowWeeklyLines) {
-                    var monthlyAmount = line.BudgetedAmount;
-                    if (WentOverBudgetLastPeriod) {
-                        monthlyAmount -= Math.Abs(line.RolloverAmount.Value);
-                    } else {
-                        monthlyAmount += Math.Abs(line.RolloverAmount.Value);
-                    }
-
-                    var weeklyAmount = (monthlyAmount * 12) / 52;
-                    return weeklyAmount.FormatCurrency(0) + " Per Week";
+                if (!line.ShowWeeklyLines) {
+                    return string.Empty;
                 }
 
-                return null;
+                if (line.RolloverAmount == null) {
+                    return string.Empty;
+                }
+
+                var monthlyAmount = line.BudgetedAmount;
+                if (WentOverBudgetLastPeriod) {
+                    monthlyAmount -= Math.Abs(line.RolloverAmount.Value);
+                } else {
+                    monthlyAmount += Math.Abs(line.RolloverAmount.Value);
+                }
+
+                var weeklyAmount = (monthlyAmount * 12) / 52;
+                return weeklyAmount.FormatCurrency(0) + " Per Week";
             }
         }
 
