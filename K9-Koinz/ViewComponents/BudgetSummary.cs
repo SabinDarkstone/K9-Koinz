@@ -33,6 +33,7 @@ namespace K9_Koinz.ViewComponents {
 
             SavingsGoalTransferTotal = SimulateSavingsGoals(referenceDate, budget.Timespan);
             BillsTotal = SimulateBills(referenceDate, budget.Timespan);
+            TotalRollover = CalculateRollover(budget);
 
             // Used for transaction modals
             StartDate = startDate;
@@ -86,9 +87,12 @@ namespace K9_Koinz.ViewComponents {
 
             // Get savings goal transfer that have already happened
             var runningTotal = _context.Transactions
+                .Include(trans => trans.Transfer)
+                    .ThenInclude(fer => fer.RecurringTransfer)
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
+                .Where(trans => trans.TransferId.HasValue && trans.Transfer.RecurringTransferId.HasValue && trans.Transfer.RecurringTransfer.RepeatConfigId.HasValue)
                 .Sum(trans => trans.Amount) * -1;
 
             // Get savings goal transfers that are scheduled to happen
@@ -103,6 +107,17 @@ namespace K9_Koinz.ViewComponents {
             return runningTotal;
         }
 
+        private double CalculateRollover(Budget budget) {
+            var totalRollover = 0d;
+            foreach (var line in budget.ExpenseLines) {
+                if (line.CurrentPeriod != null) {
+                    totalRollover += line.CurrentPeriod.StartingAmount;
+                }
+            }
+
+            return totalRollover;
+        }
+
 
         [DisplayName("Budgeted Income")]
         public double BudgetedIncome { get; set; }
@@ -115,17 +130,21 @@ namespace K9_Koinz.ViewComponents {
         [DisplayName("Extra Expenses")]
         public double ExtraExpenseTotal { get; set; }
 
-        [DisplayName("Savings Goals")]
+        [DisplayName("Budgeted Savings")]
         public double SavingsGoalTransferTotal { get; set; }
         [DisplayName("Planned Bills")]
         public double BillsTotal { get; set; }
 
+        [DisplayName("Total Rollover")]
+        public double TotalRollover { get; set; }
+
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return BudgetedIncome + ExtraIncome + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                return BudgetedIncome + TotalRollover + ExtraIncome + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
             }
         }
+
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

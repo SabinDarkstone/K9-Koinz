@@ -26,6 +26,17 @@
                     </div>
                 }
 
+                @if (Model.TotalRollover > 0d) {
+                    <div class="row justify-content-between">
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.TotalRollover)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.TotalRollover.FormatCurrency(0)
+                        </div>
+                    </div>
+                }
+
                 <hr class="mt-1 mb-1" />
 
                 <div class="row">

@@ -141,6 +141,10 @@ namespace K9_Koinz.ViewComponents {
         public string WeeklyAmount {
             get {
                 if (line.ShowWeeklyLines) {
+                    if (line.RolloverAmount == null) {
+                        return string.Empty;
+                    }
+
                     var monthlyAmount = line.BudgetedAmount;
                     if (WentOverBudgetLastPeriod) {
                         monthlyAmount -= Math.Abs(line.RolloverAmount.Value);
