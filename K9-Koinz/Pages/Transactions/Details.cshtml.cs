@@ -13,6 +13,7 @@ namespace K9_Koinz.Pages.Transactions {
                 .Include(trans => trans.Tag)
                 .Include(trans => trans.Bill)
                 .Include(trans => trans.SplitTransactions)
+                    .ThenInclude(splt => splt.Tag)
                 .Include(trans => trans.Category)
                 .Include(trans => trans.Transfer)
                     .ThenInclude(fer => fer.RecurringTransfer)

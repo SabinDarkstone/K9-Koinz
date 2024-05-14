@@ -126,13 +126,22 @@
         <tbody>
             @foreach (var split in Model.Record.SplitTransactions) {
                 <tr>
-                    @if (Model.Record.Category.CategoryType == CategoryType.TRANSFER) {
-                        <td>
+                    <td>
+                        @if (split.TagId.HasValue) {
+                            var style = "background-color: " + split.Tag.HexColor + "; text-decoration: none";
+                            <span class="badge badge-pill" style="@style">@split.Tag.ShortForm</span>
+                        }
+                        @if (Model.Record.Category.CategoryType == CategoryType.TRANSFER) {
                             @Html.DisplayFor(model => split.SavingsGoalName)
+                        } else {
+                            @Html.DisplayFor(model => split.MerchantName)
+                        }
+                    </td>
+
+                    @if (Model.Record.Category.CategoryType != CategoryType.TRANSFER) {
+                        <td>
+                            @Html.DisplayFor(model => split.CategoryName)
                         </td>
-                    } else {
-                        <td>@Html.DisplayFor(model => split.MerchantName)</td>
-                        <td>@Html.DisplayFor(model => split.CategoryName)</td>
                     }
 
                     <td>@split.Amount.FormatCurrency(2)</td>
@@ -154,7 +163,7 @@
                 View Recurring Transfer
             </a>
         }
-        
+
         @if (Model.Record.TransferId.HasValue) {
             <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransferDetails" asp-route-id="@Model.Record.TransferId">
                 View Transfer
