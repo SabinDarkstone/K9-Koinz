@@ -92,7 +92,7 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
-                .Where(trans => trans.TransferId.HasValue && trans.Transfer.RecurringTransferId.HasValue && trans.Transfer.RecurringTransfer.RepeatConfigId.HasValue)
+                //.Where(trans => trans.TransferId.HasValue && trans.Transfer.RecurringTransferId.HasValue && trans.Transfer.RecurringTransfer.RepeatConfigId.HasValue)
                 .Sum(trans => trans.Amount) * -1;
 
             // Get savings goal transfers that are scheduled to happen
