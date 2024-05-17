@@ -49,9 +49,12 @@ namespace K9_Koinz.Models {
                     return null;
                 }
 
+                // Hide transactions that are split (indicated by having a parent transaction
+                // from the query results of the "To" transaction as there should only be one.
                 return Transactions
                     .Where(trans => trans.AccountId == ToAccountId)
                     .Where(trans => trans.Amount > 0)
+                    .Where(trans => trans.ParentTransactionId == null)
                     .SingleOrDefault();
             }
         }

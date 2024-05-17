@@ -89,6 +89,9 @@ namespace K9_Koinz.Pages.Transactions.Split {
 
                 split.MerchantId = parent.MerchantId;
                 split.MerchantName = parent.MerchantName;
+
+                // Include the transfer ID from the parent transaction in the children
+                split.TransferId = parent.TransferId;
             }
 
             var validSplits = SplitTransactions.Where(splt => splt.Amount != 0).ToList();
