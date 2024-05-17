@@ -33,7 +33,7 @@ namespace K9_Koinz.Pages.Transactions.Split {
                 .OrderBy(splt => splt.CategoryName)
                 .ToList();
 
-            while (SplitTransactions.Count < 7) {
+            while (SplitTransactions.Count < 40) {
                 SplitTransactions.Add(new Transaction {
                     AccountId = ParentTransaction.AccountId,
                     TagId = ParentTransaction.TagId,
