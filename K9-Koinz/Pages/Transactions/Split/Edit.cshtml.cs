@@ -33,7 +33,7 @@ namespace K9_Koinz.Pages.Transactions.Split {
 
             var savingsGoals = _context.SavingsGoals
                 .AsNoTracking()
-                .Where(goal => goal.AccountId == SplitTransaction.AccountId)
+                .Where(goal => goal.IsActive)
                 .ToList();
 
             if (savingsGoals.Count > 0) {
@@ -51,7 +51,7 @@ namespace K9_Koinz.Pages.Transactions.Split {
             string notes = SplitTransaction.Notes;
             var tagId = SplitTransaction.TagId;
 
-            // Change only the savings goal and notes
+            // Change only the savings goal, tag, and notes
             SplitTransaction = beforeTransction;
             SplitTransaction.SavingsGoalId = savingsGoalId == Guid.Empty ? null : savingsGoalId;
             if (SplitTransaction.SavingsGoalId.HasValue) {
