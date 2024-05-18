@@ -38,6 +38,12 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item" style="padding-right: 0.8rem">
+                            <a id="shortcut-transaction" class="btn btn-sm btn-success" asp-page="@PagePaths.TransactionCreate" style="margin: 0.4rem var(--bs-nav-link-padding-x);">
+                                <i class="fa-solid fa-plus"></i>
+                                <span id="quickAddText">Quick Add</span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a id="nav-accounts" class="nav-link nav-link-hover" asp-page="@PagePaths.AccountIndex"><i class="fa-solid fa-landmark"></i> Accounts</a>
                         </li>

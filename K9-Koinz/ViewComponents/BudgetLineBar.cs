@@ -76,7 +76,7 @@ namespace K9_Koinz.ViewComponents {
 
         public bool HadExtraMoneyLastPeriod {
             get {
-                return line.RolloverStatus == RolloverStatus.POSITIVE;
+                return line.RolloverStatus == RolloverStatus.POSITIVE || line.RolloverStatus == RolloverStatus.ZERO;
             }
         }
 
