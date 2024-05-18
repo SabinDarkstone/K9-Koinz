@@ -17,6 +17,7 @@ namespace K9_Koinz.Pages.Transactions {
                 .Include(trans => trans.Category)
                 .Include(trans => trans.Transfer)
                     .ThenInclude(fer => fer.RecurringTransfer)
+                .Include(trans => trans.SavingsGoal) 
                 .SingleOrDefaultAsync(trans => trans.Id == id);
         }
     }

@@ -73,12 +73,18 @@
             </dd>
         }
         @if (Model.Record.SavingsGoalId.HasValue) {
+            var destPage = "";
+            if (Model.Record.SavingsGoal.SavingsType == SavingsType.GOAL) {
+                destPage = PagePaths.SavingsGoalDetails;
+            } else if (Model.Record.SavingsGoal.SavingsType == SavingsType.BUCKET) {
+                destPage = PagePaths.SavingsBucketDetails;
+            }  
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
             </dt>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.Record.SavingsGoalName)
-                <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@Model.Record.SavingsGoalId"><i class="fa-solid fa-circle-info"></i></a>
+                <a asp-page="@destPage" asp-route-id="@Model.Record.SavingsGoalId"><i class="fa-solid fa-circle-info"></i></a>
             </dd>
         }
         <dt class="col-sm-3">
