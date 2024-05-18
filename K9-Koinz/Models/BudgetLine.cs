@@ -8,6 +8,7 @@ namespace K9_Koinz.Models {
         NONE,
         POSITIVE,
         NEGATIVE,
+        ZERO,
         NOT_READY
     }
 
@@ -84,11 +85,19 @@ namespace K9_Koinz.Models {
                     return RolloverStatus.NOT_READY;
                 }
 
-                if (CurrentPeriod.StartingAmount < 0) {
+                if (CurrentPeriod.StartingAmount <= -1) {
                     return RolloverStatus.NEGATIVE;
-                } else {
+                } else if (CurrentPeriod.StartingAmount >= 1) {
                     return RolloverStatus.POSITIVE;
+                } else {
+                    return RolloverStatus.ZERO;
                 }
+
+                //if (CurrentPeriod.StartingAmount < 0) {
+                //    return RolloverStatus.NEGATIVE;
+                //} else {
+                //    return RolloverStatus.POSITIVE;
+                //}
             }
         }
 
