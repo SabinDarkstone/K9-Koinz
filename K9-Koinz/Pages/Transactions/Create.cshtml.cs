@@ -49,7 +49,12 @@ namespace K9_Koinz.Pages.Transactions {
             } else if (doHandleSavingsGoal) {
                 return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = Record.Id });
             } else {
-                var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
+                var transactionFilterString = Request.Cookies["backToTransactions"];
+                if (string.IsNullOrEmpty(transactionFilterString)) {
+                    return RedirectToPage(PagePaths.TransactionIndex);
+                }
+
+                var transactionFilterCookie = transactionFilterString.FromJson<TransactionNavPayload>();
                 return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
                     sortOrder = transactionFilterCookie.SortOrder,
                     catFilter = transactionFilterCookie.CatFilter,
