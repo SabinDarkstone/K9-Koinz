@@ -121,7 +121,8 @@
         @if (!Model.SelectedBudget.DoNotUseCategories) {
             @await Component.InvokeAsync(nameof(BudgetSummary), new {
                     budget = Model.SelectedBudget,
-                    referenceDate = Model.BudgetPeriod
+                    referenceDate = Model.BudgetPeriod,
+                    current = Model.UseCurrentExpenses
                 })
         }
 

@@ -80,6 +80,16 @@
                 </div>
             }
             <div class="form-group form-floating">
+                <select asp-for="Record.SavingsGoalId" class="form-control" asp-items="@Model.GoalOptions">
+                    @if (Model.Record.SavingsGoalId == null) {
+                        <option value="@Guid.Empty">No Goal</option>
+                    } else {
+                        <option value="@Model.Record.SavingsGoalId" selected>@Model.Record.SavingsGoalName</option>
+                    }
+                </select>
+                <label asp-for="Record.SavingsGoalId"></label>
+            </div>
+            <div class="form-group form-floating">
                 <textarea asp-for="Record.Notes" class="form-control" style="height:150px" placeholder="Notes"></textarea>
                 <label asp-for="Record.Notes"></label>
                 <span asp-validation-for="Record.Notes" class="text-danger"></span>
