@@ -52,14 +52,18 @@ namespace K9_Koinz.Pages.Budgets {
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime BudgetPeriod = DateTime.Now;
 
+        public bool UseCurrentExpenses { get; set; }
+
         public List<BudgetPeriodOption> PeriodOptions { get; set; } = new();
 
-        public async Task OnGetAsync(string selectedBudget, DateTime? budgetPeriod) {
+        public async Task OnGetAsync(string selectedBudget, DateTime? budgetPeriod, bool? useCurrentExpenses) {
             if (budgetPeriod.HasValue) {
                 BudgetPeriod = budgetPeriod.Value;
             } else {
                 BudgetPeriod = DateTime.Now;
             }
+
+            UseCurrentExpenses = useCurrentExpenses ?? false;
 
             Budgets = await _context.Budgets
                 .Include(bud => bud.BudgetTag)

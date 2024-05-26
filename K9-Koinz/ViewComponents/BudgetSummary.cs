@@ -5,6 +5,7 @@ using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.ViewComponents {
     [ViewComponent(Name = "BudgetSummary")]
@@ -18,7 +19,7 @@ namespace K9_Koinz.ViewComponents {
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate) {
+        public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate, bool current) {
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(referenceDate);
             BudgetedIncome = budget.IncomeLines
                 .Sum(line => line.BudgetedAmount);
@@ -30,6 +31,11 @@ namespace K9_Koinz.ViewComponents {
             ExtraExpenseTotal = budget.UnallocatedExpenses
                 .SelectMany(line => line.Transactions)
                 .GetTotal();
+            CurrentExpensesTotal = budget.ExpenseLines
+                .Sum(line => line.SpentAmount) * -1;
+
+            UseCurrentExpenses = current;
+            BudgetPeriod = referenceDate;
 
             SavingsGoalTransferTotal = SimulateSavingsGoals(referenceDate, budget.Timespan);
             BillsTotal = SimulateBills(referenceDate, budget.Timespan);
@@ -127,6 +133,9 @@ namespace K9_Koinz.ViewComponents {
         [DisplayName("Budgeted Expenses")]
         public double AllocatedExpenseTotal { get; set; }
 
+        [DisplayName("Current Expenses")]
+        public double CurrentExpensesTotal { get; set; }
+
         [DisplayName("Extra Expenses")]
         public double ExtraExpenseTotal { get; set; }
 
@@ -141,14 +150,31 @@ namespace K9_Koinz.ViewComponents {
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return BudgetedIncome + TotalRollover + ExtraIncome + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                var total = BudgetedIncome + TotalRollover + ExtraExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                if (UseCurrentExpenses) {
+                    total += CurrentExpensesTotal;
+                } else {
+                    total += AllocatedExpenseTotal;
+                }
+                return total;
             }
         }
 
-
+        [DisplayName("Current")]
+        public bool UseCurrentExpenses { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public BudgetTimeSpan Timespan { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime BudgetPeriod { get; set; }
+
+        public string RefDateValue {
+            get {
+                return BudgetPeriod.FormatForUrl();
+            }
+        }
 
         public string AlertClasses {
             get {
