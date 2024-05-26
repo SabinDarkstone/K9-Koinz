@@ -150,7 +150,7 @@ namespace K9_Koinz.ViewComponents {
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                var total = BudgetedIncome + TotalRollover + ExtraExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                var total = BudgetedIncome + TotalRollover + ExtraIncome + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
                 if (UseCurrentExpenses) {
                     total += CurrentExpensesTotal;
                 } else {

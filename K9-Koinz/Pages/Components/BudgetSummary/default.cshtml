@@ -5,13 +5,13 @@
     <div class="m-2 col-md-7 col-lg-5 col-xl-4 col-10">
         <div class="@Model.AlertClasses">
             <div class="row justify-content-between">
-                <div class="col-8">
+                <div class="col">
                     <h4 class="alert-heading">At a Glance</h4>
                 </div>
-                <div class="col-4">
+                <div class="col">
                     <div class="form-check form-switch">
                         <form method="get" name="form1">
-                            <input type="hidden" asp-for="BudgetPeriod" value="@Model.RefDateValue"/>
+                            <input type="hidden" asp-for="BudgetPeriod" value="@Model.RefDateValue" />
                             @Html.EditorFor(x => x.UseCurrentExpenses, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
                             @if (Model.UseCurrentExpenses) {
                                 <text>Current</text>
