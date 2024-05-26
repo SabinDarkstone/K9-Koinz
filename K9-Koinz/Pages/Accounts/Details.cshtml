@@ -1,5 +1,7 @@
 ﻿@page
+@using K9_Koinz.ViewComponents
 @model K9_Koinz.Pages.Accounts.DetailsModel
+
 
 @{
     ViewData["Title"] = "Account Details";
@@ -55,6 +57,10 @@
         <dd class="col-sm-9">
             @(Model.Record.HideAccountTransactions ? "Yes" : "No")
         </dd>
+
+        @await Component.InvokeAsync(nameof(Components.DateFields), new {
+            record = Model.Record
+        })
     </dl>
     <h4>
         Most Recent 100 Transactions
