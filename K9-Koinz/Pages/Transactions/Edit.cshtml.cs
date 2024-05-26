@@ -27,10 +27,15 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         protected override async Task AfterQueryActionsAsync() {
-            if (Record.SavingsGoalId.HasValue || Record.IsSavingsSpending || Record.Category.CategoryType == CategoryType.TRANSFER) {
+            if (Record.Category.CategoryType == CategoryType.TRANSFER) {
                 GoalOptions = new SelectList(await _context.SavingsGoals
                     .Where(goal => goal.AccountId == Record.AccountId)
                     .ToListAsync(), nameof(SavingsGoal.Id), nameof(SavingsGoal.Name));
+            } else if (Record.IsSavingsSpending || Record.SavingsGoalId.HasValue) {
+                GoalOptions = new SelectList(
+                    await _context.SavingsGoals.ToListAsync(),
+                    nameof(SavingsGoal.Id), nameof(SavingsGoal.Name)
+                );
             }
 
             if (Record.Category.CategoryType == CategoryType.EXPENSE) {
