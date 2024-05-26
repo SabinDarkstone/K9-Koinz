@@ -4,6 +4,7 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -83,27 +84,33 @@ namespace K9_Koinz.ViewComponents {
             var activeSavingsTransfers = _context.Transfers
                 .AsNoTracking()
                 .Include(fer => fer.RepeatConfig)
-                .Where(fer => fer.FromAccountId.HasValue)
-                .Where(fer => fer.RepeatConfigId != null)
+                .Where(fer => fer.FromAccountId.HasValue)  // Do not include income transfers
+                .Where(fer => fer.RepeatConfigId != null)  // Only include scheduled transfers
                 .AsEnumerable()
-                .Where(fer => fer.RepeatConfig.IsActive)
+                .Where(fer => fer.RepeatConfig.IsActive)  // Ensure the transfers are active
                 .ToList();
 
             var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
 
             // Get savings goal transfer that have already happened
-            var runningTotal = _context.Transactions
+            var savingsTransactions = _context.Transactions
                 .Include(trans => trans.Transfer)
                     .ThenInclude(fer => fer.RecurringTransfer)
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
-                //.Where(trans => trans.TransferId.HasValue && trans.Transfer.RecurringTransferId.HasValue && trans.Transfer.RecurringTransfer.RepeatConfigId.HasValue)
-                .Sum(trans => trans.Amount) * -1;
+                .ToList();
 
+            _logger.LogWarning("Existing Transactions");
+            savingsTransactions.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + x.Date.Date));
+
+            var runningTotal = savingsTransactions.Sum(trans => trans.Amount) * -1;
+
+            _logger.LogWarning("Upcoming Transactions");
             // Get savings goal transfers that are scheduled to happen
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
                 var todaysTransfers = activeSavingsTransfers.Where(fer => fer.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
+                todaysTransfers.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + x.Date.Date));
                 foreach (var transfer in todaysTransfers) {
                     runningTotal -= transfer.Amount;
                     transfer.RepeatConfig.FireNow();
