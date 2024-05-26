@@ -82,6 +82,10 @@
         <dd class="col-sm-9">
             @Model.Record.TotalContributed.FormatCurrency(0) (@Model.Record.SavingsPercent%)
         </dd>
+
+        @await Component.InvokeAsync(nameof(Components.DateFields), new {
+            record = Model.Record
+        })
     </dl>
 </div>
 <div class="row">

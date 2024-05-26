@@ -29,6 +29,10 @@
         <dd class="col-sm-10">
             <div style="width: 20px; height: 20px; background-color:@Model.Record.HexColor"></div>
         </dd>
+
+        @await Component.InvokeAsync(nameof(Components.DateFields), new {
+            record = Model.Record
+        })
     </dl> 
 </div>
 <div>

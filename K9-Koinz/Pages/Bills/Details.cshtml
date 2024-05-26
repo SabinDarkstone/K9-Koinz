@@ -55,6 +55,10 @@
         <dd class="col-sm-9">
             @(Model.Record.IsAutopay ? "Yes" : "No")
         </dd>
+
+        @await Component.InvokeAsync(nameof(Components.DateFields), new {
+            record = Model.Record
+        })
     </dl>
 </div>
 

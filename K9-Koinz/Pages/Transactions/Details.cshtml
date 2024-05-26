@@ -109,6 +109,10 @@
         <dd class="col-sm-3">
             @(Model.Record.IsSavingsSpending ? "Yes" : "No")
         </dd>
+
+        @await Component.InvokeAsync(nameof(Components.DateFields), new {
+            record = Model.Record
+        })
     </dl>
 </div>
 
