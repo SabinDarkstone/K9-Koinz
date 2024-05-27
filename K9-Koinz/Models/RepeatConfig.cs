@@ -24,6 +24,7 @@ namespace K9_Koinz.Models {
     }
 
     public class RepeatConfig : BaseEntity {
+        public bool DoRepeat { get; set; }
         public RepeatMode Mode { get; set; }
 
         [DisplayName("Repeat Frequency")]
@@ -56,6 +57,10 @@ namespace K9_Koinz.Models {
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         public DateTime? CalculatedNextFiring {
             get {
+                if (!IsActive) {
+                    return null;
+                }
+
                 if (NextFiring == null) {
                     NextFiring = GetNextFireDate();
                 }
@@ -66,6 +71,10 @@ namespace K9_Koinz.Models {
 
         public bool IsActive {
             get {
+                if (!DoRepeat && FirstFiring == PreviousFiring) {
+                    return false;
+                }
+
                 if (TerminationDate.HasValue) {
                     return TerminationDate.Value.Date > DateTime.Today;
                 } else {

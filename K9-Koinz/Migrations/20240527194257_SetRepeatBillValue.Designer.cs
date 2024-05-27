@@ -3,6 +3,7 @@ using System;
 using K9_Koinz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K9_Koinz.Migrations
 {
     [DbContext(typeof(KoinzContext))]
-    partial class KoinzContextModelSnapshot : ModelSnapshot
+    [Migration("20240527194257_SetRepeatBillValue")]
+    partial class SetRepeatBillValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -325,9 +328,6 @@ namespace K9_Koinz.Migrations
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("DoRepeat")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("FirstFiring")
                         .HasColumnType("TEXT");

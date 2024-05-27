@@ -73,7 +73,9 @@ namespace K9_Koinz.ViewComponents {
                 var todaysBills = activeBills.Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
                 foreach (var bill in todaysBills) {
                     runningTotal -= bill.Amount;
-                    bill.RepeatConfig.FireNow();
+                    if (bill.IsRepeatBill) {
+                        bill.RepeatConfig.FireNow();
+                    }
                 }
             }
 
