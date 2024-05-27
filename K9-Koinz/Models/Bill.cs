@@ -35,6 +35,9 @@ namespace K9_Koinz.Models {
         public RepeatConfig RepeatConfig { get; set; }
         public double Amount { get; set; }
 
+        [DisplayName("Repeating Bill?")]
+        public bool IsRepeatBill { get; set; }
+
         [DisplayName("Last Due Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]

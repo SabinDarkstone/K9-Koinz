@@ -11,43 +11,45 @@
     <h4>Bill</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.AccountId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.AccountName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.MerchantId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.MerchantName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Amount)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Model.Record.Amount.FormatCurrency(2)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Record.RepeatConfig.RepeatString)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Record.RepeatConfig.RepeatString)
-        </dd>
-        @if (Model.Record.RepeatConfig.TerminationDate.HasValue) {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Record.RepeatConfig.TerminationDate)
+        @if (Model.Record.IsRepeatBill) {
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Record.RepeatConfig.RepeatString)
             </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Record.RepeatConfig.TerminationDate)
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Record.RepeatConfig.RepeatString)
             </dd>
+            @if (Model.Record.RepeatConfig.TerminationDate.HasValue) {
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Record.RepeatConfig.TerminationDate)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Record.RepeatConfig.TerminationDate)
+                </dd>
+            }
         }
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.IsAutopay)
