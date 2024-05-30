@@ -3,8 +3,10 @@ using K9_Koinz.Models;
 using Humanizer;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Accounts {
+    [Authorize]
     public class CreateModel : AbstractCreateModel<Account> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)

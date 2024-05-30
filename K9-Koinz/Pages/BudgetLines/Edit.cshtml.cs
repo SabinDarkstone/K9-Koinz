@@ -8,6 +8,7 @@ using K9_Koinz.Pages.Meta;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using K9_Koinz.Models.Meta;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.BudgetLines {
 
@@ -20,6 +21,7 @@ namespace K9_Koinz.Pages.BudgetLines {
         public double? Y { get; set; }
     }
 
+    [Authorize]
     public class EditModel : AbstractEditModel<BudgetLine> {
         private readonly IBudgetService _budgetService;
 

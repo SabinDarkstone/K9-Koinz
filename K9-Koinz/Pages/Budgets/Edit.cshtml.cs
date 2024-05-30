@@ -5,8 +5,10 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Budgets {
+    [Authorize]
     public class EditModel : AbstractEditModel<Budget> {
         private readonly IBudgetService _budgetService;
 

@@ -7,8 +7,10 @@ using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using K9_Koinz.Models.Helpers;
 using NuGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Transactions {
+    [Authorize]
     public class CreateModel : AbstractCreateModel<Transaction> {
         private readonly IDupeCheckerService<Transaction> _dupeChecker;
 

@@ -9,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Utils;
 using NuGet.Protocol;
 using K9_Koinz.Models.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Transactions {
+    [Authorize]
     public class EditModel : AbstractEditModel<Transaction> {
         public SelectList GoalOptions { get; set; } = default!;
         public SelectList BillOptions { get; set; } = default!;

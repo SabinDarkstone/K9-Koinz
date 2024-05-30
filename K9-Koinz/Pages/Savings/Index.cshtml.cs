@@ -5,8 +5,10 @@ using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Savings {
+    [Authorize]
     public class IndexModel : AbstractDbPage {
         public IndexModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) {

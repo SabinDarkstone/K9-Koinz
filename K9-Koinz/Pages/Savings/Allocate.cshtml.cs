@@ -2,6 +2,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Helpers;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Savings {
+    [Authorize]
     public class AllocateModel : PageModel {
 
         private readonly KoinzContext _context;

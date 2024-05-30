@@ -1,11 +1,12 @@
 using K9_Koinz.Data;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transactions.Split {
+    [Authorize]
     public class RemoveModel : AbstractDbPage {
         public RemoveModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }

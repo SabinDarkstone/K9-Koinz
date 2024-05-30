@@ -4,8 +4,10 @@ using K9_Koinz.Models;
 using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Budgets {
+    [Authorize]
     public class DeleteModel : AbstractDeleteModel<Budget> {
         public List<BudgetLine> BudgetLines { get; set; }
         public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)

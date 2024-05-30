@@ -3,9 +3,11 @@ using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Savings.Goals {
+    [Authorize]
     public class CreateModel : AbstractCreateModel<SavingsGoal> {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)

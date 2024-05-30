@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using K9_Koinz.Models.Helpers;
 using K9_Koinz.Utils;
 using NuGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Transactions {
+    [Authorize]
     public class DeleteModel : AbstractDeleteModel<Transaction> {
         public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }

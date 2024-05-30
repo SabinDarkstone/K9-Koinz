@@ -4,8 +4,10 @@ using Humanizer;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Accounts {
+    [Authorize]
     public class EditModel : AbstractEditModel<Account> {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)

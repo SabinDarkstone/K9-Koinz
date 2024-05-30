@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Merchants {
+    [Authorize]
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
 

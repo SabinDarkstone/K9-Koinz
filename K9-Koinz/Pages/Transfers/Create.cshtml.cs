@@ -7,8 +7,10 @@ using K9_Koinz.Utils;
 using K9_Koinz.Pages.Meta;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Transfers {
+    [Authorize]
     public class CreateModel : AbstractCreateModel<Transfer> {
         private Transaction[] transactions = new Transaction[2];
         private Transaction duplicateTransaction;

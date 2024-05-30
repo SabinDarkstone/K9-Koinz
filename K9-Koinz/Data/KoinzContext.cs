@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class KoinzContext : DbContext {
+    public class KoinzContext : IdentityDbContext<KoinzUser> {
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -24,6 +25,8 @@ namespace K9_Koinz.Data {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
             // Table names
             modelBuilder.Entity<Account>().ToTable("Account").HasKey(x => x.Id);
             modelBuilder.Entity<Category>().ToTable("Category").HasKey(x => x.Id);

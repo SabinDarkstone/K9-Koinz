@@ -2,12 +2,14 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions.Split {
+    [Authorize]
     public class CreateModel : AbstractDbPage {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }

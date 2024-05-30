@@ -3,12 +3,14 @@ using K9_Koinz.Models;
 using K9_Koinz.Models.Helpers;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
+    [Authorize]
     public class DuplicateFoundModel : PageModel {
 
         private readonly KoinzContext _context;

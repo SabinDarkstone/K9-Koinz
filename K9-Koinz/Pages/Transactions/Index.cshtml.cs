@@ -10,9 +10,10 @@ using K9_Koinz.Services;
 using Microsoft.Extensions.Caching.Memory;
 using K9_Koinz.Models.Helpers;
 using NuGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 
-namespace K9_Koinz.Pages.Transactions
-{
+namespace K9_Koinz.Pages.Transactions {
+    [Authorize]
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly IConfiguration _configuration;
@@ -112,7 +113,7 @@ namespace K9_Koinz.Pages.Transactions
                 var childCategories = _context.Categories.Where(cat => cat.ParentCategoryId == Guid.Parse(SelectedCategory)).Include(cat => cat.ChildCategories).Select(cat => cat.Id).ToList();
                 CategoryFilters.AddRange(childCategories);
                 transactionsIQ = transactionsIQ.Where(trans => trans.CategoryId.HasValue && CategoryFilters.Contains(trans.CategoryId.Value));
-                transactionsIQ = transactionsIQ.Where(trans => !trans.IsSplit); 
+                transactionsIQ = transactionsIQ.Where(trans => !trans.IsSplit);
             } else {
                 transactionsIQ = transactionsIQ.Where(trans => !trans.ParentTransactionId.HasValue);
             }
@@ -181,7 +182,7 @@ namespace K9_Koinz.Pages.Transactions
                     transactionsIQ = transactionsIQ.OrderByDescending(trans => trans.Date);
                     break;
             }
-            
+
             transactionsIQ = transactionsIQ.Include(trans => trans.Tag);
 
             Response.Cookies.Append("backToTransactions", new TransactionNavPayload {

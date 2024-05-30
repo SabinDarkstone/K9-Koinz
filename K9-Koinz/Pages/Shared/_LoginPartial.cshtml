@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<KoinzUser> SignInManager
+@inject UserManager<KoinzUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User)) {
+        <li class="nav-item" style="padding-right: 0.8rem">
+            <a id="shortcut-transaction" class="btn btn-sm btn-success" asp-page="@PagePaths.TransactionCreate" style="margin: 0.4rem var(--bs-nav-link-padding-x);">
+                <i class="fa-solid fa-plus"></i>
+                <span id="quickAddText">Quick Add</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a id="nav-accounts" class="nav-link nav-link-hover" asp-page="@PagePaths.AccountIndex"><i class="fa-solid fa-landmark"></i> Accounts</a>
+        </li>
+        <li class="nav-item">
+            <a id="nav-transactions" class="nav-link nav-link-hover" asp-page="@PagePaths.TransactionIndex"><i class="fa-solid fa-scale-balanced"></i> Transactions</a>
+        </li>
+        <li class="nav-item">
+            <a id="nav-budgets" class="nav-link nav-link-hover" asp-page="@PagePaths.BudgetIndex"><i class="fa-solid fa-file-invoice"></i> Budgets</a>
+        </li>
+        <li class="nav-item">
+            <a id="nav-bills" class="nav-link nav-link-hover" asp-page="@PagePaths.BillIndex"><i class="fa-solid fa-money-bills"></i> Bills</a>
+        </li>
+        <li class="nav-item">
+            <a id="nav-savings" class="nav-link nav-link-hover" asp-page="@PagePaths.SavingsIndex"><i class="fa-solid fa-piggy-bank"></i> Savings</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link nav-link-hover dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                <i id="nav-more" class="fa-solid fa-ellipsis"></i> More
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a id="nav-merchants" class="dropdown-item nav-lin nav-link-hover" asp-page="@PagePaths.MerchantIndex"><i class="fa-solid fa-cash-register"></i> Merchants</a>
+                </li>
+                <li class="nav-item">
+                    <a id="nav-categories" class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.CategoryIndex"><i class="fa-solid fa-layer-group"></i> Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a id="nav-tags" class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.TagIndex"><i class="fa-solid fa-tags"></i> Tags</a>
+                </li>
+                <li>
+                    <a class="dropdown-item nav-link nav-link-hover" asp-area="Identity" asp-page="/User/Logout">Logout</a>
+                </li>
+            </ul>
+        </li>
+    } else {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/User/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/User/Login">Login</a>
+        </li>
+    }
+</ul>

@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Merchants {
+    [Authorize]
     public class DetailsModel : AbstractDetailsModel<Merchant> {
         public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }

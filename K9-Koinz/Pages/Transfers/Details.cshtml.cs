@@ -1,9 +1,11 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers {
+    [Authorize]
     public class DetailsModel : AbstractDetailsModel<Transfer> {
         public DetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }

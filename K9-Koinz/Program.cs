@@ -3,6 +3,9 @@ using K9_Koinz.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using K9_Koinz.Utils;
 using Serilog;
+using Microsoft.AspNetCore.Identity;
+using K9_Koinz.Models;
+
 namespace K9_Koinz {
     public class Program {
         public static void Main(string[] args) {
@@ -12,6 +15,11 @@ namespace K9_Koinz {
                 options.EnableDetailedErrors();
                 options.EnableSensitiveDataLogging();
             });
+
+            builder.Services.AddIdentity<KoinzUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddEntityFrameworkStores<KoinzContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddMvc();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -83,7 +91,6 @@ namespace K9_Koinz {
             app.MapControllerRoute("default", "api/{controller}/{action}/{id?}");
 
             app.UseAuthorization();
-
 
             app.Run();
         }

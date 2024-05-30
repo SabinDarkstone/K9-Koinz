@@ -3,10 +3,12 @@ using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transfers.Recurring {
+    [Authorize]
     public class CreateModel : AbstractCreateModel<Transfer> {
         private Transaction[] transactions = new Transaction[2];
         private bool foundMatchingSchedule;

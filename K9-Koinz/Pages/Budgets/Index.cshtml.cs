@@ -6,6 +6,7 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
 using K9_Koinz.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Budgets {
 
@@ -21,6 +22,7 @@ namespace K9_Koinz.Pages.Budgets {
         public bool IsDisabled { get; set; }
     }
 
+    [Authorize]
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<IndexModel> _logger;

@@ -4,9 +4,11 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.BudgetLines {
+    [Authorize]
     public class CreateModel : AbstractCreateModel<BudgetLine> {
         private readonly IBudgetService _budgetService;
 

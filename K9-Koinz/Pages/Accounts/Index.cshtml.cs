@@ -7,8 +7,10 @@ using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Accounts {
+    [Authorize]
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
 

@@ -2,6 +2,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace K9_Koinz.Pages.Bills {
         }
     }
 
+    [Authorize]
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
 

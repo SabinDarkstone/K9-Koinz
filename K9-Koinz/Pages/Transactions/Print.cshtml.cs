@@ -5,8 +5,10 @@ using K9_Koinz.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Transactions {
+    [Authorize]
     public class PrintModel : PageModel {
         private readonly KoinzContext _context;
         private readonly ILogger<PrintModel> _logger;

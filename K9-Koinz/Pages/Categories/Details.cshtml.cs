@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace K9_Koinz.Pages.Categories {
 
@@ -18,6 +19,7 @@ namespace K9_Koinz.Pages.Categories {
         public double? Y { get; set; }
     }
 
+    [Authorize]
     public class DetailsModel : AbstractDetailsModel<Category> {
 
         public bool ChartError { get; set; }
