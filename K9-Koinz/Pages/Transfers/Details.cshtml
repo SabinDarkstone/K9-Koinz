@@ -9,35 +9,35 @@
     <h4>Transfer</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.FromAccountId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.FromAccount.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.ToAccountId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.ToAccount.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.CategoryId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Category.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.MerchantId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Merchant.Name)
         </dd>
         @if (Model.Record.SavingsGoalId.HasValue && !Model.Record.IsSplit) {
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 @if (Model.Record.SavingsGoal.SavingsType == SavingsType.BUCKET) {
                     <a asp-page="@PagePaths.SavingsBucketDetails" asp-route-id="@Model.Record.SavingsGoalId" class="no-underline">
                         @Html.DisplayFor(model => model.Record.SavingsGoal.Name)
@@ -49,16 +49,22 @@
                 }
             </dd>
         }
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Amount)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Model.Record.Amount.FormatCurrency(2)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.IsTransferFromBudget)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Record.IsTransferFromBudget
+        </dd>
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Notes)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Notes)
         </dd>
 

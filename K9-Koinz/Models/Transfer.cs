@@ -40,8 +40,9 @@ namespace K9_Koinz.Models {
         public RepeatConfig RepeatConfig { get; set; }
         public Guid? RecurringTransferId { get; set; }
         public Transfer RecurringTransfer { get; set; }
-
         public bool IsSplit { get; set; }
+        [DisplayName("Budget to Savings Transfer")]
+        public bool IsTransferFromBudget { get; set; }
 
         public Transaction ToTransaction {
             get {

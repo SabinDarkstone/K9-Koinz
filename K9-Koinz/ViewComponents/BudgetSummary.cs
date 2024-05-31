@@ -103,6 +103,12 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .ToList();
 
+            for (var i = savingsTransactions.Count - 1; i >= 0; i--) {
+                if (savingsTransactions[i].TransferId != null && savingsTransactions[i].Transfer.IsTransferFromBudget) {
+                    savingsTransactions.RemoveAt(i);
+                }
+            }
+
             _logger.LogWarning("Existing Transactions");
             savingsTransactions.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + x.Date.Date));
 
