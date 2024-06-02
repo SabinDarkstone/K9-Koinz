@@ -2,6 +2,7 @@
 using K9_Koinz.Pages;
 using K9_Koinz.Utils;
 using NuGet.Packaging;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Data {
     public class DataImport {
@@ -23,22 +24,18 @@ namespace K9_Koinz.Data {
             var transactions = new List<Transaction>();
 
             CreateCategoryMap();
+            CreateMerchantMap();
+            CreateAccountMap();
 
             foreach (var line in rowsOfCsv.Skip(1)) {
                 var splitRow = line.Split(',');
                 var account = ParseAccount(splitRow);
                 var merchant = ParseMerchant(splitRow);
+
                 var transaction = ParseTransaction(splitRow, account, merchant);
 
-                if (!accounts.Any(acct => acct.Id == account.Id)) {
-                    accounts.Add(account);
-                }
-
-				if (!merchants.Any(merch => merch.Id == merchant.Id)) {
-					merchants.Add(merchant);
-				}
-
 				transactions.Add(transaction);
+                _logger.LogInformation(transaction.ToJson());
             }
 
             _context.Accounts.AddRange(accounts);
@@ -78,6 +75,18 @@ namespace K9_Koinz.Data {
 
             CategoryMap.AddRange(
                 categories.Select(cat => new KeyValuePair<string, Guid>(cat.Name, cat.Id))
+            );
+        }
+
+        private void CreateMerchantMap() {
+            MerchantMap.AddRange(
+                _context.Merchants.Select(merch => new KeyValuePair<string, Guid>(merch.Name, merch.Id))
+            );
+        }
+
+        private void CreateAccountMap() {
+            AccountMap.AddRange(
+                _context.Accounts.Select(acct => new KeyValuePair<string, Guid>(acct.Name, acct.Id))
             );
         }
 
@@ -131,13 +140,20 @@ namespace K9_Koinz.Data {
 
         private Transaction ParseTransaction(string[] row, Account account, Merchant merchant) {
             var dateSplit = row[0].Split('/').Select(x => int.Parse(x)).ToList();
+
             var parsedTransaction = new Transaction {
                 Id = Guid.NewGuid(),
                 AccountId = account.Id,
+                AccountName = account.Name,
                 MerchantId = merchant.Id,
+                MerchantName = merchant.Name,
                 Amount = double.Parse(row[2]),
                 Date = new DateTime(month: dateSplit[0], day: dateSplit[1], year: dateSplit[2]),
-                CategoryId = CategoryMap[row[4]]
+                CategoryId = CategoryMap[row[4]],
+                CategoryName = row[4],
+                CreatedDate = DateTime.Now,
+                LastModifiedDate = DateTime.Now,
+                Notes = "Loaded from data import wizard"
             };
 
             _logger.LogDebug(parsedTransaction.Date.ToString());
