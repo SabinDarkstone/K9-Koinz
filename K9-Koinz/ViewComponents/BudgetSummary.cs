@@ -70,7 +70,10 @@ namespace K9_Koinz.ViewComponents {
 
             // Get bills that have yet to be paid
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
-                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
+                var todaysBills = activeBills
+                    .Where(bill => bill.RepeatConfig.IsActive)
+                    .Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date)
+                    .ToList();
                 foreach (var bill in todaysBills) {
                     runningTotal -= bill.Amount;
                     if (bill.IsRepeatBill) {
