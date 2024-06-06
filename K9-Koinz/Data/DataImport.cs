@@ -34,8 +34,8 @@ namespace K9_Koinz.Data {
 
                 var transaction = ParseTransaction(splitRow, account, merchant);
 
-				transactions.Add(transaction);
-                _logger.LogInformation(transaction.ToJson());
+		transactions.Add(transaction);
+                _logger.LogWarning(transaction.ToJson());
             }
 
             _context.Accounts.AddRange(accounts);
@@ -155,9 +155,7 @@ namespace K9_Koinz.Data {
                 LastModifiedDate = DateTime.Now,
                 Notes = "Loaded from data import wizard"
             };
-
-            _logger.LogDebug(parsedTransaction.Date.ToString());
-
+		
             var transactionType = row[3];
             if (transactionType == "debit") {
                 parsedTransaction.Amount *= -1;
