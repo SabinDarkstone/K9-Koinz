@@ -13,14 +13,15 @@ namespace K9_Koinz.Data {
         private Dictionary<string, Guid> MerchantMap = new();
         private Dictionary<string, Guid> CategoryMap = new();
 
+	private HashSet<Account> accounts = new();
+	private HashSet<Merchant> merchants = new();
+
         public DataImport(KoinzContext context, ILogger<DataImportWizardModel> logger) {
             _context = context;
             _logger = logger;
         }
 
         public void ParseFileData(List<string> rowsOfCsv) {
-            var accounts = new HashSet<Account>();
-            var merchants = new HashSet<Merchant>();
             var transactions = new List<Transaction>();
 
             CreateCategoryMap();
@@ -121,6 +122,7 @@ namespace K9_Koinz.Data {
                 parsedAccount.InitialBalanceDate = DateTime.Now;
 
                 AccountMap.Add(parsedAccount.Name, parsedAccount.Id);
+		accounts.add(parsedAccount);
             }
 
             return parsedAccount;
@@ -132,6 +134,7 @@ namespace K9_Koinz.Data {
                 parsedMerchant.Id = MerchantMap[parsedMerchant.Name];
             } else {
                 parsedMerchant.Id = Guid.NewGuid();
+		merchants.add(parsedMerchant);
                 MerchantMap.Add(parsedMerchant.Name, parsedMerchant.Id);
             }
 
