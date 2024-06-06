@@ -122,7 +122,7 @@ namespace K9_Koinz.Data {
                 parsedAccount.InitialBalanceDate = DateTime.Now;
 
                 AccountMap.Add(parsedAccount.Name, parsedAccount.Id);
-		accounts.add(parsedAccount);
+		accounts.Add(parsedAccount);
             }
 
             return parsedAccount;
@@ -134,7 +134,7 @@ namespace K9_Koinz.Data {
                 parsedMerchant.Id = MerchantMap[parsedMerchant.Name];
             } else {
                 parsedMerchant.Id = Guid.NewGuid();
-		merchants.add(parsedMerchant);
+		merchants.Add(parsedMerchant);
                 MerchantMap.Add(parsedMerchant.Name, parsedMerchant.Id);
             }
 
