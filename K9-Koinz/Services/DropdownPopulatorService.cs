@@ -21,7 +21,9 @@ namespace K9_Koinz.Services {
         public async Task<List<SelectListItem>> GetAccountListAsync() {
             var result = new List<SelectListItem>();
 
-            var accountList = (await _context.Accounts.GroupBy(acct => acct.Type).ToListAsync())
+            var accountList = (await _context.Accounts
+                .Where(acct => !acct.IsRetired)
+                .GroupBy(acct => acct.Type).ToListAsync())
                 .OrderBy(grp => grp.Key.ToString())
                 .ToList();
             List<SelectListGroup> groups = new List<SelectListGroup>();
@@ -43,6 +45,7 @@ namespace K9_Koinz.Services {
 
         public async Task<SelectList> GetTagListAsync() {
             return new SelectList(await _context.Tags
+                .Where(tag => !tag.IsRetired)
                 .OrderBy(tag => tag.Name)
                 .ToListAsync(), nameof(Tag.Id), nameof(Tag.Name));
         }
