@@ -42,7 +42,7 @@
         @if (@Model.ActiveTab == SavingsType.GOAL) {
             <a class="nav-link active" href="#"><i class="fa-solid fa-bullseye"></i> Goals</a>
         } else {
-            <a class="nav-link" asp-page="@PagePaths.SavingsIndex" asp-route-view="goals"><i class="fa-solid fa-bullseye"></i> Goals</a>
+            <a class="nav-link" asp-page="@PagePaths.SavingsIndex" asp-route-view="goals" asp-route-viewAll="@Model.ShowAllString"><i class="fa-solid fa-bullseye"></i> Goals</a>
         }
     </li>
 
@@ -50,7 +50,7 @@
         @if (@Model.ActiveTab == SavingsType.BUCKET) {
             <a class="nav-link active" href="#"><i class="fa-solid fa-bucket"></i> Buckets</a>
         } else {
-            <a class="nav-link" asp-page="@PagePaths.SavingsIndex" asp-route-view="buckets"><i class="fa-solid fa-bucket"></i> Buckets</a>
+            <a class="nav-link" asp-page="@PagePaths.SavingsIndex" asp-route-view="buckets" asp-route-viewAll="@Model.ShowAllString"><i class="fa-solid fa-bucket"></i> Buckets</a>
         }
     </li>
 </ul>
@@ -71,16 +71,25 @@
         </p>
     }
 
-    <form method="post" name="form1">
+    <form method="get" name="form1" id="form1">
         <div class="mb-4">
             <div class="form-check form-switch">
-                <input type="hidden" asp-for="@Model.ActiveTab" />
-
-                @Html.EditorFor(x => x.ShowAll, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
-                <label class="form-check-label">Show All Goals</label>
+                <input type="checkbox" class="form-check-input" , id="ShowAll" , onclick="convertAndSubmit()" checked="@Model.ShowAll" />
+                <label class="form-check-label" asp-for="ShowAll"></label>
             </div>
         </div>
+        <input type="hidden" name="viewAll" id="viewAll">
+        <input type="hidden" name="view" value="goals" />
     </form>
+
+    <script>
+        function convertAndSubmit() {
+            var checkbox = document.getElementById('ShowAll');
+            var hiddenField = document.getElementById('viewAll');
+            hiddenField.value = checkbox.checked ? 'yes' : 'no';
+            document.form1.submit();
+        }
+    </script>
 
     @foreach (var goalGroups in Model.SavingsDict.OrderBy(x => x.Key)) {
         <h2>@goalGroups.Key</h2>
@@ -202,14 +211,25 @@
         </p>
     }
 
-    <form method="post" name="form1">
+    <form method="get" name="form1" id="form1">
         <div class="mb-4">
             <div class="form-check form-switch">
-                @Html.EditorFor(x => x.ShowAll, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
-                <label class="form-check-label">Show All Buckets</label>
+                <input type="checkbox" class="form-check-input" , id="ShowAll" , onclick="convertAndSubmit()" checked="@Model.ShowAll" />
+                <label class="form-check-label" asp-for="ShowAll"></label>
             </div>
         </div>
+        <input type="hidden" name="viewAll" id="viewAll">
+        <input type="hidden" name="view" value="buckets" />
     </form>
+
+    <script>
+        function convertAndSubmit() {
+            var checkbox = document.getElementById('ShowAll');
+            var hiddenField = document.getElementById('viewAll');
+            hiddenField.value = checkbox.checked ? 'yes' : 'no';
+            document.form1.submit();
+        }
+    </script>
 
     @foreach (var goalGroups in Model.SavingsDict.OrderBy(x => x.Key)) {
         <h2>@goalGroups.Key</h2>

@@ -14,14 +14,24 @@
     </span>
 </a>
 
-<form method="post" name="form1">
+<form method="get" name="form1" id="form1">
     <div class="mb-4">
         <div class="form-check form-switch">
-            @Html.EditorFor(x => x.ShowAllAccounts, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
+            <input type="checkbox" class="form-check-input" , id="ShowAllAccounts" , onclick="convertAndSubmit()" checked="@Model.ShowAllAccounts" />
             <label class="form-check-label" asp-for="ShowAllAccounts"></label>
         </div>
     </div>
+    <input type="hidden" name="viewAll" id="viewAll">
 </form>
+
+<script>
+    function convertAndSubmit() {
+        var checkbox = document.getElementById('ShowAllAccounts');
+        var hiddenField = document.getElementById('viewAll');
+        hiddenField.value = checkbox.checked ? 'yes' : 'no';
+        document.form1.submit();
+    }
+</script>
 
 @foreach (var accountType in Model.AccountDict.Keys.OrderBy(grp => grp).AsEnumerable()) {
     <div class="mb-4">

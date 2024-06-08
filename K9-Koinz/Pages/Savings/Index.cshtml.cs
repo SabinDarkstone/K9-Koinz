@@ -5,6 +5,8 @@ using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
+using K9_Koinz.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Pages.Savings {
     public class IndexModel : AbstractDbPage {
@@ -16,18 +18,26 @@ namespace K9_Koinz.Pages.Savings {
 
         public SavingsType ActiveTab { get; set; }
 
+        [DisplayName("Show All")]
         public bool ShowAll { get; set; } = false;
 
-        public async Task<IActionResult> OnPostAsync(bool? showAll, string view) {
-            ShowAll = showAll ?? false;
-            return await OnGetAsync(view);
+        public string ShowAllString {
+            get {
+                return ShowAll ? "yes" : "no";
+            }
         }
 
-        public async Task<IActionResult> OnGetAsync(string view) {
+        public async Task<IActionResult> OnGetAsync(string view, string viewAll) {
             if (string.IsNullOrEmpty(view) || view == "goals") {
                 ActiveTab = SavingsType.GOAL;
             } else {
                 ActiveTab = SavingsType.BUCKET;
+            }
+
+            if (viewAll == "yes") {
+                ShowAll = true;
+            } else {
+                ShowAll = false;
             }
 
             var savingsIQ = _context.SavingsGoals
