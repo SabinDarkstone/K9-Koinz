@@ -12,6 +12,7 @@ namespace K9_Koinz.Controllers {
 
         public async Task<JsonResult> GetAutocompleteCategoriesAsync(string text) {
             var suggestions = (await _context.Categories
+                .Where(cat => !cat.IsRetired)
                 .Include(cat => cat.ParentCategory)
                 .AsNoTracking()
                 .ToListAsync())
@@ -25,6 +26,7 @@ namespace K9_Koinz.Controllers {
 
         public async Task<JsonResult> GetAutocompleteMerchantsAsync(string text) {
             var suggestions = (await _context.Merchants
+                .Where(merch => !merch.IsRetired)
                 .AsNoTracking()
                 .ToListAsync())
                 .Where(merch => merch.Name != null && merch.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
