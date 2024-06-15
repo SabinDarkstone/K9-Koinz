@@ -84,6 +84,8 @@
                     <input type="hidden" asp-for="SplitTransactions[i].Date" />
                     <input type="hidden" asp-for="SplitTransactions[i].ParentTransactionId" />
                     <input type="hidden" asp-for="SplitTransactions[i].MerchantId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].BillId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].IsSavingsSpending" />
                     <td>
                         @if (Model.ParentTransaction.Category.CategoryType == CategoryType.TRANSFER) {
                             <select class="form-control cbxSavingsGoal" asp-for="SplitTransactions[i].SavingsGoalId" data-index="@i" id="cbxSavingsGoal-@i" asp-items="@Model.SavingsGoalsList">
