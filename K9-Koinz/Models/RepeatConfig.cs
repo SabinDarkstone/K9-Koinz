@@ -5,24 +5,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Models {
 
-    public enum RepeatMode {
-        [Display(Name = "On a Specific Day")]
-        SPECIFIC_DAY = 0,
-        [Display(Name = "Every X")]
-        INTERVAL = 1
-    }
-
-    public enum RepeatFrequency {
-        [Display(Name = "Daily")]
-        DAILY = 3,
-        [Display(Name = "Weekly")]
-        WEEKLY = 2,
-        [Display(Name = "Monthly")]
-        MONTHLY = 0,
-        [Display(Name = "Yearly")]
-        YEARLY = 1
-    }
-
     public class RepeatConfig : BaseEntity {
         public bool DoRepeat { get; set; }
         public RepeatMode Mode { get; set; }
