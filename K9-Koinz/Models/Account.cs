@@ -1,5 +1,4 @@
 ﻿using K9_Koinz.Models.Meta;
-using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,22 +20,25 @@ namespace K9_Koinz.Models {
     }
 
     public class Account : BaseEntity, INameable {
-        public static Account EmptyAccount() {
-            return new Account();
-        }
 
         [Required]
         [DisplayName("Account Name")]
         public string Name { get; set; }
+
+        [DisplayName("Description")]
         public string Description { get; set; }
+
         [Required]
         [DisplayName("Account Type")]
         public AccountType Type { get; set; }
+
         [DisplayName("Initial Balance")]
         [Column(TypeName = "decimal(10, 2)")]
+
         public double InitialBalance { get; set; }
         [DisplayName("Initial Balance Date")]
         public DateTime InitialBalanceDate { get; set; }
+
         [DisplayName("Minimum Balance")]
         [Column(TypeName = "decimal(10, 2)")]
         public double? MinimumBalance { get; set; }

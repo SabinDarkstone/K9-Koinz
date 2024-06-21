@@ -13,8 +13,12 @@ namespace K9_Koinz.Models {
     }
 
     public class SavingsGoal : BaseEntity, INameable {
+
+        [Required]
+        [DisplayName("Name")]
         public string Name { get; set; }
 
+        [DisplayName("Description")]
         public string Description { get; set; }
 
         [DisplayName("Savings Type")]
@@ -44,10 +48,8 @@ namespace K9_Koinz.Models {
 
         [DisplayName("Account")]
         public Guid AccountId { get; set; }
-
         public Account Account { get; set; }
 
-        public string AccountName {  get; set; }
 
         [DisplayName("Currently Active?")]
         public bool IsActive { get; set; }

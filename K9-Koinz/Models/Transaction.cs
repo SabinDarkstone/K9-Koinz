@@ -11,13 +11,15 @@ namespace K9_Koinz.Models {
         [Display(Name = "Credit")]
         PLUS
     }
+
     public class Transaction : BaseEntity, IAmount {
+
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
         public Account Account { get; set; }
-        public string AccountName { get; set; }
 
+        [Required]
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
@@ -26,13 +28,13 @@ namespace K9_Koinz.Models {
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
-        public string MerchantName { get; set; }
 
+        [Required]
         [DisplayName("Category")]
         public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
-        public string CategoryName { get; set; }
 
+        [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }
 
@@ -52,13 +54,18 @@ namespace K9_Koinz.Models {
         [DisplayName("Savings Goal")]
         public Guid? SavingsGoalId { get; set; }
         public SavingsGoal SavingsGoal { get; set; }
-        public string SavingsGoalName { get; set; }
 
         [DisplayName("Hide from Budgets and Trends")]
         public bool IsSavingsSpending { get; set; }
+
+        [DisplayName("Transfer")]
         public Guid? TransferId { get; set; }
         public Transfer Transfer { get; set; }
+
+        [DisplayName("Split Transaction?")]
         public bool IsSplit { get; set; }
+
+        [DisplayName("Parent Transaction")]
         public Guid? ParentTransactionId { get; set; }
         public Transaction ParentTransaction { get; set; }
 

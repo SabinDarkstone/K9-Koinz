@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
@@ -13,28 +14,28 @@ namespace K9_Koinz.Models {
     }
 
     public class BudgetLine : BaseEntity {
+
+        [Required]
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
-
         public Category BudgetCategory { get; set; }
 
-        public string BudgetCategoryName { get; set; }
-
         [DisplayName("Budget Name")]
+        [Required]
         public Guid BudgetId { get; set; }
-
         public Budget Budget { get; set; }
 
-        public string BudgetName { get; set; }
-
+        [Required]
         [DisplayName("Budgeted Amount")]
         [Column(TypeName = "decimal(10, 2)")]
         public double BudgetedAmount { get; set; }
 
         [DisplayName("Rollover Unspent Money")]
         public bool DoRollover { get; set; }
+
         [DisplayName("Always Green")]
         public bool GreenBarAlways { get; set; }
+
         [DisplayName("Show Week Dividers in Bar")]
         public bool ShowWeeklyLines { get; set; }
 
@@ -92,12 +93,6 @@ namespace K9_Koinz.Models {
                 } else {
                     return RolloverStatus.ZERO;
                 }
-
-                //if (CurrentPeriod.StartingAmount < 0) {
-                //    return RolloverStatus.NEGATIVE;
-                //} else {
-                //    return RolloverStatus.POSITIVE;
-                //}
             }
         }
 

@@ -13,28 +13,32 @@ namespace K9_Koinz.Models {
         [Display(Name = "Transfer")]
         TRANSFER,
         [Display(Name = "Other")]
-        OTHER,
-        [Display(Name = "All")]
-        ALL,
-        UNASSIGNED
+        OTHER
     }
 
     public class Category : BaseEntity, INameable {
+
+        [Required]
+        [DisplayName("Name")]
         public string Name { get; set; }
+
         [DisplayName("Parent Category")]
         public Guid? ParentCategoryId { get; set; }
         public Category ParentCategory { get; set; }
-        public string ParentCategoryName { get; set; }
+
         [DisplayName("Category Type")]
-        public CategoryType CategoryType { get; set; } = CategoryType.UNASSIGNED;
+        public CategoryType CategoryType { get; set; }
+
         [DisplayName("Icon")]
         public string FontAwesomeIcon { get; set; }
+
         [DisplayName("Retire Category")]
         public bool IsRetired { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BudgetLine> BudgetLines { get; set; }
         public ICollection<Bill> Bills { get; set; }
+
         [DisplayName("Child Categories")]
         public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
 
@@ -50,7 +54,7 @@ namespace K9_Koinz.Models {
             get {
                 var longName = string.Empty;
                 if (ParentCategory != null) {
-                    longName += ParentCategoryName + ": ";
+                    longName += ParentCategory.Name + ": ";
                 }
                 longName += Name;
 

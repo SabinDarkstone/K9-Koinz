@@ -2,32 +2,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Models.Meta;
-using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-    public enum BudgetTimeSpan {
-        [Display(Name = "Weekly")]
-        WEEKLY,
-        [Display(Name = "Monthly")]
-        MONTHLY,
-        [Display(Name = "Yearly")]
-        YEARLY
-    }
-
     public class Budget : BaseEntity, INameable {
+
+        [Required]
+        [DisplayName("Budget Name")]
         public string Name { get; set; } = "New Budget";
+
+        [DisplayName("Description")]
         public string Description { get; set; }
-        public int SortOrder { get; set; }
-        public BudgetTimeSpan Timespan { get; set; }
+
         [DisplayName("Tag")]
         public Guid? BudgetTagId { get; set; }
         public Tag BudgetTag { get; set; }
-        public string BudgetTagName { get; set; }
+
         [DisplayName("Ignore Categories")]
         public bool DoNotUseCategories { get; set; }
+
         [NotMapped]
         [DisplayName("Budgeted Amount")]
         public double? BudgetedAmount { get; set; }
+
         [NotMapped]
         [DisplayName("Rollover Unspent Money")]
         public bool DoNoCategoryRollover { get; set; }
@@ -85,13 +81,6 @@ namespace K9_Koinz.Models {
         public ICollection<BudgetLine> RolloverExpenses {
             get {
                 return BudgetLines.Where(line => line.DoRollover).ToList();
-            }
-        }
-
-        [NotMapped]
-        public string TimespanString {
-            get {
-                return Timespan.GetAttribute<DisplayAttribute>().Name;
             }
         }
     }

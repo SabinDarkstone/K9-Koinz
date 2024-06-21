@@ -5,42 +5,54 @@ using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Models {
     public class Transfer : BaseEntity, IAmount {
+
         [DisplayName("From Account")]
         public Guid? FromAccountId { get; set; }
         public Account FromAccount { get; set; }
+
         [Required]
         [DisplayName("To Account")]
         public Guid ToAccountId { get; set; }
         public Account ToAccount { get; set; }
+
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
+
         [Required]
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
+
         [Required]
         [DisplayName("Category")]
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
+
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }
+
         [NotMapped]
         public string Notes { get; set; }
+
         [DisplayName("Tag")]
         public Guid? TagId { get; set; }
         public Tag Tag { get; set; }
+
         [DisplayName("Savings Goal")]
         public Guid? SavingsGoalId { get; set; }
         public SavingsGoal SavingsGoal { get; set; }
+
         [DisplayName("Recurring Schedule")]
         public Guid? RepeatConfigId { get; set; }
-        [DisplayName("Repeat Settings")]
         public RepeatConfig RepeatConfig { get; set; }
+
         public Guid? RecurringTransferId { get; set; }
         public Transfer RecurringTransfer { get; set; }
+
         public bool IsSplit { get; set; }
+
         [DisplayName("Budget to Savings Transfer")]
         public bool IsTransferFromBudget { get; set; }
 
