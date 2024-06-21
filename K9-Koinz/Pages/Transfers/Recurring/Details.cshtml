@@ -105,6 +105,19 @@
     <a asp-page="@PagePaths.RecurringTransferEdit" asp-route-id="@Model.Record.Id" class="btn btn-primary mb-2">
         <i class="fa-solid fa-pen-to-square"></i> Edit
     </a>
+    <a class="btn btn-secondary mb-2" asp-page="@PagePaths.RecurringTransferSplit" asp-route-parentId="@Model.Record.Id">
+        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+        @if (Model.Record.SplitLines.Any()) {
+            <text>Edit Split</text>
+        } else {
+            <text>Split Transfer</text>
+        }
+    </a>
+    @if (Model.Record.SplitLines.Any()) {
+        <a class="btn btn-outline-secondary mb-2" asp-page="@PagePaths.RecurringTransferRemoveSplit" asp-route-parentId="@Model.Record.Id">
+            Remove Split
+        </a>
+    }
     <a asp-page="@PagePaths.RecurringTransferDelete" asp-route-id="@Model.Record.Id" class="btn btn-danger mb-2">
         <i class="fa-solid fa-trash"></i> Delete
     </a>

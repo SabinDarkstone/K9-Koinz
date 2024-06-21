@@ -18,6 +18,7 @@ namespace K9_Koinz.Data {
         public DbSet<RepeatConfig> RepeatConfigs { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<ScheduledJobStatus> JobStatuses { get; set; }
+        public DbSet<ScheduledSplit> SplitTransfers { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -38,6 +39,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<RepeatConfig>().ToTable("RepeatConfig").HasKey(x => x.Id);
             modelBuilder.Entity<Transfer>().ToTable("Transfer").HasKey(x => x.Id);
             modelBuilder.Entity<ScheduledJobStatus>().ToTable("JobStatus").HasKey(x => x.Id);
+            modelBuilder.Entity<ScheduledSplit>().ToTable("ScheduleSplit").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
@@ -102,6 +104,13 @@ namespace K9_Koinz.Data {
                 .HasOne(x => x.RecurringTransfer)
                 .WithMany(x => x.InstantiatedFromRecurring)
                 .HasForeignKey(x => x.RecurringTransferId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Scheduled Transfer -> Split Lines
+            modelBuilder.Entity<Transfer>()
+                .HasMany(x => x.SplitLines)
+                .WithOne(x => x.ParentTransfer)
+                .HasForeignKey(x => x.ParentTransferId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

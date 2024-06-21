@@ -76,5 +76,7 @@ namespace K9_Koinz.Models {
         public ICollection<Transaction> Transactions { get; set; }
 
         public ICollection<Transfer> InstantiatedFromRecurring { get; set; }
+
+        public ICollection<ScheduledSplit> SplitLines { get; set; }
     }
 }
