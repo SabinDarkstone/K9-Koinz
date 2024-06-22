@@ -61,8 +61,6 @@ namespace K9_Koinz {
                 } else await next();
             });
 
-            app.UseDeveloperExceptionPage();
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
@@ -75,6 +73,9 @@ namespace K9_Koinz {
             }
 
             app.UseStaticFiles();
+
+            app.UseExceptionHandler("/Errors/500");
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 
             app.UseRouting();
 

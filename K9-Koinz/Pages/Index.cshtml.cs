@@ -23,6 +23,8 @@ namespace K9_Koinz.Pages {
         public List<Account> Accounts { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync() {
+            var j = 0;
+            var i = 1 / j;
             var results = await _spendingGraph.CreateGraphData();
             ThisMonthSpendingJson = results[0];
             LastMonthSpendingJson = results[1];
