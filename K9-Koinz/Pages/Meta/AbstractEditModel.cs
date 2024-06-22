@@ -1,6 +1,7 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
+using K9_Koinz.Triggers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractEditModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IDropdownPopulatorService _dropdownService;
+
+        protected ITrigger<T> trigger;
 
         [BindProperty]
         public T Record { get; set; } = default!;
@@ -48,18 +51,36 @@ namespace K9_Koinz.Pages.Meta {
         }
 
         public async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                await BeforePageLoadActions();
-                return NavigationOnFailure();
+            _logger.LogInformation("EDIT " + Record.GetType().Name + ": " + Record.ToJson());
+            if (trigger != null) {
+                trigger.SetState(ModelState);
+                trigger.OnBeforeUpdate(null, new List<T> { Record });
             }
 
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
 
+            if (!ModelState.IsValid) {
+                foreach (var key in ModelState.Keys) {
+                    if (ModelState[key].Errors.Count > 0) {
+                        foreach (var error in ModelState[key].Errors) {
+                            _logger.LogInformation(key + ": " + error.ErrorMessage + " | " + Record.GetType().GetProperty(key).GetValue(Record));
+                        }
+                    }
+                }
+                await BeforePageLoadActions();
+                return NavigationOnFailure();
+            }
+
             _context.Attach(Record).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();
+
+                if (trigger != null) {
+                    trigger.OnAfterUpdate(null, new List<T> { Record });
+                }
+
                 await AfterSaveActionsAsync();
                 AfterSaveActions();
             } catch (DbUpdateConcurrencyException) {

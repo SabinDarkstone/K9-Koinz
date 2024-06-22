@@ -12,7 +12,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             HashSet<Guid> categoryIds = new();
             HashSet<Guid> merchantIds = new();
             HashSet<Guid> accountIds = new();
-            HashSet<Guid> tagdIds = new();
+            HashSet<Guid> savingIds = new();
 
             foreach (var transaction in newTransactions) {
                 if (transaction.CategoryId != null) {
@@ -20,16 +20,26 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 }
                 merchantIds.Add(transaction.MerchantId);
                 accountIds.Add(transaction.AccountId);
+
                 if (transaction.TagId == Guid.Empty) {
                     transaction.TagId = null;
+                }
+
+                if (transaction.BillId == Guid.Empty) {
+                    transaction.BillId = null;
+                }
+
+                if (transaction.SavingsGoalId.Value == Guid.Empty) {
+                    transaction.SavingsGoalId = null;
                 } else {
-                    tagdIds.Add(transaction.TagId.Value);
+                    savingIds.Add(transaction.SavingsGoalId.Value);
                 }
             }
 
             Dictionary<Guid, string> categoryDict = new();
             Dictionary<Guid, string> merchantDict = new();
             Dictionary<Guid, string> accountDict = new();
+            Dictionary<Guid, string> savingsDict = new();
 
             if (categoryIds.Count > 0) {
                 categoryDict = context.Categories.Where(cat => categoryIds.Contains(cat.Id))
@@ -46,38 +56,53 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                     .ToDictionary(acct => acct.Id, acct => acct.Name);
             }
 
+            if (savingIds.Count > 0) {
+                savingsDict = context.SavingsGoals.Where(sav => savingIds.Contains(sav.Id))
+                    .ToDictionary(sav => sav.Id, sav => sav.Name);
+            }
+
             foreach (var transaction in newTransactions) {
                 var categoryName = "";
                 var merchantName = "";
                 var accountName = "";
+                var savingsName = "";
 
-                var catSuccess = false;
-                var merchSuccess = false;
-                var acctSuccess = false;
+                Status catSuccess = Status.NULL;
+                Status merchSuccess = Status.NULL;
+                Status acctSuccess = Status.NULL;
+                Status savSuccess = Status.NULL;
 
                 if (transaction.CategoryId != null) {
-                    catSuccess = categoryDict.TryGetValue(transaction.CategoryId.Value, out categoryName);
+                    catSuccess = categoryDict.TryGetValue(transaction.CategoryId.Value, out categoryName) ? Status.SUCCESS : Status.ERROR;
                 }
 
-                merchSuccess = merchantDict.TryGetValue(transaction.MerchantId, out merchantName);
-                acctSuccess = accountDict.TryGetValue(transaction.AccountId, out accountName);
+                merchSuccess = merchantDict.TryGetValue(transaction.MerchantId, out merchantName) ? Status.SUCCESS : Status.ERROR;
+                acctSuccess = accountDict.TryGetValue(transaction.AccountId, out accountName) ? Status.SUCCESS : Status.ERROR;
 
-                if (!catSuccess) {
-                    modelState.AddModelError<Transaction>(x => x.CategoryId, "Invalid category selection");
+                if (transaction.SavingsGoalId != null) {
+                    savSuccess = savingsDict.TryGetValue(transaction.SavingsGoalId.Value, out savingsName) ? Status.SUCCESS : Status.ERROR;
+                }
+
+                if (catSuccess == Status.ERROR) {
+                    modelState.AddModelError("CategoryId", "Invalid category selection");
                 } else {
                     transaction.CategoryName = categoryName;
                 }
 
-                if (!merchSuccess) {
-                    modelState.AddModelError<Transaction>(x => x.MerchantId, "Invalid merchant selection");
+                if (merchSuccess == Status.ERROR) {
+                    modelState.AddModelError("MerchantId", "Invalid merchant selection");
                 } else {
                     transaction.MerchantName = merchantName;
                 }
 
-                if (!acctSuccess) {
-                    modelState.AddModelError<Transaction>(x => x.AccountId, "Invalid account selection");
+                if (acctSuccess == Status.ERROR) {
+                    modelState.AddModelError("AccountId", "Invalid account selection");
                 } else {
                     transaction.AccountName = accountName;
+                }
+
+                if (savSuccess == Status.ERROR) {
+                    modelState.AddModelError("SavingsGoalId", "Invalid savings selection");
                 }
             }
         }

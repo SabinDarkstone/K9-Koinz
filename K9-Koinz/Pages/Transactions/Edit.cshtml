@@ -85,13 +85,6 @@
                 <label asp-for="Record.Notes"></label>
                 <span asp-validation-for="Record.Notes" class="text-danger"></span>
             </div>
-            @if (Model.Record.Date.Date == Model.Record.Account.InitialBalanceDate.Date) {
-                <div class="form-group">
-                    <label asp-for="Record.DoNotSkip" class="control-label"></label>
-                    <input asp-for="Record.DoNotSkip" />
-                    <span asp-validation-for="Record.DoNotSkip" class="text-danger"></span>
-                </div>
-            }
             <div class="form-group">
                 <div class="form-check form-switch">
                     @Html.EditorFor(x => x.Record.IsSavingsSpending, new { htmlAttributes = new { @class = "form-check-input" } })

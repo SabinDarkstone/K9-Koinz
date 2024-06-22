@@ -3,8 +3,7 @@ using K9_Koinz.Models;
 using K9_Koinz.Triggers.Handlers.Transactions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace K9_Koinz.Triggers
-{
+namespace K9_Koinz.Triggers {
     public class TransactionTrigger : ITrigger<Transaction> {
 
         private readonly KoinzContext _context;
