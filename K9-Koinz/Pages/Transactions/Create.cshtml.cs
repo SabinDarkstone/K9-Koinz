@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using K9_Koinz.Models.Helpers;
 using NuGet.Protocol;
+using K9_Koinz.Triggers;
 
 namespace K9_Koinz.Pages.Transactions {
     public class CreateModel : AbstractCreateModel<Transaction> {
@@ -19,22 +19,10 @@ namespace K9_Koinz.Pages.Transactions {
             IDropdownPopulatorService dropdownService, IDupeCheckerService<Transaction> dupeChecker)
                 : base(context, logger, dropdownService) {
             _dupeChecker = dupeChecker;
+            trigger = new TransactionTrigger(context);
         }
 
         protected override async Task BeforeSaveActionsAsync() {
-            Record.Date = Record.Date.AtMidnight().Add(new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
-
-            var category = await _context.Categories.FindAsync(Record.CategoryId);
-            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
-            Record.CategoryName = category.Name;
-            Record.MerchantName = merchant.Name;
-            Record.AccountName = account.Name;
-
-            if (Record.TagId == Guid.Empty) {
-                Record.TagId = null;
-            }
-
             var matches = await _dupeChecker.FindPotentialDuplicates(Record);
             foundMatchingTransaction = matches.Count > 0;
         }
