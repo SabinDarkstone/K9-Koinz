@@ -32,15 +32,18 @@ namespace K9_Koinz.Triggers {
         }
 
         public void OnAfterUpdate(List<Transaction> oldList, List<Transaction> newList) {
-
+            TransactionGoalUpdate.UpdateGoalForUpdate(_context, modelState, oldList, newList);
+            TransactionTransferPair.UpdateOtherTransaction(_context, modelState, newList);
+            TransactionSplitLines.UpdateSplitChildren(_context, modelState, oldList, newList);
         }
 
         public void OnBeforeDelete(List<Transaction> oldList) {
-
+            TransactionSplitLines.DeleteSplitChildren(_context, modelState, oldList);
         }
 
         public void OnAfterDelete(List<Transaction> oldList) {
-
+            TransactionGoalUpdate.UpdateGoalForDelete(_context, modelState, oldList);
+            TransactionTransferPair.DeleteOtherTransaction(_context, modelState, oldList);
         }
     }
 }

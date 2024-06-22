@@ -24,38 +24,6 @@ namespace K9_Koinz.Pages.Transactions {
                 .FirstOrDefaultAsync(trans => trans.Id == id);
         }
 
-        protected override void BeforeDeleteActions() {
-            var splitTransactions = _context.Transactions
-                .Where(trans => trans.ParentTransactionId == Record.Id);
-
-            if (splitTransactions.Any()) {
-                _context.Transactions.RemoveRange(splitTransactions);
-            }
-        }
-
-        protected override void AdditioanlDatabaseActions() {
-            if (Record.SavingsGoalId.HasValue) {
-                var goal = _context.SavingsGoals.Find(Record.SavingsGoalId);
-                goal.SavedAmount -= Record.Amount;
-            }
-
-            if (Record.TransferId.HasValue) {
-                var otherTransaction = _context.Transactions
-                    .Where(trans => trans.TransferId == Record.TransferId)
-                    .Where(trans => trans.Id != Record.Id)
-                    .SingleOrDefault();
-
-                if (otherTransaction != null) {
-                    _context.Transactions.Remove(otherTransaction);
-                }
-
-                var tranfer = _context.Transfers.Find(Record.TransferId);
-                if (!tranfer.RepeatConfigId.HasValue) {
-                    _context.Transfers.Remove(tranfer);
-                }
-            }
-        }
-
         protected override IActionResult NavigateOnSuccess() {
             var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
             return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {

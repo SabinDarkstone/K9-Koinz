@@ -48,37 +48,6 @@ namespace K9_Koinz.Pages.Transactions {
             }
         }
 
-        protected override async Task BeforeSaveActionsAsync() {
-            if (Record.TransferId.HasValue) {
-                var otherTransaction = await _context.Transactions
-                    .Where(trans => trans.TransferId == Record.TransferId)
-                    .Where(trans => trans.Id != Record.Id)
-                    .SingleOrDefaultAsync();
-
-                otherTransaction.Amount = -1 * Record.Amount;
-                otherTransaction.Date = Record.Date;
-                otherTransaction.Notes = Record.Notes;
-                otherTransaction.TagId = Record.TagId;
-
-                _context.Transactions.Update(otherTransaction);
-            }
-
-            if (Record.IsSplit) {
-                var childTransactions = _context.Transactions
-                    .Where(trans => trans.ParentTransactionId == Record.Id)
-                    .ToList();
-
-                if (childTransactions.All(splt => splt.MerchantId == childTransactions[0].MerchantId)) {
-                    childTransactions.ForEach(splt => {
-                        splt.MerchantId = Record.MerchantId;
-                        splt.MerchantName = Record.MerchantName;
-                    });
-
-                    _context.Transactions.UpdateRange(childTransactions);
-                }
-            }
-        }
-
         protected override IActionResult NavigationOnSuccess() {
             if (Record.IsSavingsSpending && !Record.SavingsGoalId.HasValue) {
                 return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = Record.Id });

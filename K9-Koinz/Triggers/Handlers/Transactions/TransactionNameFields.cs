@@ -73,14 +73,14 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 Status savSuccess = Status.NULL;
 
                 if (transaction.CategoryId != null) {
-                    catSuccess = categoryDict.TryGetValue(transaction.CategoryId.Value, out categoryName) ? Status.SUCCESS : Status.ERROR;
+                    catSuccess = categoryDict.TryGetValue2(transaction.CategoryId.Value, out categoryName);
                 }
 
-                merchSuccess = merchantDict.TryGetValue(transaction.MerchantId, out merchantName) ? Status.SUCCESS : Status.ERROR;
-                acctSuccess = accountDict.TryGetValue(transaction.AccountId, out accountName) ? Status.SUCCESS : Status.ERROR;
+                merchSuccess = merchantDict.TryGetValue2(transaction.MerchantId, out merchantName);
+                acctSuccess = accountDict.TryGetValue2(transaction.AccountId, out accountName);
 
                 if (transaction.SavingsGoalId != null) {
-                    savSuccess = savingsDict.TryGetValue(transaction.SavingsGoalId.Value, out savingsName) ? Status.SUCCESS : Status.ERROR;
+                    savSuccess = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsName);
                 }
 
                 if (catSuccess == Status.ERROR) {

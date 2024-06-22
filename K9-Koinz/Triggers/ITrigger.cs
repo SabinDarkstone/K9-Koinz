@@ -8,6 +8,12 @@ namespace K9_Koinz.Triggers {
         NULL
     }
 
+    public static class StatusExtensions {
+        public static Status TryGetValue2<TKey, TValue>(this Dictionary<TKey, TValue> entityDict, TKey key, out TValue value) {
+            return entityDict.TryGetValue(key, out value) ? Status.SUCCESS : Status.ERROR;
+        }
+    }
+
     public interface ITrigger<TEntity> where TEntity : BaseEntity {
         abstract void SetState(ModelStateDictionary modelState);
         abstract void OnBeforeInsert(List<TEntity> newList);

@@ -51,10 +51,12 @@ namespace K9_Koinz.Pages.Meta {
         }
 
         public async Task<IActionResult> OnPostAsync() {
+            T oldRecord = _context.Set<T>().AsNoTracking().FirstOrDefault(x => x.Id == Record.Id);
+
             _logger.LogInformation("EDIT " + Record.GetType().Name + ": " + Record.ToJson());
             if (trigger != null) {
                 trigger.SetState(ModelState);
-                trigger.OnBeforeUpdate(null, new List<T> { Record });
+                trigger.OnBeforeUpdate(new List<T> { oldRecord }, new List<T> { Record });
             }
 
             await BeforeSaveActionsAsync();
@@ -64,7 +66,7 @@ namespace K9_Koinz.Pages.Meta {
                 foreach (var key in ModelState.Keys) {
                     if (ModelState[key].Errors.Count > 0) {
                         foreach (var error in ModelState[key].Errors) {
-                            _logger.LogInformation(key + ": " + error.ErrorMessage + " | " + Record.GetType().GetProperty(key).GetValue(Record));
+                            _logger.LogError(key + ": " + error.ErrorMessage + " | " + Record.GetType().GetProperty(key).GetValue(Record));
                         }
                     }
                 }
@@ -78,7 +80,7 @@ namespace K9_Koinz.Pages.Meta {
                 await _context.SaveChangesAsync();
 
                 if (trigger != null) {
-                    trigger.OnAfterUpdate(null, new List<T> { Record });
+                    trigger.OnAfterUpdate(new List<T> { oldRecord }, new List<T> { Record });
                 }
 
                 await AfterSaveActionsAsync();
