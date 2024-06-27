@@ -1,20 +1,19 @@
-﻿window.onload = () => {
+﻿function makeSpendingChart() {
+    const containerId = "spendingChartContainer";
+
     const red = "#C0504E";
     const green = "#9BBB58";
     const blue = "#4F81BC";
-    var chart = new CanvasJS.Chart("spendingChartContainer", {
+
+    let chart = new CanvasJS.Chart(containerId, {
         backgroundColor: "transparent",
-        animationEnabled: false,
+        animationEnabled: true,
         axisX: {
-            text: "Day"
+            text: "Day of Month"
         },
         axisY: {
             title: "Dollars",
             prefix: "$"
-        },
-        legend: {
-            cursor: "pointer",
-            itemclick: "toggleDataSeries"
         },
         toolTip: {
             shared: true
@@ -55,49 +54,6 @@
             },
         ]
     });
+
     chart.render();
-
-    function toggleDataSeries(e) {
-        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-            e.dataSeries.visible = false;
-        } else {
-            e.dataSeries.visible = true;
-        }
-        chart.render();
-    }
-
-    // var chart2 = new CanvasJS.Chart("spendingChartContainer2", {
-    //     animationEnabled: false,
-    //     title: {
-    //         text: "Monthly Spending"
-    //     },
-    //     axisX: {
-    //         text: "Day"
-    //     },
-    //     axisY: {
-    //         title: "Dollars",
-    //         prefix: "$"
-    //     },
-    //     data: [
-    //         {
-    //             type: "spline",
-    //             name: "This Month",
-    //             dataPoints: thisMonth,
-    //             markerType: "none",
-    //             lineThickness: 5,
-    //             showInLegend: true,
-    //             yValueFormatString: "$##,###"
-    //         },
-    //         {
-    //             type: "spline",
-    //             name: "Last Month",
-    //             dataPoints: lastMonth,
-    //             markerType: "none",
-    //             lineThickness: 5,
-    //             showInLegend: true,
-    //             yValueFormatString: "$##,###"
-    //         }
-    //     ]
-    // });
-    // chart2.render();
-};
+}
