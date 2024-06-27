@@ -64,6 +64,9 @@
         var lastMonth = @Html.Raw(Model.LastMonthSpendingJson);
         var threeMonthAverage = @Html.Raw(Model.ThreeMonthAverageSpendingJson);
 
+        var cashflowIncome = @Html.Raw(Model.CashflowIncome);
+        var cashflowExpenses = @Html.Raw(Model.CashflowExpenses);
+
         $(document).ready(() => {
             makeCashflowChart();
             makeSpendingChart();
