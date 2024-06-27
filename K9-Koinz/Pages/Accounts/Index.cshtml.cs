@@ -5,7 +5,6 @@ using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 
 namespace K9_Koinz.Pages.Accounts {
@@ -21,13 +20,13 @@ namespace K9_Koinz.Pages.Accounts {
 
         public Dictionary<string, List<Account>> AccountDict { get;set; } = default!;
 
-        public async Task OnPostAsync(bool? showAllAccounts) {
-            ShowAllAccounts = showAllAccounts ?? false;
+        public async Task OnGetAsync(string viewAll) {
+            if (viewAll == "yes") {
+                ShowAllAccounts = true;
+            } else {
+                ShowAllAccounts = false;
+            }
 
-            await OnGetAsync();
-        }
-
-        public async Task OnGetAsync() {
             var accountsIQ = _context.Accounts.AsNoTracking();
 
             if (!ShowAllAccounts) {

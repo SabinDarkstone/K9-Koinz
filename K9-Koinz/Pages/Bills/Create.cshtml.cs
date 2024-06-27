@@ -18,6 +18,7 @@ namespace K9_Koinz.Pages.Bills {
             Record.MerchantName = merchant.Name;
             Record.CategoryName = category.Name;
             Record.IsActive = true;
+            Record.RepeatConfig.DoRepeat = Record.IsRepeatBill;
 
             if (Record.RepeatConfig.Mode == RepeatMode.SPECIFIC_DAY) {
                 Record.RepeatConfig.IntervalGap = null;

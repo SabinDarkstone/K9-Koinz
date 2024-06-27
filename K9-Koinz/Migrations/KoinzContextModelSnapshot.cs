@@ -15,12 +15,15 @@ namespace K9_Koinz.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
             modelBuilder.Entity("K9_Koinz.Models.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -37,6 +40,9 @@ namespace K9_Koinz.Migrations
 
                     b.Property<bool>("IsRetired")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<double?>("MinimumBalance")
                         .HasColumnType("decimal(10, 2)");
@@ -74,6 +80,9 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("CategoryName")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
@@ -86,7 +95,13 @@ namespace K9_Koinz.Migrations
                     b.Property<bool>("IsAutopay")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsRepeatBill")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("LastDueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("MerchantId")
@@ -135,11 +150,17 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("BudgetTagName")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("DoNotUseCategories")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -178,11 +199,17 @@ namespace K9_Koinz.Migrations
                     b.Property<double>("BudgetedAmount")
                         .HasColumnType("decimal(10, 2)");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("DoRollover")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("GreenBarAlways")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("ShowWeeklyLines")
                         .HasColumnType("INTEGER");
@@ -205,7 +232,13 @@ namespace K9_Koinz.Migrations
                     b.Property<Guid>("BudgetLineId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("SpentAmount")
@@ -233,7 +266,16 @@ namespace K9_Koinz.Migrations
                     b.Property<int>("CategoryType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FontAwesomeIcon")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRetired")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -261,6 +303,15 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRetired")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -278,6 +329,12 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("DoRepeat")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("FirstFiring")
                         .HasColumnType("TEXT");
 
@@ -286,6 +343,9 @@ namespace K9_Koinz.Migrations
 
                     b.Property<int?>("IntervalGap")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Mode")
                         .HasColumnType("INTEGER");
@@ -316,11 +376,17 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("AccountName")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -359,6 +425,9 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("TEXT");
 
@@ -366,6 +435,9 @@ namespace K9_Koinz.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("JobName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("NextRunTime")
@@ -391,8 +463,17 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("HexColor")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRetired")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -436,6 +517,9 @@ namespace K9_Koinz.Migrations
                     b.Property<string>("CategoryName")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -447,6 +531,9 @@ namespace K9_Koinz.Migrations
 
                     b.Property<bool>("IsSplit")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("MerchantId")
                         .HasColumnType("TEXT");
@@ -505,6 +592,9 @@ namespace K9_Koinz.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -513,6 +603,12 @@ namespace K9_Koinz.Migrations
 
                     b.Property<bool>("IsSplit")
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsTransferFromBudget")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("MerchantId")
                         .HasColumnType("TEXT");

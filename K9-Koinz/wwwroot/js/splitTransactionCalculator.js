@@ -83,7 +83,7 @@ $("input").change(function () {
 
 $(".btnAddRow").click(function() {
     const rowIndex = $(this).data("index");
-    if (rowIndex + 1 > 6) {
+    if (rowIndex > maxRows) {
         return;
     }
 

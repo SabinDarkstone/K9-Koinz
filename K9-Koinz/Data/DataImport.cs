@@ -2,6 +2,7 @@
 using K9_Koinz.Pages;
 using K9_Koinz.Utils;
 using NuGet.Packaging;
+using NuGet.Protocol;
 
 namespace K9_Koinz.Data {
     public class DataImport {
@@ -12,33 +13,30 @@ namespace K9_Koinz.Data {
         private Dictionary<string, Guid> MerchantMap = new();
         private Dictionary<string, Guid> CategoryMap = new();
 
+	private HashSet<Account> accounts = new();
+	private HashSet<Merchant> merchants = new();
+
         public DataImport(KoinzContext context, ILogger<DataImportWizardModel> logger) {
             _context = context;
             _logger = logger;
         }
 
         public void ParseFileData(List<string> rowsOfCsv) {
-            var accounts = new HashSet<Account>();
-            var merchants = new HashSet<Merchant>();
             var transactions = new List<Transaction>();
 
             CreateCategoryMap();
+            CreateMerchantMap();
+            CreateAccountMap();
 
             foreach (var line in rowsOfCsv.Skip(1)) {
                 var splitRow = line.Split(',');
                 var account = ParseAccount(splitRow);
                 var merchant = ParseMerchant(splitRow);
+
                 var transaction = ParseTransaction(splitRow, account, merchant);
 
-                if (!accounts.Any(acct => acct.Id == account.Id)) {
-                    accounts.Add(account);
-                }
-
-				if (!merchants.Any(merch => merch.Id == merchant.Id)) {
-					merchants.Add(merchant);
-				}
-
-				transactions.Add(transaction);
+		transactions.Add(transaction);
+                _logger.LogWarning(transaction.ToJson());
             }
 
             _context.Accounts.AddRange(accounts);
@@ -81,6 +79,18 @@ namespace K9_Koinz.Data {
             );
         }
 
+        private void CreateMerchantMap() {
+            MerchantMap.AddRange(
+                _context.Merchants.Select(merch => new KeyValuePair<string, Guid>(merch.Name, merch.Id))
+            );
+        }
+
+        private void CreateAccountMap() {
+            AccountMap.AddRange(
+                _context.Accounts.Select(acct => new KeyValuePair<string, Guid>(acct.Name, acct.Id))
+            );
+        }
+
         private Account ParseAccount(string[] row) {
             var parsedAccount = new Account { Name = row[5] };
             if (AccountMap.ContainsKey(parsedAccount.Name)) {
@@ -112,6 +122,7 @@ namespace K9_Koinz.Data {
                 parsedAccount.InitialBalanceDate = DateTime.Now;
 
                 AccountMap.Add(parsedAccount.Name, parsedAccount.Id);
+		accounts.Add(parsedAccount);
             }
 
             return parsedAccount;
@@ -123,6 +134,7 @@ namespace K9_Koinz.Data {
                 parsedMerchant.Id = MerchantMap[parsedMerchant.Name];
             } else {
                 parsedMerchant.Id = Guid.NewGuid();
+		merchants.Add(parsedMerchant);
                 MerchantMap.Add(parsedMerchant.Name, parsedMerchant.Id);
             }
 
@@ -131,17 +143,22 @@ namespace K9_Koinz.Data {
 
         private Transaction ParseTransaction(string[] row, Account account, Merchant merchant) {
             var dateSplit = row[0].Split('/').Select(x => int.Parse(x)).ToList();
+
             var parsedTransaction = new Transaction {
                 Id = Guid.NewGuid(),
                 AccountId = account.Id,
+                AccountName = account.Name,
                 MerchantId = merchant.Id,
+                MerchantName = merchant.Name,
                 Amount = double.Parse(row[2]),
                 Date = new DateTime(month: dateSplit[0], day: dateSplit[1], year: dateSplit[2]),
-                CategoryId = CategoryMap[row[4]]
+                CategoryId = CategoryMap[row[4]],
+                CategoryName = row[4],
+                CreatedDate = DateTime.Now,
+                LastModifiedDate = DateTime.Now,
+                Notes = "Loaded from data import wizard"
             };
-
-            _logger.LogDebug(parsedTransaction.Date.ToString());
-
+		
             var transactionType = row[3];
             if (transactionType == "debit") {
                 parsedTransaction.Amount *= -1;

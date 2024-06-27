@@ -14,6 +14,8 @@ namespace K9_Koinz.Models {
         [Required]
         [DisplayName("Badge Color")]
         public string HexColor { get; set; }
+        [DisplayName("Retire Tag")]
+        public bool IsRetired { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
     }

@@ -40,6 +40,12 @@
                 <label asp-for="Record.CategoryType"></label>
                 <span asp-validation-for="Record.CategoryType" class="text-danger"></span>
             </div>
+            <div class="input-group mb-3">
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Record.IsRetired, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Record.IsRetired"></label>
+                </div>
+            </div>
             @if (Model.Record.IsChildCategory) {
                 <div class="form-group form-floating">
                     <input id="txtCategory" class="form-control" value="@Model.Record.ParentCategory.Name" placeholder="Parent Category"/>

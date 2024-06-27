@@ -76,7 +76,7 @@ namespace K9_Koinz.ViewComponents {
 
         public bool HadExtraMoneyLastPeriod {
             get {
-                return line.RolloverStatus == RolloverStatus.POSITIVE;
+                return line.RolloverStatus == RolloverStatus.POSITIVE || line.RolloverStatus == RolloverStatus.ZERO;
             }
         }
 
@@ -140,20 +140,14 @@ namespace K9_Koinz.ViewComponents {
 
         public string WeeklyAmount {
             get {
-                if (!line.ShowWeeklyLines) {
-                    return string.Empty;
-                }
+                if (line.ShowWeeklyLines) {
+                    var monthlyAmount = line.BudgetedAmount;
 
-                if (line.RolloverAmount == null) {
-                    return string.Empty;
-                }
-
-                var monthlyAmount = line.BudgetedAmount;
-                if (WentOverBudgetLastPeriod) {
-                    monthlyAmount -= Math.Abs(line.RolloverAmount.Value);
-                } else {
-                    monthlyAmount += Math.Abs(line.RolloverAmount.Value);
-                }
+                    if (WentOverBudgetLastPeriod) {
+                        monthlyAmount -= Math.Abs(line.RolloverAmount.Value);
+                    } else if (HadExtraMoneyLastPeriod) {
+                        monthlyAmount += Math.Abs(line.RolloverAmount.Value);
+                    }
 
                 var weeklyAmount = (monthlyAmount * 12) / 52;
                 return weeklyAmount.FormatCurrency(0) + " Per Week";

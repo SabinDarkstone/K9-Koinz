@@ -15,7 +15,7 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group form-floating">
-                <input asp-for="Record.Name" class="form-control" placeholder="Name"/>
+                <input asp-for="Record.Name" class="form-control" placeholder="Name" />
                 <label asp-for="Record.Name"></label>
                 <span asp-validation-for="Record.Name" class="text-danger"></span>
             </div>
@@ -26,49 +26,57 @@
                 <label asp-for="Record.AccountId"></label>
             </div>
             <div class="form-group form-floating">
-                <input id="txtMerchant" class="form-control" placeholder="Merchant"/>
+                <input id="txtMerchant" class="form-control" placeholder="Merchant" />
                 <label asp-for="Record.MerchantId"></label>
                 <input asp-for="Record.MerchantId" type="hidden" id="hfMerchant" />
                 <span asp-validation-for="Record.MerchantId" class="text-danger"></span>
             </div>
             <div class="form-group form-floating">
-                <input id="txtCategory" class="form-control" placeholder="Category"/>
+                <input id="txtCategory" class="form-control" placeholder="Category" />
                 <label asp-for="Record.CategoryId"></label>
                 <input asp-for="Record.CategoryId" type="hidden" id="hfCategory" />
                 <span asp-validation-for="Record.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group form-floating">
-                <input asp-for="Record.Amount" class="form-control" value="" placeholder="Amount"/>
+                <input asp-for="Record.Amount" class="form-control" value="" placeholder="Amount" />
                 <label asp-for="Record.Amount"></label>
                 <span asp-validation-for="Record.Amount" class="text-danger"></span>
             </div>
             <div class="form-group form-floating">
-                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" placeholder="Start DatRe"/>
+                <input asp-for="Record.RepeatConfig.FirstFiring" class="form-control" placeholder="Start DatRe" />
                 <label asp-for="Record.RepeatConfig.FirstFiring"></label>
                 <span asp-validation-for="Record.RepeatConfig.FirstFiring" class="text-danger"></span>
             </div>
-            <div class="form-group form-floating">
-                <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" placeholder="End Date"/>
-                <label asp-for="Record.RepeatConfig.TerminationDate"></label>
-                <span asp-validation-for="Record.RepeatConfig.TerminationDate" class="text-danger"></span>
+            <div class="input-group mb-3">
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Record.IsRepeatBill, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Record.IsRepeatBill"></label>
+                </div>
             </div>
-            <div class="form-group form-floating">
-                <select asp-for="Record.RepeatConfig.Mode" id="modeSelector" class="form-control" asp-items="Html.GetEnumSelectList<RepeatMode>()">
-                    <option value="" selected disabled>Select a Mode...</option>
-                </select>
-                <label asp-for="Record.RepeatConfig.Mode"></label>
-                <span asp-validation-for="Record.RepeatConfig.Mode"></span>
-            </div>
-            <div class="form-group form-floating">
-                <select asp-for="Record.RepeatConfig.Frequency" class="form-control" asp-items="Html.GetEnumSelectList<RepeatFrequency>()">
-                    <option value="" selected disabled>Select a Frequency...</option>
-                </select>
-                <label asp-for="Record.RepeatConfig.Frequency"></label>
-                <span asp-validation-for="Record.RepeatConfig.Frequency" class="text-danger"></span>
-            </div>
-            <div class="form-group form-floating" id="grpIntervalGap">
-                <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" value="" placeholder="Repeat Gap"/>
-                <label asp-for="Record.RepeatConfig.IntervalGap"></label>
+            <div id="repeatSection">
+                <div class="form-group form-floating">
+                    <input asp-for="Record.RepeatConfig.TerminationDate" class="form-control" placeholder="End Date" />
+                    <label asp-for="Record.RepeatConfig.TerminationDate"></label>
+                    <span asp-validation-for="Record.RepeatConfig.TerminationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group form-floating">
+                    <select asp-for="Record.RepeatConfig.Mode" id="modeSelector" class="form-control" asp-items="Html.GetEnumSelectList<RepeatMode>()">
+                        <option value="" selected disabled>Select a Mode...</option>
+                    </select>
+                    <label asp-for="Record.RepeatConfig.Mode"></label>
+                    <span asp-validation-for="Record.RepeatConfig.Mode"></span>
+                </div>
+                <div class="form-group form-floating">
+                    <select asp-for="Record.RepeatConfig.Frequency" class="form-control" asp-items="Html.GetEnumSelectList<RepeatFrequency>()">
+                        <option value="" selected disabled>Select a Frequency...</option>
+                    </select>
+                    <label asp-for="Record.RepeatConfig.Frequency"></label>
+                    <span asp-validation-for="Record.RepeatConfig.Frequency" class="text-danger"></span>
+                </div>
+                <div class="form-group form-floating" id="grpIntervalGap">
+                    <input asp-for="Record.RepeatConfig.IntervalGap" class="form-control" value="" placeholder="Repeat Gap" />
+                    <label asp-for="Record.RepeatConfig.IntervalGap"></label>
+                </div>
             </div>
             <div class="form-group">
                 <div class="form-check form-switch">
@@ -88,6 +96,17 @@
 
 @section Scripts {
     <script src="~/js/repeatConfigModeToggler.js"></script>
+    <script>
+        $("#repeatSection").hide();
+
+        $("#Record_IsRepeatBill").on("change", function () {
+            if ($(this).is(":checked")) {
+                $("#repeatSection").show();
+            } else {
+                $("#repeatSection").hide();
+            }
+        })
+    </script>
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

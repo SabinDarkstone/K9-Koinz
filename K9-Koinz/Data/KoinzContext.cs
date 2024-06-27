@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Data {
     public class KoinzContext : DbContext {
@@ -102,6 +103,45 @@ namespace K9_Koinz.Data {
                 .WithMany(x => x.InstantiatedFromRecurring)
                 .HasForeignKey(x => x.RecurringTransferId)
                 .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        public override int SaveChanges() {
+            SetDateFields();
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess) {
+            SetDateFields();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default) {
+            SetDateFields();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) {
+            SetDateFields();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void SetDateFields() {
+            var now = DateTime.Now;
+
+            foreach (var changedEntity in ChangeTracker.Entries()) {
+                if (changedEntity.Entity is BaseEntity entity) {
+                    switch (changedEntity.State) {
+                        case EntityState.Added:
+                            entity.CreatedDate = now;
+                            entity.LastModifiedDate = now;
+                            break;
+                        case EntityState.Modified:
+                            Entry(entity).Property(x => x.CreatedDate).IsModified = false;
+                            entity.LastModifiedDate = now;
+                            break;
+                    }
+                }
+            }
         }
     }
 }

@@ -41,6 +41,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             if (Record.SavingsGoalId == Guid.Empty) {
                 Record.SavingsGoalId = null;
             }
+
+            Record.RepeatConfig.DoRepeat = true;
         }
 
         protected override IActionResult NavigationOnSuccess() {

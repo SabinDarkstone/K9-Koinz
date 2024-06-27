@@ -4,7 +4,24 @@
 <div class="row justify-content-center">
     <div class="m-2 col-md-7 col-lg-5 col-xl-4 col-10">
         <div class="@Model.AlertClasses">
-            <h4 class="alert-heading">At a Glance</h4>
+            <div class="row justify-content-between">
+                <div class="col">
+                    <h4 class="alert-heading">At a Glance</h4>
+                </div>
+                <div class="col">
+                    <div class="form-check form-switch">
+                        <form method="get" name="form1">
+                            <input type="hidden" asp-for="BudgetPeriod" value="@Model.RefDateValue" />
+                            @Html.EditorFor(x => x.UseCurrentExpenses, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
+                            @if (Model.UseCurrentExpenses) {
+                                <text>Current</text>
+                            } else {
+                                <text>Budgeted</text>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="p-2">
                 <div class="row justify-content-between">
                     <div class="col-7">
@@ -26,15 +43,35 @@
                     </div>
                 }
 
+                @if (Model.TotalRollover > 0d) {
+                    <div class="row justify-content-between">
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.TotalRollover)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.TotalRollover.FormatCurrency(0)
+                        </div>
+                    </div>
+                }
+
                 <hr class="mt-1 mb-1" />
 
                 <div class="row">
-                    <div class="col-7">
-                        @Html.DisplayNameFor(model => Model.AllocatedExpenseTotal)
-                    </div>
-                    <div class="col-5" style="text-align:right">
-                        @Model.AllocatedExpenseTotal.FormatCurrency(0)
-                    </div>
+                    @if (Model.UseCurrentExpenses) {
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.CurrentExpensesTotal)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.CurrentExpensesTotal.FormatCurrency(0)
+                        </div>
+                    } else {
+                        <div class="col-7">
+                            @Html.DisplayNameFor(model => Model.AllocatedExpenseTotal)
+                        </div>
+                        <div class="col-5" style="text-align:right">
+                            @Model.AllocatedExpenseTotal.FormatCurrency(0)
+                        </div>
+                    }
                 </div>
 
                 @if (Math.Abs(Model.ExtraExpenseTotal) > 0) {

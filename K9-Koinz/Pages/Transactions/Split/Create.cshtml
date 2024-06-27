@@ -77,13 +77,15 @@
 
         <tbody>
             @for (var i = 0; i < Model.SplitTransactions.Count(); i++) {
-                <input type="hidden" asp-for="SplitTransactions[i].Id" />
-                <input type="hidden" asp-for="SplitTransactions[i].AccountId" />
-                <input type="hidden" asp-for="SplitTransactions[i].TagId" />
-                <input type="hidden" asp-for="SplitTransactions[i].Date" />
-                <input type="hidden" asp-for="SplitTransactions[i].ParentTransactionId" />
-                <input type="hidden" asp-for="SplitTransactions[i].MerchantId"/>
                 <tr data-index="@i">
+                    <input type="hidden" asp-for="SplitTransactions[i].Id" />
+                    <input type="hidden" asp-for="SplitTransactions[i].AccountId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].TagId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].Date" />
+                    <input type="hidden" asp-for="SplitTransactions[i].ParentTransactionId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].MerchantId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].BillId" />
+                    <input type="hidden" asp-for="SplitTransactions[i].IsSavingsSpending" />
                     <td>
                         @if (Model.ParentTransaction.Category.CategoryType == CategoryType.TRANSFER) {
                             <select class="form-control cbxSavingsGoal" asp-for="SplitTransactions[i].SavingsGoalId" data-index="@i" id="cbxSavingsGoal-@i" asp-items="@Model.SavingsGoalsList">
@@ -137,6 +139,7 @@
     }
 
     <script>
+        var maxRows = @Model.SplitTransactions.Count;
         var parentTransaction = @Html.Raw(Model.ParentTransaction.ToJson());
     </script>
 

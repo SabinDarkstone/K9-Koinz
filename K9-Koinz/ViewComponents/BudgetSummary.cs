@@ -4,7 +4,9 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.ViewComponents {
     [ViewComponent(Name = "BudgetSummary")]
@@ -18,7 +20,7 @@ namespace K9_Koinz.ViewComponents {
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate) {
+        public async Task<IViewComponentResult> InvokeAsync(Budget budget, DateTime referenceDate, bool current) {
             var (startDate, endDate) = budget.Timespan.GetStartAndEndDate(referenceDate);
             BudgetedIncome = budget.IncomeLines
                 .Sum(line => line.BudgetedAmount);
@@ -30,9 +32,15 @@ namespace K9_Koinz.ViewComponents {
             ExtraExpenseTotal = budget.UnallocatedExpenses
                 .SelectMany(line => line.Transactions)
                 .GetTotal();
+            CurrentExpensesTotal = budget.ExpenseLines
+                .Sum(line => line.SpentAmount) * -1;
+
+            UseCurrentExpenses = current;
+            BudgetPeriod = referenceDate;
 
             SavingsGoalTransferTotal = SimulateSavingsGoals(referenceDate, budget.Timespan);
             BillsTotal = SimulateBills(referenceDate, budget.Timespan);
+            TotalRollover = CalculateRollover(budget);
 
             // Used for transaction modals
             StartDate = startDate;
@@ -62,10 +70,15 @@ namespace K9_Koinz.ViewComponents {
 
             // Get bills that have yet to be paid
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
-                var todaysBills = activeBills.Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
+                var todaysBills = activeBills
+                    .Where(bill => bill.RepeatConfig.IsActive)
+                    .Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date)
+                    .ToList();
                 foreach (var bill in todaysBills) {
                     runningTotal -= bill.Amount;
-                    bill.RepeatConfig.FireNow();
+                    if (bill.IsRepeatBill) {
+                        bill.RepeatConfig.FireNow();
+                    }
                 }
             }
 
@@ -76,24 +89,39 @@ namespace K9_Koinz.ViewComponents {
             var activeSavingsTransfers = _context.Transfers
                 .AsNoTracking()
                 .Include(fer => fer.RepeatConfig)
-                .Where(fer => fer.FromAccountId.HasValue)
-                .Where(fer => fer.RepeatConfigId != null)
+                .Where(fer => fer.FromAccountId.HasValue)  // Do not include income transfers
+                .Where(fer => fer.RepeatConfigId != null)  // Only include scheduled transfers
                 .AsEnumerable()
-                .Where(fer => fer.RepeatConfig.IsActive)
+                .Where(fer => fer.RepeatConfig.IsActive)  // Ensure the transfers are active
                 .ToList();
 
             var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
 
             // Get savings goal transfer that have already happened
-            var runningTotal = _context.Transactions
+            var savingsTransactions = _context.Transactions
+                .Include(trans => trans.Transfer)
+                    .ThenInclude(fer => fer.RecurringTransfer)
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
-                .Sum(trans => trans.Amount) * -1;
+                .ToList();
 
+            for (var i = savingsTransactions.Count - 1; i >= 0; i--) {
+                if (savingsTransactions[i].TransferId != null && savingsTransactions[i].Transfer.IsTransferFromBudget) {
+                    savingsTransactions.RemoveAt(i);
+                }
+            }
+
+            _logger.LogWarning("Existing Transactions");
+            savingsTransactions.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + x.Date.Date));
+
+            var runningTotal = savingsTransactions.Sum(trans => trans.Amount) * -1;
+
+            _logger.LogWarning("Upcoming Transactions");
             // Get savings goal transfers that are scheduled to happen
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
                 var todaysTransfers = activeSavingsTransfers.Where(fer => fer.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
+                todaysTransfers.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + x.Date.Date));
                 foreach (var transfer in todaysTransfers) {
                     runningTotal -= transfer.Amount;
                     transfer.RepeatConfig.FireNow();
@@ -101,6 +129,17 @@ namespace K9_Koinz.ViewComponents {
             }
 
             return runningTotal;
+        }
+
+        private double CalculateRollover(Budget budget) {
+            var totalRollover = 0d;
+            foreach (var line in budget.ExpenseLines) {
+                if (line.CurrentPeriod != null) {
+                    totalRollover += line.CurrentPeriod.StartingAmount;
+                }
+            }
+
+            return totalRollover;
         }
 
 
@@ -112,24 +151,48 @@ namespace K9_Koinz.ViewComponents {
         [DisplayName("Budgeted Expenses")]
         public double AllocatedExpenseTotal { get; set; }
 
+        [DisplayName("Current Expenses")]
+        public double CurrentExpensesTotal { get; set; }
+
         [DisplayName("Extra Expenses")]
         public double ExtraExpenseTotal { get; set; }
 
-        [DisplayName("Savings Goals")]
+        [DisplayName("Budgeted Savings")]
         public double SavingsGoalTransferTotal { get; set; }
         [DisplayName("Planned Bills")]
         public double BillsTotal { get; set; }
 
+        [DisplayName("Total Rollover")]
+        public double TotalRollover { get; set; }
+
         [DisplayName("Net Remaining")]
         public double NetAmount {
             get {
-                return BudgetedIncome + ExtraIncome + AllocatedExpenseTotal + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                var total = BudgetedIncome + TotalRollover + ExtraIncome + ExtraExpenseTotal + SavingsGoalTransferTotal + BillsTotal;
+                if (UseCurrentExpenses) {
+                    total += CurrentExpensesTotal;
+                } else {
+                    total += AllocatedExpenseTotal;
+                }
+                return total;
             }
         }
 
+        [DisplayName("Current")]
+        public bool UseCurrentExpenses { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public BudgetTimeSpan Timespan { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime BudgetPeriod { get; set; }
+
+        public string RefDateValue {
+            get {
+                return BudgetPeriod.FormatForUrl();
+            }
+        }
 
         public string AlertClasses {
             get {

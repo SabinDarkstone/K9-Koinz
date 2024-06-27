@@ -40,8 +40,9 @@ namespace K9_Koinz.Models {
         public RepeatConfig RepeatConfig { get; set; }
         public Guid? RecurringTransferId { get; set; }
         public Transfer RecurringTransfer { get; set; }
-
         public bool IsSplit { get; set; }
+        [DisplayName("Budget to Savings Transfer")]
+        public bool IsTransferFromBudget { get; set; }
 
         public Transaction ToTransaction {
             get {
@@ -49,9 +50,12 @@ namespace K9_Koinz.Models {
                     return null;
                 }
 
+                // Hide transactions that are split (indicated by having a parent transaction
+                // from the query results of the "To" transaction as there should only be one.
                 return Transactions
                     .Where(trans => trans.AccountId == ToAccountId)
                     .Where(trans => trans.Amount > 0)
+                    .Where(trans => trans.ParentTransactionId == null)
                     .SingleOrDefault();
             }
         }

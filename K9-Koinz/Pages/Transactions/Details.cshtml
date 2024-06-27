@@ -73,12 +73,18 @@
             </dd>
         }
         @if (Model.Record.SavingsGoalId.HasValue) {
+            var destPage = "";
+            if (Model.Record.SavingsGoal.SavingsType == SavingsType.GOAL) {
+                destPage = PagePaths.SavingsGoalDetails;
+            } else if (Model.Record.SavingsGoal.SavingsType == SavingsType.BUCKET) {
+                destPage = PagePaths.SavingsBucketDetails;
+            }  
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
             </dt>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.Record.SavingsGoalName)
-                <a asp-page="@PagePaths.SavingsGoalDetails" asp-route-id="@Model.Record.SavingsGoalId"><i class="fa-solid fa-circle-info"></i></a>
+                <a asp-page="@destPage" asp-route-id="@Model.Record.SavingsGoalId"><i class="fa-solid fa-circle-info"></i></a>
             </dd>
         }
         <dt class="col-sm-3">
@@ -100,9 +106,13 @@
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.IsSavingsSpending)
         </dt>
-        <dd class="col-sm-3">
+        <dd class="col-sm-9">
             @(Model.Record.IsSavingsSpending ? "Yes" : "No")
         </dd>
+
+        @await Component.InvokeAsync(nameof(Components.DateFields), new {
+            record = Model.Record
+        })
     </dl>
 </div>
 
@@ -126,13 +136,22 @@
         <tbody>
             @foreach (var split in Model.Record.SplitTransactions) {
                 <tr>
-                    @if (Model.Record.Category.CategoryType == CategoryType.TRANSFER) {
-                        <td>
+                    <td>
+                        @if (split.TagId.HasValue) {
+                            var style = "background-color: " + split.Tag.HexColor + "; text-decoration: none";
+                            <span class="badge badge-pill" style="@style">@split.Tag.ShortForm</span>
+                        }
+                        @if (Model.Record.Category.CategoryType == CategoryType.TRANSFER) {
                             @Html.DisplayFor(model => split.SavingsGoalName)
+                        } else {
+                            @Html.DisplayFor(model => split.MerchantName)
+                        }
+                    </td>
+
+                    @if (Model.Record.Category.CategoryType != CategoryType.TRANSFER) {
+                        <td>
+                            @Html.DisplayFor(model => split.CategoryName)
                         </td>
-                    } else {
-                        <td>@Html.DisplayFor(model => split.MerchantName)</td>
-                        <td>@Html.DisplayFor(model => split.CategoryName)</td>
                     }
 
                     <td>@split.Amount.FormatCurrency(2)</td>
@@ -154,7 +173,7 @@
                 View Recurring Transfer
             </a>
         }
-        
+
         @if (Model.Record.TransferId.HasValue) {
             <a class="btn btn-secondary mb-2" asp-page="@PagePaths.TransferDetails" asp-route-id="@Model.Record.TransferId">
                 View Transfer

@@ -49,6 +49,8 @@ namespace K9_Koinz.Pages.Transfers.Recurring {
             if (Record.TagId == Guid.Empty) {
                 Record.TagId = null;
             }
+
+            Record.RepeatConfig.DoRepeat = true;
         }
 
         protected override async Task AfterSaveActionsAsync() {

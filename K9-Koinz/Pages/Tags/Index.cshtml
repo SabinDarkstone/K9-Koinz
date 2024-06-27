@@ -13,6 +13,25 @@
     </span>
 </a>
 
+<form method="get" name="form1" id="form1">
+    <div class="mb-4">
+        <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" , id="ShowAllTags" , onclick="convertAndSubmit()" checked="@Model.ShowAllTags" />
+            <label class="form-check-label" asp-for="ShowAllTags"></label>
+        </div>
+    </div>
+    <input type="hidden" name="viewAll" id="viewAll">
+</form>
+
+<script>
+    function convertAndSubmit() {
+        var checkbox = document.getElementById('ShowAllTags');
+        var hiddenField = document.getElementById('viewAll');
+        hiddenField.value = checkbox.checked ? 'yes' : 'no';
+        document.form1.submit();
+    }
+</script>
+
 <table class="table">
     <thead>
         <tr>

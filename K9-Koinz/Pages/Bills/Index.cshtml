@@ -14,14 +14,24 @@
     </span>
 </a>
 
-<form method="post" name="form1">
+<form method="get" name="form1" id="form1">
     <div class="mb-4">
         <div class="form-check form-switch">
-            @Html.EditorFor(x => x.ShowAllBills, new { htmlAttributes = new { @class = "form-check-input", onclick = "document.form1.submit()" } })
+            <input type="checkbox" class="form-check-input" , id="ShowAllBills" , onclick="convertAndSubmit()" checked="@Model.ShowAllBills" />
             <label class="form-check-label" asp-for="ShowAllBills"></label>
         </div>
     </div>
+    <input type="hidden" name="viewAll" id="viewAll">
 </form>
+
+<script>
+    function convertAndSubmit() {
+        var checkbox = document.getElementById('ShowAllBills');
+        var hiddenField = document.getElementById('viewAll');
+        hiddenField.value = checkbox.checked ? 'yes' : 'no';
+        document.form1.submit();
+    }
+</script>
 
 @if (Model.Bills.Count == 0) {
     <div class="alert alert-primary">

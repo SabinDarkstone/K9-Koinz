@@ -1,6 +1,7 @@
 using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,16 +9,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Transactions.Split {
     public class EditModel : AbstractDbPage {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+        private readonly IDropdownPopulatorService _dropdownService;
+
+        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger, IDropdownPopulatorService dropdownService)
+            : base(context, logger) {
+            _dropdownService = dropdownService;
+        }
 
         public SelectList SavingsGoalList { get; set; }
+        public SelectList TagOptions;
 
         [BindProperty]
         public Transaction SplitTransaction { get; set; }
 
-        public IActionResult OnGet(Guid id) {
+        public async Task<IActionResult> OnGetAsync(Guid id) {
             var transaction = _context.Transactions.Find(id);
+
+            TagOptions = await _dropdownService.GetTagListAsync();
 
             if (transaction != null) {
                 SplitTransaction = transaction;
@@ -25,7 +33,7 @@ namespace K9_Koinz.Pages.Transactions.Split {
 
             var savingsGoals = _context.SavingsGoals
                 .AsNoTracking()
-                .Where(goal => goal.AccountId == SplitTransaction.AccountId)
+                .Where(goal => goal.IsActive)
                 .ToList();
 
             if (savingsGoals.Count > 0) {
@@ -41,8 +49,9 @@ namespace K9_Koinz.Pages.Transactions.Split {
 
             Guid savingsGoalId = SplitTransaction.SavingsGoalId.Value;
             string notes = SplitTransaction.Notes;
+            var tagId = SplitTransaction.TagId;
 
-            // Change only the savings goal and notes
+            // Change only the savings goal, tag, and notes
             SplitTransaction = beforeTransction;
             SplitTransaction.SavingsGoalId = savingsGoalId == Guid.Empty ? null : savingsGoalId;
             if (SplitTransaction.SavingsGoalId.HasValue) {
@@ -51,6 +60,8 @@ namespace K9_Koinz.Pages.Transactions.Split {
                 SplitTransaction.SavingsGoalName = savingsGoal.Name;
             }
             SplitTransaction.Notes = notes;
+
+            SplitTransaction.TagId = tagId == Guid.Empty ? null : tagId;
 
             _context.Transactions.Update(SplitTransaction);
             await _context.SaveChangesAsync();

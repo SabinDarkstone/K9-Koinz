@@ -130,7 +130,7 @@ namespace K9_Koinz.Services {
                 line.SpentAmount = line.Transactions.GetTotal();
             }
 
-            return unallocatedBudgetLines.Values.Where(line => line.Transactions.GetTotal() != 0).ToList();
+            return unallocatedBudgetLines.Values.Where(line => line.Transactions.GetTotal() >= 0.01 || line.Transactions.GetTotal() <= 0.01).ToList();
         }
 
         public async Task<List<Transaction>> GetTransactionsForCurrentBudgetLinePeriodAsync(BudgetLine budgetLine, DateTime refDate) {

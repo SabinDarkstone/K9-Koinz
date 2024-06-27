@@ -33,7 +33,7 @@ namespace K9_Koinz.Pages.Transactions.Split {
                 .OrderBy(splt => splt.CategoryName)
                 .ToList();
 
-            while (SplitTransactions.Count < 7) {
+            while (SplitTransactions.Count < 40) {
                 SplitTransactions.Add(new Transaction {
                     AccountId = ParentTransaction.AccountId,
                     TagId = ParentTransaction.TagId,
@@ -89,6 +89,9 @@ namespace K9_Koinz.Pages.Transactions.Split {
 
                 split.MerchantId = parent.MerchantId;
                 split.MerchantName = parent.MerchantName;
+
+                // Include the transfer ID from the parent transaction in the children
+                split.TransferId = parent.TransferId;
             }
 
             var validSplits = SplitTransactions.Where(splt => splt.Amount != 0).ToList();

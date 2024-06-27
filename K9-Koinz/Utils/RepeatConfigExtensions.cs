@@ -62,7 +62,7 @@ namespace K9_Koinz.Utils {
             if (rptCfg.IntervalGap == 1) {
                 return $"Every {intervalPeriod}";
             } else {
-                return $"Every {intervalPeriod} {rptCfg.IntervalGap}s";
+                return $"Every {rptCfg.IntervalGap} {intervalPeriod}s";
             }
         }
     }

@@ -37,22 +37,32 @@ namespace K9_Koinz.Services {
             var endOfLastMonth = DateTime.Now.AddMonths(-1).EndOfMonth();
 
             var startOfThreeMonthsAgo = DateTime.Now.AddMonths(-3).StartOfMonth();
+            var endOfMonthThreeMonthsAgo = startOfThreeMonthsAgo.EndOfMonth();
+
+            string lastMonthSpendingJson = "[]";
+            string thisMonthSpendingJson = "[]";
+            string threeMonthAverageSpendingJson = "[]";
 
             var thisMonthTransactions = await getTransactionsForGraph(startOfThisMonth, endOfThisMonth);
+            if (thisMonthTransactions.Count > 0) {
+                thisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
+                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+                });
+            }
+
             var lastMonthTransactions = await getTransactionsForGraph(startOfLastMonth, endOfLastMonth);
-            var lastThreeMonthTransactions = await getTransactionsForGraph(startOfThreeMonthsAgo, endOfLastMonth, true); 
+            if (lastMonthTransactions.Count > 0) {
+                lastMonthSpendingJson = JsonConvert.SerializeObject(lastMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
+                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+                });
+            }
 
-            var thisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
-                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-            });
-
-            var lastMonthSpendingJson = JsonConvert.SerializeObject(lastMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
-                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-            });
-
-            var threeMonthAverageSpendingJson = JsonConvert.SerializeObject(lastThreeMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
-                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-            });
+            if (_context.Transactions.Any(trans => trans.Date >= startOfThreeMonthsAgo && trans.Date <= endOfMonthThreeMonthsAgo)) {
+                var lastThreeMonthTransactions = await getTransactionsForGraph(startOfThreeMonthsAgo, endOfLastMonth, true);
+                threeMonthAverageSpendingJson = JsonConvert.SerializeObject(lastThreeMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
+                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+                });
+            }
 
             return [thisMonthSpendingJson, lastMonthSpendingJson, threeMonthAverageSpendingJson];
         }

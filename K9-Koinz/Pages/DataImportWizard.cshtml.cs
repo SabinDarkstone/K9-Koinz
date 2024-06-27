@@ -2,6 +2,7 @@ using K9_Koinz.Data;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Pages {
@@ -28,10 +29,7 @@ namespace K9_Koinz.Pages {
                 importer.ParseFileData(lines);
                 Message = "Success";
             } catch (Exception ex) {
-                Message = ex.Message;
-                if (ex.InnerException != null) {
-                    Message += "\n" + ex.InnerException.Message;
-                }
+                Message = JsonConvert.SerializeObject(ex, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects });
             }
             return Page();
         }

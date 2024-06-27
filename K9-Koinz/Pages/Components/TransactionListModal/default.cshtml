@@ -30,10 +30,15 @@
                                 </td>
                                 <td>
                                     <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@transaction.Id" class="no-underline">
+                                        @if (transaction.TransferId.HasValue && transaction.Transfer.RecurringTransferId.HasValue) {
+                                            <i class="fa-solid fa-repeat text-primary"></i>
+                                        } else if (transaction.TransferId.HasValue) {
+                                            <i class="fa-solid fa-arrow-right-arrow-left text-success"></i>
+                                        }
+
                                         @if (Model.ModalId.Contains("Savings")) {
                                             if (string.IsNullOrEmpty(transaction.SavingsGoalName)) {
                                                 <text>(@transaction.MerchantName)</text>
-
                                             }
                                             @transaction.SavingsGoalName
                                         } else {
