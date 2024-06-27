@@ -47,33 +47,17 @@
     </div>
 </div>
 
-<div class="container">
-    <dibv class="row">
-        <div class="col">
-            <h4 class="alert-heading">
-                Cashflow
-            </h4>
-            <div id="cashflowChartContainer" style="height: 300px; width: 100%; background-color: transparent;"></div>
-        </div>
-    </dibv>
-</div>
-
 @section Scripts {
     <script>
         var thisMonth = @Html.Raw(Model.ThisMonthSpendingJson);
         var lastMonth = @Html.Raw(Model.LastMonthSpendingJson);
         var threeMonthAverage = @Html.Raw(Model.ThreeMonthAverageSpendingJson);
 
-        var cashflowIncome = @Html.Raw(Model.CashflowIncome);
-        var cashflowExpenses = @Html.Raw(Model.CashflowExpenses);
-
         $(document).ready(() => {
-            makeCashflowChart();
             makeSpendingChart();
         });
     </script>
 
     <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     <script src="~/js/spendingGraph.js"></script>
-    <script src="~/js/cashflowGraph.js"></script>
 }

@@ -149,8 +149,11 @@ namespace K9_Koinz.ViewComponents {
                         monthlyAmount += Math.Abs(line.RolloverAmount.Value);
                     }
 
-                var weeklyAmount = (monthlyAmount * 12) / 52;
-                return weeklyAmount.FormatCurrency(0) + " Per Week";
+                    var weeklyAmount = (monthlyAmount * 12) / 52;
+                    return weeklyAmount.FormatCurrency(0) + " Per Week";
+                }
+
+                return null;
             }
         }
 
