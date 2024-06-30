@@ -1,6 +1,7 @@
 {
   "name": "K9 Koinz",
   "short_name": "K9 Koinz",
+  "start_url": "/",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -24,7 +25,9 @@
       "url": "/Transactions/Create",
       "icons": [
         {
-          "src": "/quick-add.png"
+          "src": "/icons/quick-add.svg",
+          "type": "image/svg+xml",
+          "purpose": "any"
         }
       ]
     },
@@ -34,7 +37,9 @@
       "url": "/Budgets",
       "icons": [
         {
-          "src": "/budgets.png"
+          "src": "/icons/budget.svg",
+          "type": "image/svg+xml",
+          "purpose": "any"
         }
       ]
     }
