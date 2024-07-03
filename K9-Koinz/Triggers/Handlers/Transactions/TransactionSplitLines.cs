@@ -1,10 +1,11 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
-    public class TransactionSplitLines {
-        public static void DeleteSplitChildren(KoinzContext context, ModelStateDictionary modelState, List<Transaction> oldList) {
+    public class TransactionSplitLines : AbstractTriggerHandler<Transaction> {
+        public TransactionSplitLines(KoinzContext context, ILogger logger) : base(context, logger) { }
+
+        public void DeleteSplitChildren(List<Transaction> oldList) {
             HashSet<Guid> parentTransactionIds = oldList.Select(trans => trans.Id).ToHashSet();
 
             if (parentTransactionIds.Count == 0) {
@@ -19,7 +20,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             context.Transactions.RemoveRange(childTransactions);
         }
 
-        public static void UpdateSplitChildren(KoinzContext context, ModelStateDictionary modelState, List<Transaction> oldList, List<Transaction> newList) {
+        public void UpdateSplitChildren(List<Transaction> oldList, List<Transaction> newList) {
             Dictionary<Guid, Transaction> parentDict = new();
 
 

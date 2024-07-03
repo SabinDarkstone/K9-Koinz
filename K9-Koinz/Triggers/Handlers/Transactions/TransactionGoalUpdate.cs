@@ -3,8 +3,10 @@ using K9_Koinz.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
-    public class TransactionGoalUpdate {
-        public static void UpdateGoalForDelete(KoinzContext context, ModelStateDictionary modelState, List<Transaction> oldList) {
+    public class TransactionGoalUpdate : AbstractTriggerHandler<Transaction> {
+        public TransactionGoalUpdate(KoinzContext context, ILogger logger) : base(context, logger) { }
+
+        public void UpdateGoalForDelete(List<Transaction> oldList) {
             HashSet<Guid> savingIds = new();
             List<Transaction> transactionsWithSavings = new();
 
@@ -33,7 +35,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             context.SavingsGoals.UpdateRange(savingsDict.Values);
         }
 
-        public static void UpdateGoalForUpdate(KoinzContext context, ModelStateDictionary modelState, List<Transaction> oldList, List<Transaction> newList) {
+        public void UpdateGoalForUpdate(List<Transaction> oldList, List<Transaction> newList) {
             HashSet<Guid> savingIds = new();
             List<Transaction> transactionsWithSavings = new();
 

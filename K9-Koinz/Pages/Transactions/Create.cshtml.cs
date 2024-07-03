@@ -19,7 +19,7 @@ namespace K9_Koinz.Pages.Transactions {
             IDropdownPopulatorService dropdownService, IDupeCheckerService<Transaction> dupeChecker)
                 : base(context, logger, dropdownService) {
             _dupeChecker = dupeChecker;
-            trigger = new TransactionTrigger(context);
+            trigger = new TransactionTrigger(context, logger);
         }
 
         protected override async Task BeforeSaveActionsAsync() {

@@ -12,7 +12,7 @@ namespace K9_Koinz.Pages.Transactions {
     public class DeleteModel : AbstractDeleteModel<Transaction> {
         public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) {
-            trigger = new TransactionTrigger(context);
+            trigger = new TransactionTrigger(context, logger);
         }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {

@@ -1,10 +1,11 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
-    public class TransactionTransferPair {
-        public static void UpdateOtherTransaction(KoinzContext context, ModelStateDictionary modelState, List<Transaction> newList) {
+    public class TransactionTransferPair : AbstractTriggerHandler<Transaction> {
+        public TransactionTransferPair(KoinzContext context, ILogger logger) : base(context, logger) { }
+
+        public void UpdateOtherTransaction(List<Transaction> newList) {
             // This stores key/value pairs of transfer Id to transactions
             Dictionary<Guid, Transaction> transactionDict = new();
 
@@ -44,7 +45,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             context.Transactions.UpdateRange(transactionsToUpdate);
         }
 
-        public static void DeleteOtherTransaction(KoinzContext context, ModelStateDictionary modelState, List<Transaction> oldList) {
+        public void DeleteOtherTransaction(List<Transaction> oldList) {
             HashSet<Guid> transferIds = new();
             HashSet<Guid> transactionIds = oldList.Select(trans => trans.Id).ToHashSet();
 

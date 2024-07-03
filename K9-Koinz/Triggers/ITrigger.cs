@@ -15,7 +15,7 @@ namespace K9_Koinz.Triggers {
     }
 
     public interface ITrigger<TEntity> where TEntity : BaseEntity {
-        abstract void SetState(ModelStateDictionary modelState);
+        abstract void SetState(ModelStateDictionary state);
         abstract void OnBeforeInsert(List<TEntity> newList);
         abstract void OnAfterInsert(List<TEntity> newList);
         abstract void OnBeforeUpdate(List<TEntity> oldList, List<TEntity> newList);

@@ -1,10 +1,11 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
-    public class TransactionNameFields {
-        public static void UpdateRelatedNameFields(KoinzContext context, ModelStateDictionary modelState, List<Transaction> newTransactions) {
+    public class TransactionNameFields : AbstractTriggerHandler<Transaction> {
+        public TransactionNameFields(KoinzContext context, ILogger logger) : base(context, logger) { }
+
+        public void UpdateRelatedNameFields(List<Transaction> newTransactions) {
             if (modelState == null) {
                 throw new Exception("ModelState cannot be null for UpdateRelatedNameFields");
             }

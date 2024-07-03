@@ -18,7 +18,7 @@ namespace K9_Koinz.Pages.Transactions {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(context, logger, dropdownService) {
-            trigger = new TransactionTrigger(context);
+            trigger = new TransactionTrigger(context, logger);
         }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
