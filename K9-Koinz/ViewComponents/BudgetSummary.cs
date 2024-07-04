@@ -52,15 +52,17 @@ namespace K9_Koinz.ViewComponents {
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         private double SimulateBills(DateTime referenceDate, BudgetTimeSpan timespan) {
+            var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
+
             var activeBills = _context.Bills
                 .AsNoTracking()
                 .Include(bill => bill.RepeatConfig)
                 .Where(bill => bill.IsActive)
                 .AsEnumerable()
                 .Where(bill => bill.RepeatConfig.IsActive)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.HasValue && bill.RepeatConfig.CalculatedNextFiring.Value.Date >= startDate)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date <= endDate)
                 .ToList();
-
-            var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
 
             // Get bills that have already been paid
             var runningTotal = _context.Transactions
