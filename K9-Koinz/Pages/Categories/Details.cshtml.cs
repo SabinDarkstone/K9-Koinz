@@ -76,7 +76,7 @@ namespace K9_Koinz.Pages.Categories {
                 var currentMonth = currentDate.Month;
 
                 var amount = 0d;
-                var month = DateUtils.GetMonthName(currentMonth);
+                var month = DateUtils.GetMonthName(currentMonth).Substring(0, 3);
 
                 if (groups.ContainsKey(currentMonth + "|" + currentYear)) {
                     amount = groups[currentMonth + "|" + currentYear];

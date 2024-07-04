@@ -35,7 +35,43 @@
         })
     </dl> 
 </div>
+
+<div class="mb-4">
+    <div class="col-md-6">
+        @if (Model.ChartError) {
+            <p class="text-danger">There has been an error loading your spending chart.</p>
+        } else {
+            <div id="trendChartContainer" style="height: 300px; width: 100%; background-color: transparent;"></div>
+        }
+    </div>
+</div>
+
 <div>
     <a asp-page="@PagePaths.TagEdit" asp-route-id="@Model.Record.Id">Edit</a> |
     <a asp-page="@PagePaths.TagIndex">Back to List</a>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+    <script type="text/javascript">
+        window.onload = () => {
+            var chart = new CanvasJS.Chart("trendChartContainer", {
+                animationEnabled: true,
+                theme: "light1",
+                title: {
+                    text: "@Html.Raw(Model.Record.Name) Spending"
+                },
+                axisY: {
+                    title: "Amount"
+                },
+                data: [{
+                    color: "#007bff",
+                    type: "column",
+                    dataPoints: @Html.Raw(Model.SpendingHistory)
+                }]
+            });
+            chart.render();
+        };
+    </script>
+}
