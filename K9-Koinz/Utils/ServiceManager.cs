@@ -10,6 +10,7 @@ namespace K9_Koinz.Utils {
             services.AddScoped<IDropdownPopulatorService, DropdownPopulatorService>();
             services.AddScoped<IBudgetService, BudgetService>();
             services.AddScoped<ICashflowGraphService, CashflowGraphService>();
+            services.AddScoped<ITrendGraphService, TrendGraphService>();
 
             services.AddTransient<IDupeCheckerService<Transaction>, TransactionDupeCheckerService>();
         }

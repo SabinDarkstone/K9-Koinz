@@ -117,6 +117,7 @@
 
     <script type="text/javascript">
         window.onload = () => {
+            console.log(@Html.Raw(Model.SpendingHistory));
             var chart = new CanvasJS.Chart("trendChartContainer", {
                 animationEnabled: true,
                 theme: "light1",

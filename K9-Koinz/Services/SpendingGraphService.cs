@@ -1,26 +1,13 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services.Meta;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Runtime.Serialization;
 
 namespace K9_Koinz.Services {
-
-    [DataContract]
-    public class Point {
-        [DataMember(Name = "x")]
-        public double X { get; set; }
-        [DataMember(Name = "y")]
-        public double Y { get; set; }
-
-        public Point(double x, double y) {
-            X = x;
-            Y = y;
-        }
-    }
 
     public interface ISpendingGraphService : ICustomService {
         public abstract Task<string[]> CreateGraphData();
@@ -45,29 +32,31 @@ namespace K9_Koinz.Services {
 
             var thisMonthTransactions = await getTransactionsForGraph(startOfThisMonth, endOfThisMonth);
             if (thisMonthTransactions.Count > 0) {
-                thisMonthSpendingJson = JsonConvert.SerializeObject(thisMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now, false), Formatting.None, new JsonSerializerSettings {
-                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-                });
+                thisMonthSpendingJson = Serialize(GraphifyData(thisMonthTransactions, DateTime.Now, false));
             }
 
             var lastMonthTransactions = await getTransactionsForGraph(startOfLastMonth, endOfLastMonth);
             if (lastMonthTransactions.Count > 0) {
-                lastMonthSpendingJson = JsonConvert.SerializeObject(lastMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
-                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-                });
+                lastMonthSpendingJson = Serialize(GraphifyData(lastMonthTransactions, DateTime.Now.AddMonths(-1), true));
             }
 
             if (_context.Transactions.Any(trans => trans.Date >= startOfThreeMonthsAgo && trans.Date <= endOfMonthThreeMonthsAgo)) {
                 var lastThreeMonthTransactions = await getTransactionsForGraph(startOfThreeMonthsAgo, endOfLastMonth, true);
-                threeMonthAverageSpendingJson = JsonConvert.SerializeObject(lastThreeMonthTransactions.Accumulate().ToList().FillInGaps(DateTime.Now.AddMonths(-1), true), Formatting.None, new JsonSerializerSettings {
-                    StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-                });
+                threeMonthAverageSpendingJson = Serialize(GraphifyData(lastThreeMonthTransactions, DateTime.Now.AddMonths(-1), true));
             }
 
             return [thisMonthSpendingJson, lastMonthSpendingJson, threeMonthAverageSpendingJson];
         }
 
-        private async Task<List<Point>> getTransactionsForGraph(DateTime startDate, DateTime endDate, bool doAverage = false) {
+        private List<SeriesLine> GraphifyData(List<SeriesLine> seriesData, DateTime refDate, bool doFullMonth) {
+            return seriesData.Accumulate().ToList().FillInGaps(refDate, doFullMonth);
+        }
+
+        private string Serialize(List<SeriesLine>seriesData) {
+            return JsonConvert.SerializeObject(seriesData, Formatting.None, JsonUtils.DefaultSettings);
+        }
+
+        private async Task<List<SeriesLine>> getTransactionsForGraph(DateTime startDate, DateTime endDate, bool doAverage = false) {
             var query = _context.Transactions
                 .Include(trans => trans.Account)
                 .Where(trans => trans.Date >= startDate && trans.Date <= endDate)
@@ -80,11 +69,11 @@ namespace K9_Koinz.Services {
 
             if (doAverage) {
                 return await query
-                    .Select(group => new Point(group.Key, group.ToList().GetTotal(true) / 3))
+                    .Select(group => new SeriesLine(group.Key, group.ToList().GetTotal(true) / 3))
                     .ToListAsync();
             } else {
                 return await query
-                    .Select(group => new Point(group.Key, group.ToList().GetTotal(true)))
+                    .Select(group => new SeriesLine(group.Key, group.ToList().GetTotal(true)))
                     .ToListAsync();
             }
         }
