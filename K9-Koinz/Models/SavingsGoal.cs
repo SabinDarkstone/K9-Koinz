@@ -1,16 +1,10 @@
-﻿using K9_Koinz.Models.Meta;
+﻿using K9_Koinz.Models.Enums;
+using K9_Koinz.Models.Meta;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9_Koinz.Models {
-
-    public enum SavingsType {
-        [Display(Name = "Goal")]
-        GOAL = 1,
-        [Display(Name = "Bucket")]
-        BUCKET = 2
-    }
 
     public class SavingsGoal : BaseEntity, INameable {
         public string Name { get; set; }

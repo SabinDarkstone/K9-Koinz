@@ -1,25 +1,10 @@
-﻿using K9_Koinz.Models.Meta;
-using K9_Koinz.Utils;
+﻿using K9_Koinz.Models.Enums;
+using K9_Koinz.Models.Meta;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9_Koinz.Models {
-    public enum AccountType {
-        [Display(Name = "Credit Card")]
-        CREDIT_CARD,
-        [Display(Name = "Loan")]
-        LOAN,
-        [Display(Name = "Checking Account")]
-        CHECKING,
-        [Display(Name = "Savings Account")]
-        SAVINGS,
-        [Display(Name = "Investments")]
-        INVESTMENT,
-        [Display(Name = "Property")]
-        PROPERTY
-    }
-
     public class Account : BaseEntity, INameable {
         public static Account EmptyAccount() {
             return new Account();

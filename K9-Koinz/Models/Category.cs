@@ -1,24 +1,11 @@
-﻿using K9_Koinz.Models.Meta;
+﻿using K9_Koinz.Models.Enums;
+using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9_Koinz.Models {
-    public enum CategoryType {
-        [Display(Name = "Income")]
-        INCOME,
-        [Display(Name = "Expense")]
-        EXPENSE,
-        [Display(Name = "Transfer")]
-        TRANSFER,
-        [Display(Name = "Other")]
-        OTHER,
-        [Display(Name = "All")]
-        ALL,
-        UNASSIGNED
-    }
-
     public class Category : BaseEntity, INameable {
         public string Name { get; set; }
         [DisplayName("Parent Category")]

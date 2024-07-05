@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using K9_Koinz.Models;
+﻿using K9_Koinz.Models.Enums;
 
 namespace K9_Koinz.Utils {
     public static class DateUtils {
@@ -42,27 +41,27 @@ namespace K9_Koinz.Utils {
             return new DateTime(dt.Year + 1, 1, 1).AddDays(-1).Date;
         }
 
-        public static DateTime GetPreviousPeriod(this DateTime dt, BudgetTimeSpan timespan) {
-            if (timespan == BudgetTimeSpan.WEEKLY) {
+        public static DateTime GetPreviousPeriod(this DateTime dt, RecurrenceType timespan) {
+            if (timespan == RecurrenceType.WEEKLY) {
                 return dt.AddDays(-7);
             }
-            if (timespan == BudgetTimeSpan.MONTHLY) {
+            if (timespan == RecurrenceType.MONTHLY) {
                 return dt.AddMonths(-1);
             }
-            if (timespan == BudgetTimeSpan.YEARLY) {
+            if (timespan == RecurrenceType.YEARLY) {
                 return dt.AddYears(-1);
             }
             return dt;
         }
 
-        public static DateTime GetNextPeriod(this DateTime dt, BudgetTimeSpan timespan) {
-            if (timespan == BudgetTimeSpan.WEEKLY) {
+        public static DateTime GetNextPeriod(this DateTime dt, RecurrenceType timespan) {
+            if (timespan == RecurrenceType.WEEKLY) {
                 return dt.AddDays(7);
             }
-            if (timespan == BudgetTimeSpan.MONTHLY) {
+            if (timespan == RecurrenceType.MONTHLY) {
                 return dt.AddMonths(1);
             }
-            if (timespan == BudgetTimeSpan.YEARLY) {
+            if (timespan == RecurrenceType.YEARLY) {
                 return dt.AddYears(1);
             }
             return dt;

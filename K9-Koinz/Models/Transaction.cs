@@ -1,16 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Enums;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-    public enum TransactionType {
-        [Display(Name = "Debit")]
-        MINUS,
-        [Display(Name = "Credit")]
-        PLUS
-    }
+
     public class Transaction : BaseEntity, IAmount {
         [Required]
         [DisplayName("Account")]
@@ -113,16 +109,6 @@ namespace K9_Koinz.Models {
             get {
                 return Date.ToShortDateString();
             }
-        }
-    }
-
-    public struct TinyTransaction {
-        public Guid Id { get; init; }
-        public double Amount { get; init; }
-
-        public TinyTransaction(Transaction transaction) {
-            this.Id = transaction.Id;
-            this.Amount = transaction.Amount;
         }
     }
 }

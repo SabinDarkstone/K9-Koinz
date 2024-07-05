@@ -1,24 +1,17 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Enums;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-    public enum BudgetTimeSpan {
-        [Display(Name = "Weekly")]
-        WEEKLY,
-        [Display(Name = "Monthly")]
-        MONTHLY,
-        [Display(Name = "Yearly")]
-        YEARLY
-    }
 
     public class Budget : BaseEntity, INameable {
         public string Name { get; set; } = "New Budget";
         public string Description { get; set; }
         public int SortOrder { get; set; }
-        public BudgetTimeSpan Timespan { get; set; }
+        public RecurrenceType Timespan { get; set; }
         [DisplayName("Tag")]
         public Guid? BudgetTagId { get; set; }
         public Tag BudgetTag { get; set; }

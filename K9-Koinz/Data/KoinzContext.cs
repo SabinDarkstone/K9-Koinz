@@ -18,6 +18,7 @@ namespace K9_Koinz.Data {
         public DbSet<RepeatConfig> RepeatConfigs { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<ScheduledJobStatus> JobStatuses { get; set; }
+        public DbSet<RecurrenceRule> RecurrenceRules { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -38,6 +39,7 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<RepeatConfig>().ToTable("RepeatConfig").HasKey(x => x.Id);
             modelBuilder.Entity<Transfer>().ToTable("Transfer").HasKey(x => x.Id);
             modelBuilder.Entity<ScheduledJobStatus>().ToTable("JobStatus").HasKey(x => x.Id);
+            modelBuilder.Entity<RecurrenceRule>().ToTable("RecurrenceRule").HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
@@ -52,6 +54,18 @@ namespace K9_Koinz.Data {
                 .WithOne(x => x.Bill)
                 .HasForeignKey(x => x.BillId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Bill Recurrence
+            modelBuilder.Entity<Bill>()
+                .HasOne(x => x.RecurrenceRule)
+                .WithOne(x => x.Bill)
+                .HasForeignKey(x => x.BillId);
+
+            // Transfer Recurrence
+            modelBuilder.Entity<Transfer>()
+                .HasOne(x => x.RecurrenceRule)
+                .WithOne(x => x.Transfer)
+                .HasForeignKey(x => x.TransferId);
 
             // Savings Goals
             modelBuilder.Entity<SavingsGoal>()

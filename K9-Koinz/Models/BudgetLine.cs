@@ -1,17 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using K9_Koinz.Models.Enums;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
 
 namespace K9_Koinz.Models {
-    public enum RolloverStatus {
-        NONE,
-        POSITIVE,
-        NEGATIVE,
-        ZERO,
-        NOT_READY
-    }
-
     public class BudgetLine : BaseEntity {
         [DisplayName("Category")]
         public Guid BudgetCategoryId { get; set; }
@@ -109,11 +102,11 @@ namespace K9_Koinz.Models {
             get {
                 if (Budget == null) return 0;
 
-                if (Budget.Timespan == BudgetTimeSpan.WEEKLY) {
+                if (Budget.Timespan == RecurrenceType.WEEKLY) {
                     return DateTime.Now.GetPercentThroughWeek();
-                } else if (Budget.Timespan == BudgetTimeSpan.MONTHLY) {
+                } else if (Budget.Timespan == RecurrenceType.MONTHLY) {
                     return DateTime.Now.GetPercentThroughMonth();
-                } else if (Budget.Timespan == BudgetTimeSpan.YEARLY) {
+                } else if (Budget.Timespan == RecurrenceType.YEARLY) {
                     return DateTime.Now.GetPercentThroughYear();
                 } else {
                     return 0;
