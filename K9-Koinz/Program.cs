@@ -61,10 +61,6 @@ namespace K9_Koinz {
                 } else await next();
             });
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-
             using (var scope = app.Services.CreateScope()) {
                 var services = scope.ServiceProvider;
 
@@ -74,7 +70,7 @@ namespace K9_Koinz {
 
             app.UseStaticFiles();
 
-            app.UseExceptionHandler("/Errors/500");
+            app.UseDeveloperExceptionPage();
             app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 
             app.UseRouting();

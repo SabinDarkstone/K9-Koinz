@@ -48,10 +48,11 @@ namespace K9_Koinz.Pages.Transactions.Split {
             var beforeTransction = _context.Transactions.Find(SplitTransaction.Id);
 
             Guid savingsGoalId = SplitTransaction.SavingsGoalId.Value;
+            Guid categoryId = SplitTransaction.CategoryId.Value;
             string notes = SplitTransaction.Notes;
             var tagId = SplitTransaction.TagId;
 
-            // Change only the savings goal, tag, and notes
+            // Change only the savings goal, tag, category, and notes
             SplitTransaction = beforeTransction;
             SplitTransaction.SavingsGoalId = savingsGoalId == Guid.Empty ? null : savingsGoalId;
             if (SplitTransaction.SavingsGoalId.HasValue) {
@@ -60,8 +61,8 @@ namespace K9_Koinz.Pages.Transactions.Split {
                 SplitTransaction.SavingsGoalName = savingsGoal.Name;
             }
             SplitTransaction.Notes = notes;
-
             SplitTransaction.TagId = tagId == Guid.Empty ? null : tagId;
+            SplitTransaction.CategoryId = categoryId;
 
             _context.Transactions.Update(SplitTransaction);
             await _context.SaveChangesAsync();

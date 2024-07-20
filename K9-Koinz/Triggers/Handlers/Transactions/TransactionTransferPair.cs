@@ -12,7 +12,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             HashSet<Guid> transactionIds = newList.Select(trans => trans.Id).ToHashSet();
 
             foreach (var transaction in newList) {
-                if (transaction.TransferId != null) {
+                if (transaction.TransferId != null && !transaction.IsSplit) {
                     transactionDict.Add(transaction.TransferId.Value, transaction);
                 }
             }
