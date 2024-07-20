@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Humanizer;
 using K9_Koinz.Services;
 using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using K9_Koinz.Utils;
 using NuGet.Protocol;
 using K9_Koinz.Models.Helpers;
+using K9_Koinz.Triggers;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : AbstractEditModel<Transaction> {
@@ -17,7 +17,9 @@ namespace K9_Koinz.Pages.Transactions {
 
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
-                : base(context, logger, dropdownService) { }
+                : base(context, logger, dropdownService) {
+            trigger = new TransactionTrigger(context, logger);
+        }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
             return await _context.Transactions
@@ -43,63 +45,6 @@ namespace K9_Koinz.Pages.Transactions {
                     .Where(bill => bill.AccountId == Record.AccountId)
                     .OrderBy(bill => bill.Name)
                     .ToListAsync(), nameof(Bill.Id), nameof(Bill.Name));
-            }
-        }
-
-        protected override async Task BeforeSaveActionsAsync() {
-            var category = await _context.Categories.FindAsync(Record.CategoryId);
-            var merchant = await _context.Merchants.FindAsync(Record.MerchantId);
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
-            if (!Record.IsSplit) {
-                Record.CategoryName = category.Name;
-            } else {
-                Record.CategoryName = "Multiple";
-            }
-            Record.MerchantName = merchant.Name;
-            Record.AccountName = account.Name;
-
-            if (Record.TagId == Guid.Empty) {
-                Record.TagId = null;
-            }
-            if (Record.BillId == Guid.Empty) {
-                Record.BillId = null;
-            }
-            if (Record.SavingsGoalId.HasValue) {
-                if (Record.SavingsGoalId.Value == Guid.Empty) {
-                    Record.SavingsGoalId = null;
-                } else {
-                    var savingsGoal = await _context.SavingsGoals.FindAsync(Record.SavingsGoalId);
-                    Record.SavingsGoalName = savingsGoal.Name;
-                }
-            }
-
-            if (Record.TransferId.HasValue) {
-                var otherTransaction = await _context.Transactions
-                    .Where(trans => trans.TransferId == Record.TransferId)
-                    .Where(trans => trans.Id != Record.Id)
-                    .SingleOrDefaultAsync();
-
-                otherTransaction.Amount = -1 * Record.Amount;
-                otherTransaction.Date = Record.Date;
-                otherTransaction.Notes = Record.Notes;
-                otherTransaction.TagId = Record.TagId;
-
-                _context.Transactions.Update(otherTransaction);
-            }
-
-            if (Record.IsSplit) {
-                var childTransactions = _context.Transactions
-                    .Where(trans => trans.ParentTransactionId == Record.Id)
-                    .ToList();
-
-                if (childTransactions.All(splt => splt.MerchantId == childTransactions[0].MerchantId)) {
-                    childTransactions.ForEach(splt => {
-                        splt.MerchantId = Record.MerchantId;
-                        splt.MerchantName = Record.MerchantName;
-                    });
-
-                    _context.Transactions.UpdateRange(childTransactions);
-                }
             }
         }
 

@@ -1,12 +1,15 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
+using K9_Koinz.Triggers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IDropdownPopulatorService _dropdownService;
+
+        protected ITrigger<T> trigger;
 
         [BindProperty]
         public T Record { get; set; } = default!;
@@ -34,16 +37,25 @@ namespace K9_Koinz.Pages.Meta {
         }
 
         public virtual async Task<IActionResult> OnPostAsync() {
-            if (!ModelState.IsValid) {
-                await BeforePageLoadActions();
-                return NavigationOnFailure();
+            if (trigger != null) {
+                trigger.SetState(ModelState);
+                trigger.OnBeforeInsert(new List<T> { Record });
             }
 
             await BeforeSaveActionsAsync();
             BeforeSaveActions();
 
+            if (!ModelState.IsValid) {
+                await BeforePageLoadActions();
+                return NavigationOnFailure();
+            }
+
             _context.Set<T>().Add(Record);
             await _context.SaveChangesAsync();
+
+            if (trigger != null) {
+                trigger.OnAfterInsert(new List<T> { Record });
+            }
 
             await AfterSaveActionsAsync();
             AfterSaveActions();

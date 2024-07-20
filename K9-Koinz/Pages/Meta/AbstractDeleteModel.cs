@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Triggers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,8 @@ namespace K9_Koinz.Pages.Meta {
     public abstract class AbstractDeleteModel<T> : AbstractDbPage where T : BaseEntity {
         protected AbstractDeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }
+
+        protected ITrigger<T> trigger;
 
         [BindProperty]
         public T Record { get; set; }
@@ -46,10 +49,19 @@ namespace K9_Koinz.Pages.Meta {
 
             Record = record;
             try {
+                if (trigger != null) {
+                    trigger.SetState(ModelState);
+                    trigger.OnBeforeDelete(new List<T> { Record });
+                }
+
                 await BeforeDeleteActionsAsync();
                 BeforeDeleteActions();
 
                 _context.Set<T>().Remove(Record);
+
+                if (trigger != null) {
+                    trigger.OnAfterDelete(new List<T> { Record });
+                }
 
                 await AdditionalDatabaseActionsAsync();
                 AdditioanlDatabaseActions();
