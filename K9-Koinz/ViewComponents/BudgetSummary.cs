@@ -60,8 +60,8 @@ namespace K9_Koinz.ViewComponents {
                 .Where(bill => bill.IsActive)
                 .AsEnumerable()
                 .Where(bill => bill.RepeatConfig.IsActive)
-                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.HasValue && bill.RepeatConfig.CalculatedNextFiring.Value.Date >= startDate)
-                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date <= endDate)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.HasValue && bill.RepeatConfig.CalculatedNextFiring.Value.Date >= startDate.Date)
+                .Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date <= endDate.Date)
                 .ToList();
 
             // Get bills that have already been paid
@@ -106,6 +106,7 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.SavingsGoalId != null)
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
+                .Where(trans => !trans.IsSavingsSpending)
                 .ToList();
 
             for (var i = savingsTransactions.Count - 1; i >= 0; i--) {
@@ -123,7 +124,7 @@ namespace K9_Koinz.ViewComponents {
             // Get savings goal transfers that are scheduled to happen
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
                 var todaysTransfers = activeSavingsTransfers.Where(fer => fer.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date).ToList();
-                todaysTransfers.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + x.Date.Date));
+                todaysTransfers.ForEach(x => _logger.LogInformation(x.Amount + " " + x.Id + " " + simDate.Date));
                 foreach (var transfer in todaysTransfers) {
                     runningTotal -= transfer.Amount;
                     transfer.RepeatConfig.FireNow();

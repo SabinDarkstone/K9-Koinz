@@ -20,7 +20,7 @@ namespace K9_Koinz.Models.Meta {
         }
 
         public virtual string ToJson() {
-            return JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects });
+            return JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects, NullValueHandling = NullValueHandling.Ignore });
         }
     }
 }
