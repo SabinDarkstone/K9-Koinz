@@ -38,14 +38,7 @@ jobs:
           systemctl --user stop k9-koinz-camp.service
           dotnet publish -c Release -o /var/www/k9-koinz-camp
           systemctl --user start k9-koinz-camp.service
-
-      - name: Deploy Rian
-        run: |
-          export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl --user stop k9-koinz-rian.service
-          dotnet publish -c Release -o /var/www/k9-koinz-rian
-          systemctl --user start k9-koinz-rian.service
-
+   
       - name: Deploy Snowie
         run: |
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
@@ -59,17 +52,3 @@ jobs:
           systemctl --user stop k9-koinz-test.service
           dotnet publish -c Release -o /var/www/k9-koinz-test
           systemctl --user start k9-koinz-test.service
-
-      - name: Deploy Beason
-        run: |
-          export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl --user stop k9-koinz-beason.service
-          dotnet publish -c Release -o /var/www/k9-koinz-beason
-          systemctl --user start k9-koinz-beason.service
-          
-      - name: Deploy Ethan
-        run: |
-          export XDG_RUNTIME_DIR=/run/user/$(id -u)
-          systemctl --user stop k9-koinz-ethan.service
-          dotnet publish -c Release -o /var/www/k9-koinz-ethan
-          systemctl --user start k9-koinz-ethan.service
