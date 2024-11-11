@@ -26,6 +26,8 @@ namespace K9_Koinz.Pages.Meta {
             await AdditionalActionsAsync();
             AdditionalActions();
 
+            _logger.LogInformation("Record: " + Record.ToJson());
+
             return Page();
         }
 

@@ -26,7 +26,6 @@ namespace K9_Koinz.Models {
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }
-        [NotMapped]
         public string Notes { get; set; }
         [DisplayName("Tag")]
         public Guid? TagId { get; set; }
