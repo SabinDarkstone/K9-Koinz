@@ -107,6 +107,7 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .Where(trans => !trans.IsSavingsSpending)
+                .Where(trans => trans.Transfer.RecurringTransferId != null)
                 .ToList();
 
             for (var i = savingsTransactions.Count - 1; i >= 0; i--) {
