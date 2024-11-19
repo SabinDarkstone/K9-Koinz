@@ -42,16 +42,21 @@ namespace K9_Koinz.Pages.Transactions {
                     return RedirectToPage(PagePaths.TransactionIndex);
                 }
 
-                var transactionFilterCookie = transactionFilterString.FromJson<TransactionNavPayload>();
-                return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
-                    sortOrder = transactionFilterCookie.SortOrder,
-                    catFilter = transactionFilterCookie.CatFilter,
-                    pageIndex = transactionFilterCookie.PageIndex,
-                    accountFilter = transactionFilterCookie.AccountFilter,
-                    minDate = transactionFilterCookie.MinDate,
-                    maxDate = transactionFilterCookie.MaxDate,
-                    merchFilter = transactionFilterCookie.MerchFilter
-                });
+                var cookieString = Request.Cookies["backToTransactions"];
+                if (cookieString != null) {
+                    var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
+                    return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                        sortOrder = transactionFilterCookie.SortOrder,
+                        catFilter = transactionFilterCookie.CatFilter,
+                        pageIndex = transactionFilterCookie.PageIndex,
+                        accountFilter = transactionFilterCookie.AccountFilter,
+                        minDate = transactionFilterCookie.MinDate,
+                        maxDate = transactionFilterCookie.MaxDate,
+                        merchFilter = transactionFilterCookie.MerchFilter
+                    });
+                }
+
+                return RedirectToPage(PagePaths.TransactionIndex);
             }
         }
 

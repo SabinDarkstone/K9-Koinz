@@ -34,8 +34,7 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public IActionResult OnPost(Guid id, string mode) {
-            var transactionFilterCookie = Request.Cookies["backToTransactions"].FromJson<TransactionNavPayload>();
-
+            var cookieString = Request.Cookies["backToTransactions"];
             if (mode == "cancel") {
                 var transaction = _context.Transactions.Find(id);
 
@@ -57,6 +56,30 @@ namespace K9_Koinz.Pages.Transactions {
                 }
 
                 _context.SaveChanges();
+                if (cookieString != null) {
+                    var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
+                    return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                        sortOrder = transactionFilterCookie.SortOrder,
+                        catFilter = transactionFilterCookie.CatFilter,
+                        pageIndex = transactionFilterCookie.PageIndex,
+                        accountFilter = transactionFilterCookie.AccountFilter,
+                        minDate = transactionFilterCookie.MinDate,
+                        maxDate = transactionFilterCookie.MaxDate,
+                        merchFilter = transactionFilterCookie.MerchFilter
+                    });
+                }
+            }
+
+            var toTransaction = _context.Transactions
+                .Include(trans => trans.Category)
+                .Where(trans => trans.Id == id)
+                .SingleOrDefault();
+            if (toTransaction.Category.CategoryType == CategoryType.TRANSFER || toTransaction.Category.CategoryType == CategoryType.INCOME) {
+                return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = id });
+            }
+
+            if (cookieString != null) {
+                var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
                 return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
                     sortOrder = transactionFilterCookie.SortOrder,
                     catFilter = transactionFilterCookie.CatFilter,
@@ -68,23 +91,7 @@ namespace K9_Koinz.Pages.Transactions {
                 });
             }
 
-            var toTransaction = _context.Transactions
-                .Include(trans => trans.Category)
-                .Where(trans => trans.Id == id)
-                .SingleOrDefault();
-            if (toTransaction.Category.CategoryType == CategoryType.TRANSFER || toTransaction.Category.CategoryType == CategoryType.INCOME) {
-                return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = id });
-            }
-
-            return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
-                sortOrder = transactionFilterCookie.SortOrder,
-                catFilter = transactionFilterCookie.CatFilter,
-                pageIndex = transactionFilterCookie.PageIndex,
-                accountFilter = transactionFilterCookie.AccountFilter,
-                minDate = transactionFilterCookie.MinDate,
-                maxDate = transactionFilterCookie.MaxDate,
-                merchFilter = transactionFilterCookie.MerchFilter
-            });
+            return RedirectToPage(PagePaths.TransactionIndex);
         }
     }
 }
