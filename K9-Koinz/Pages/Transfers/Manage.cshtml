@@ -45,7 +45,7 @@
                     <td>@transfer.Merchant.Name</td>
                     <td>@transfer.Category.Name</td>
                     <td>
-                        @if (transfer.RepeatConfig.IsActive) {
+                        @if (transfer.RepeatConfig.IsActive && transfer.RepeatConfig.CalculatedNextFiring != null) {
                             @Html.DisplayFor(x => transfer.RepeatConfig.CalculatedNextFiring)
                             <span style="font-weight:lighter;">
                                 @{

@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
+using K9_Koinz.Triggers;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,8 +41,15 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 transfer.RepeatConfig.FireNow();
             }
 
-            _context.Transactions.AddRange(transactions.Where(x => x != null));
+            var transactionsToInsert = transactions.Where(x => x != null).ToList();
+            var transTrigger = new TransactionTrigger(_context, _logger);
+            transTrigger.SetState(new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary());
+            transTrigger.OnBeforeInsert(transactionsToInsert);
+
+            _context.Transactions.AddRange(transactionsToInsert);
             await _context.SaveChangesAsync();
+            transTrigger.OnAfterInsert(transactionsToInsert);
+
             return transactions;
         }
     }

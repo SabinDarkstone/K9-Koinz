@@ -25,6 +25,7 @@ namespace K9_Koinz.Pages.Transfers {
                 .ToDictionaryAsync(
                     x => x.Key ?? "Income",
                     x => x.AsEnumerable()
+                        .Where(fer => fer.RepeatConfig.CalculatedNextFiring != null)
                         .OrderBy(fer => fer.RepeatConfig.CalculatedNextFiring)
                         .ThenBy(fer => fer.ToAccount.Name)
                         .ToList()

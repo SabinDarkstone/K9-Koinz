@@ -30,7 +30,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                     transaction.BillId = null;
                 }
 
-                if (transaction.SavingsGoalId.Value == Guid.Empty) {
+                if (!transaction.SavingsGoalId.HasValue || transaction.SavingsGoalId.Value == Guid.Empty) {
                     transaction.SavingsGoalId = null;
                 } else {
                     savingIds.Add(transaction.SavingsGoalId.Value);
