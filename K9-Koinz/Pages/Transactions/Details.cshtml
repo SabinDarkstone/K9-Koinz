@@ -109,6 +109,12 @@
         <dd class="col-sm-9">
             @(Model.Record.IsSavingsSpending ? "Yes" : "No")
         </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Record.CountAgainstBudget)
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.Record.CountAgainstBudget ? "Yes" : "No")
+        </dd>
 
         @await Component.InvokeAsync(nameof(Components.DateFields), new {
             record = Model.Record

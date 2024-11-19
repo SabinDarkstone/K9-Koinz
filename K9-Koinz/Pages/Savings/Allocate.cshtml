@@ -40,6 +40,14 @@
                     }
                 </select>
             </div>
+
+            <div class="input-group mb-3">
+                <div class="form-check form-switch">
+                    @Html.EditorFor(x => x.Transaction.CountAgainstBudget, new { htmlAttributes = new { @class = "form-check-input" } })
+                    <label class="form-check-label" asp-for="Transaction.CountAgainstBudget"></label>
+                </div>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Allocate" class="btn btn-primary" />
             </div>

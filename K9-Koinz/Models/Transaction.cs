@@ -56,6 +56,10 @@ namespace K9_Koinz.Models {
 
         [DisplayName("Hide from Budgets and Trends")]
         public bool IsSavingsSpending { get; set; }
+
+        [DisplayName("Include in Budget")]
+        public bool CountAgainstBudget { get; set; }
+
         public Guid? TransferId { get; set; }
         public Transfer Transfer { get; set; }
         public bool IsSplit { get; set; }

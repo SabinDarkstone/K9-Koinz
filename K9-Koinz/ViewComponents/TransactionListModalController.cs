@@ -48,7 +48,7 @@ namespace K9_Koinz.ViewComponents {
                             .ThenInclude(fer => fer.RecurringTransfer)
                         .Where(trans => trans.SavingsGoalId.HasValue)
                         .Where(trans => trans.Amount > 0)
-                        .Where(trans => trans.Transfer.RecurringTransferId.HasValue);
+                        .Where(trans => trans.Transfer.RecurringTransferId.HasValue || trans.CountAgainstBudget);
                 } else {
                     throw new Exception("Unknown related object type: " + relatedObjectType);
                 }
