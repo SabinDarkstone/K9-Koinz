@@ -60,8 +60,8 @@ namespace K9_Koinz.Pages.Transactions.Split {
                 .Where(trans => trans.Id == SplitTransactions[0].ParentTransactionId)
                 .FirstOrDefault();
 
+            var isTransfer = parent.Category.CategoryType == CategoryType.TRANSFER;
             foreach (var split in SplitTransactions) {
-                var isTransfer = parent.Category.CategoryType == CategoryType.TRANSFER;
                 if (!isTransfer && split.CategoryId == null || split.CategoryId == Guid.Empty) {
                     continue;
                 }
@@ -81,7 +81,6 @@ namespace K9_Koinz.Pages.Transactions.Split {
                     goal = _context.SavingsGoals.Find(split.SavingsGoalId);
                     split.SavingsGoalName = goal.Name;
                 }
-
 
                 split.AccountName = account.Name;
                 split.CategoryName = category.Name;
@@ -107,6 +106,12 @@ namespace K9_Koinz.Pages.Transactions.Split {
             if (parent.TransferId.HasValue) {
                 var transfer = _context.Transfers.Find(parent.TransferId);
                 transfer.IsSplit = true;
+            }
+
+            // Unallocate parent transaction since child transactions will allocated to savings goals
+            if (isTransfer) {
+                parent.IsSavingsSpending = false;
+                parent.SavingsGoalId = null;
             }
 
             _logger.LogInformation(validSplits.ToJson(Newtonsoft.Json.Formatting.Indented));
