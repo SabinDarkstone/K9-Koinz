@@ -12,13 +12,18 @@ using K9_Koinz.Triggers;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : AbstractEditModel<Transaction> {
+        private readonly IDupeCheckerService<Transaction> _dupeChecker;
+
         public SelectList GoalOptions { get; set; } = default!;
         public SelectList BillOptions { get; set; } = default!;
 
+        private bool foundMatchingTransaction;
+
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IDropdownPopulatorService dropdownService)
+            IDropdownPopulatorService dropdownService, IDupeCheckerService<Transaction> dupeChecker)
                 : base(context, logger, dropdownService) {
             trigger = new TransactionTrigger(context, logger);
+            _dupeChecker = dupeChecker;
         }
 
         protected override async Task<Transaction> QueryRecordAsync(Guid id) {
@@ -47,27 +52,33 @@ namespace K9_Koinz.Pages.Transactions {
                     .ToListAsync(), nameof(Bill.Id), nameof(Bill.Name));
             }
         }
+        protected override async Task BeforeSaveActionsAsync() {
+            var matches = await _dupeChecker.FindPotentialDuplicates(Record);
+            foundMatchingTransaction = matches.Count > 0;
+        }
 
         protected override IActionResult NavigationOnSuccess() {
-            if (Record.IsSavingsSpending && !Record.SavingsGoalId.HasValue) {
+            if (foundMatchingTransaction) {
+                return RedirectToPage(PagePaths.TransactionDuplicateFound, new { id = Record.Id });
+            } else if (Record.IsSavingsSpending && !Record.SavingsGoalId.HasValue) {
                 return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = Record.Id });
-            }
+            } else {
+                var cookieString = Request.Cookies["backToTransactions"];
+                if (cookieString != null) {
+                    var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
+                    return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
+                        sortOrder = transactionFilterCookie.SortOrder,
+                        catFilter = transactionFilterCookie.CatFilter,
+                        pageIndex = transactionFilterCookie.PageIndex,
+                        accountFilter = transactionFilterCookie.AccountFilter,
+                        minDate = transactionFilterCookie.MinDate,
+                        maxDate = transactionFilterCookie.MaxDate,
+                        merchFilter = transactionFilterCookie.MerchFilter
+                    });
+                }
 
-            var cookieString = Request.Cookies["backToTransactions"];
-            if (cookieString != null) {
-                var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
-                return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
-                    sortOrder = transactionFilterCookie.SortOrder,
-                    catFilter = transactionFilterCookie.CatFilter,
-                    pageIndex = transactionFilterCookie.PageIndex,
-                    accountFilter = transactionFilterCookie.AccountFilter,
-                    minDate = transactionFilterCookie.MinDate,
-                    maxDate = transactionFilterCookie.MaxDate,
-                    merchFilter = transactionFilterCookie.MerchFilter
-                });
+                return RedirectToPage(PagePaths.TransactionIndex);
             }
-
-            return RedirectToPage(PagePaths.TransactionIndex);
         }
     }
 }
