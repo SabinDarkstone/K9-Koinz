@@ -11,6 +11,8 @@ namespace K9_Koinz.Models.Meta {
         [DisplayName("Last Modified Date")]
         public DateTime? LastModifiedDate { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public override int GetHashCode() {
             return Id.GetHashCode();
         }

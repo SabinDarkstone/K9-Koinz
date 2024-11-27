@@ -25,19 +25,58 @@ namespace K9_Koinz.Data {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             // Table names
-            modelBuilder.Entity<Account>().ToTable("Account").HasKey(x => x.Id);
-            modelBuilder.Entity<Category>().ToTable("Category").HasKey(x => x.Id);
-            modelBuilder.Entity<Transaction>().ToTable("BankTransaction").HasKey(x => x.Id);
-            modelBuilder.Entity<Budget>().ToTable("Budget").HasKey(x => x.Id);
-            modelBuilder.Entity<BudgetLine>().ToTable("BudgetLineItem").HasKey(x => x.Id);
-            modelBuilder.Entity<Merchant>().ToTable("Merchant").HasKey(x => x.Id);
-            modelBuilder.Entity<BudgetLinePeriod>().ToTable("BudgetPeriod").HasKey(x => x.Id);
-            modelBuilder.Entity<Tag>().ToTable("Tag").HasKey(x => x.Id);
-            modelBuilder.Entity<Bill>().ToTable("Bill").HasKey(x => x.Id);
-            modelBuilder.Entity<SavingsGoal>().ToTable("Goal").HasKey(x => x.Id);
-            modelBuilder.Entity<RepeatConfig>().ToTable("RepeatConfig").HasKey(x => x.Id);
-            modelBuilder.Entity<Transfer>().ToTable("Transfer").HasKey(x => x.Id);
-            modelBuilder.Entity<ScheduledJobStatus>().ToTable("JobStatus").HasKey(x => x.Id);
+            modelBuilder.Entity<Account>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Account")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Category>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Category")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Transaction>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("BankTransaction")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Budget>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Budget")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<BudgetLine>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("BudgetLineItem")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Merchant>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Merchant")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<BudgetLinePeriod>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("BudgetPeriod")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Tag>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Tag")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Bill>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Bill")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<SavingsGoal>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Goal")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<RepeatConfig>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("RepeatConfig")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Transfer>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Transfer")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<ScheduledJobStatus>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("JobStatus")
+                .HasKey(x => x.Id);
 
             // Subcategories
             modelBuilder.Entity<Category>()
@@ -107,21 +146,25 @@ namespace K9_Koinz.Data {
 
         public override int SaveChanges() {
             SetDateFields();
+            HandleSoftDelete();
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess) {
             SetDateFields();
+            HandleSoftDelete();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default) {
             SetDateFields();
+            HandleSoftDelete();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) {
             SetDateFields();
+            HandleSoftDelete();
             return base.SaveChangesAsync(cancellationToken);
         }
 
@@ -140,6 +183,15 @@ namespace K9_Koinz.Data {
                             entity.LastModifiedDate = now;
                             break;
                     }
+                }
+            }
+        }
+
+        private void HandleSoftDelete() {
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>()) {
+                if (entry.State == EntityState.Deleted) {
+                    entry.State = EntityState.Modified;
+                    entry.Entity.IsDeleted = true;
                 }
             }
         }
