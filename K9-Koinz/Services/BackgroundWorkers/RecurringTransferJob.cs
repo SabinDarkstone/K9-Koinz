@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace K9_Koinz.Services.BackgroundWorkers {
     public class RecurringTransferJob : AbstractWorker<RecurringTransferJob> {
         public RecurringTransferJob(IServiceScopeFactory scopeFactory)
-            : base(scopeFactory, DateTime.Now, new CronData(Cron.Hourly, 1), true) { }
+            : base(scopeFactory, DateTime.Now, new CronData(Cron.Hourly, 6), true) { }
 
         protected override async void DoWork(object state) {
             _logger.LogInformation("Checking for recurring transfers that need to be created: " + DateTime.Now.ToShortTimeString());
