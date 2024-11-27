@@ -29,6 +29,7 @@ namespace K9_Koinz.Pages.Categories {
                 .Include(cat => cat.ChildCategories)
                     .ThenInclude(cCat => cCat.Transactions)
                 .Include(cat => cat.Transactions)
+                .AsSplitQuery()
                 .OrderBy(cat => cat.CategoryType)
                     .ThenBy(cat => cat.Name);
 

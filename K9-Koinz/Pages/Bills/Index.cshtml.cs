@@ -58,6 +58,7 @@ namespace K9_Koinz.Pages.Bills {
                     .AsNoTracking()
                     .Include(bill => bill.Account)
                     .Include(bill => bill.RepeatConfig)
+                    .AsSplitQuery()
                     .ToListAsync())
                     .OrderBy(bill => bill.RepeatConfig.CalculatedNextFiring)
                     .ToList();

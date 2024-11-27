@@ -52,6 +52,7 @@ namespace K9_Koinz.Pages.Savings {
 
             SavingsDict = await savingsIQ
                 .GroupBy(goal => goal.AccountName)
+                .AsSplitQuery()
                 .ToDictionaryAsync(
                     x => x.Key,
                     x => x.AsEnumerable().OrderBy(goal => goal.Name).ToList()

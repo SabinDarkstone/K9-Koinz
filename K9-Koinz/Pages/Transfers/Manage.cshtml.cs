@@ -21,6 +21,7 @@ namespace K9_Koinz.Pages.Transfers {
                 .Include(fer => fer.SavingsGoal)
                 .Where(fer => fer.RepeatConfigId.HasValue)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .GroupBy(fer => fer.FromAccount.Name)
                 .ToDictionaryAsync(
                     x => x.Key ?? "Income",

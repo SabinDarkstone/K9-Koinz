@@ -196,7 +196,7 @@ namespace K9_Koinz.Pages.Transactions
                 SortOrder = CurrentSort
             }.ToJson());
 
-            Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsNoTracking(), pageIndex ?? 1, 50);
+            Transactions = await PaginatedList<Transaction>.CreateAsync(transactionsIQ.AsSplitQuery().AsNoTracking(), pageIndex ?? 1, 50);
         }
     }
 }

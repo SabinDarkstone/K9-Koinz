@@ -27,6 +27,7 @@ namespace K9_Koinz.Pages.Merchants {
             IQueryable<Merchant> merchantsIQ = _context.Merchants
                 .AsNoTracking()
                 .Include(merch => merch.Transactions)
+                .AsSplitQuery()
                 .OrderBy(merch => merch.Name);
 
             if (!ShowAllMerchants) {
