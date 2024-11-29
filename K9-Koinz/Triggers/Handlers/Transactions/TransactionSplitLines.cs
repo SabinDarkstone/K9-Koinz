@@ -3,7 +3,7 @@ using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
     public class TransactionSplitLines : AbstractTriggerHandler<Transaction> {
-        public TransactionSplitLines(KoinzContext context, ILogger logger) : base(context, logger) { }
+        public TransactionSplitLines(KoinzContext context) : base(context) { }
 
         public void DeleteSplitChildren(List<Transaction> oldList) {
             HashSet<Guid> parentTransactionIds = oldList.Select(trans => trans.Id).ToHashSet();
@@ -45,17 +45,13 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 Transaction parent = parentDict[parentId];
                 List<Transaction> splitLines = new();
 
-                var splitSuccess = splitTransactionDict.TryGetValue2(parent.Id, out splitLines);
-                if (splitSuccess == Status.ERROR) {
-                    modelState.AddModelError("ParentTransactionId", "Unable to find child transactions");
-                } else {
-                    if (splitLines.All(child => child.MerchantId == parent.MerchantId)) {
-                        splitLines.ForEach(child => {
-                            child.MerchantId = parent.MerchantId;
-                            child.MerchantName = parent.MerchantName;
-                        });
-                        childrenToUpdate.AddRange(splitLines);
-                    }
+                var _ = splitTransactionDict.TryGetValue2(parent.Id, out splitLines);
+                if (splitLines.All(child => child.MerchantId == parent.MerchantId)) {
+                    splitLines.ForEach(child => {
+                        child.MerchantId = parent.MerchantId;
+                        child.MerchantName = parent.MerchantName;
+                    });
+                    childrenToUpdate.AddRange(splitLines);
                 }
             }
 

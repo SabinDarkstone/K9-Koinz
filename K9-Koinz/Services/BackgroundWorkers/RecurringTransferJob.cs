@@ -42,8 +42,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
             }
 
             var transactionsToInsert = transactions.Where(x => x != null).ToList();
-            var transTrigger = new TransactionTrigger(_context, _logger);
-            transTrigger.SetState(new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary());
+            var transTrigger = new TransactionTrigger(_context);
             transTrigger.OnBeforeInsert(transactionsToInsert);
 
             _context.Transactions.AddRange(transactionsToInsert);

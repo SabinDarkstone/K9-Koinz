@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
     public class TransactionGoalUpdate : AbstractTriggerHandler<Transaction> {
-        public TransactionGoalUpdate(KoinzContext context, ILogger logger) : base(context, logger) { }
+        public TransactionGoalUpdate(KoinzContext context) : base(context) { }
 
         public void UpdateGoalForDelete(List<Transaction> oldList) {
             HashSet<Guid> savingIds = new();
@@ -20,16 +20,10 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 .ToDictionary(sav => sav.Id, sav => sav);
 
             foreach (Transaction transaction in transactionsWithSavings) {
-                var savSuccess = Status.NULL;
                 SavingsGoal savingsGoal = new();
 
-                savSuccess = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsGoal);
-
-                if (savSuccess == Status.ERROR) {
-                    modelState.AddModelError("SavingsGoalId", "Invalid savings goal selection");
-                } else {
-                    savingsGoal.SavedAmount -= transaction.Amount;
-                }
+                _ = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsGoal);
+                savingsGoal.SavedAmount -= transaction.Amount;
             }
 
             context.SavingsGoals.UpdateRange(savingsDict.Values);
@@ -51,17 +45,12 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             foreach (var transaction in transactionsWithSavings) {
                 var oldTransaction = oldList.FirstOrDefault(trans => trans.Id == transaction.Id);
 
-                var savSuccess = Status.NULL;
                 SavingsGoal savingsGoal = new();
 
-                savSuccess = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsGoal);
+                _ = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsGoal);
 
-                if (savSuccess == Status.ERROR) {
-                    modelState.AddModelError("SavingsGoalId", "Invalid savings goal selection");
-                } else {
-                    savingsGoal.SavedAmount -= oldTransaction.Amount;
-                    savingsGoal.SavedAmount += transaction.Amount;
-                }
+                savingsGoal.SavedAmount -= oldTransaction.Amount;
+                savingsGoal.SavedAmount += transaction.Amount;
             }
 
             context.SavingsGoals.UpdateRange(savingsDict.Values);

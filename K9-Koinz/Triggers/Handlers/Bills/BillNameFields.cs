@@ -3,13 +3,9 @@ using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Bills {
     public class BillNameFields : AbstractTriggerHandler<Bill> {
-        public BillNameFields(KoinzContext context, ILogger logger) : base(context, logger) { }
+        public BillNameFields(KoinzContext context) : base(context) { }
 
         public void UpdateRealtedNameFields(List<Bill> newBills) {
-            if (modelState == null) {
-                throw new Exception("ModelState cannot be null for UpdateRelatedNameFields");
-            }
-
             HashSet<Guid> categoryIds = new();
             HashSet<Guid> merchantIds = new();
             HashSet<Guid> accountsIds = new();
@@ -46,34 +42,16 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
                 var merchantName = "";
                 var accountName = "";
 
-                Status catSuccess = Status.NULL;
-                Status merchSuccess = Status.NULL;
-                Status acctSuccess = Status.NULL;
-
                 if (bill.CategoryId != null) {
-                    catSuccess = categoryDict.TryGetValue2(bill.CategoryId.Value, out categoryName);
+                    _ = categoryDict.TryGetValue2(bill.CategoryId.Value, out categoryName);
                 }
 
-                merchSuccess = merchantDict.TryGetValue2(bill.MerchantId, out merchantName);
-                acctSuccess = accountDict.TryGetValue2(bill.AccountId, out accountName);
+                _ = merchantDict.TryGetValue2(bill.MerchantId, out merchantName);
+                _ = accountDict.TryGetValue2(bill.AccountId, out accountName);
 
-                if (catSuccess == Status.ERROR) {
-                    modelState.AddModelError("CategoryId", "Invalid category selection");
-                } else {
-                    bill.CategoryName = categoryName;
-                }
-
-                if (merchSuccess == Status.ERROR) {
-                    modelState.AddModelError("MerchantId", "Invalid merchant selection");
-                } else {
-                    bill.MerchantName = merchantName;
-                }
-
-                if (acctSuccess == Status.ERROR) {
-                    modelState.AddModelError("AccountId", "Invalid account selection");
-                } else {
-                    bill.AccountName = accountName;
-                }
+                bill.CategoryName = categoryName;
+                bill.MerchantName = merchantName;
+                bill.AccountName = accountName;
 
                 bill.RepeatConfig.DoRepeat = bill.IsRepeatBill;
 

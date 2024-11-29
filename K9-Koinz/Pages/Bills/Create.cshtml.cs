@@ -9,7 +9,7 @@ namespace K9_Koinz.Pages.Bills {
         public CreateModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
                 : base(context, logger, dropdownService) {
-            trigger = new BillTrigger(context, logger);
+            trigger = new BillTrigger(context);
         }
     }
 }

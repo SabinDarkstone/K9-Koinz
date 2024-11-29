@@ -3,7 +3,7 @@ using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Bills {
     public class BillDefaultValues : AbstractTriggerHandler<Bill> {
-        public BillDefaultValues(KoinzContext context, ILogger logger) : base(context, logger) { }
+        public BillDefaultValues(KoinzContext context) : base(context) { }
 
         public void SetDefaultValues(List<Bill> newList) {
             foreach (var bill in newList) {

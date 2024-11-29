@@ -3,7 +3,7 @@ using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
     public class TransactionTransferPair : AbstractTriggerHandler<Transaction> {
-        public TransactionTransferPair(KoinzContext context, ILogger logger) : base(context, logger) { }
+        public TransactionTransferPair(KoinzContext context) : base(context) { }
 
         public void UpdateOtherTransaction(List<Transaction> newList) {
             // This stores key/value pairs of transfer Id to transactions

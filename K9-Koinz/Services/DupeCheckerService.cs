@@ -28,4 +28,13 @@ namespace K9_Koinz.Services {
             return potentialMatches;
         }
     }
+
+    public class DuplicateRecordFound<TEntity> : Exception {
+        public TEntity Entity { get; init; }
+
+        public DuplicateRecordFound(string message) : base(message) { }
+        public DuplicateRecordFound(TEntity entity, string message) : base(message) {
+            this.Entity = entity;
+        }
+    }
 }

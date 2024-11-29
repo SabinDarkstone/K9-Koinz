@@ -33,11 +33,8 @@ namespace K9_Koinz {
             services.AddRazorPages();
             services.AddControllers();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddLogging(options => {
-                options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
-                options.AddSerilog(dispose: true);
-            });
 
+            services.AddDataServices();
             services.AddMyServices();
             services.AddScheduledJobs();
         }

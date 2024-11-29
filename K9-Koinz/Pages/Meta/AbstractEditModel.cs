@@ -55,7 +55,6 @@ namespace K9_Koinz.Pages.Meta {
 
             _logger.LogInformation("EDIT " + Record.GetType().Name + ": " + Record.ToJson());
             if (trigger != null) {
-                trigger.SetState(ModelState);
                 trigger.OnBeforeUpdate(new List<T> { oldRecord }, new List<T> { Record });
             }
 

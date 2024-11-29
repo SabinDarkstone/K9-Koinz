@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 namespace K9_Koinz.Pages.Transactions {
+    // TODO: Migrate duplicate found model class to repository pattern
     public class DuplicateFoundModel : PageModel {
 
         private readonly KoinzContext _context;

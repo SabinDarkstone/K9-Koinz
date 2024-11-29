@@ -10,7 +10,7 @@ namespace K9_Koinz.Pages.Bills {
         public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
             IDropdownPopulatorService dropdownService)
             : base(context, logger, dropdownService) {
-            trigger = new BillTrigger(context, logger);
+            trigger = new BillTrigger(context);
         }
 
         protected override async Task<Bill> QueryRecordAsync(Guid id) {

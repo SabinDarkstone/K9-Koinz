@@ -1,43 +1,45 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Triggers.Handlers.Bills;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers {
     public class BillTrigger : GenericTrigger<Bill>, ITrigger<Bill> {
         
-        public BillTrigger(KoinzContext context, ILogger logger) : base(context, logger) {
+        public BillTrigger(KoinzContext context) : base(context) {
             handlers = new Dictionary<string, Handlers.AbstractTriggerHandler<Bill>> {
-                { "nameFields", new BillNameFields(context, logger) },
-                { "defaultValues", new BillDefaultValues(context, logger) }
+                { "nameFields", new BillNameFields(context) },
+                { "defaultValues", new BillDefaultValues(context) }
             };
         }
 
-        public void SetState(ModelStateDictionary state) {
-            foreach (var handler in handlers.Values) {
-                handler.SetModelState(state);
-            }
+        public TriggerStatus OnAfterDelete(List<Bill> newList) {
+            return TriggerStatus.NO_TRIGGER;
         }
 
-        public void OnAfterDelete(List<Bill> newList) {
+        public TriggerStatus OnAfterInsert(List<Bill> newList) {
+            return TriggerStatus.NO_TRIGGER;
         }
 
-        public void OnAfterInsert(List<Bill> newList) {
+        public TriggerStatus OnAfterUpdate(List<Bill> oldList, List<Bill> newList) {
+            return TriggerStatus.NO_TRIGGER;
         }
 
-        public void OnAfterUpdate(List<Bill> oldList, List<Bill> newList) {
+        public TriggerStatus OnBeforeDelete(List<Bill> oldList) {
+            return TriggerStatus.NO_TRIGGER;
         }
 
-        public void OnBeforeDelete(List<Bill> oldList) {
-        }
-
-        public void OnBeforeInsert(List<Bill> newList) {
+        public TriggerStatus OnBeforeInsert(List<Bill> newList) {
             (handlers["nameFields"] as BillNameFields).UpdateRealtedNameFields(newList);
             (handlers["defaultValues"] as BillDefaultValues).SetDefaultValues(newList);
+
+            return TriggerStatus.SUCCESS;
         }
 
-        public void OnBeforeUpdate(List<Bill> oldList, List<Bill> newList) {
+        public TriggerStatus OnBeforeUpdate(List<Bill> oldList, List<Bill> newList) {
             (handlers["nameFields"] as BillNameFields).UpdateRealtedNameFields(newList);
+
+            return TriggerStatus.SUCCESS;
         }
     }
 }

@@ -1,7 +1,15 @@
-﻿using K9_Koinz.Models.Meta;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using K9_Koinz.Models.Helpers;
+using K9_Koinz.Models.Meta;
 
 namespace K9_Koinz.Triggers {
+
+    public enum TriggerType {
+        INSERT,
+        UPDATE,
+        DELETE,
+        UNDELETE
+    }
+
     public enum Status {
         SUCCESS,
         ERROR,
@@ -15,12 +23,11 @@ namespace K9_Koinz.Triggers {
     }
 
     public interface ITrigger<TEntity> where TEntity : BaseEntity {
-        abstract void SetState(ModelStateDictionary state);
-        abstract void OnBeforeInsert(List<TEntity> newList);
-        abstract void OnAfterInsert(List<TEntity> newList);
-        abstract void OnBeforeUpdate(List<TEntity> oldList, List<TEntity> newList);
-        abstract void OnAfterUpdate(List<TEntity> oldList, List<TEntity> newList);
-        abstract void OnBeforeDelete(List<TEntity> oldList);
-        abstract void OnAfterDelete(List<TEntity> newList);
+        abstract TriggerStatus OnBeforeInsert(List<TEntity> newList);
+        abstract TriggerStatus OnAfterInsert(List<TEntity> newList);
+        abstract TriggerStatus OnBeforeUpdate(List<TEntity> oldList, List<TEntity> newList);
+        abstract TriggerStatus OnAfterUpdate(List<TEntity> oldList, List<TEntity> newList);
+        abstract TriggerStatus OnBeforeDelete(List<TEntity> oldList);
+        abstract TriggerStatus OnAfterDelete(List<TEntity> newList);
     }
 }

@@ -7,11 +7,8 @@ namespace K9_Koinz.Triggers {
         protected Dictionary<string, AbstractTriggerHandler<TEntity>> handlers;
 
         protected readonly KoinzContext context;
-        protected readonly ILogger logger;
-
-        protected GenericTrigger(KoinzContext context, ILogger logger) {
+        protected GenericTrigger(KoinzContext context) {
             this.context = context;
-            this.logger = logger;
         }
     }
 }

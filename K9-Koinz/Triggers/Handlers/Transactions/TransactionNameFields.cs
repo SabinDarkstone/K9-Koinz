@@ -1,15 +1,12 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
     public class TransactionNameFields : AbstractTriggerHandler<Transaction> {
-        public TransactionNameFields(KoinzContext context, ILogger logger) : base(context, logger) { }
+        public TransactionNameFields(KoinzContext context) : base(context) { }
 
         public void UpdateRelatedNameFields(List<Transaction> newTransactions) {
-            if (modelState == null) {
-                throw new Exception("ModelState cannot be null for UpdateRelatedNameFields");
-            }
-
             HashSet<Guid> categoryIds = new();
             HashSet<Guid> merchantIds = new();
             HashSet<Guid> accountIds = new();
@@ -68,43 +65,21 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 var accountName = "";
                 var savingsName = "";
 
-                Status catSuccess = Status.NULL;
-                Status merchSuccess = Status.NULL;
-                Status acctSuccess = Status.NULL;
-                Status savSuccess = Status.NULL;
-
                 if (transaction.CategoryId != null) {
-                    catSuccess = categoryDict.TryGetValue2(transaction.CategoryId.Value, out categoryName);
+                    _ = categoryDict.TryGetValue2(transaction.CategoryId.Value, out categoryName);
                 }
 
-                merchSuccess = merchantDict.TryGetValue2(transaction.MerchantId, out merchantName);
-                acctSuccess = accountDict.TryGetValue2(transaction.AccountId, out accountName);
+                _ = merchantDict.TryGetValue2(transaction.MerchantId, out merchantName);
+                _ = accountDict.TryGetValue2(transaction.AccountId, out accountName);
 
                 if (transaction.SavingsGoalId != null) {
-                    savSuccess = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsName);
+                    _ = savingsDict.TryGetValue2(transaction.SavingsGoalId.Value, out savingsName);
+                    transaction.SavingsGoalName = savingsName;
                 }
 
-                if (catSuccess == Status.ERROR) {
-                    modelState.AddModelError("CategoryId", "Invalid category selection");
-                } else {
-                    transaction.CategoryName = categoryName;
-                }
-
-                if (merchSuccess == Status.ERROR) {
-                    modelState.AddModelError("MerchantId", "Invalid merchant selection");
-                } else {
-                    transaction.MerchantName = merchantName;
-                }
-
-                if (acctSuccess == Status.ERROR) {
-                    modelState.AddModelError("AccountId", "Invalid account selection");
-                } else {
-                    transaction.AccountName = accountName;
-                }
-
-                if (savSuccess == Status.ERROR) {
-                    modelState.AddModelError("SavingsGoalId", "Invalid savings selection");
-                }
+                transaction.CategoryName = categoryName;
+                transaction.MerchantName = merchantName;
+                transaction.AccountName = accountName;
             }
         }
     }

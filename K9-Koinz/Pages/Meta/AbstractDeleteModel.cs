@@ -50,7 +50,6 @@ namespace K9_Koinz.Pages.Meta {
             Record = record;
             try {
                 if (trigger != null) {
-                    trigger.SetState(ModelState);
                     trigger.OnBeforeDelete(new List<T> { Record });
                 }
 

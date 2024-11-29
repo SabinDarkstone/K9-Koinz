@@ -38,7 +38,6 @@ namespace K9_Koinz.Pages.Meta {
 
         public virtual async Task<IActionResult> OnPostAsync() {
             if (trigger != null) {
-                trigger.SetState(ModelState);
                 trigger.OnBeforeInsert(new List<T> { Record });
             }
 
