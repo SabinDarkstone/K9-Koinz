@@ -1,4 +1,5 @@
 using K9_Koinz.Data;
+using K9_Koinz.Factories;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Helpers;
 using K9_Koinz.Services;
@@ -35,7 +36,8 @@ namespace K9_Koinz.Pages.Transactions {
         }
 
         public IActionResult OnPost(Guid id, string mode) {
-            var cookieString = Request.Cookies["backToTransactions"];
+            object routeValues = Bakery.MakeRouteFromCookie(Request.Cookies["backToTransactions"]);
+
             if (mode == "cancel") {
                 var transaction = _context.Transactions.Find(id);
 
@@ -57,18 +59,7 @@ namespace K9_Koinz.Pages.Transactions {
                 }
 
                 _context.SaveChanges();
-                if (cookieString != null) {
-                    var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
-                    return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
-                        sortOrder = transactionFilterCookie.SortOrder,
-                        catFilter = transactionFilterCookie.CatFilter,
-                        pageIndex = transactionFilterCookie.PageIndex,
-                        accountFilter = transactionFilterCookie.AccountFilter,
-                        minDate = transactionFilterCookie.MinDate,
-                        maxDate = transactionFilterCookie.MaxDate,
-                        merchFilter = transactionFilterCookie.MerchFilter
-                    });
-                }
+                return RedirectToPage(PagePaths.TransactionIndex, routeValues);
             }
 
             var toTransaction = _context.Transactions
@@ -79,20 +70,7 @@ namespace K9_Koinz.Pages.Transactions {
                 return RedirectToPage(PagePaths.SavingsAllocate, new { relatedId = id });
             }
 
-            if (cookieString != null) {
-                var transactionFilterCookie = cookieString.FromJson<TransactionNavPayload>();
-                return RedirectToPage(PagePaths.TransactionIndex, routeValues: new {
-                    sortOrder = transactionFilterCookie.SortOrder,
-                    catFilter = transactionFilterCookie.CatFilter,
-                    pageIndex = transactionFilterCookie.PageIndex,
-                    accountFilter = transactionFilterCookie.AccountFilter,
-                    minDate = transactionFilterCookie.MinDate,
-                    maxDate = transactionFilterCookie.MaxDate,
-                    merchFilter = transactionFilterCookie.MerchFilter
-                });
-            }
-
-            return RedirectToPage(PagePaths.TransactionIndex);
+            return RedirectToPage(PagePaths.TransactionIndex, routeValues);
         }
     }
 }
