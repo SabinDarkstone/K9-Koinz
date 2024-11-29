@@ -17,7 +17,7 @@ namespace K9_Tests {
             _repoFactory = repoFactory;
         }
 
-        public void ResetDatabaseAsync() {
+        public void ResetDatabase() {
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
         }
@@ -51,11 +51,6 @@ namespace K9_Tests {
 
             await repo.AddAsync(transaction);
             return transaction;
-        }
-
-        public async Task<List<Transaction>> SplitTransaction(Transaction parent, List<(Guid categoryId, double amount)> splits) {
-            var repo = _repoFactory.CreateSpecializedRepository<TransactionRepository>();
-            throw new NotImplementedException();
         }
     }
 }

@@ -13,9 +13,6 @@ namespace K9_Koinz.Utils {
             services.AddScoped<ICashflowGraphService, CashflowGraphService>();
             services.AddScoped<ITrendGraphService, TrendGraphService>();
 
-            // Add generic services
-            services.AddLogging();
-
             // Add specialty services
             services.AddScoped<IDropdownPopulatorService, DropdownPopulatorService>();
             services.AddScoped<IBudgetService, BudgetService>();

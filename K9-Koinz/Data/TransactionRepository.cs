@@ -9,7 +9,7 @@ namespace K9_Koinz.Data {
 
         private readonly IDupeCheckerService<Transaction> _dupeChecker;
 
-        public TransactionRepository(KoinzContext context, GenericTrigger<Transaction> trigger, IDupeCheckerService<Transaction> dupeChecker)
+        public TransactionRepository(KoinzContext context, ITrigger<Transaction> trigger, IDupeCheckerService<Transaction> dupeChecker)
             : base(context, trigger) {
             _dupeChecker = dupeChecker;
         }
@@ -25,6 +25,48 @@ namespace K9_Koinz.Data {
                     .ThenInclude(fer => fer.RecurringTransfer)
                 .Include(trans => trans.SavingsGoal)
                 .SingleOrDefaultAsync(trans => trans.Id == id);
+        }
+
+        public async Task<List<Transaction>> GetChildTransactions(Guid parentId) {
+            return await _context.Transactions
+                .AsNoTracking()
+                .Where(trans => trans.ParentTransactionId == parentId)
+                .OrderBy(trans => trans.CategoryName)
+                .ToListAsync();
+        }
+
+        public async Task<List<Transaction>> CreateSplitTransaction(List<Transaction> splitTransactions) {
+            var parentTransaction = await GetTransactionWithDetailsById(splitTransactions[0].ParentTransactionId.Value);
+
+            var isTransfer = parentTransaction.TransferId.HasValue;
+            var validSplits = splitTransactions.Where(splt => splt.Amount != 0).ToList();
+
+            foreach (var split in validSplits) {
+                split.Date = parentTransaction.Date;
+            }
+            
+            if (validSplits.Count() > 0) {
+                if (!isTransfer) {
+                    // Set data on the parent transaction for non-transfers
+                    parentTransaction.CategoryName = "Multiple";
+                    parentTransaction.IsSplit = true;
+                    parentTransaction.SplitTransactions = validSplits;
+                } else {
+                    // Unallocate parent transcation since child transactions will be allocated to savings goals
+                    parentTransaction.IsSavingsSpending = false;
+                    parentTransaction.SavingsGoalId = null;
+                    parentTransaction.SavingsGoalName = string.Empty;
+
+                    var transfer = await _context.Transfers.FindAsync(parentTransaction.TransferId);
+                    transfer.IsSplit = true;
+
+                    _context.Transfers.Update(transfer);
+                }
+            }
+
+            var saveResult = AddManyAsync(validSplits);
+
+            return new List<Transaction> { parentTransaction }.Concat(validSplits).ToList();
         }
 
         public override TriggerActionResult BeforeSave(TriggerType triggerType, IEnumerable<Transaction> oldList, IEnumerable<Transaction> newList) {
@@ -55,7 +97,7 @@ namespace K9_Koinz.Data {
             var promptSavingsGoal = false;
             if (triggerType == TriggerType.INSERT || triggerType == TriggerType.UPDATE) {
                 foreach (var t in newList) {
-                    var goodForSavings = CheckIfAvailableForSavingsGoal(t) || t.IsSavingsSpending;
+                    var goodForSavings = !t.ParentTransactionId.HasValue && (CheckIfAvailableForSavingsGoal(t) || t.IsSavingsSpending);
                     if (goodForSavings) {
                         promptSavingsGoal = true;
                         break;

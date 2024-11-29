@@ -1,6 +1,5 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using K9_Koinz.Models.Helpers;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
     public class TransactionNameFields : AbstractTriggerHandler<Transaction> {

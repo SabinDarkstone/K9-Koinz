@@ -11,6 +11,8 @@ namespace K9_Koinz {
             var app = builder.Build();
             ConfigureMiddleware(app);
             app.Run();
+
+            app.Logger.LogInformation("K9 Koinz has started");
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
@@ -22,13 +24,10 @@ namespace K9_Koinz {
 
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Warning()
-                .WriteTo.Console()
-                .Filter.ByExcluding(line => line.RenderMessage().Contains("Executed DbCommand"))
-                .WriteTo.File("logs/k9-koinz.log", rollingInterval: RollingInterval.Infinite)
-                .CreateLogger();
+            services.AddLogging(configure => {
+                configure.ClearProviders();
+                configure.AddConsole();
+            });
 
             services.AddRazorPages();
             services.AddControllers();
@@ -75,85 +74,5 @@ namespace K9_Koinz {
             app.MapControllerRoute("default", "api/{controller}/{action}/{id?}");
             app.UseAuthorization();
         }
-
-        //public static void Main(string[] args) {
-        //    var builder = WebApplication.CreateBuilder(args);
-        //    builder.Services.AddDbContext<KoinzContext>(options => {
-        //        options.UseSqlite("Data Source=K9-Koinz.db");
-        //        options.EnableDetailedErrors();
-        //        options.EnableSensitiveDataLogging();
-        //    });
-
-        //    builder.Services.AddMvc();
-        //    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-        //    Log.Logger = new LoggerConfiguration()
-        //        .MinimumLevel.Warning()
-        //        .WriteTo.Console()
-        //        .Filter.ByExcluding(line => line.RenderMessage().Contains("Executed DbCommand"))
-        //        .WriteTo.File("logs/k9-koinz.log", rollingInterval: RollingInterval.Infinite)
-        //        .CreateLogger();
-
-        //    // Add services to the container.
-        //    builder.Services.AddRazorPages();
-        //    builder.Services.AddControllers();
-        //    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-        //    builder.Services.AddLogging(options => {
-        //        options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
-        //        options.AddSerilog(dispose: true);
-        //    });
-
-        //    // Add K9 Koinz Services
-        //    builder.Services.AddMyServices();
-
-        //    // Add K9Koinz Scheduled Jobs
-        //    builder.Services.AddScheduledJobs();
-
-        //    var app = builder.Build();
-
-        //    // Configure the HTTP request pipeline.
-        //    if (!app.Environment.IsDevelopment()) {
-        //        app.UseHttpsRedirection();
-        //    } else {
-        //        app.UseMigrationsEndPoint();
-        //    }
-
-        //    app.UseHsts();
-
-        //    app.Use(async (context, next) => {
-        //        if (context.Request.Path.StartsWithSegments("/robots.txt")) {
-        //            var robotsTxtPath = Path.Combine(app.Environment.ContentRootPath, "robots.txt");
-        //            string output = "User-agent: * \nDisallow: /";
-        //            if (File.Exists(robotsTxtPath)) {
-        //                output = await File.ReadAllTextAsync(robotsTxtPath);
-        //            }
-        //            context.Response.ContentType = "text/plain";
-        //            await context.Response.WriteAsync(output);
-        //        } else await next();
-        //    });
-
-        //    using (var scope = app.Services.CreateScope()) {
-        //        var services = scope.ServiceProvider;
-
-        //        var context = services.GetRequiredService<KoinzContext>();
-        //        context.Database.Migrate();
-        //    }
-
-        //    app.UseStaticFiles();
-
-        //    app.UseDeveloperExceptionPage();
-        //    app.UseStatusCodePagesWithReExecute("/Errors/{0}");
-
-        //    app.UseRouting();
-
-        //    app.MapRazorPages();
-        //    app.MapControllers();
-        //    app.MapControllerRoute("default", "api/{controller}/{action}/{id?}");
-
-        //    app.UseAuthorization();
-
-
-        //    app.Run();
-        //}
     }
 }
