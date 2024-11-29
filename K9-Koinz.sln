@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K9-Koinz", "K9-Koinz\K9-Koinz.csproj", "{C326BA52-4805-4596-9D24-DB747213B620}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K9-Tests", "K9-Tests\K9-Tests.csproj", "{8467425B-4531-499A-B79E-E8C324126A4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C326BA52-4805-4596-9D24-DB747213B620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C326BA52-4805-4596-9D24-DB747213B620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C326BA52-4805-4596-9D24-DB747213B620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8467425B-4531-499A-B79E-E8C324126A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8467425B-4531-499A-B79E-E8C324126A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8467425B-4531-499A-B79E-E8C324126A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8467425B-4531-499A-B79E-E8C324126A4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

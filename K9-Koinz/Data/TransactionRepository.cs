@@ -9,7 +9,7 @@ namespace K9_Koinz.Data {
 
         private readonly IDupeCheckerService<Transaction> _dupeChecker;
 
-        public TransactionRepository(KoinzContext context, ITrigger<Transaction> trigger, IDupeCheckerService<Transaction> dupeChecker)
+        public TransactionRepository(KoinzContext context, GenericTrigger<Transaction> trigger, IDupeCheckerService<Transaction> dupeChecker)
             : base(context, trigger) {
             _dupeChecker = dupeChecker;
         }

@@ -34,7 +34,6 @@ namespace K9_Koinz {
             services.AddControllers();
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDataServices();
             services.AddMyServices();
             services.AddScheduledJobs();
         }

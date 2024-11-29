@@ -2,6 +2,7 @@
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Triggers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace K9_Koinz.Data {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity {

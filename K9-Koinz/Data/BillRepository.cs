@@ -1,10 +1,11 @@
 ﻿using K9_Koinz.Models;
+using K9_Koinz.Triggers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class BillRepository : Repository<Bill> {
-        public BillRepository(KoinzContext context) : base(context) { }
+    public class BillRepository : TriggeredRepository<Bill> {
+        public BillRepository(KoinzContext context, ITrigger<Bill> trigger) : base(context, trigger) { }
 
         public async Task<SelectList> GetBillOptions(Guid accountId) {
             return new SelectList(await _context.Bills

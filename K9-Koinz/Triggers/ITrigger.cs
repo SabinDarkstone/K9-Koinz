@@ -23,11 +23,11 @@ namespace K9_Koinz.Triggers {
     }
 
     public interface ITrigger<TEntity> where TEntity : BaseEntity {
-        abstract TriggerStatus OnBeforeInsert(List<TEntity> newList);
-        abstract TriggerStatus OnAfterInsert(List<TEntity> newList);
-        abstract TriggerStatus OnBeforeUpdate(List<TEntity> oldList, List<TEntity> newList);
-        abstract TriggerStatus OnAfterUpdate(List<TEntity> oldList, List<TEntity> newList);
-        abstract TriggerStatus OnBeforeDelete(List<TEntity> oldList);
-        abstract TriggerStatus OnAfterDelete(List<TEntity> newList);
+        TriggerStatus OnBeforeInsert(List<TEntity> newList);
+        TriggerStatus OnAfterInsert(List<TEntity> newList);
+        TriggerStatus OnBeforeUpdate(List<TEntity> oldList, List<TEntity> newList);
+        TriggerStatus OnAfterUpdate(List<TEntity> oldList, List<TEntity> newList);
+        TriggerStatus OnBeforeDelete(List<TEntity> oldList);
+        TriggerStatus OnAfterDelete(List<TEntity> newList);
     }
 }
