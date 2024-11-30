@@ -3,7 +3,7 @@ using K9_Koinz.Models.Meta;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Meta {
-    [Obsolete]
+    [Obsolete("Use DetailsPageModel with a repository instead")]
     public abstract class AbstractDetailsModel<T> : AbstractDbPage where T : BaseEntity {
         protected AbstractDetailsModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }

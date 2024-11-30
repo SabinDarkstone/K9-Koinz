@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace K9_Koinz.Pages.Meta {
-    [Obsolete]
+    [Obsolete("Use CreatePageModel with a repository instead")]
     public abstract class AbstractCreateModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IDropdownPopulatorService _dropdownService;
 

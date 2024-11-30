@@ -8,6 +8,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
 namespace K9_Koinz.Pages.Accounts {
+
+    // TODO: Migrate this to AccountRepository
     public class IndexModel : PageModel {
         private readonly KoinzContext _context;
 

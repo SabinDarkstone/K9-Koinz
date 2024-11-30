@@ -1,5 +1,5 @@
 ﻿namespace K9_Koinz.Pages.Meta {
-    [Obsolete]
+    [Obsolete("Use IndexPageModel with a repository instead")]
     public class AbstractIndexModel {
     }
 }
