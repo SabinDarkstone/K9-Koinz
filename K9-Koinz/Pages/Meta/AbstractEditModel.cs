@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Meta {
+    [Obsolete]
     public abstract class AbstractEditModel<T> : AbstractDbPage where T : BaseEntity {
         protected readonly IDropdownPopulatorService _dropdownService;
 

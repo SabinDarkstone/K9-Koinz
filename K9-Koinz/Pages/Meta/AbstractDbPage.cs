@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace K9_Koinz.Pages.Meta {
+    [Obsolete]
     public abstract class AbstractDbPage : PageModel {
         protected readonly KoinzContext _context;
         protected ILogger<AbstractDbPage> _logger;

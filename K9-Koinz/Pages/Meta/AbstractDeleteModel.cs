@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Pages.Meta {
+    [Obsolete]
     public abstract class AbstractDeleteModel<T> : AbstractDbPage where T : BaseEntity {
         protected AbstractDeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
             : base(context, logger) { }
