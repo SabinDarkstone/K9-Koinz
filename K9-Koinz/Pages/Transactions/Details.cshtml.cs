@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Data.Repositories;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DetailsModel : DetailsPageModel<Transaction> {

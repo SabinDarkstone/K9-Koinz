@@ -1,4 +1,4 @@
-using K9_Koinz.Data;
+using K9_Koinz.Data.Repositories;
 using K9_Koinz.Models;
 using Microsoft.Extensions.DependencyInjection;
 

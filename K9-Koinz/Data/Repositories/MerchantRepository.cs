@@ -2,7 +2,7 @@
 using K9_Koinz.Triggers;
 using Microsoft.EntityFrameworkCore;
 
-namespace K9_Koinz.Data {
+namespace K9_Koinz.Data.Repositories {
     public class MerchantRepository : TriggeredRepository<Merchant> {
         public MerchantRepository(KoinzContext context, ITrigger<Merchant> trigger) : base(context, trigger) {
         }

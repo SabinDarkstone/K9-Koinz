@@ -113,7 +113,7 @@
                 <thead>
                     <tr>
                         <th class="d-none d-xl-block">
-                            @Html.DisplayNameFor(model => model.Transactions[0].Account)
+                            @Html.DisplayNameFor(model => model.Records[0].Account)
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.DateSort"
@@ -122,8 +122,8 @@
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Transactions.PageIndex">
-                                @Html.DisplayNameFor(model => model.Transactions[0].Date)
+                               asp-route-pageIndex="@Model.Records.PageIndex">
+                                @Html.DisplayNameFor(model => model.Records[0].Date)
                             </a>
 
                             @if (Model.CurrentSort == "date_desc" || string.IsNullOrEmpty(Model.CurrentSort)) {
@@ -144,8 +144,8 @@
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Transactions.PageIndex">
-                                @Html.DisplayNameFor(model => model.Transactions[0].MerchantId)
+                               asp-route-pageIndex="@Model.Records.PageIndex">
+                                @Html.DisplayNameFor(model => model.Records[0].MerchantId)
                             </a>
 
                             @if (Model.CurrentSort == "merchant_desc") {
@@ -160,7 +160,7 @@
                             }
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Transactions[0].Category)
+                            @Html.DisplayNameFor(model => model.Records[0].Category)
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.AmountSort"
@@ -169,8 +169,8 @@
                                asp-route-minDate="@Model.MinDateString"
                                asp-route-maxDate="@Model.MaxDateString"
                                asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Transactions.PageIndex">
-                                @Html.DisplayNameFor(model => model.Transactions[0].Amount)
+                               asp-route-pageIndex="@Model.Records.PageIndex">
+                                @Html.DisplayNameFor(model => model.Records[0].Amount)
                             </a>
 
                             @if (Model.CurrentSort == "amount_desc") {
@@ -188,7 +188,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Transactions) {
+                    @foreach (var item in Model.Records) {
                         var hasNotes = !string.IsNullOrEmpty(item.Notes) ? "tooltip" : string.Empty;
                         <tr data-bs-toggle="@hasNotes" data-bs-title="Notes: @item.Notes" data-bs-placement="left">
                             <td class="d-none d-xl-block">
@@ -250,7 +250,7 @@
 
         <div class="card mt-4 d-block d-lg-none">
             <ul class="list-group list-group-flush">
-                @foreach (var transaction in Model.Transactions) {
+                @foreach (var transaction in Model.Records) {
                     <li class="list-group-item">
                         <div>
                             <div class="row">
@@ -308,17 +308,17 @@
 
         <div class="mt-4">
             <p>
-                @Model.Transactions.TotalCount <text>Items - </text> Page @Model.Transactions.PageIndex of @Model.Transactions.TotalPages
+                @Model.Records.TotalCount <text>Items - </text> Page @Model.Records.PageIndex of @Model.Records.TotalPages
             </p>
             @{
-                var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
+                var prevDisabled = !Model.Records.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Records.HasNextPage ? "disabled" : "";
             }
 
             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
-               asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
+               asp-route-pageIndex="@(Model.Records.PageIndex - 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
                asp-route-merchFilter="@Model.SelectedMerchant"
@@ -329,7 +329,7 @@
             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
-               asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
+               asp-route-pageIndex="@(Model.Records.PageIndex + 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
                asp-route-merchFilter="@Model.SelectedMerchant"

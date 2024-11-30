@@ -1,4 +1,5 @@
 using K9_Koinz.Data;
+using K9_Koinz.Data.Repositories;
 using K9_Koinz.Factories;
 using K9_Koinz.Models;
 using K9_Koinz.Utils;

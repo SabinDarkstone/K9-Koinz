@@ -1,7 +1,7 @@
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
-using K9_Koinz.Data;
 using K9_Koinz.Services;
+using K9_Koinz.Data.Repositories;
 
 namespace K9_Koinz.Pages.Merchants {
     public class DetailsModel : DetailsPageModel<Merchant> {

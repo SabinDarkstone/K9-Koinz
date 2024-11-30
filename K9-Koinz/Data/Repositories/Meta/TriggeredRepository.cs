@@ -1,8 +1,9 @@
-﻿using K9_Koinz.Models.Helpers;
+﻿using K9_Koinz.Data.Repositories.Meta;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Triggers;
 
-namespace K9_Koinz.Data {
+namespace K9_Koinz.Data.Repositories {
     public class TriggeredRepository<TEntity> : Repository<TEntity> where TEntity : BaseEntity {
         private readonly ITrigger<TEntity> _trigger;
 

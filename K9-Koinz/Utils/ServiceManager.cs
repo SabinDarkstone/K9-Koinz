@@ -1,4 +1,6 @@
 ﻿using K9_Koinz.Data;
+using K9_Koinz.Data.Repositories;
+using K9_Koinz.Data.Repositories.Meta;
 using K9_Koinz.Factories;
 using K9_Koinz.Models;
 using K9_Koinz.Services;
@@ -28,11 +30,11 @@ namespace K9_Koinz.Utils {
             services.AddScoped<ITrigger<Transaction>, TransactionTrigger>();
             services.AddScoped<ITrigger<Bill>, BillTrigger>();
             services.AddScoped<ITrigger<Merchant>, MerchantTrigger>();
-            services.AddScoped<ITrigger<Account>, GenericTrigger<Account>>();
+            services.AddScoped<ITrigger<Account>, AccountTrigger>();
+            services.AddScoped<ITrigger<Category>, CategoryTrigger>();
             services.AddScoped<ITrigger<Budget>, GenericTrigger<Budget>>();
             services.AddScoped<ITrigger<BudgetLine>, GenericTrigger<BudgetLine>>();
             services.AddScoped<ITrigger<BudgetLinePeriod>, GenericTrigger<BudgetLinePeriod>>();
-            services.AddScoped<ITrigger<Category>, GenericTrigger<Category>>();
             services.AddScoped<ITrigger<RepeatConfig>, GenericTrigger<RepeatConfig>>();
             services.AddScoped<ITrigger<SavingsGoal>, GenericTrigger<SavingsGoal>>();
             services.AddScoped<ITrigger<Tag>, GenericTrigger<Tag>>();
@@ -43,11 +45,11 @@ namespace K9_Koinz.Utils {
             services.AddScoped<SavingsRepository>();
             services.AddScoped<BillRepository>();
             services.AddScoped<MerchantRepository>();
-            services.AddScoped<IRepository<Account>, Repository<Account>>();
+            services.AddScoped<AccountRepository>();
+            services.AddScoped<CategoryRepository>();
             services.AddScoped<Repository<Budget>>();
             services.AddScoped<Repository<BudgetLine>>();
             services.AddScoped<Repository<BudgetLinePeriod>>();
-            services.AddScoped<IRepository<Category>, Repository<Category>>();
             services.AddScoped<Repository<RepeatConfig>>();
             services.AddScoped<IRepository<Tag>, Repository<Tag>>();
             services.AddScoped<Repository<Transfer>>();

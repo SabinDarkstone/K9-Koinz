@@ -2,7 +2,7 @@
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Triggers;
 
-namespace K9_Koinz.Data {
+namespace K9_Koinz.Data.Repositories.Meta {
     public interface IRepository<TEntity> where TEntity : BaseEntity {
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<TEntity> GetByIdAsync(Guid id, bool doTracking = true);

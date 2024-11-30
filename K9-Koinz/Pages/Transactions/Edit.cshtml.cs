@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using K9_Koinz.Utils;
 using K9_Koinz.Models.Helpers;
 using K9_Koinz.Factories;
+using K9_Koinz.Data.Repositories;
 
 namespace K9_Koinz.Pages.Transactions {
     public class EditModel : EditPageModel<Transaction> {

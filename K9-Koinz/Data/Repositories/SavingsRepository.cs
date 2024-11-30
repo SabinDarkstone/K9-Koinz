@@ -1,4 +1,5 @@
-﻿using K9_Koinz.Models;
+﻿using K9_Koinz.Data.Repositories.Meta;
+using K9_Koinz.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 

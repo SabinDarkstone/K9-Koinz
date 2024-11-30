@@ -1,9 +1,9 @@
-﻿using K9_Koinz.Data;
-using K9_Koinz.Models;
+﻿using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using Microsoft.AspNetCore.Mvc;
 using K9_Koinz.Utils;
 using K9_Koinz.Factories;
+using K9_Koinz.Data.Repositories;
 
 namespace K9_Koinz.Pages.Transactions {
     public class DeleteModel : DeletePageModel<Transaction> {

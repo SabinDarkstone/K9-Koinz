@@ -3,7 +3,7 @@ using K9_Koinz.Models.Meta;
 using K9_Koinz.Triggers;
 using Microsoft.EntityFrameworkCore;
 
-namespace K9_Koinz.Data {
+namespace K9_Koinz.Data.Repositories.Meta {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity {
         protected readonly KoinzContext _context;
         protected readonly DbSet<TEntity> _dbSet;

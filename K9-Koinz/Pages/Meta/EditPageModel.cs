@@ -1,4 +1,4 @@
-﻿using K9_Koinz.Data;
+﻿using K9_Koinz.Data.Repositories.Meta;
 using K9_Koinz.Models.Helpers;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Services;
