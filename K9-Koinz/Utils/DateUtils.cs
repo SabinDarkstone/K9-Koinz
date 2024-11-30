@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using K9_Koinz.Models;
+﻿using K9_Koinz.Models;
 
 namespace K9_Koinz.Utils {
     public static class DateUtils {
