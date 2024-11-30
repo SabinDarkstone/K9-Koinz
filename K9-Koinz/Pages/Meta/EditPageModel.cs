@@ -17,14 +17,16 @@ namespace K9_Koinz.Pages.Meta {
         public List<SelectListItem> AccountOptions;
         public SelectList TagOptions;
 
-        public EditPageModel(IRepository<TEntity> repository, IDropdownPopulatorService dropdownService) {
+        public EditPageModel(IRepository<TEntity> repository, IDropdownPopulatorService dropdownService = null) {
             _repository = repository;
             _dropdownService = dropdownService;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid? id) {
-            AccountOptions = await _dropdownService.GetAccountListAsync();
-            TagOptions = await _dropdownService.GetTagListAsync();
+            if (_dropdownService != null) {
+                AccountOptions = await _dropdownService.GetAccountListAsync();
+                TagOptions = await _dropdownService.GetTagListAsync();
+            }
 
             if (!id.HasValue) {
                 return NotFound();

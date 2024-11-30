@@ -1,6 +1,5 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
     public class TransactionGoalUpdate : AbstractTriggerHandler<Transaction> {

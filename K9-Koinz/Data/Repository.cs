@@ -52,6 +52,7 @@ namespace K9_Koinz.Data {
             var beforeResult = BeforeSave(TriggerType.INSERT, null, entities);
             await _dbSet.AddRangeAsync(entities);
             await _context.SaveChangesAsync();
+            _context.ChangeTracker.Clear();
             var afterResult = AfterSave(TriggerType.INSERT, null, entities);
 
             DbSaveResult.BeforeStatus = beforeResult.Status;
@@ -67,11 +68,12 @@ namespace K9_Koinz.Data {
 
         // TODO: Add error handling
         public async Task<DbSaveResult> UpdateManyAsync(IList<TEntity> entities) {
-            List<TEntity> oldEntities = await GetByIdsAsync(entities.Select(e => e.Id).ToList());
+            List<TEntity> oldEntities = await GetByIdsAsync(entities.Select(e => e.Id).ToList(), false);
             entities = entities.OrderBy(e => e.Id).ToList();
             var beforeResult = BeforeSave(TriggerType.UPDATE, oldEntities, entities);
             _dbSet.UpdateRange(entities);
             await _context.SaveChangesAsync();
+            _context.ChangeTracker.Clear();
             var afterResult = AfterSave(TriggerType.UPDATE, oldEntities, entities);
 
             DbSaveResult.BeforeStatus = beforeResult.Status;
@@ -91,6 +93,7 @@ namespace K9_Koinz.Data {
                 var beforeResult = BeforeSave(TriggerType.DELETE, entities, null);
                 _dbSet.RemoveRange(entities);
                 await _context.SaveChangesAsync();
+                _context.ChangeTracker.Clear();
                 var afterResult = AfterSave(TriggerType.DELETE, entities, null);
 
                 DbSaveResult.BeforeStatus = beforeResult.Status;

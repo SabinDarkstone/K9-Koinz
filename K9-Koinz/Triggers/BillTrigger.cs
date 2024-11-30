@@ -13,30 +13,14 @@ namespace K9_Koinz.Triggers {
             };
         }
 
-        public TriggerStatus OnAfterDelete(List<Bill> newList) {
-            return TriggerStatus.NO_TRIGGER;
-        }
-
-        public TriggerStatus OnAfterInsert(List<Bill> newList) {
-            return TriggerStatus.NO_TRIGGER;
-        }
-
-        public TriggerStatus OnAfterUpdate(List<Bill> oldList, List<Bill> newList) {
-            return TriggerStatus.NO_TRIGGER;
-        }
-
-        public TriggerStatus OnBeforeDelete(List<Bill> oldList) {
-            return TriggerStatus.NO_TRIGGER;
-        }
-
-        public TriggerStatus OnBeforeInsert(List<Bill> newList) {
+        public override TriggerStatus OnBeforeInsert(List<Bill> newList) {
             (handlers["nameFields"] as BillNameFields).UpdateRealtedNameFields(newList);
             (handlers["defaultValues"] as BillDefaultValues).SetDefaultValues(newList);
 
             return TriggerStatus.SUCCESS;
         }
 
-        public TriggerStatus OnBeforeUpdate(List<Bill> oldList, List<Bill> newList) {
+        public override TriggerStatus OnBeforeUpdate(List<Bill> oldList, List<Bill> newList) {
             (handlers["nameFields"] as BillNameFields).UpdateRealtedNameFields(newList);
 
             return TriggerStatus.SUCCESS;

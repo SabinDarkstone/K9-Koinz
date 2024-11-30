@@ -19,14 +19,16 @@ namespace K9_Koinz.Pages.Meta {
 
         protected Guid? RelatedId { get; private set; }
 
-        public CreatePageModel(IRepository<TEntity> repository, IDropdownPopulatorService dropdownService) {
+        public CreatePageModel(IRepository<TEntity> repository, IDropdownPopulatorService dropdownService = null) {
             _repository = repository;
             _dropdownService = dropdownService;
         }
 
         public async Task<IActionResult> OnGetAsync() {
-            AccountOptions = await _dropdownService.GetAccountListAsync();
-            TagOptions = await _dropdownService.GetTagListAsync();
+            if (_dropdownService != null) {
+                AccountOptions = await _dropdownService.GetAccountListAsync();
+                TagOptions = await _dropdownService.GetTagListAsync();
+            }
 
             await OnPageLoadActionsAsync();
 

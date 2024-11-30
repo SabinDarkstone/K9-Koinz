@@ -35,6 +35,15 @@ namespace K9_Koinz.Data {
                 .ToListAsync();
         }
 
+        public async Task<List<Transaction>> GetRecentMerchantTransactions(Guid merchantId, int count) {
+            return await _context.Transactions
+                .AsNoTracking()
+                .Where(trans => trans.MerchantId == merchantId)
+                .OrderByDescending(trans => trans.Date)
+                .Take(count)
+                .ToListAsync();
+        }
+
         public async Task<List<Transaction>> CreateSplitTransaction(List<Transaction> splitTransactions) {
             var parentTransaction = await GetTransactionWithDetailsById(splitTransactions[0].ParentTransactionId.Value);
 
