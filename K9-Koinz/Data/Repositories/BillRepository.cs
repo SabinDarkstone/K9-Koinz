@@ -13,5 +13,42 @@ namespace K9_Koinz.Data.Repositories {
                 .OrderBy(bill => bill.Name)
                 .ToListAsync(), nameof(Bill.Id), nameof(Bill.Name));
         }
+
+        public async Task<Bill> GetBillWithDetails(Guid billId, bool doTracking = false) {
+            IQueryable<Bill> iq = _dbSet.Include(bill => bill.RepeatConfig);
+
+            if (!doTracking) {
+                iq = iq.AsNoTracking();
+            }
+
+            return await iq.FirstOrDefaultAsync(bill => bill.Id == billId);
+        }
+
+        public List<Transaction> GetTransactionsForBill(Guid billId) {
+            return _context.Transactions
+                .AsNoTracking()
+                .Where(trans => trans.BillId == billId)
+                .ToList();
+        }
+
+        public async Task<List<Bill>> GetBillList(bool includeAll) {
+            List<Bill> bills;
+
+            IQueryable<Bill> iq = _dbSet.AsNoTracking()
+                .Include(bill => bill.RepeatConfig)
+                .Include(bill => bill.Account);
+
+            if (includeAll) {
+                bills = await iq.AsSplitQuery()
+                    .ToListAsync();
+            } else {
+                bills = await iq.AsSplitQuery()
+                    .Where(bill => bill.IsActive)
+                    .ToListAsync();
+            }
+
+            bills = bills.OrderBy(bill => bill.RepeatConfig.CalculatedNextFiring).ToList();
+            return bills;
+        }
     }
 }

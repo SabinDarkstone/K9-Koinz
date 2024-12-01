@@ -1,39 +1,16 @@
-using K9_Koinz.Data;
+using K9_Koinz.Data.Repositories;
 using K9_Koinz.Models;
-using K9_Koinz.Models.Meta;
+using K9_Koinz.Models.Helpers;
+using K9_Koinz.Pages.Meta;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace K9_Koinz.Pages.Bills {
-    public struct AccountSummary {
-        public string Name { get; init; }
-        public double AmountDueThisMonth { get; init; }
-
-        public AccountSummary(Account account, List<Bill> bills) {
-            Name = account.Name;
-            AmountDueThisMonth = bills
-                .Where(bill => bill.AccountId == account.Id)
-                .GetTotal();
-        }
-
-        public AccountSummary(Account account) {
-            Name = account.Name;
-            AmountDueThisMonth = 0d;
-        }
-    }
-
-    public class IndexModel : PageModel {
-        private readonly KoinzContext _context;
-
-        public IndexModel(KoinzContext context) {
-            _context = context;
-        }
-
-        public List<Bill> Bills { get; set; } = default;
+    public class IndexModel : IndexPageModel<Bill> {
+        public IndexModel(BillRepository repository) : base(repository) { }
         public Dictionary<Guid, AccountSummary> AccountsWithBills { get; set; } = new();
+
 
         [Display(Name = "Show All Bills")]
         public bool ShowAllBills { get; set; }
@@ -48,35 +25,11 @@ namespace K9_Koinz.Pages.Bills {
             var startDate = DateTime.Today.StartOfMonth();
             var endDate = DateTime.Today.EndOfMonth();
 
-            var billsIQ = _context.Bills
-                .AsNoTracking()
-                .Include(bill => bill.Account)
-                .Include(bill => bill.RepeatConfig);
-
-            if (ShowAllBills) {
-                Bills = (await billsIQ
-                    .AsNoTracking()
-                    .Include(bill => bill.Account)
-                    .Include(bill => bill.RepeatConfig)
-                    .AsSplitQuery()
-                    .ToListAsync())
-                    .OrderBy(bill => bill.RepeatConfig.CalculatedNextFiring)
-                    .ToList();
-            } else {
-                Bills = (await billsIQ
-                    .ToListAsync())
-                    .Where(bill => bill.RepeatConfig.CalculatedNextFiring.HasValue)
-                    .Where(bill => bill.RepeatConfig.CalculatedNextFiring >= startDate)
-                    .Where(bill => bill.RepeatConfig.CalculatedNextFiring <= endDate)
-                    .Where(bill => bill.IsActive)
-                    .OrderBy(bill => bill.RepeatConfig.CalculatedNextFiring)
-                    .ToList();
-            }
-
-            List<Account> accounts = Bills.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();
+            Records = await (_repository as BillRepository).GetBillList(ShowAllBills);
+            List<Account> accounts = Records.Select(bill => bill.Account).DistinctBy(acct => acct.Id).ToList();
 
             foreach (var account in accounts) {
-                var billsForAccount = Bills.Where(Bill => Bill.AccountId == account.Id).ToList();
+                var billsForAccount = Records.Where(Bill => Bill.AccountId == account.Id).ToList();
                 AccountsWithBills.Add(
                     account.Id,
                     new AccountSummary(account, billsForAccount)

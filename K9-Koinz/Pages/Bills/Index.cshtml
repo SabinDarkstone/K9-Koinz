@@ -33,7 +33,7 @@
     }
 </script>
 
-@if (Model.Bills.Count == 0) {
+@if (Model.Records.Count == 0) {
     <div class="alert alert-primary">
         You don't have any bills scheduled for the rest of the month.<br />
         Select "Show All Bills" to see all of your bills.
@@ -51,16 +51,16 @@
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.Bills[0].Name)
+                            @Html.DisplayNameFor(model => model.Records[0].Name)
                         </th>
                         <th class="d-none d-xl-block">
-                            @Html.DisplayNameFor(model => model.Bills[0].MerchantId)
+                            @Html.DisplayNameFor(model => model.Records[0].MerchantId)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Bills[0].RepeatConfig.Frequency)
+                            @Html.DisplayNameFor(model => model.Records[0].RepeatConfig.Frequency)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Bills[0].Amount)
+                            @Html.DisplayNameFor(model => model.Records[0].Amount)
                         </th>
                         <th>
                             Next Due Date
@@ -69,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key && bill.IsActive && bill.RepeatConfig.IsActive)) {
+                    @foreach (var item in Model.Records.Where(bill => bill.AccountId == accountEntry.Key && bill.IsActive && bill.RepeatConfig.IsActive)) {
                         <tr>
                             <td>
                                 @item.Name
@@ -111,7 +111,7 @@
                             </td>
                         </tr>
                     }
-                    @foreach (var inactiveItem in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key && (!bill.IsActive || !bill.RepeatConfig.IsActive))) {
+                    @foreach (var inactiveItem in Model.Records.Where(bill => bill.AccountId == accountEntry.Key && (!bill.IsActive || !bill.RepeatConfig.IsActive))) {
                         var rowClassList = "";
                         if (!inactiveItem.RepeatConfig.IsActive) {
                             rowClassList = "table-warning";
@@ -167,7 +167,7 @@
 
         <div class="card mt-1 mb-4 d-block d-lg-none">
             <ul class="list-group list-group-flush">
-                @foreach (var item in Model.Bills.Where(bill => bill.AccountId == accountEntry.Key)) {
+                @foreach (var item in Model.Records.Where(bill => bill.AccountId == accountEntry.Key)) {
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-7 text-truncate bill-item" data-id="@item.Id">

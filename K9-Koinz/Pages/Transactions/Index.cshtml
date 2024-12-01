@@ -29,6 +29,9 @@
         </span>
     </a>
 </p>
+@{
+    var paginatedRecords = Model.Records as PaginatedList<Transaction>;
+}
 
 <div class="row">
     <div class="col-lg-3">
@@ -117,12 +120,12 @@
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.DateSort"
-                               asp-route-catFilter="@Model.SelectedCategory"
-                               asp-route-accountFilter="@Model.SelectedAccount"
-                               asp-route-minDate="@Model.MinDateString"
-                               asp-route-maxDate="@Model.MaxDateString"
-                               asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Records.PageIndex">
+                            asp-route-catFilter="@Model.SelectedCategory"
+                            asp-route-accountFilter="@Model.SelectedAccount"
+                            asp-route-minDate="@Model.MinDateString"
+                            asp-route-maxDate="@Model.MaxDateString"
+                            asp-route-merchFilter="@Model.SelectedMerchant"
+                            asp-route-pageIndex="@paginatedRecords.PageIndex">
                                 @Html.DisplayNameFor(model => model.Records[0].Date)
                             </a>
 
@@ -139,12 +142,12 @@
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.MerchantSort"
-                               asp-route-catFilter="@Model.SelectedCategory"
-                               asp-route-accountFilter="@Model.SelectedAccount"
-                               asp-route-minDate="@Model.MinDateString"
-                               asp-route-maxDate="@Model.MaxDateString"
-                               asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Records.PageIndex">
+                            asp-route-catFilter="@Model.SelectedCategory"
+                            asp-route-accountFilter="@Model.SelectedAccount"
+                            asp-route-minDate="@Model.MinDateString"
+                            asp-route-maxDate="@Model.MaxDateString"
+                            asp-route-merchFilter="@Model.SelectedMerchant"
+                            asp-route-pageIndex="@paginatedRecords.PageIndex">
                                 @Html.DisplayNameFor(model => model.Records[0].MerchantId)
                             </a>
 
@@ -164,12 +167,12 @@
                         </th>
                         <th>
                             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.AmountSort"
-                               asp-route-catFilter="@Model.SelectedCategory"
-                               asp-route-accountFilter="@Model.SelectedAccount"
-                               asp-route-minDate="@Model.MinDateString"
-                               asp-route-maxDate="@Model.MaxDateString"
-                               asp-route-merchFilter="@Model.SelectedMerchant"
-                               asp-route-pageIndex="@Model.Records.PageIndex">
+                            asp-route-catFilter="@Model.SelectedCategory"
+                            asp-route-accountFilter="@Model.SelectedAccount"
+                            asp-route-minDate="@Model.MinDateString"
+                            asp-route-maxDate="@Model.MaxDateString"
+                            asp-route-merchFilter="@Model.SelectedMerchant"
+                            asp-route-pageIndex="@paginatedRecords.PageIndex">
                                 @Html.DisplayNameFor(model => model.Records[0].Amount)
                             </a>
 
@@ -308,17 +311,18 @@
 
         <div class="mt-4">
             <p>
-                @Model.Records.TotalCount <text>Items - </text> Page @Model.Records.PageIndex of @Model.Records.TotalPages
+
+                @paginatedRecords.TotalCount <text>Items - </text> Page @paginatedRecords.PageIndex of @paginatedRecords.TotalPages
             </p>
             @{
-                var prevDisabled = !Model.Records.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.Records.HasNextPage ? "disabled" : "";
+                var prevDisabled = !paginatedRecords.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !paginatedRecords.HasNextPage ? "disabled" : "";
             }
 
             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
-               asp-route-pageIndex="@(Model.Records.PageIndex - 1)"
+               asp-route-pageIndex="@(paginatedRecords.PageIndex - 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
                asp-route-merchFilter="@Model.SelectedMerchant"
@@ -329,7 +333,7 @@
             <a asp-page="@PagePaths.TransactionIndex" asp-route-sortOrder="@Model.CurrentSort"
                asp-route-catFilter="@Model.SelectedCategory"
                asp-route-accountFilter="@Model.SelectedAccount"
-               asp-route-pageIndex="@(Model.Records.PageIndex + 1)"
+               asp-route-pageIndex="@(paginatedRecords.PageIndex + 1)"
                asp-route-minDate="@Model.MinDateString"
                asp-route-maxDate="@Model.MaxDateString"
                asp-route-merchFilter="@Model.SelectedMerchant"
