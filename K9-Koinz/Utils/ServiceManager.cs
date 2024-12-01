@@ -32,7 +32,7 @@ namespace K9_Koinz.Utils {
             services.AddScoped<ITrigger<Merchant>, MerchantTrigger>();
             services.AddScoped<ITrigger<Account>, AccountTrigger>();
             services.AddScoped<ITrigger<Category>, CategoryTrigger>();
-            services.AddScoped<ITrigger<Budget>, GenericTrigger<Budget>>();
+            services.AddScoped<ITrigger<Budget>, BudgetTrigger>();
             services.AddScoped<ITrigger<BudgetLine>, GenericTrigger<BudgetLine>>();
             services.AddScoped<ITrigger<BudgetLinePeriod>, GenericTrigger<BudgetLinePeriod>>();
             services.AddScoped<ITrigger<RepeatConfig>, GenericTrigger<RepeatConfig>>();
@@ -47,11 +47,11 @@ namespace K9_Koinz.Utils {
             services.AddScoped<MerchantRepository>();
             services.AddScoped<AccountRepository>();
             services.AddScoped<CategoryRepository>();
-            services.AddScoped<Repository<Budget>>();
+            services.AddScoped<BudgetRepository>();
             services.AddScoped<Repository<BudgetLine>>();
             services.AddScoped<Repository<BudgetLinePeriod>>();
             services.AddScoped<Repository<RepeatConfig>>();
-            services.AddScoped<IRepository<Tag>, Repository<Tag>>();
+            services.AddScoped<Repository<Tag>, Repository<Tag>>();
             services.AddScoped<Repository<Transfer>>();
 
         }

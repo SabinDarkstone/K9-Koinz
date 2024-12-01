@@ -2,10 +2,14 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Bills {
-    public class BillDefaultValues : AbstractTriggerHandler<Bill> {
-        public BillDefaultValues(KoinzContext context) : base(context) { }
+    public class SetBillDefaultValues : IHandler<Bill> {
+        private readonly KoinzContext _context;
 
-        public void SetDefaultValues(List<Bill> newList) {
+        public SetBillDefaultValues(KoinzContext context) {
+            _context = context;
+        }
+
+        public void Execute(List<Bill> oldList, List<Bill> newList) {
             foreach (var bill in newList) {
                 if (bill.RepeatConfig == null) {
                     throw new Exception("RepeatConfig must be included in query when inserting a new bill");

@@ -2,10 +2,13 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
-    public class TransactionTransferPair : AbstractTriggerHandler<Transaction> {
-        public TransactionTransferPair(KoinzContext context) : base(context) { }
+    public class UpdateTransactionPair : IHandler<Transaction> {
+        private readonly KoinzContext _context;
 
-        public void UpdateOtherTransaction(List<Transaction> newList) {
+        public UpdateTransactionPair(KoinzContext context) {
+            _context = context;
+        }
+        public void Execute(List<Transaction> oldList, List<Transaction> newList) {
             // This stores key/value pairs of transfer Id to transactions
             Dictionary<Guid, Transaction> transactionDict = new();
 
@@ -21,7 +24,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 return;
             }
 
-            var otherTransactionDict = context.Transactions
+            var otherTransactionDict = _context.Transactions
                 .Where(trans => trans.TransferId != null)
                 .Where(trans => !transactionIds.Contains(trans.Id))
                 .Where(trans => transactionDict.Keys.Contains(trans.TransferId.Value))
@@ -42,30 +45,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 }
             }
 
-            context.Transactions.UpdateRange(transactionsToUpdate);
-        }
-
-        public void DeleteOtherTransaction(List<Transaction> oldList) {
-            HashSet<Guid> transferIds = new();
-            HashSet<Guid> transactionIds = oldList.Select(trans => trans.Id).ToHashSet();
-
-            foreach (var transaction in oldList) {
-                if (transaction.TransferId != null) {
-                    transferIds.Add(transaction.TransferId.Value);
-                }
-            }
-
-            if (transferIds.Count == 0) {
-                return;
-            }
-
-            var otherTransactions = context.Transactions
-                .Where(trans => !transactionIds.Contains(trans.Id))
-                .Where(trans => trans.TransferId != null)
-                .Where(trans => transferIds.Contains(trans.TransferId.Value))
-                .ToList();
-
-            context.Transactions.RemoveRange(otherTransactions);
+            _context.Transactions.UpdateRange(transactionsToUpdate);
         }
     }
 }

@@ -2,15 +2,18 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Bills {
-    public class BillNameFields : AbstractTriggerHandler<Bill> {
-        public BillNameFields(KoinzContext context) : base(context) { }
+    public class SetBillNameFields : IHandler<Bill> {
+        private readonly KoinzContext _context;
+        public SetBillNameFields(KoinzContext context) {
+            this._context = context;
+        }
 
-        public void UpdateRealtedNameFields(List<Bill> newBills) {
+        public void Execute(List<Bill> oldList, List<Bill> newList) {
             HashSet<Guid> categoryIds = new();
             HashSet<Guid> merchantIds = new();
             HashSet<Guid> accountsIds = new();
 
-            foreach (var bill in newBills) {
+            foreach (var bill in newList) {
                 if (bill.CategoryId != null) {
                     categoryIds.Add(bill.CategoryId.Value);
                 }
@@ -23,21 +26,21 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
             Dictionary<Guid, string> accountDict = new();
 
             if (categoryIds.Count > 0) {
-                categoryDict = context.Categories.Where(cat => categoryIds.Contains(cat.Id))
+                categoryDict = _context.Categories.Where(cat => categoryIds.Contains(cat.Id))
                     .ToDictionary(cat => cat.Id, cat => cat.Name);
             }
 
             if (merchantIds.Count > 0) {
-                merchantDict = context.Merchants.Where(merch => merchantIds.Contains(merch.Id))
+                merchantDict = _context.Merchants.Where(merch => merchantIds.Contains(merch.Id))
                     .ToDictionary(merch => merch.Id, merch => merch.Name);
             }
 
             if (accountsIds.Count > 0) {
-                accountDict = context.Accounts.Where(acct => accountsIds.Contains(acct.Id))
+                accountDict = _context.Accounts.Where(acct => accountsIds.Contains(acct.Id))
                     .ToDictionary(acct => acct.Id, acct => acct.Name);
             }
 
-            foreach (var bill in newBills) {
+            foreach (var bill in newList) {
                 var categoryName = "";
                 var merchantName = "";
                 var accountName = "";

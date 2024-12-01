@@ -4,24 +4,18 @@ using K9_Koinz.Models.Helpers;
 using K9_Koinz.Triggers.Handlers.Bills;
 
 namespace K9_Koinz.Triggers {
-    public class BillTrigger : GenericTrigger<Bill>, ITrigger<Bill> {
-        
-        public BillTrigger(KoinzContext context) : base(context) {
-            handlers = new Dictionary<string, Handlers.AbstractTriggerHandler<Bill>> {
-                { "nameFields", new BillNameFields(context) },
-                { "defaultValues", new BillDefaultValues(context) }
-            };
-        }
+    public class BillTrigger : GenericTrigger<Bill> {
+        public BillTrigger(KoinzContext context) : base(context) { }
 
         public override TriggerStatus OnBeforeInsert(List<Bill> newList) {
-            (handlers["nameFields"] as BillNameFields).UpdateRealtedNameFields(newList);
-            (handlers["defaultValues"] as BillDefaultValues).SetDefaultValues(newList);
+            new SetBillDefaultValues(context).Execute(null, newList);
+            new SetBillNameFields(context).Execute(null, newList);
 
             return TriggerStatus.SUCCESS;
         }
 
         public override TriggerStatus OnBeforeUpdate(List<Bill> oldList, List<Bill> newList) {
-            (handlers["nameFields"] as BillNameFields).UpdateRealtedNameFields(newList);
+            new SetBillNameFields(context).Execute(oldList, newList);
 
             return TriggerStatus.SUCCESS;
         }

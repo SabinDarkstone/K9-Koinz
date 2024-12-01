@@ -2,27 +2,14 @@
 using K9_Koinz.Models;
 
 namespace K9_Koinz.Triggers.Handlers.Transactions {
-    public class TransactionSplitLines : AbstractTriggerHandler<Transaction> {
-        public TransactionSplitLines(KoinzContext context) : base(context) { }
-
-        public void DeleteSplitChildren(List<Transaction> oldList) {
-            HashSet<Guid> parentTransactionIds = oldList.Select(trans => trans.Id).ToHashSet();
-
-            if (parentTransactionIds.Count == 0) {
-                return;
-            }
-
-            var childTransactions = context.Transactions
-                .Where(trans => trans.ParentTransactionId != null)
-                .Where(trans => parentTransactionIds.Contains(trans.ParentTransactionId.Value))
-                .ToList();
-
-            context.Transactions.RemoveRange(childTransactions);
+    public class UpdateSplitTransactions : IHandler<Transaction> {
+        private readonly KoinzContext _context;
+        public UpdateSplitTransactions(KoinzContext context) {
+            _context = context;
         }
 
-        public void UpdateSplitChildren(List<Transaction> oldList, List<Transaction> newList) {
+        public void Execute(List<Transaction> oldList, List<Transaction> newList) {
             Dictionary<Guid, Transaction> parentDict = new();
-
 
             foreach (var transaction in newList) {
                 if (transaction.IsSplit) {
@@ -35,7 +22,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
             }
 
             // This contains key/value pairs of parent transaction Ids to a list of split transactions
-            var splitTransactionDict = context.Transactions
+            var splitTransactionDict = _context.Transactions
                 .Where(trans => parentDict.Keys.Contains(trans.ParentTransactionId.Value))
                 .GroupBy(trans => trans.ParentTransactionId)
                 .ToDictionary(x => x.Key.Value, x => x.ToList());
@@ -55,7 +42,7 @@ namespace K9_Koinz.Triggers.Handlers.Transactions {
                 }
             }
 
-            context.Transactions.UpdateRange(childrenToUpdate);
+            _context.Transactions.UpdateRange(childrenToUpdate);
         }
     }
 }
