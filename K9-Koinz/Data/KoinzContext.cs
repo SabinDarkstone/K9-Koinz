@@ -114,21 +114,21 @@ namespace K9_Koinz.Data {
                 .OnDelete(DeleteBehavior.SetNull);
 
             // Uniqueness
-            modelBuilder.Entity<Merchant>()
-                .HasIndex(x => x.Name)
-                .IsUnique();
-            modelBuilder.Entity<Category>()
-                .HasIndex(x => x.Name)
-                .IsUnique();
-            modelBuilder.Entity<Tag>()
-                .HasIndex(x => x.Name)
-                .IsUnique();
-            modelBuilder.Entity<Bill>()
-                .HasIndex(x => x.Name)
-                .IsUnique();
-            modelBuilder.Entity<SavingsGoal>()
-                .HasIndex(x => x.Name)
-                .IsUnique();
+            //modelBuilder.Entity<Merchant>()
+            //    .HasIndex(x => x.Name)
+            //    .IsUnique();
+            //modelBuilder.Entity<Category>()
+            //    .HasIndex(x => x.Name)
+            //    .IsUnique();
+            //modelBuilder.Entity<Tag>()
+            //    .HasIndex(x => x.Name)
+            //    .IsUnique();
+            //modelBuilder.Entity<Bill>()
+            //    .HasIndex(x => x.Name)
+            //    .IsUnique();
+            //modelBuilder.Entity<SavingsGoal>()
+            //    .HasIndex(x => x.Name)
+            //    .IsUnique();
 
             // Budget -> Budget Line
             modelBuilder.Entity<Budget>()
