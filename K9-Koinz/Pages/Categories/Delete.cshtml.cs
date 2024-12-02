@@ -1,21 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
+using K9_Koinz.Data.Repositories;
 
 namespace K9_Koinz.Pages.Categories {
-    public class DeleteModel : AbstractDeleteModel<Category> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+    public class DeleteModel : DeletePageModel<Category> {
 
-        protected override async Task<Category> QueryRecordAsync(Guid id) {
-            return await _context.Categories
-                .Include(cat => cat.ChildCategories)
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
+        public DeleteModel(CategoryRepository repository) : base(repository) { }
 
-        protected override void AdditioanlDatabaseActions() {
-            _context.Categories.RemoveRange(Record.ChildCategories);
+        protected override async Task<Category> QueryRecord(Guid id) {
+            var category = await _repository.GetByIdAsync(id);
+            var childern = (_repository as CategoryRepository).GetChildCategories(id);
+            category.ChildCategories = childern;
+            return category;
         }
     }
 }

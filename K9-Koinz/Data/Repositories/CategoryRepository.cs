@@ -22,5 +22,20 @@ namespace K9_Koinz.Data.Repositories {
                 .Where(cat => cat.ParentCategoryId == categoryId)
                 .ToList();
         }
+
+        public async Task<Category> GetParentCategory(Guid? categoryId) {
+            if (categoryId.HasValue) {
+                return await GetByIdAsync(categoryId.Value, false);
+            } else {
+                return null;
+            }
+        }
+
+        public async Task<Category> GetCategoryWithFamily(Guid categoryId) {
+            return await _dbSet.AsNoTracking()
+                .Include(cat => cat.ParentCategory)
+                .Include(cat => cat.ChildCategories.OrderBy(cCat => cCat.Name))
+                .FirstOrDefaultAsync(cat => cat.Id == categoryId);
+        }
     }
 }
