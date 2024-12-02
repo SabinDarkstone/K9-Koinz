@@ -48,10 +48,10 @@ namespace K9_Koinz.Utils {
             services.AddScoped<AccountRepository>();
             services.AddScoped<CategoryRepository>();
             services.AddScoped<BudgetRepository>();
+            services.AddScoped<TagRepository>();
             services.AddScoped<Repository<BudgetLine>>();
             services.AddScoped<Repository<BudgetLinePeriod>>();
             services.AddScoped<Repository<RepeatConfig>>();
-            services.AddScoped<Repository<Tag>, Repository<Tag>>();
             services.AddScoped<Repository<Transfer>>();
 
         }

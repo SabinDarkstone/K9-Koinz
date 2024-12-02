@@ -1,10 +1,9 @@
-﻿using K9_Koinz.Data;
+﻿using K9_Koinz.Data.Repositories;
 using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Tags {
-    public class DeleteModel : AbstractDeleteModel<Tag> {
-        public DeleteModel(KoinzContext context, ILogger<AbstractDbPage> logger)
-            : base(context, logger) { }
+    public class DeleteModel : DeletePageModel<Tag> {
+        public DeleteModel(TagRepository repository) : base(repository) { }
     }
 }
