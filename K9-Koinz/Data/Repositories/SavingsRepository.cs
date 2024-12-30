@@ -1,11 +1,12 @@
-﻿using K9_Koinz.Data.Repositories.Meta;
+﻿using K9_Koinz.Data.Repositories;
 using K9_Koinz.Models;
+using K9_Koinz.Triggers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Data {
-    public class SavingsRepository : Repository<SavingsGoal> {
-        public SavingsRepository(KoinzContext context) : base(context) { }
+    public class SavingsRepository : TriggeredRepository<SavingsGoal> {
+        public SavingsRepository(KoinzContext context, ITrigger<SavingsGoal> trigger) : base(context, trigger) { }
 
         public async Task<SelectList> GetGoalOptions(Guid? accountId = null) {
             if (accountId.HasValue) {

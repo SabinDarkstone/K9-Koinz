@@ -1,24 +1,22 @@
 ﻿using K9_Koinz.Data;
 using K9_Koinz.Models;
+using K9_Koinz.Models.Helpers;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using K9_Koinz.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K9_Koinz.Pages.Savings.Goals {
-    public class EditModel : AbstractEditModel<SavingsGoal> {
-        public EditModel(KoinzContext context, ILogger<AbstractDbPage> logger,
-            IDropdownPopulatorService dropdownService)
-                : base(context, logger, dropdownService) { }
+    public class EditModel : EditPageModel<SavingsGoal> {
+        public EditModel(SavingsRepository repository, IDropdownPopulatorService dropdownService)
+            : base(repository, dropdownService) { }
 
-        protected override async Task BeforeSaveActionsAsync() {
-            var account = await _context.Accounts.FindAsync(Record.AccountId);
-
-            Record.AccountName = account.Name;
-        }
-
-        protected override IActionResult NavigationOnSuccess() {
-            return RedirectToPage(PagePaths.SavingsIndex, new { view = "goals" });
+        protected override IActionResult HandleNavigate(DbSaveResult saveResult) {
+            if (saveResult.IsSuccess) {
+                return RedirectToPage(PagePaths.SavingsIndex, new { view = "goals" });
+            } else {
+                return Page();
+            }
         }
     }
 }

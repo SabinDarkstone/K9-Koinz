@@ -36,7 +36,7 @@ namespace K9_Koinz.Utils {
             services.AddScoped<ITrigger<BudgetLine>, GenericTrigger<BudgetLine>>();
             services.AddScoped<ITrigger<BudgetLinePeriod>, GenericTrigger<BudgetLinePeriod>>();
             services.AddScoped<ITrigger<RepeatConfig>, GenericTrigger<RepeatConfig>>();
-            services.AddScoped<ITrigger<SavingsGoal>, GenericTrigger<SavingsGoal>>();
+            services.AddScoped<ITrigger<SavingsGoal>, SavingsTrigger>();
             services.AddScoped<ITrigger<Tag>, GenericTrigger<Tag>>();
             services.AddScoped<ITrigger<Transfer>, GenericTrigger<Transfer>>();
 
