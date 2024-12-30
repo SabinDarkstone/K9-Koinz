@@ -8,6 +8,10 @@ on:
 
 jobs:
   deploy:
+
+    env:
+      DOTNET_INSTALL_DIR: "./.dotnet"
+      
     # Our previously created self-hosted runner
     runs-on: self-hosted
 
