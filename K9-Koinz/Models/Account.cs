@@ -1,5 +1,4 @@
 ﻿using K9_Koinz.Models.Meta;
-using K9_Koinz.Utils;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +16,9 @@ namespace K9_Koinz.Models {
         [Display(Name = "Investments")]
         INVESTMENT,
         [Display(Name = "Property")]
-        PROPERTY
+        PROPERTY,
+        [Display(Name = "Gift Card")]
+        GIFT_CARD
     }
 
     public class Account : BaseEntity, INameable {
