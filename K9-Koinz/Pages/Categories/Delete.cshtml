@@ -18,17 +18,17 @@
     <h4>Category</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Name)
         </dd>
         @if (Model.Record.ChildCategories.Any()) {
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.ChildCategories)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 <ul>
                     @foreach (var child in Model.Record.ChildCategories) {
                         <li>@child.Name</li>
@@ -37,10 +37,10 @@
             </dd>
         }
         @if (Model.Record.IsChildCategory) {
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.ParentCategoryId)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.Record.ParentCategoryName)
             </dd>
         }

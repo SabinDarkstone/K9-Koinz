@@ -13,22 +13,22 @@
     <h4>Budget Line</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.BudgetId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.BudgetName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.BudgetCategoryId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.BudgetCategoryName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.BudgetedAmount)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Model.Record.BudgetedAmount.FormatCurrency()
         </dd>
     </dl>

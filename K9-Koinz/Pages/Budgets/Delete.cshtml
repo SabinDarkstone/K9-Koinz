@@ -13,29 +13,29 @@
     <h4>Budget</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.BudgetTagId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.BudgetTagName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Description)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Description)
         </dd>
         @if (Model.Record.DoNotUseCategories) {
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.BudgetedAmount)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 @Model.Record.BudgetedAmount.Value.FormatCurrency(0)
             </dd>
         }

@@ -18,39 +18,39 @@
     <h4>Budget</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Description)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @if (string.IsNullOrEmpty(Model.Record.Description)) {
                 <text>&nbsp;</text>
             } else {
                 @Html.DisplayFor(model => model.Record.Description)
             }
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.BudgetTagId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.BudgetTagName)
         </dd>
         @if (Model.Record.DoNotUseCategories) {
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.BudgetedAmount)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 @Model.Record.BudgetedAmount.Value.FormatCurrency(0)
             </dd>
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 Rollover?
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 @if (Model.BudgetLines.First().Periods.Count == 0) {
                     <span>No</span>
                 } else if (Model.BudgetLines.First().Periods.Count == 1) {

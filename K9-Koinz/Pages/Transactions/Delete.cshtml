@@ -21,56 +21,56 @@
     <h4>Transaction</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Account)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.AccountName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Date)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Date)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.MerchantId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.MerchantName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Category)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.CategoryName)
         </dd>
         @if (Model.Record.TagId.HasValue) {
             var style = "background-color: " + Model.Record.Tag.HexColor + "; text-decoration: none";
 
-            <dt class="col-sm-2">
+            <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.TagId)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-sm-9">
                 <span class="badge badge-primary" style="@style">@Model.Record.Tag.ShortForm</span>
             </dd>
         }
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Amount)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Model.Record.Amount.FormatCurrency(2)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Notes)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Notes)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.IsSavingsSpending)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @(Model.Record.IsSavingsSpending ? "Yes" : "No")
         </dd>
     </dl>
