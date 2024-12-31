@@ -2,6 +2,7 @@ using K9_Koinz.Models;
 using K9_Koinz.Pages.Meta;
 using K9_Koinz.Services;
 using K9_Koinz.Data.Repositories;
+using K9_Koinz.Utils;
 
 namespace K9_Koinz.Pages.Categories {
 
@@ -11,6 +12,9 @@ namespace K9_Koinz.Pages.Categories {
 
         public bool ChartError { get; set; }
         public string SpendingHistory { get; set; }
+
+        public double ThisYearAverage { get; set; }
+        public double LastYearAverage { get; set; }
 
         public DetailsModel(CategoryRepository repository, ITrendGraphService trendGraphService) : base(repository) {
             _trendGraphService = trendGraphService;
@@ -28,6 +32,9 @@ namespace K9_Koinz.Pages.Categories {
             if (SpendingHistory == null) {
                 ChartError = true;
             }
+
+            ThisYearAverage = (_repository as CategoryRepository).GetAverageSpending(DateTime.Today.StartOfYear(), DateTime.Today.EndOfYear(), Record.Id).Result;
+            LastYearAverage = (_repository as CategoryRepository).GetAverageSpending(DateTime.Today.AddYears(-1).StartOfYear(), DateTime.Today.AddYears(-1).EndOfYear(), Record.Id).Result;
         }
     }
 }

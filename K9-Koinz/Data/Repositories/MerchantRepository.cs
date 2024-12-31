@@ -12,5 +12,22 @@ namespace K9_Koinz.Data.Repositories {
                 .Include(merch => merch.Transactions)
                 .FirstOrDefaultAsync(m => m.Id == merchantId);
         }
+
+        public async Task<double> GetAverageSpending(DateTime startDate, DateTime endDate, Guid merchantId) {
+            var transactions = _context.Transactions.AsNoTracking()
+                .Include(trans => trans.Category)
+                .Where(trans => trans.CategoryId.HasValue && trans.TransferId == null)
+                .Where(trans => !trans.IsSplit && !trans.IsSavingsSpending)
+                .Where(trans => trans.MerchantId == merchantId)
+                .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date);
+
+            if (!transactions.Any()) {
+                return 0;
+            }
+
+            return (await transactions.GroupBy(trans => trans.Date.Month)
+                .ToDictionaryAsync(x => x.Key, x => x.Sum(trans => trans.Amount) * -1))
+                .Values.Where(x => x > 0).Average();
+        }
     }
 }

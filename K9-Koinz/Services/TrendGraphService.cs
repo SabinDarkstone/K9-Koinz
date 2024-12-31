@@ -19,19 +19,19 @@ namespace K9_Koinz.Services {
 
         public async Task<string> CreateGraphData(Expression<Func<Transaction, bool>> predicate, bool hideSavingsSpending, DateTime? startDate = null, DateTime? endDate = null) {
             if (startDate == null) {
-                startDate = DateTime.Today.AddMonths(-11).StartOfMonth();
+                startDate = DateTime.Today.AddMonths(-12).StartOfMonth();
             }
             if (endDate == null) {
                 endDate = DateTime.Today.EndOfMonth();
             }
 
             var transactionsIQ = _context.Transactions
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(trans => trans.Category)
                 .Include(trans => trans.Merchant)
                 .Include(trans => trans.Account)
                 .Include(trans => trans.Tag)
-                .AsNoTracking()
-                .AsSplitQuery()
                 .Where(trans => !trans.IsSplit)
                 .Where(trans => !trans.Account.HideAccountTransactions)
                 .Where(trans => trans.Date.Date >= startDate.Value.Date && trans.Date.Date <= endDate.Value.Date)
@@ -52,9 +52,9 @@ namespace K9_Koinz.Services {
 
             var output = new List<SeriesColumn>();
 
-            var startingKey = DateTime.Today.AddMonths(-11).Month + "|" + DateTime.Today.AddMonths(-11).Year;
-            for (var i = 1; i < 12; i++) {
-                var currentDate = DateTime.Today.AddMonths(-11 + i);
+            var startingKey = DateTime.Today.AddMonths(-12).Month + "|" + DateTime.Today.AddMonths(-12).Year;
+            for (var i = 1; i < 13; i++) {
+                var currentDate = DateTime.Today.AddMonths(-12 + i);
                 var currentYear = currentDate.Year;
                 var currentMonth = currentDate.Month;
 

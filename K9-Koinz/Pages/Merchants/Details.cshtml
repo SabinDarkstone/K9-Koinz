@@ -12,11 +12,25 @@
     <h4>Merchant</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Record.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Record.Name)
+        </dd>
+
+        <dt class="col-sm-3">
+            <span>Last Year Monthly Average</span>
+        </dt>
+        <dd class="col-sm-9">
+            @Model.LastYearAverage.FormatCurrency(0)
+        </dd>
+
+        <dt class="col-sm-3">
+            <span>This Year Monthly Average</span>
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ThisYearAverage.FormatCurrency(0)
         </dd>
 
         @await Component.InvokeAsync(nameof(Components.DateFields), new {
@@ -26,7 +40,7 @@
 </div>
 
 <div class="mb-4">
-    <div class="col-md-6">
+    <div class="col-md-10">
         @if (Model.ChartError) {
             <p class="text-danger">There has been an error loading your spending chart.</p>
         } else {
@@ -81,7 +95,11 @@
                 title: {
                     text: "@Html.Raw(Model.Record.Name) Spending"
                 },
+                axisX: {
+                    labelAngle: -45
+                },
                 axisY: {
+                    minimum: 0,
                     title: "Amount"
                 },
                 data: [{

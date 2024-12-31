@@ -103,6 +103,10 @@ namespace K9_Koinz.Utils {
         }
 
         public static int GetMonthNumber(string monthName) {
+            if (monthName.Length == 3) {
+                return MONTH_NAMES.Select(m => m.Substring(0, 3).ToLower()).ToList().IndexOf(monthName.ToLower()) + 1;
+            }
+
             return MONTH_NAMES.Select(m => m.ToLower()).ToList().IndexOf(monthName.ToLower()) + 1;
         }
 
