@@ -64,7 +64,15 @@
                                 @Html.DisplayFor(modelItem => account.Name)
                             </td>
                             <td>
-                                @account.CurrentBalance.FormatCurrency()
+                                @if (account.CurrentBalance > 0) {
+                                    <span class="text-success">
+                                        @Math.Abs(account.CurrentBalance).FormatCurrency(2)
+                                    </span>
+                                } else {
+                                    <span class="text-danger">
+                                        @Math.Abs(account.CurrentBalance).FormatCurrency(2)
+                                    </span>
+                                }
                             </td>
                             <td>
                                 <a asp-page="@PagePaths.AccountEdit" asp-route-id="@account.Id"><i class="fa-solid fa-pencil"></i></a> |

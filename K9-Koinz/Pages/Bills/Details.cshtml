@@ -82,7 +82,15 @@
                         @Html.DisplayFor(trans => transaction.Date)
                     </td>
                     <td>
-                        @transaction.Amount.FormatCurrency(2)
+                        @if (transaction.TransactionType == Models.TransactionType.PLUS) {
+                            <span class="text-success">
+                                @Math.Abs(transaction.Amount).FormatCurrency()
+                            </span>
+                        } else {
+                            <span class="text-danger">
+                                @Math.Abs(transaction.Amount).FormatCurrency()
+                            </span>
+                        }
                     </td>
                     <td>
                         <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@transaction.Id"><i class="fa-solid fa-circle-info"></i></a>

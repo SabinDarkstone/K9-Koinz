@@ -91,11 +91,13 @@
 <div class="row">
     <h5>Transactions</h5>
     @if (Model.Record.Transactions.Any()) {
-        <div class="col-sm-5">
+        <div class="col-sm-10">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th class="d-none d-md-table-cell">Merchant</th>
+                        <th class="d-none d-sm-table-cell">Category</th>
                         <th>Amount</th>
                         <th></th>
                     </tr>
@@ -103,8 +105,30 @@
                 <tbody>
                     @foreach (var transaction in Model.Record.Transactions.OrderByDescending(trans => trans.Date)) {
                         <tr>
-                            <td>@transaction.Date.FormatShortString()</td>
-                            <td>@transaction.Amount.FormatCurrency(2)</td>
+                            <td>
+                                @transaction.Date.FormatShortString()
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@transaction.MerchantId" class="link-unstyled">
+                                    @transaction.MerchantName
+                                </a>
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                                <a asp-page="@PagePaths.CategoryDetails" asp-route-id="@transaction.CategoryId" class="link-unstyled">
+                                    @transaction.CategoryName
+                                </a>
+                            </td>
+                            <td>
+                                @if (transaction.TransactionType == Models.TransactionType.PLUS) {
+                                    <span class="text-success">
+                                        @Math.Abs(transaction.Amount).FormatCurrency()
+                                    </span>
+                                } else {
+                                    <span class="text-danger">
+                                        @Math.Abs(transaction.Amount).FormatCurrency()
+                                    </span>
+                                }
+                            </td>
                             <td>
                                 <a asp-page="@PagePaths.TransactionDetails" asp-route-id="@transaction.Id"><i class="fa-solid fa-circle-info"></i></a>
                             </td>
