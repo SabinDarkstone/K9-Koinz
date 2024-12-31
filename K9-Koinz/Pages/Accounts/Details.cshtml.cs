@@ -10,6 +10,7 @@ namespace K9_Koinz.Pages.Accounts {
 
         protected override void AfterQueryActions() {
             Transactions = (_repository as AccountRepository).GetRecentTransactionsForAccount(Record.Id, 100);
+            Record.CurrentBalance = (_repository as AccountRepository).GetCurrentBalance(Record.Id);
         }
     }
 }
