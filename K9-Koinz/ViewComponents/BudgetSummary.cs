@@ -1,4 +1,4 @@
-﻿using K9_Koinz.Data;
+using K9_Koinz.Data;
 using K9_Koinz.Models;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
@@ -74,6 +74,7 @@ namespace K9_Koinz.ViewComponents {
             for (var simDate = startDate.Date; simDate <= endDate.Date; simDate += TimeSpan.FromDays(1)) {
                 var todaysBills = activeBills
                     .Where(bill => bill.RepeatConfig.IsActive)
+                    .Where(bill => bill.RepeatConfig.CalculatedNextFiring != null)
                     .Where(bill => bill.RepeatConfig.CalculatedNextFiring.Value.Date == simDate.Date)
                     .ToList();
                 foreach (var bill in todaysBills) {
