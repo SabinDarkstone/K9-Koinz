@@ -11,7 +11,7 @@ namespace K9_Koinz.Data.Repositories {
         public async Task<double> GetAverageSpending(DateTime startDate, DateTime endDate, Guid categoryId) {
             var transactions = await _context.Transactions.AsNoTracking()
                 .Include(trans => trans.Category)
-                .Where(trans => trans.CategoryId.HasValue && trans.BillId == null && trans.TransferId == null)
+                .Where(trans => trans.CategoryId.HasValue && trans.TransferId == null)
                 .Where(trans => !trans.IsSplit && !trans.IsSavingsSpending)
                 .Where(trans => trans.CategoryId == categoryId || trans.Category.ParentCategoryId == categoryId)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
