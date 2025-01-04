@@ -118,7 +118,7 @@ namespace K9_Koinz.Pages.Transactions {
 
             Records = await (_repository as TransactionRepository).SearchTransactions(
                 CategoryFilters, MerchantFilter, AccountFilter, TagFilter, searchString, _hideTransfers,
-                MinDateFilter, MaxDateFilter, sortOrder, pageIndex, 50
+                MinDateFilter, MaxDateFilter, sortOrder, pageIndex, 100
             );
         }
     }
