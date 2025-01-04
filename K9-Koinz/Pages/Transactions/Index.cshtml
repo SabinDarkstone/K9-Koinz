@@ -34,7 +34,7 @@
 }
 
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-3 d-print-none">
         <form asp-page="@PagePaths.TransactionIndex" method="get">
             <div class="form-actions no-color">
                 <div class="form-group mb-3">
@@ -110,7 +110,7 @@
         </form>
     </div>
 
-    <div class="col-lg-9">
+    <div class="col-lg-9 d-print-none">
         <div class="d-none d-lg-block">
             <table class="table">
                 <thead>
@@ -231,11 +231,11 @@
                             </td>
                             <td>
                                 @if (item.TransactionType == Models.TransactionType.PLUS) {
-                                    <span class="text-success">
+                                    <span class="text-success d-print-none">
                                         @Math.Abs(item.Amount).FormatCurrency()
                                     </span>
                                 } else {
-                                    <span class="text-danger">
+                                    <span class="text-danger d-print-none">
                                         @Math.Abs(item.Amount).FormatCurrency()
                                     </span>
                                 }
@@ -251,7 +251,7 @@
             </table>
         </div>
 
-        <div class="card mt-4 d-block d-lg-none">
+        <div class="card mt-4 d-block d-lg-none d-print-none">
             <ul class="list-group list-group-flush">
                 @foreach (var transaction in Model.Records) {
                     <li class="list-group-item">
@@ -341,6 +341,65 @@
                 Next
             </a>
         </div>
+    </div>
+
+    <div class="d-print-block">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="d-none d-xl-block">
+                        @Html.DisplayNameFor(model => model.Records[0].Account)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Records[0].Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Records[0].MerchantId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Records[0].Amount)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Records)
+                {
+                    var hasNotes = !string.IsNullOrEmpty(item.Notes) ? "tooltip" : string.Empty;
+                    <tr data-bs-toggle="@hasNotes" data-bs-title="Notes: @item.Notes" data-bs-placement="left">
+                        <td class="d-none d-xl-block">
+                            @Html.DisplayFor(modelItem => item.AccountName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.MerchantId" class="link-unstyled">
+                                @if (item.TagId.HasValue) {
+                                    var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
+                                    <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
+                                }
+                                @if (item.IsSavingsSpending) {
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                }
+                                @if (item.IsSplit) {
+                                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                                }
+                                @if (item.ParentTransactionId.HasValue) {
+                                    <i class="fa-solid fa-sitemap"></i>
+                                }
+                                @if (item.BillId.HasValue) {
+                                    <i class="fa-regular fa-money-bill-1"></i>
+                                }
+                                @Html.DisplayFor(modelItem => item.MerchantName)
+                            </a>
+                        </td>
+                        <td>
+                            @item.Amount.FormatCurrency(2)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
