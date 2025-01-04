@@ -23,14 +23,33 @@
             <span>Last Year Monthly Average</span>
         </dt>
         <dd class="col-sm-9">
-            @Model.LastYearAverage.FormatCurrency(0)
+            @if (Model.LastYearAverage > 0)
+            {
+                <span class="text-success">
+                    @Math.Abs(Model.LastYearAverage).FormatCurrency(2)
+                </span>
+            }
+            else
+            {
+                <span class="text-danger">
+                    @Math.Abs(Model.LastYearAverage).FormatCurrency(2)
+                </span>
+            }
         </dd>
 
         <dt class="col-sm-3">
             <span>This Year Monthly Average</span>
         </dt>
         <dd class="col-sm-9">
-            @Model.ThisYearAverage.FormatCurrency(0)
+            @if (Model.ThisYearAverage > 0) {
+                <span class="text-success">
+                    @Math.Abs(Model.ThisYearAverage).FormatCurrency(2)
+                </span>
+            } else {
+                <span class="text-danger">
+                    @Math.Abs(Model.ThisYearAverage).FormatCurrency(2)
+                </span>
+            }
         </dd>
 
         @await Component.InvokeAsync(nameof(Components.DateFields), new {

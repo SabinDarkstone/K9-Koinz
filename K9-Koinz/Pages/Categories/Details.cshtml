@@ -58,14 +58,30 @@
             <span>Last Year Monthly Average</span>
         </dt>
         <dd class="col-sm-9">
-            @Model.LastYearAverage.FormatCurrency(0)
+            @if (Model.LastYearAverage > 0) {
+                <span class="text-success">
+                    @Math.Abs(Model.LastYearAverage).FormatCurrency(2)
+                </span>
+            } else {
+                <span class="text-danger">
+                    @Math.Abs(Model.LastYearAverage).FormatCurrency(2)
+                </span>
+            }
         </dd>
 
         <dt class="col-sm-3">
             <span>This Year Monthly Average</span>
         </dt>
         <dd class="col-sm-9">
-            @Model.ThisYearAverage.FormatCurrency(0)
+            @if (Model.ThisYearAverage > 0) {
+                <span class="text-success">
+                    @Math.Abs(Model.ThisYearAverage).FormatCurrency(2)
+                </span>
+            } else {
+                <span class="text-danger">
+                    @Math.Abs(Model.ThisYearAverage).FormatCurrency(2)
+                </span>
+            }
         </dd>
 
         @await Component.InvokeAsync(nameof(Components.DateFields), new {
@@ -74,17 +90,15 @@
     </dl>
 </div>
 
-@if (Model.Record.CategoryType == CategoryType.EXPENSE) {
-    <div class="mb-4">
-        <div class="col-md-10">
-            @if (Model.ChartError) {
-                <p class="text-danger">There has been an error loading your spending chart.</p>
-            } else {
-                <div id="trendChartContainer" style="height: 300px; width: 100%; background-color: transparent;"></div>
-            }
-        </div>
+<div class="mb-4">
+    <div class="col-md-10">
+        @if (Model.ChartError) {
+            <p class="text-danger">There has been an error loading your spending chart.</p>
+        } else {
+            <div id="trendChartContainer" style="height: 300px; width: 100%; background-color: transparent;"></div>
+        }
     </div>
-}
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

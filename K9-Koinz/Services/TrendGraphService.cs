@@ -37,6 +37,7 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Date.Date >= startDate.Value.Date && trans.Date.Date <= endDate.Value.Date)
                 .Where(predicate);
 
+
             if (hideSavingsSpending) {
                 transactionsIQ = transactionsIQ.Where(trans => !trans.IsSavingsSpending);
             }
@@ -69,6 +70,13 @@ namespace K9_Koinz.Services {
                     month + " '" + currentYear.ToString().Substring(2),
                     amount
                 ));
+            }
+
+            var allNegative = output.All(x => x.Y <= 0);
+            if (allNegative) {
+                output.ForEach(x => {
+                    x.Y = Math.Abs(x.Y);
+                });
             }
 
             return JsonConvert.SerializeObject(output);

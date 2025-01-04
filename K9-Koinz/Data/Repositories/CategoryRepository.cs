@@ -9,21 +9,22 @@ namespace K9_Koinz.Data.Repositories {
             : base(context, trigger) { }
 
         public async Task<double> GetAverageSpending(DateTime startDate, DateTime endDate, Guid categoryId) {
-            var transactions = _context.Transactions.AsNoTracking()
+            var transactions = await _context.Transactions.AsNoTracking()
                 .Include(trans => trans.Category)
                 .Where(trans => trans.CategoryId.HasValue && trans.BillId == null && trans.TransferId == null)
                 .Where(trans => !trans.IsSplit && !trans.IsSavingsSpending)
                 .Where(trans => trans.CategoryId == categoryId || trans.Category.ParentCategoryId == categoryId)
-                .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date);
+                .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
+                .ToListAsync();
 
             if (!transactions.Any()) {
                 return 0;
             }
             
 
-            return (await transactions.GroupBy(trans => trans.Date.Month)
-                .ToDictionaryAsync(x => x.Key, x => x.Sum(trans => trans.Amount) * -1))
-                .Values.Where(x => x > 0).Average();
+            return (transactions.GroupBy(trans => trans.Date.Month)
+                .ToDictionary(x => x.Key, x => x.Sum(trans => trans.Amount)))
+                .Values.Average();
         }
 
         public async Task<SelectList> GetCategoriesForList() {
