@@ -1,4 +1,5 @@
 ﻿ @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+ @inject K9_Koinz.Services.SettingsService SettingsService
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +34,7 @@
                 </environment>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -73,6 +74,9 @@
                                 <li class="nav-item">
                                     <a id="nav-tags" class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.TagIndex"><i class="fa-solid fa-tags"></i> Tags</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a id="nav-settings" class="dropdown-item nav-link nav-link-hover" asp-page="@PagePaths.SettingIndex"><i class="fa-solid fa-gear"></i> Settings</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -99,7 +103,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
     <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-          rel="Stylesheet" type="text/css" />
+    rel="Stylesheet" type="text/css" />
 
     <!-- Custom JS -->
     <script src="~/js/autocompleteHelper.js"></script>
@@ -110,3 +114,28 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+@{
+    var settings = await SettingsService.GetSettingsAsync();
+
+    var useColorblind = settings.ContainsKey("Colorblind Mode") ? bool.Parse(settings["Colorblind Mode"]) : false;
+
+    if (useColorblind)
+    {
+        <style>
+            :root {
+                --bs-success-rgb: 0, 107, 121;
+                --bs-success-bg-subtle: #add9d4;
+                --bs-danger-rgb: 211, 47, 47;
+                --bs-danger-bg-subtle: #ebcaca;
+            }
+        </style>
+
+
+        <script>
+            $(document).ready(function() {
+                console.log("Using colorblind mode");
+            });
+        </script>
+    }
+}

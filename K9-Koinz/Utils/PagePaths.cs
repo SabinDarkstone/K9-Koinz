@@ -80,5 +80,7 @@
         public const string RecurringTransferDelete = "/Transfers/Recurring/Delete";
         public const string RecurringTransferDetails = "/Transfers/Recurring/Details";
         public const string RecurringTransferEdit = "/Transfers/Recurring/Edit";
+
+        public const string SettingIndex = "/Settings/Index";
     }
 }

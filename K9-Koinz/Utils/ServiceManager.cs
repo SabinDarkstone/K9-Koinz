@@ -19,6 +19,7 @@ namespace K9_Koinz.Utils {
             services.AddScoped<IDropdownPopulatorService, DropdownPopulatorService>();
             services.AddScoped<IBudgetService, BudgetService>();
             services.AddTransient<IDupeCheckerService<Transaction>, TransactionDupeCheckerService>();
+            services.AddScoped<SettingsService>();
 
             // Add base repository and trigger services
             services.AddScoped(typeof(Repository<>));

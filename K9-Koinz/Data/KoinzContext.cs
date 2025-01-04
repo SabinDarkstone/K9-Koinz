@@ -18,6 +18,7 @@ namespace K9_Koinz.Data {
         public DbSet<RepeatConfig> RepeatConfigs { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<ScheduledJobStatus> JobStatuses { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
         public KoinzContext(DbContextOptions<KoinzContext> options)
             : base(options) {
@@ -76,6 +77,10 @@ namespace K9_Koinz.Data {
             modelBuilder.Entity<ScheduledJobStatus>()
                 .HasQueryFilter(x => x.IsDeleted == false)
                 .ToTable("JobStatus")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<Setting>()
+                .HasQueryFilter(x => x.IsDeleted == false)
+                .ToTable("Setting")
                 .HasKey(x => x.Id);
 
             // Subcategories
