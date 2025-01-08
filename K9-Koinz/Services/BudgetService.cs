@@ -178,7 +178,8 @@ namespace K9_Koinz.Services {
                 transactionsIQ = transactionsIQ
                     .Where(trans => trans.CategoryId.HasValue)
                     .Where(trans => trans.CategoryId == budgetLine.BudgetCategoryId || childCategories.Contains(trans.CategoryId.Value))
-                    .Where(trans => !trans.IsSavingsSpending);
+                    .Where(trans => !trans.IsSavingsSpending)
+                    .Where(trans => !trans.Account.HideAccountTransactions);
             }
 
             if (budgetLine.Budget.BudgetTagId != null) {
