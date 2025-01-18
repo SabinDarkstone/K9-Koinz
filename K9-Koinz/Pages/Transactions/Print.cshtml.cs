@@ -71,7 +71,7 @@ namespace K9_Koinz.Pages.Transactions {
                 transactions = transactions.Where(trans => trans.AccountId == accountId);
             }
 
-            Transactions = await transactions.OrderBy(trans => trans.Date).ToListAsync();
+            Transactions = await transactions.OrderByDescending(trans => trans.Date).ToListAsync();
         }
     }
 }
