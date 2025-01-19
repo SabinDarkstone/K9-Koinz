@@ -1,0 +1,47 @@
+﻿@page
+@model K9_Koinz.Pages.Errors.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>Only showing the most recent 500 errors logged.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorLog[0].ClassName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorLog[0].Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorLog[0].CreatedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ErrorLog) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    <a asp-page="@PagePaths.ErrorsDetails" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="@PagePaths.ErrorsDelete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

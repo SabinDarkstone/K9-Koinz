@@ -65,8 +65,8 @@ namespace K9_Koinz {
                 context.Database.Migrate();
             }
 
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseStaticFiles();
-            app.UseDeveloperExceptionPage();
             app.UseStatusCodePagesWithReExecute("/Errors/{0}");
             app.UseRouting();
             app.MapRazorPages();

@@ -82,5 +82,9 @@
         public const string RecurringTransferEdit = "/Transfers/Recurring/Edit";
 
         public const string SettingIndex = "/Settings/Index";
+
+        public const string ErrorsIndex = "/Errors/Index";
+        public const string ErrorsDetails = "/Errors/Details";
+        public const string ErrorsDelete = "/Errors/Delete";
     }
 }

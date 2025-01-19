@@ -3,6 +3,7 @@ using System;
 using K9_Koinz.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K9_Koinz.Migrations
 {
     [DbContext(typeof(KoinzContext))]
-    partial class KoinzContextModelSnapshot : ModelSnapshot
+    [Migration("20250119140004_BasicErrorLogTable")]
+    partial class BasicErrorLogTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -303,19 +306,10 @@ namespace K9_Koinz.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ClassName")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CurrentRoute")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ExceptionString")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("InnerExceptionId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsDeleted")
@@ -324,15 +318,7 @@ namespace K9_Koinz.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("StackTraceString")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("InnerExceptionId");
 
                     b.ToTable("Error", (string)null);
                 });
@@ -820,15 +806,6 @@ namespace K9_Koinz.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ParentCategory");
-                });
-
-            modelBuilder.Entity("K9_Koinz.Models.ErrorLog", b =>
-                {
-                    b.HasOne("K9_Koinz.Models.ErrorLog", "InnerException")
-                        .WithMany()
-                        .HasForeignKey("InnerExceptionId");
-
-                    b.Navigation("InnerException");
                 });
 
             modelBuilder.Entity("K9_Koinz.Models.SavingsGoal", b =>

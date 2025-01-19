@@ -1,0 +1,59 @@
+﻿@page
+@model K9_Koinz.Pages.Errors.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>ErrorLog</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ErrorLog.CurrentRoute)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ErrorLog.CurrentRoute)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ErrorLog.ClassName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ErrorLog.ClassName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ErrorLog.Message)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ErrorLog.Message)
+        </dd>
+        @if (Model.ErrorLog.InnerExceptionId.HasValue) {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ErrorLog.InnerException)
+            </dt>
+            <dd class="col-sm-10">
+                <a asp-page="@PagePaths.ErrorsDetails" asp-route-id="@Model.ErrorLog.InnerExceptionId">
+                    @Html.DisplayFor(model => model.ErrorLog.InnerException.ClassName)
+                </a>
+            </dd>
+        }
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ErrorLog.CreatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ErrorLog.CreatedDate)
+        </dd>
+    </dl>
+
+    <h4>Stack Trace</h4>
+    <p>
+        @Html.Raw(Model.ErrorLog.StackTraceString.Replace("\r\n", "<br>").Replace("\n", "<br>").Replace("K9_Koinz", "<b>K9_Koinz</b>"))
+    </p>
+</div>
+<div>
+    <a asp-page="@PagePaths.ErrorsDelete" asp-route-id="@Model.ErrorLog.Id">Delete</a> |
+    <a asp-page="@PagePaths.ErrorsIndex">Back to List</a>
+</div>
