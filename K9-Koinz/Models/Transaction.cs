@@ -12,6 +12,9 @@ namespace K9_Koinz.Models {
         PLUS
     }
     public class Transaction : BaseEntity, IAmount {
+        private string _merchantName;
+        private string _categoryName;
+
         [Required]
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
@@ -26,12 +29,26 @@ namespace K9_Koinz.Models {
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
-        public string MerchantName { get; set; }
+        public string MerchantName {
+            get {
+                return _merchantName.Truncate();
+            }
+            set {
+                _merchantName = value;
+            }
+        }
 
         [DisplayName("Category")]
         public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
-        public string CategoryName { get; set; }
+        public string CategoryName {
+            get {
+                return _categoryName.Truncate();
+            }
+            set {
+                _categoryName = value;
+            }
+        }
 
         [Column(TypeName = "decimal(10, 2)")]
         public double Amount { get; set; }

@@ -20,7 +20,7 @@ namespace K9_Koinz.Data.Repositories {
 
         public async Task<PaginatedList<Transaction>> SearchTransactions(List<Guid> categoryIds, Guid merchantId,
             Guid accountId, Guid tagId, string searchString, bool? hideTransfers, DateTime? startDate, DateTime? endDate,
-            string sortOrder, int? pageIndex, int pageSize) {
+            int budgetFiltering, string sortOrder, int? pageIndex, int pageSize) {
             var transactionsIQ = _context.Transactions
                 .AsNoTracking()
                 .Include(trans => trans.Category)
@@ -52,6 +52,14 @@ namespace K9_Koinz.Data.Repositories {
 
             if (endDate.HasValue) {
                 transactionsIQ = transactionsIQ.Where(trans => trans.Date.Date <= endDate.Value.Date);
+            }
+
+            if (budgetFiltering == 1) {
+                transactionsIQ = transactionsIQ.Where(trans => !trans.IsSavingsSpending)
+                    .Where(trans => !trans.IsSplit)
+                    .Where(trans => !trans.Account.HideAccountTransactions)
+                    .Where(trans => trans.BillId == null)
+                    .Where(trans => trans.TransferId == null);
             }
 
             if (!string.IsNullOrWhiteSpace(searchString)) {

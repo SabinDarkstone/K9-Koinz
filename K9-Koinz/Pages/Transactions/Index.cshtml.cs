@@ -42,6 +42,8 @@ namespace K9_Koinz.Pages.Transactions {
         public string SelectedTag { get; set; }
         public string SearchText { get; set; }
 
+        public int BudgetFiltering { get; set; }
+
         public bool HideTransfers {
             get {
                 if (_hideTransfers.HasValue) {
@@ -74,7 +76,7 @@ namespace K9_Koinz.Pages.Transactions {
         public SelectList CategoryOptions;
         public List<SelectListItem> AccountOptions;
 
-        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex, string searchString, bool? hideTransfers) {
+        public async Task OnGetAsync(string sortOrder, string catFilter, string merchFilter, string accountFilter, string tagId, DateTime? minDate, DateTime? maxDate, int? pageIndex, string searchString, bool? hideTransfers, int? budgetFiltering) {
             CategoryOptions = await _categoryRepo.GetCategoriesForList();
             AccountOptions = await _dropdownService.GetAccountListAsync();
 
@@ -104,6 +106,8 @@ namespace K9_Koinz.Pages.Transactions {
             }
             _hideTransfers = hideTransfers;
 
+            BudgetFiltering = budgetFiltering ?? 0;
+
             Response.Cookies.Append("backToTransactions", new TransactionNavPayload {
                 AccountFilter = SelectedAccount,
                 CatFilter = SelectedCategory,
@@ -118,7 +122,7 @@ namespace K9_Koinz.Pages.Transactions {
 
             Records = await (_repository as TransactionRepository).SearchTransactions(
                 CategoryFilters, MerchantFilter, AccountFilter, TagFilter, searchString, _hideTransfers,
-                MinDateFilter, MaxDateFilter, sortOrder, pageIndex, 100
+                MinDateFilter, MaxDateFilter, BudgetFiltering, sortOrder, pageIndex, 100
             );
         }
     }

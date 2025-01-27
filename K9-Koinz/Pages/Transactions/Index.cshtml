@@ -115,7 +115,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th class="d-none d-xl-block">
+                        <th class="d-none d-xl-table-cell">
                             @Html.DisplayNameFor(model => model.Records[0].Account)
                         </th>
                         <th>
@@ -194,14 +194,14 @@
                     @foreach (var item in Model.Records) {
                         var hasNotes = !string.IsNullOrEmpty(item.Notes) ? "tooltip" : string.Empty;
                         <tr data-bs-toggle="@hasNotes" data-bs-title="Notes: @item.Notes" data-bs-placement="left">
-                            <td class="d-none d-xl-block">
+                            <td class="d-none d-xl-table-cell">
                                 @Html.DisplayFor(modelItem => item.AccountName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
                             <td>
-                                <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.MerchantId" class="link-unstyled">
+                                <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.MerchantId" class="link-unstyled text-truncate">
                                     @if (item.TagId.HasValue) {
                                         var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
                                         <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
@@ -347,7 +347,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="d-none d-xl-block">
+                    <th class="d-none d-xl-table-cell">
                         @Html.DisplayNameFor(model => model.Records[0].Account)
                     </th>
                     <th>
@@ -366,14 +366,14 @@
                 {
                     var hasNotes = !string.IsNullOrEmpty(item.Notes) ? "tooltip" : string.Empty;
                     <tr data-bs-toggle="@hasNotes" data-bs-title="Notes: @item.Notes" data-bs-placement="left">
-                        <td class="d-none d-xl-block">
+                        <td class="d-none d-xl-table-cell">
                             @Html.DisplayFor(modelItem => item.AccountName)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Date)
                         </td>
                         <td>
-                            <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.MerchantId" class="link-unstyled">
+                            <a asp-page="@PagePaths.MerchantDetails" asp-route-id="@item.MerchantId" class="link-unstyled text-truncate">
                                 @if (item.TagId.HasValue) {
                                     var style = "background-color: " + item.Tag.HexColor + "; text-decoration: none";
                                     <span class="badge badge-primary" style="@style">@item.Tag.ShortForm</span>
