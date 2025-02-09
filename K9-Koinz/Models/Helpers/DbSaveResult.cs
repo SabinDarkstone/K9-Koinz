@@ -11,5 +11,6 @@
         public SaveStatus Status { get; set; }
         public string ErrorMessage { get; set; }
         public Exception Exception { get; set; }
+        public List<Guid> Ids { get; set; } = new List<Guid>();
     }
 }

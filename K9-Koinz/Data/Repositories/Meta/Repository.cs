@@ -58,6 +58,7 @@ namespace K9_Koinz.Data.Repositories.Meta {
             DbSaveResult.BeforeStatus = beforeResult.Status;
             DbSaveResult.AfterStatus = afterResult.Status;
             DbSaveResult.ErrorMessage = beforeResult.ErrorMessage + " " + afterResult.ErrorMessage;
+            DbSaveResult.Ids.AddRange(entities.Select(e => e.Id));
 
             return DbSaveResult;
         }
@@ -79,6 +80,7 @@ namespace K9_Koinz.Data.Repositories.Meta {
             DbSaveResult.BeforeStatus = beforeResult.Status;
             DbSaveResult.AfterStatus = afterResult.Status;
             DbSaveResult.ErrorMessage = beforeResult.ErrorMessage + " " + afterResult.ErrorMessage;
+            DbSaveResult.Ids.AddRange(entities.Select(e => e.Id));
 
             return DbSaveResult;
         }
