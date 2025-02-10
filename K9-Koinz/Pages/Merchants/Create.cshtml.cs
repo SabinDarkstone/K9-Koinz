@@ -4,7 +4,7 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Merchants {
     public class CreateModel : CreatePageModel<Merchant> {
-        public CreateModel(IRepository<Merchant> repository) : base(repository) {
+        public CreateModel(MerchantRepository repository) : base(repository) {
         }
     }
 }
