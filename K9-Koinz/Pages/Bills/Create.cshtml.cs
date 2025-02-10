@@ -4,6 +4,7 @@ using K9_Koinz.Pages.Meta;
 
 namespace K9_Koinz.Pages.Bills {
     public class CreateModel : CreatePageModel<Bill> {
-        public CreateModel(BillRepository repository) : base(repository) { }
+        public CreateModel(BillRepository repository, IDropdownPopulatorService dropdownService)
+            : base(repository, dropdownService) { }
     }
 }
