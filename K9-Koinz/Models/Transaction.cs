@@ -29,9 +29,14 @@ namespace K9_Koinz.Models {
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
-        public string MerchantName {
+        public string MerchantNameTruncated {
             get {
                 return _merchantName.Truncate();
+            }
+        }
+        public string MerchantName {
+            get {
+                return _merchantName;
             }
             set {
                 _merchantName = value;

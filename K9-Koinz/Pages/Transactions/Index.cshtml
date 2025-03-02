@@ -218,7 +218,7 @@
                                     @if (item.BillId.HasValue) {
                                         <i class="fa-regular fa-money-bill-1"></i>
                                     }
-                                    @Html.DisplayFor(modelItem => item.MerchantName)
+                                    @Html.DisplayFor(modelItem => item.MerchantNameTruncated)
                                 </a>
                             </td>
                             <td>
@@ -274,7 +274,7 @@
                                     @if (transaction.BillId.HasValue) {
                                         <i class="fa-regular fa-money-bill-1"></i>
                                     }
-                                    @transaction.MerchantName
+                                    @transaction.MerchantNameTruncated
                                 </div>
                                 <div class="col-4 text-end transaction-item" data-id="@transaction.Id">
                                     @if (transaction.TransactionType == Models.TransactionType.PLUS) {
@@ -390,7 +390,7 @@
                                 @if (item.BillId.HasValue) {
                                     <i class="fa-regular fa-money-bill-1"></i>
                                 }
-                                @Html.DisplayFor(modelItem => item.MerchantName)
+                                @Html.DisplayFor(modelItem => item.MerchantNameTruncated)
                             </a>
                         </td>
                         <td>
