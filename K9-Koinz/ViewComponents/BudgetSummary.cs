@@ -96,6 +96,7 @@ namespace K9_Koinz.ViewComponents {
                 .Where(fer => fer.RepeatConfigId != null)  // Only include scheduled transfers
                 .AsEnumerable()
                 .Where(fer => fer.RepeatConfig.IsActive)  // Ensure the transfers are active
+                .Where(fer => fer.SavingsGoalId != null)
                 .ToList();
 
             var (startDate, endDate) = timespan.GetStartAndEndDate(referenceDate);
@@ -108,7 +109,7 @@ namespace K9_Koinz.ViewComponents {
                 .Where(trans => trans.Amount > 0)
                 .Where(trans => trans.Date.Date >= startDate.Date && trans.Date.Date <= endDate.Date)
                 .Where(trans => !trans.IsSavingsSpending)
-                .Where(trans => trans.Transfer.RecurringTransferId != null || trans.CountAgainstBudget)
+                .Where(trans => trans.Transfer.RecurringTransferId != null || trans.CountAgainstBudget || trans.ParentTransaction.Transfer.RecurringTransferId != null)
                 .ToList();
 
             for (var i = savingsTransactions.Count - 1; i >= 0; i--) {

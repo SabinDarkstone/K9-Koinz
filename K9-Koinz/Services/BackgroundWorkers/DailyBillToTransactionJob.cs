@@ -100,6 +100,7 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 .Where(bill => bill.RepeatConfigId != null)
                 .Where(bill => bill.RepeatConfig.CalculatedNextFiring.HasValue)
                 .Where(bill => bill.RepeatConfig.CalculatedNextFiring >= startDate && bill.RepeatConfig.CalculatedNextFiring <= endDate)
+                .Where(bill => bill.IsActive && bill.RepeatConfig.IsActive)
                 .ToList();
         }
     }
