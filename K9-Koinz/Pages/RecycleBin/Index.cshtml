@@ -1,0 +1,41 @@
+﻿@page
+@using K9_Koinz.Utils.Attributes
+@using K9_Koinz.Models.Meta
+@model K9_Koinz.Pages.RecycleBin.IndexModel
+@{
+    ViewData["Title"] = "Recycle Bin";
+}
+
+<h1>Recycle Bin</h1>
+
+@foreach (var table in Model.DeletedRecords) {
+    var entityType = table.Value.First().GetType();
+    var props = entityType.GetProperties()
+        .Where(p => p.GetCustomAttributes(typeof(RecycleBinPropAttribute), false).Any())
+        .ToList();
+
+    <h3>@table.Key</h3>
+    <table class="table">
+        <tr>
+            @foreach (var prop in props) {
+                var attr = (RecycleBinPropAttribute)prop.GetCustomAttributes(typeof(RecycleBinPropAttribute), false).First();
+                <th>@attr.DisplayName</th>
+            }
+            @* <th></th> *@
+        </tr>
+
+        @foreach (var record in table.Value) {
+            var recordId = record.GetType().GetProperties().First(p => p.Name == "Id").GetValue(record) ?? "NULL";
+            <tr>
+                @foreach (var prop in props) {
+                    <td>
+                        @(prop.GetValue(record) ?? "NULL")
+                    </td>
+                }
+                @* <td> *@
+                @*     <a asp-page="@PagePaths.RecycleBinRestore" asp-route-id="@recordId" asp-route-table="@table.Key"><i class="fa-solid fa-trash-arrow-up"></i></a> *@
+                @* </td> *@
+            </tr>
+        }
+    </table>
+}

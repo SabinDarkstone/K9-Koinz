@@ -86,5 +86,8 @@
         public const string ErrorsIndex = "/Errors/Index";
         public const string ErrorsDetails = "/Errors/Details";
         public const string ErrorsDelete = "/Errors/Delete";
+
+        public const string RecycleBinIndex = "/RecycleBin/Index";
+        public const string RecycleBinRestore = "/RecycleBin/Restore";
     }
 }
