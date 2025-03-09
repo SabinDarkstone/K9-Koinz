@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
+using K9_Koinz.Utils.Attributes;
 
 namespace K9_Koinz.Models {
     public enum TransactionType {
@@ -19,16 +20,19 @@ namespace K9_Koinz.Models {
         [DisplayName("Account")]
         public Guid AccountId { get; set; } = Guid.Empty;
         public Account Account { get; set; }
+        [RecycleBinProp("Account")]
         public string AccountName { get; set; }
 
         [DataType(DataType.Date, ErrorMessage = "Date only")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [RecycleBinProp("Date")]
         public DateTime Date { get; set; }
 
         [Required]
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
+        [RecycleBinProp("Merchant")]
         public string MerchantNameTruncated {
             get {
                 return _merchantName.Truncate();
@@ -46,6 +50,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Category")]
         public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
+        [RecycleBinProp("Category")]
         public string CategoryName {
             get {
                 return _categoryName.Truncate();
@@ -56,6 +61,7 @@ namespace K9_Koinz.Models {
         }
 
         [Column(TypeName = "decimal(10, 2)")]
+        [RecycleBinProp("Amount")]
         public double Amount { get; set; }
 
         public string Notes { get; set; }

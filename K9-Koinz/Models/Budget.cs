@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
+using K9_Koinz.Utils.Attributes;
 
 namespace K9_Koinz.Models {
     public enum BudgetTimeSpan {
@@ -15,9 +16,11 @@ namespace K9_Koinz.Models {
     }
 
     public class Budget : BaseEntity, INameable {
+        [RecycleBinProp("Name")]
         public string Name { get; set; } = "New Budget";
         public string Description { get; set; }
         public int SortOrder { get; set; }
+        [RecycleBinProp("Time Period")]
         public BudgetTimeSpan Timespan { get; set; }
         [DisplayName("Tag")]
         public Guid? BudgetTagId { get; set; }

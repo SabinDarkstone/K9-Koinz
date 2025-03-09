@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
+using K9_Koinz.Utils.Attributes;
 
 namespace K9_Koinz.Models {
     public enum RolloverStatus {
@@ -17,18 +18,20 @@ namespace K9_Koinz.Models {
         public Guid BudgetCategoryId { get; set; }
 
         public Category BudgetCategory { get; set; }
-
+        [RecycleBinProp("Category Name")]
         public string BudgetCategoryName { get; set; }
 
         [DisplayName("Budget Name")]
         public Guid BudgetId { get; set; }
 
         public Budget Budget { get; set; }
+        [RecycleBinProp("Budget Name")]
 
         public string BudgetName { get; set; }
 
         [DisplayName("Budgeted Amount")]
         [Column(TypeName = "decimal(10, 2)")]
+        [RecycleBinProp("Amount")]
         public double BudgetedAmount { get; set; }
 
         [DisplayName("Rollover Unspent Money")]

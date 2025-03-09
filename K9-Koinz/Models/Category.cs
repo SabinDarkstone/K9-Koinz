@@ -1,5 +1,6 @@
 ﻿using K9_Koinz.Models.Meta;
 using K9_Koinz.Utils;
+using K9_Koinz.Utils.Attributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +21,7 @@ namespace K9_Koinz.Models {
     }
 
     public class Category : BaseEntity, INameable {
+        [RecycleBinProp("Name")]
         public string Name { get; set; }
         [DisplayName("Parent Category")]
         public Guid? ParentCategoryId { get; set; }

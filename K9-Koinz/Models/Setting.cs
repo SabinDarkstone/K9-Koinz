@@ -1,4 +1,5 @@
 ﻿using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils.Attributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,6 +17,7 @@ namespace K9_Koinz.Models {
     }
 
     public class Setting : BaseEntity {
+        [RecycleBinProp("Name")]
         public string Name { get; set; }
         public string Description { get; set; }
         public SettingType Type { get; set; }

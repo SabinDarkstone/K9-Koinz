@@ -1,4 +1,5 @@
 ﻿using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils.Attributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,10 +29,12 @@ namespace K9_Koinz.Models {
 
         [Required]
         [DisplayName("Account Name")]
+        [RecycleBinProp("Name")]
         public string Name { get; set; }
         public string Description { get; set; }
         [Required]
         [DisplayName("Account Type")]
+        [RecycleBinProp("Type")]
         public AccountType Type { get; set; }
         [DisplayName("Initial Balance")]
         [Column(TypeName = "decimal(10, 2)")]

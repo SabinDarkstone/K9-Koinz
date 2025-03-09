@@ -1,4 +1,5 @@
 ﻿using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils.Attributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,11 +14,13 @@ namespace K9_Koinz.Models {
     }
 
     public class SavingsGoal : BaseEntity, INameable {
+        [RecycleBinProp("Name")]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
         [DisplayName("Savings Type")]
+        [RecycleBinProp("Type")]
         public SavingsType SavingsType { get; set; }
 
         [DisplayName("Starting Amount")]
@@ -26,10 +29,12 @@ namespace K9_Koinz.Models {
 
         [DisplayName("Target Amount")]
         [DataType(DataType.Currency)]
+        [RecycleBinProp("Target")]
         public double? TargetAmount { get; set; }
 
         [DisplayName("Saved Amount")]
         [DataType(DataType.Currency)]
+        [RecycleBinProp("Saved Amount")]
         public double SavedAmount { get; set; }
 
         [DisplayName("Target Date")]

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using K9_Koinz.Utils.Attributes;
+using Newtonsoft.Json;
 using System.ComponentModel;
 
 namespace K9_Koinz.Models.Meta {
@@ -9,6 +10,7 @@ namespace K9_Koinz.Models.Meta {
         public DateTime? CreatedDate { get; set; }
 
         [DisplayName("Last Modified Date")]
+        [RecycleBinProp("Last Modified Date")]
         public DateTime? LastModifiedDate { get; set; }
 
         public bool IsDeleted { get; set; }

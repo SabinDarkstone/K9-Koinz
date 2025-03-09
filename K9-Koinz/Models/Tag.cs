@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils.Attributes;
 
 namespace K9_Koinz.Models {
     public class Tag : BaseEntity, INameable {
         [Required]
+        [RecycleBinProp("Name")]
         public string Name { get; set; }
 
         [Required]

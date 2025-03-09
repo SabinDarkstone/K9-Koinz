@@ -2,14 +2,17 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils.Attributes;
 
 namespace K9_Koinz.Models {
     public class Transfer : BaseEntity, IAmount {
         [DisplayName("From Account")]
+        [RecycleBinProp("From Account")]
         public Guid? FromAccountId { get; set; }
         public Account FromAccount { get; set; }
         [Required]
         [DisplayName("To Account")]
+        [RecycleBinProp("To Account")]
         public Guid ToAccountId { get; set; }
         public Account ToAccount { get; set; }
         [DataType(DataType.Date, ErrorMessage = "Date only")]
@@ -17,14 +20,17 @@ namespace K9_Koinz.Models {
         public DateTime Date { get; set; }
         [Required]
         [DisplayName("Merchant")]
+        [RecycleBinProp("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
         [Required]
         [DisplayName("Category")]
+        [RecycleBinProp("Category")]
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
+        [RecycleBinProp("Amount")]
         public double Amount { get; set; }
         public string Notes { get; set; }
         [DisplayName("Tag")]

@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using K9_Koinz.Models.Meta;
+using K9_Koinz.Utils.Attributes;
 
 namespace K9_Koinz.Models {
 
     public class Bill : BaseEntity, INameable, IAmount {
+        [RecycleBinProp("Name")]
         public string Name { get; set; }
         [DisplayName("Account")]
         public Guid AccountId { get; set; }
@@ -13,6 +15,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Merchant")]
         public Guid MerchantId { get; set; }
         public Merchant Merchant { get; set; }
+        [RecycleBinProp("Merchant")]
         public string MerchantName { get; set; }
         [DisplayName("Category")]
         public Guid? CategoryId { get; set; }
@@ -21,6 +24,7 @@ namespace K9_Koinz.Models {
         [DisplayName("Repeat Settings")]
         public Guid? RepeatConfigId { get; set; }
         public RepeatConfig RepeatConfig { get; set; }
+        [RecycleBinProp("Amount")]
         public double Amount { get; set; }
 
         [DisplayName("Repeating Bill?")]
