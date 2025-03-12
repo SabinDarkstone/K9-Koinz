@@ -25,6 +25,12 @@ namespace K9_Koinz.Services {
                 .Where(trans => trans.Id != record.Id)
                 .ToListAsync();
 
+            if (record.TransferId != null) {
+                potentialMatches = potentialMatches
+                    .Where(trans => trans.TransferId != record.TransferId)
+                    .ToList();
+            }
+
             return potentialMatches;
         }
     }
