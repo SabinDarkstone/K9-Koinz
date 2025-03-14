@@ -1,4 +1,4 @@
-﻿using K9_Koinz.Data;
+using K9_Koinz.Data;
 using K9_Koinz.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +22,7 @@ namespace K9_Koinz.ViewComponents {
                 .AsNoTracking()
                 .Include(bill => bill.RepeatConfig)
                 .ToListAsync())
+                .Where(bill => bill.IsActive)
                 .Where(bill => bill.RepeatConfig.CalculatedNextFiring >= startDate && bill.RepeatConfig.CalculatedNextFiring <= endDate)
                 .ToList();
 
