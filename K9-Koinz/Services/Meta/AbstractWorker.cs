@@ -118,9 +118,11 @@ namespace K9_Koinz.Services.Meta {
             statusRecord.EndTime = DateTime.Now;
         }
 
-        private void AfterWork() {
+        protected virtual void AfterWork() {
             statusRecord.Status = "Complete";
             statusRecord.EndTime = DateTime.Now;
+
+            _context.SaveChanges();
         }
 
         private void FinalizeJob() {

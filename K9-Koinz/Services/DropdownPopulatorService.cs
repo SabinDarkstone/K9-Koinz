@@ -11,6 +11,7 @@ namespace K9_Koinz.Services {
     public interface IDropdownPopulatorService : ICustomService {
         public abstract Task<SelectList> GetTagListAsync();
         public abstract Task<List<SelectListItem>> GetAccountListAsync();
+        public abstract Task<SelectList> GetSavingsGoalsAsync(Guid? accountId);
     }
 
     public class DropdownPopulatorService : AbstractService<DropdownPopulatorService>, IDropdownPopulatorService {
@@ -48,6 +49,22 @@ namespace K9_Koinz.Services {
                 .Where(tag => !tag.IsRetired)
                 .OrderBy(tag => tag.Name)
                 .ToListAsync(), nameof(Tag.Id), nameof(Tag.Name));
+        }
+
+        public async Task<SelectList> GetSavingsGoalsAsync(Guid? accountId) {
+            var savingsIQ = _context.SavingsGoals
+                .AsNoTracking()
+                .Where(goal => goal.IsActive);
+
+            if (accountId.HasValue) {
+                savingsIQ = savingsIQ.Where(goal => goal.AccountId == accountId.Value);
+            }
+
+            return new SelectList(
+                await savingsIQ.OrderBy(goal => goal.Name).ToListAsync(),
+                nameof(SavingsGoal.Id),
+                nameof(SavingsGoal.Name)
+            );
         }
     }
 }

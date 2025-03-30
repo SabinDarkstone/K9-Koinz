@@ -15,7 +15,8 @@ namespace K9_Koinz.Data.Repositories {
         }
 
         public async Task<Bill> GetBillWithDetails(Guid billId, bool doTracking = false) {
-            IQueryable<Bill> iq = _dbSet.Include(bill => bill.RepeatConfig);
+            IQueryable<Bill> iq = _dbSet.Include(bill => bill.RepeatConfig)
+                .Include(bill => bill.SavingsGoal);
 
             if (!doTracking) {
                 iq = iq.AsNoTracking();

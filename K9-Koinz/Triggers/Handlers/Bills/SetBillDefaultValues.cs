@@ -11,6 +11,10 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
 
         public void Execute(List<Bill> oldList, List<Bill> newList) {
             foreach (var bill in newList) {
+                if (bill.SavingsGoalId == Guid.Empty) {
+                    bill.SavingsGoalId = null;
+                }
+
                 if (bill.RepeatConfig == null) {
                     throw new Exception("RepeatConfig must be included in query when inserting a new bill");
                 }

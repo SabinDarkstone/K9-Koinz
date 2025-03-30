@@ -1,18 +1,28 @@
 ﻿
 using K9_Koinz.Models;
 using K9_Koinz.Services.Meta;
+using K9_Koinz.Triggers;
 using K9_Koinz.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace K9_Koinz.Services.BackgroundWorkers {
     public class DailyBillToTransactionJob : AbstractWorker<DailyBillToTransactionJob> {
 
+        private ITrigger<Transaction> _trigger;
+
+        private List<Transaction> transactionsCreated = [];
+
         public DailyBillToTransactionJob(IServiceScopeFactory scopeFactory)
-            : base(scopeFactory, DateTime.Now, new CronData(Cron.Hourly, 1), true) { }
+            : base(scopeFactory, DateTime.Now, new CronData(Cron.Hourly, 1), true) {
+        }
+
+        protected override void CreateScopeOnInit(IServiceScope scope) {
+            base.CreateScopeOnInit(scope);
+            _trigger = scope.ServiceProvider.GetRequiredService<ITrigger<Transaction>>();
+        }
 
         protected override void DoWork(object state) {
             _logger.LogInformation("Checking for any transactions that need to be created for bills today: " + DateTime.Today.ToShortDateString());
-            var transactionsCreated = new List<Transaction>();
             var nextMinute = DateTime.Now.AddMinutes(1);
 
             _logger.LogInformation("Checking for weekly bills...");
@@ -30,6 +40,8 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                         + " : " + trans.MerchantName + " : " + trans.CategoryName
                         + " : " + trans.Amount.FormatCurrency(2));
                 });
+
+                _trigger.OnBeforeInsert(transactionsCreated);
             } else {
                 _logger.LogInformation("No transactions need to be created today");
             }
@@ -69,7 +81,9 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                         CategoryId = bill.CategoryId.Value,
                         CategoryName = bill.CategoryName,
                         Amount = bill.Amount * -1,
-                        Date = bill.RepeatConfig.CalculatedNextFiring.Value
+                        Date = bill.RepeatConfig.CalculatedNextFiring.Value,
+                        SavingsGoalId = bill.SavingsGoalId,
+                        SavingsGoalName = bill.SavingsGoalName
                     };
                     transactionsToCreate.Add(newTransaction);
                 }
@@ -102,6 +116,12 @@ namespace K9_Koinz.Services.BackgroundWorkers {
                 .Where(bill => bill.RepeatConfig.CalculatedNextFiring >= startDate && bill.RepeatConfig.CalculatedNextFiring <= endDate)
                 .Where(bill => bill.IsActive && bill.RepeatConfig.IsActive)
                 .ToList();
+        }
+
+        protected override void AfterWork() {
+            base.AfterWork();
+
+            _trigger.OnAfterInsert(transactionsCreated);
         }
     }
 }

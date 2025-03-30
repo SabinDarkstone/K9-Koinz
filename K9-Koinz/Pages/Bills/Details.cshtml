@@ -35,6 +35,21 @@
         <dd class="col-sm-9">
             @Model.Record.Amount.FormatCurrency(2)
         </dd>
+        @if (Model.Record.SavingsGoalId.HasValue) {
+            var destPage = "";
+            if (Model.Record.SavingsGoal.SavingsType == SavingsType.GOAL) {
+                destPage = PagePaths.SavingsGoalDetails;
+            } else if (Model.Record.SavingsGoal.SavingsType == SavingsType.BUCKET) {
+                destPage = PagePaths.SavingsBucketDetails;
+            }
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Record.SavingsGoalId)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Record.SavingsGoalName)
+                <a asp-page="@destPage" asp-route-id="@Model.Record.SavingsGoalId"><i class="fa-solid fa-circle-info"></i></a>
+            </dd>
+        }
         @if (Model.Record.IsRepeatBill) {
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.Record.RepeatConfig.RepeatString)

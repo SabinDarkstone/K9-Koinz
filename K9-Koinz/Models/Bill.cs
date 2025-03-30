@@ -29,6 +29,10 @@ namespace K9_Koinz.Models {
 
         [DisplayName("Repeating Bill?")]
         public bool IsRepeatBill { get; set; }
+        [DisplayName("Pull from Savings")]
+        public Guid? SavingsGoalId { get; set;  }
+        public SavingsGoal SavingsGoal { get; set; }
+        public string SavingsGoalName { get; set; }
 
         [DisplayName("Last Due Date")]
         [DataType(DataType.Date, ErrorMessage = "Date only")]

@@ -12,10 +12,14 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
             HashSet<Guid> categoryIds = new();
             HashSet<Guid> merchantIds = new();
             HashSet<Guid> accountsIds = new();
+            HashSet<Guid> savingsIds = new();
 
             foreach (var bill in newList) {
                 if (bill.CategoryId != null) {
                     categoryIds.Add(bill.CategoryId.Value);
+                }
+                if (bill.SavingsGoalId != null) {
+                    savingsIds.Add(bill.SavingsGoalId.Value);
                 }
                 merchantIds.Add(bill.MerchantId);
                 accountsIds.Add(bill.AccountId);
@@ -24,6 +28,7 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
             Dictionary<Guid, string> categoryDict = new();
             Dictionary<Guid, string> merchantDict = new();
             Dictionary<Guid, string> accountDict = new();
+            Dictionary<Guid, string> savingsDict = new();
 
             if (categoryIds.Count > 0) {
                 categoryDict = _context.Categories.Where(cat => categoryIds.Contains(cat.Id))
@@ -40,13 +45,23 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
                     .ToDictionary(acct => acct.Id, acct => acct.Name);
             }
 
+            if (savingsIds.Count > 0) {
+                savingsDict = _context.SavingsGoals.Where(goal => savingsIds.Contains(goal.Id))
+                    .ToDictionary(goal => goal.Id, goal => goal.Name);
+            }
+
             foreach (var bill in newList) {
                 var categoryName = "";
                 var merchantName = "";
                 var accountName = "";
+                var savingsName = "";
 
                 if (bill.CategoryId != null) {
                     _ = categoryDict.TryGetValue2(bill.CategoryId.Value, out categoryName);
+                }
+
+                if (bill.SavingsGoalId != null) {
+                    _ = savingsDict.TryGetValue2(bill.CategoryId.Value, out savingsName);
                 }
 
                 _ = merchantDict.TryGetValue2(bill.MerchantId, out merchantName);
@@ -55,6 +70,7 @@ namespace K9_Koinz.Triggers.Handlers.Bills {
                 bill.CategoryName = categoryName;
                 bill.MerchantName = merchantName;
                 bill.AccountName = accountName;
+                bill.SavingsGoalName = savingsName;
 
                 bill.RepeatConfig.DoRepeat = bill.IsRepeatBill;
 
