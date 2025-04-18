@@ -13,6 +13,24 @@
     }
 </style>
 
+<!-- Modal -->
+<div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hey! Listen!</h5>
+            </div>
+            <div class="modal-body">
+                <h4>This is no longer being maintained. Check out the new version!</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Stay Here</button>
+                <a href="https://www.google.com" id="goldLink" class="btn btn-primary">New Site</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div>
     <div class="jumbotron">
         <div class="d-flex align-items-center">
@@ -53,8 +71,23 @@
         var lastMonth = @Html.Raw(Model.LastMonthSpendingJson);
         var threeMonthAverage = @Html.Raw(Model.ThreeMonthAverageSpendingJson);
 
+        const currentHost = window.location.hostname; // e.g., camp.k9koinz.com
+        const parts = currentHost.split('.');
+
+        if (parts.length >= 3) {
+            // Handle subdomain.k9koinz.com
+            const subdomain = parts[0];
+            const goldHost = `${subdomain}-gold.${parts.slice(1).join('.')}`;
+            document.getElementById('goldLink').href = `https://${goldHost}`;
+        } else {
+
+        }
+
         $(document).ready(() => {
-            makeSpendingChart();
+            var myModal = new bootstrap.Modal(document.getElementById('warningModal'));
+            myModal.show();
+        
+        makeSpendingChart();
         });
     </script>
 
